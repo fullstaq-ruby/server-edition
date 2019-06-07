@@ -1,0 +1,49 @@
+#!/bin/bash
+set -e
+
+# shellcheck source=lib/library.sh
+source "$SELFDIR/../lib/library.sh"
+
+SRC_CONTAINER_DIR=/home/builder/jemalloc-src
+INSTALL_PREFIX=/home/builder/jemalloc-inst
+
+require_container_mount /input
+require_container_mount /output
+require_container_envvar JEMALLOC_TARBALL_NAME
+require_container_envvar OUTPUT_NAME
+
+BUILD_CONCURRENCY="${BUILD_CONCURRENCY:-4}"
+JEMALLOC_TARBALL_PATH="/input/$JEMALLOC_TARBALL_NAME"
+OUTPUT_PATH="/input/$OUTPUT_NAME"
+
+
+header "Setting up..."
+if [[ -e /cache ]]; then
+    echo "+ /cache is mounted in container, using it for ccache."
+    export CCACHE_PATH=/cache/ccache
+    export PATH="/usr/lib/ccache:$PATH"
+    echo "+ Activating ccache compilers in /usr/lib/ccache."
+    run mkdir -p "$CCACHE_PATH"
+else
+    echo "+ /cache is not mounted in the container, not using ccache."
+fi
+
+header "Extracting Jemalloc tarball..."
+run mkdir "$SRC_CONTAINER_DIR"
+run tar -xzf "$JEMALLOC_TARBALL_PATH" -C "$SRC_CONTAINER_DIR"
+
+subdir="$(ls -1 "$SRC_CONTAINER_DIR" | head -n 1)"
+echo "+ cd $SRC_CONTAINER_DIR/$subdir"
+cd "$SRC_CONTAINER_DIR/$subdir"
+echo
+
+header "Compiling..."
+run ./configure --prefix="$INSTALL_PREFIX" --enable-shared --disable-static
+run make "-j$BUILD_CONCURRENCY"
+run make install
+run strip --strip-debug "$INSTALL_PREFIX/lib/libjemalloc.so"
+run rm -rf "$INSTALL_PREFIX/lib/pkgconfig"
+echo
+
+header "Generating output package..."
+run tar -czf "$OUTPUT_PATH" -C "$INSTALL_PREFIX" include lib

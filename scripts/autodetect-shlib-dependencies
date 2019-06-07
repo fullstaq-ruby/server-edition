@@ -1,0 +1,90 @@
+#!/bin/bash
+# Usage: ./scripts/autodetect-shlib-dependencies
+#
+# This script autodetects shared library dependencies of all
+# binaries and libraries in a directively (recursively), and
+# outputs a list of package dependency names, like so:
+#
+#     libc6 (>= 2.25), zlib1g (>= 1:1.1.4)
+#
+# This script aids the building of Debian packages via FPM,
+# so that we don't have to manually specify each dependency
+# because that is error-prone.
+#
+# The official Debian packaging tools already have this feature
+# via dh_shlibdeps, but FPM can't automatically make use of that,
+# so we do it ourselves. Under the hood, dh_shlibdeps makes use
+# of dpkg-shlibdeps, which is invoked like so:
+#
+#     dpkg-shlibdeps -O <LIST OF FILES>
+#
+# However, dpkg-shlibs requires that the current working directory
+# contains these files:
+#
+#     debian/control
+#     debian/<something>/DEBIAN/shlibs
+#
+# `control` can be any valid Debian package control file. The contents
+# don't matter.
+#
+# `shlibs` must contain a list of entries corresponding to input libraries
+# that contain a SONAME attribute. Each entry must specify, in a space-delimited
+# format:
+#
+#  - The SONAME without the .so extension and version number.
+#  - The version number itself.
+#  - A package name (which can be anything).
+#
+# Example: suppose you have libruby.so.2.6.1 and libjemalloc.so.2. Then the
+# `shlibs` file must contain:
+#
+#     libruby 2.6.1 foo
+#     libjemalloc 2 foo
+
+set -e
+set -o pipefail
+
+# shellcheck source=lib/library.sh
+source "$SELFDIR/../lib/library.sh"
+
+TEMP_DIR=$(mktemp -d /tmp/shlibdeps.XXXXXX)
+function _cleanup()
+{
+	rm -rf "$TEMP_DIR"
+}
+
+
+DUMMY_PACKAGE_NAME=foo
+PWD=$(pwd)
+LIBS=($( find "$PWD" -name '*.so' ))
+ALL_FILES=($( (find "$PWD" -executable -type f && find "$PWD" -name '*.so' ) | sort -u ))
+
+cd "$TEMP_DIR"
+mkdir debian
+mkdir -p debian/root/DEBIAN
+
+cat > debian/control <<EOF
+Source: $DUMMY_PACKAGE_NAME
+Section: devel
+Priority: optional
+Maintainer: John Doe <john@doe.com>
+
+Package: $DUMMY_PACKAGE_NAME
+Architecture: any
+Description: $DUMMY_PACKAGE_NAME
+EOF
+
+for LIB in "${LIBS[@]}"; do
+	SONAME=$(objdump -p "$LIB" | grep SONAME | awk '{ print $2 }')
+	SOBARENAME=$(echo "$SONAME" | sed 's/\.so\..*//')
+	SOVERSION=$(echo "$SONAME" | sed 's/.*\.so\.//')
+	if [[ "$SONAME" != "" && "$SOVERSION" != "" ]]; then
+		echo "$SOBARENAME $SOVERSION $DUMMY_PACKAGE_NAME" >> debian/root/DEBIAN/shlibs
+	fi
+done
+
+# dpkg-shlibdeps outputs something like:
+# shlibs:Depends=foo, libc6 (>= 2.25), zlib1g (>= 1:1.1.4)
+#
+# There may be multiple lines like these.
+dpkg-shlibdeps -O "${FILES[@]}" | sed -E 's/.*?=//'
