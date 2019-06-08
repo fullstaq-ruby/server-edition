@@ -8,18 +8,17 @@ JEMALLOC_DIR=/home/builder/jemalloc
 RUBY_SRC_CONTAINER_DIR=/home/builder/ruby-src
 DESTDIR=/home/builder/ruby-inst
 
-require_container_mount /input
+require_container_mount /input/ruby-src.tar.gz
 require_container_mount /output
-require_container_envvar VERSION
+require_container_envvar RUBY_VERSION
 require_container_envvar JEMALLOC_BIN_TARBALL_NAME
 
-RUBY_TARBALL_NAME="${RUBY_TARBALL_NAME:-ruby-"$VERSION".tar.gz}"
-RUBY_TARBALL_PATH="/input/$RUBY_TARBALL_NAME"
+RUBY_TARBALL_NAME="${RUBY_TARBALL_NAME:-ruby-"$RUBY_VERSION".tar.gz}"
 JEMALLOC_BIN_TARBALL_PATH="/input/$JEMALLOC_BIN_TARBALL_NAME"
-OUTPUT_NAME="${OUTPUT_NAME:-ruby-bin-"$VERSION".tar.gz}"
+OUTPUT_NAME="${OUTPUT_NAME:-ruby-bin-"$RUBY_VERSION".tar.gz}"
 OUTPUT_PATH="/output/$OUTPUT_NAME"
 BUILD_CONCURRENCY="${BUILD_CONCURRENCY:-4}"
-INSTALL_PREFIX="/usr/lib/fullstaq-ruby/versions/$VERSION"
+INSTALL_PREFIX="/usr/lib/fullstaq-ruby/versions/$RUBY_VERSION"
 
 
 export C_INCLUDE_PATH="$JEMALLOC_DIR/include"
@@ -45,7 +44,7 @@ run mkdir "$JEMALLOC_DIR"
 run tar -xzf "$JEMALLOC_BIN_TARBALL_PATH" -C "$JEMALLOC_DIR"
 
 run mkdir "$RUBY_SRC_CONTAINER_DIR"
-run tar -xzf "$RUBY_TARBALL_PATH" -C "$RUBY_SRC_CONTAINER_DIR"
+run tar -xzf /input/ruby-src.tar.gz -C "$RUBY_SRC_CONTAINER_DIR"
 
 subdir="$(ls -1 "$RUBY_SRC_CONTAINER_DIR" | head -n 1)"
 echo "+ cd $RUBY_SRC_CONTAINER_DIR/$subdir"
@@ -56,11 +55,14 @@ run ./configure --INSTALL_prefix="$INSTALL_PREFIX" \
     --with-jemalloc --disable-install-rdoc
 run make "-j$BUILD_CONCURRENCY"
 run make install DESTDIR="$DESTDIR"
+
 run strip --strip-all "$DESTDIR/$INSTALL_PREFIX/bin/ruby"
 echo "+ find $DESTDIR/$INSTALL_PREFIX -name '*.so' -print0 | xargs -0 strip --strip-debug"
 set -o pipefail
 find "$DESTDIR/$INSTALL_PREFIX" -name '*.so' -print0 | xargs -0 strip --strip-debug
+
 run rm -rf "$DESTDIR/$INSTALL_PREFIX/share/man"
+run ln -s "$INSTALL_PREFIX" "$DESTDIR/usr/lib/rbenv/versions/$RUBY_VERSION"
 
 run cp -R "$JEMALLOC_DIR"/include/jemalloc "$DESTDIR/$INSTALL_PREFIX"/include/
 run cp "$JEMALLOC_DIR"/lib/libjemalloc* "$DESTDIR/$INSTALL_PREFIX"/lib/

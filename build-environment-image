@@ -19,10 +19,8 @@ function usage()
 	echo "This script will produce a Docker image called"
 	echo "'fullstaq/ruby-build-env-<NAME>'. You can change the name format with -f."
 	echo
-	echo "Required options:"
-	echo "  -f FORMAT  A format string that defines the output image name. Default: $FORMAT"
-	echo
 	echo "Optional options:"
+	echo "  -f FORMAT  A format string that defines the output image name. Default: $FORMAT"
 	echo "  -h         Show usage"
 }
 

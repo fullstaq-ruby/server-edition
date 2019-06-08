@@ -28,6 +28,14 @@ function verbose_run()
     "$@"
 }
 
+function verbose_exec()
+{
+    if $VERBOSE; then
+        echo "+ $*"
+    fi
+    exec "$@"
+}
+
 # A single-value file is a file such as environments/ubuntu-18.04/image_tag.
 # It contains exactly 1 line of usable value, and may optionally contain
 # comments that start with '#', which are ignored.
@@ -64,6 +72,24 @@ function require_container_mount()
         exit 1
     fi
 }
+
+if command -v realpath &>/dev/null; then
+    function absolute_path()
+    {
+        realpath -L "$1"
+    }
+else
+    function absolute_path()
+    {
+        local dir
+        local name
+
+        dir=$(dirname "$1")
+        name=$(basename "$1")
+        dir=$(cd "$dir" && pwd)
+        echo "$dir/$name"
+    }
+fi
 
 function cleanup()
 {

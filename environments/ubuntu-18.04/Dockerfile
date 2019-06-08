@@ -6,7 +6,7 @@ FROM ubuntu:18.04
 
 RUN set -x && \
     apt update && \
-    apt install -y autoconf bison build-essential ccache \
+    apt install -y autoconf bison bzip2 build-essential ccache \
     	libssl-dev libyaml-dev libreadline-dev zlib1g-dev \
     	libncurses5-dev libffi-dev libgdbm5 libgdbm-dev && \
     addgroup --gid 9999 builder && \

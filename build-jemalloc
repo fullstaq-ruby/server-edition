@@ -1,0 +1,90 @@
+#!/bin/bash
+set -e
+
+SELFDIR=$(dirname "$0")
+SELFDIR=$(cd "$SELFDIR" && pwd)
+# shellcheck source=lib/library.sh
+source "$SELFDIR/lib/library.sh"
+
+ENVIRONMENT_NAME=
+SOURCE_PATH=
+OUTPUT_PATH=
+BUILD_CONCURRENCY=1
+
+function usage()
+{
+    echo "Usage: ./build-jemalloc <OPTIONS>"
+    echo "Build a Jemalloc binary tarball from its source tarball."
+    echo
+    echo "Required options:"
+    echo "  -n NAME    Name of environment to build in ($(list_environment_names))"
+    echo "  -s PATH    Path to Jemalloc source tarball"
+    echo "  -o PATH    Path to output tarball"
+    echo
+    echo "Optional options:"
+    echo "  -j NUM     Build concurrency (default: $BUILD_CONCURRENCY)"
+    echo "  -h         Show usage"
+}
+
+function parse_options()
+{
+    local OPTIND=1
+    local ORIG_ARGV
+    local opt
+    while getopts "n:s:o:j:h" opt; do
+        case "$opt" in
+        n)
+            ENVIRONMENT_NAME="$OPTARG"
+            ;;
+        s)
+            SOURCE_PATH=$(absolute_path "$OPTARG")
+            ;;
+        o)
+            OUTPUT_PATH=$(absolute_path "$OPTARG")
+            ;;
+        j)
+            BUILD_CONCURRENCY="$OPTARG"
+            ;;
+        h)
+            usage
+            exit
+            ;;
+        *)
+            return 1
+            ;;
+        esac
+    done
+
+    (( OPTIND -= 1 )) || true
+    shift $OPTIND || true
+    ORIG_ARGV=("$@")
+
+    if [[ "$SOURCE_PATH" = "" ]]; then
+        echo 'ERROR: please specify a Jemalloc source tarball path with -s.' >&2
+        exit 1
+    fi
+    if [[ ! -e "$SOURCE_PATH" ]]; then
+        echo "ERROR: $SOURCE_PATH does not exist." >&2
+        exit 1
+    fi
+    if [[ "$OUTPUT_PATH" = "" ]]; then
+        echo 'ERROR: please specify an output tarball path with -o.' >&2
+        exit 1
+    fi
+}
+
+parse_options "$@"
+
+IMAGE_VERSION=$(read_single_value_file "$SELFDIR/environments/$ENVIRONMENT_NAME/image_tag")
+# Create file if missing
+run touch "$OUTPUT_PATH"
+
+echo '--- Entering Docker container ---'
+verbose_exec docker run --rm \
+    -v "$SELFDIR:/system:ro" \
+    -v "$SOURCE_PATH:/input/jemalloc-src.tar.bz2:ro" \
+    -v "$OUTPUT_PATH:/output/jemalloc-bin.tar.gz" \
+    -e "OUTPUT_NAME=jemalloc-bin.tar.gz" \
+    -e "BUILD_CONCURRENCY=$BUILD_CONCURRENCY" \
+    "fullstaq-ruby/ruby-build-env-$ENVIRONMENT_NAME" \
+    /system/container-entrypoints/build-jemalloc

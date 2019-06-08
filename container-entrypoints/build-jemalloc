@@ -7,13 +7,11 @@ source "$SELFDIR/../lib/library.sh"
 SRC_CONTAINER_DIR=/home/builder/jemalloc-src
 INSTALL_PREFIX=/home/builder/jemalloc-inst
 
-require_container_mount /input
+require_container_mount /input/jemalloc-src.tar.bz2
 require_container_mount /output
-require_container_envvar JEMALLOC_TARBALL_NAME
 require_container_envvar OUTPUT_NAME
 
-BUILD_CONCURRENCY="${BUILD_CONCURRENCY:-4}"
-JEMALLOC_TARBALL_PATH="/input/$JEMALLOC_TARBALL_NAME"
+BUILD_CONCURRENCY="${BUILD_CONCURRENCY:-1}"
 OUTPUT_PATH="/input/$OUTPUT_NAME"
 
 
@@ -30,7 +28,7 @@ fi
 
 header "Extracting Jemalloc tarball..."
 run mkdir "$SRC_CONTAINER_DIR"
-run tar -xzf "$JEMALLOC_TARBALL_PATH" -C "$SRC_CONTAINER_DIR"
+run tar -xjf /input/jemalloc-src.tar.bz2 -C "$SRC_CONTAINER_DIR"
 
 subdir="$(ls -1 "$SRC_CONTAINER_DIR" | head -n 1)"
 echo "+ cd $SRC_CONTAINER_DIR/$subdir"
