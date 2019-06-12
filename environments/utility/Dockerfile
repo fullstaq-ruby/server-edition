@@ -9,13 +9,23 @@ COPY Gemfile Gemfile.lock /utility_build/
 RUN set -x && \
     apt update && \
     apt install -y wget ca-certificates binutils dpkg-dev \
-        ruby rubygems sudo && \
-    gem install bundler --no-document -v 2.0.1 \
+        curl ca-certificates ruby ruby-dev rubygems sudo && \
+    \
+    curl -sSLo /sbin/activatecontaineruid.gz https://github.com/fullstaq-labs/activatecontaineruid/releases/download/v0.9.1/activatecontaineruid-0.9.1-x86_64-linux.gz && \
+    gunzip /sbin/activatecontaineruid.gz && \
+    chmod +x,+s /sbin/activatecontaineruid && \
+    mkdir /etc/activatecontaineruid && \
+    echo 'app_account: utility' > /etc/activatecontaineruid/config.yml && \
+    \
+    gem install bundler --no-document -v 1.17.3 && \
     addgroup --gid 9999 utility && \
-    adduser --uid 9999 --gid 9999 --disabled-password --gecos Builder utility && \
+    adduser --uid 9999 --gid 9999 --disabled-password --gecos Utility utility && \
     usermod -L utility && \
-    cd /utility_build && \
-    sudo -u utility bundle install -j4 && \
-    cd / &&
+    cp /utility_build/* /home/utility/ && \
+    cd /home/utility && \
+    sudo -H -u utility bundle install -j4 --path /home/utility/bundle && \
     apt clean && \
     rm -rf /utility_build /tmp/* /var/tmp/* /var/lib/apt/lists/*
+
+USER utility
+ENTRYPOINT ["/sbin/activatecontaineruid"]

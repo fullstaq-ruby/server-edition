@@ -91,6 +91,18 @@ else
     }
 fi
 
+function list_environment_names()
+{
+    ls -1 "$1" | sort | xargs echo
+}
+
+function create_file_if_missing()
+{
+    if [[ ! -e "$1" ]]; then
+        run touch "$1"
+    fi
+}
+
 function cleanup()
 {
     set +e

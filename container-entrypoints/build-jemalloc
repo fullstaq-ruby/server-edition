@@ -1,34 +1,37 @@
 #!/bin/bash
 set -e
 
+SELFDIR=$(dirname "$0")
+SELFDIR=$(cd "$SELFDIR" && pwd)
 # shellcheck source=lib/library.sh
 source "$SELFDIR/../lib/library.sh"
 
 SRC_CONTAINER_DIR=/home/builder/jemalloc-src
 INSTALL_PREFIX=/home/builder/jemalloc-inst
+INPUT_PATH=/input/jemalloc-src.tar.bz2
+OUTPUT_PATH=/output/jemalloc-bin.tar.gz
 
-require_container_mount /input/jemalloc-src.tar.bz2
-require_container_mount /output
-require_container_envvar OUTPUT_NAME
+require_container_mount "$INPUT_PATH"
+require_container_mount "$OUTPUT_PATH"
 
 BUILD_CONCURRENCY="${BUILD_CONCURRENCY:-1}"
-OUTPUT_PATH="/input/$OUTPUT_NAME"
 
 
 header "Setting up..."
 if [[ -e /cache ]]; then
     echo "+ /cache is mounted in container, using it for ccache."
-    export CCACHE_PATH=/cache/ccache
+    export CCACHE_DIR=/cache/ccache
     export PATH="/usr/lib/ccache:$PATH"
     echo "+ Activating ccache compilers in /usr/lib/ccache."
-    run mkdir -p "$CCACHE_PATH"
+    run mkdir -p "$CCACHE_DIR"
 else
     echo "+ /cache is not mounted in the container, not using ccache."
 fi
+echo
 
 header "Extracting Jemalloc tarball..."
 run mkdir "$SRC_CONTAINER_DIR"
-run tar -xjf /input/jemalloc-src.tar.bz2 -C "$SRC_CONTAINER_DIR"
+run tar -xjf "$INPUT_PATH" -C "$SRC_CONTAINER_DIR"
 
 subdir="$(ls -1 "$SRC_CONTAINER_DIR" | head -n 1)"
 echo "+ cd $SRC_CONTAINER_DIR/$subdir"

@@ -7,8 +7,15 @@ FROM centos:7
 RUN set -x && \
     yum install -y epel-release && \
     yum install -y --enablerepo epel \
-        gcc bzip2 openssl-devel libyaml-devel libffi-devel readline-devel \
+        gcc bzip2 curl openssl-devel libyaml-devel libffi-devel readline-devel \
         zlib-devel gdbm-devel ncurses-devel ccache && \
+    \
+    curl -sSLo /sbin/activatecontaineruid.gz https://github.com/fullstaq-labs/activatecontaineruid/releases/download/v0.9.1/activatecontaineruid-0.9.1-x86_64-linux.gz && \
+    gunzip /sbin/activatecontaineruid.gz && \
+    chmod +x,+s /sbin/activatecontaineruid && \
+    mkdir /etc/activatecontaineruid && \
+    echo 'app_account: builder' > /etc/activatecontaineruid/config.yml && \
+    \
     groupadd --gid 9999 builder && \
     adduser --uid 9999 --gid 9999 --password '#' app && \
     yum clean all && \
@@ -19,3 +26,6 @@ RUN set -x && \
         ln -s /usr/bin/ccache /usr/lib/ccache/c++ && \
         ln -s /usr/bin/ccache /usr/lib/ccache/g++ && \
     fi
+
+USER builder
+ENTRYPOINT ["/sbin/activatecontaineruid"]
