@@ -29,6 +29,7 @@ else
 fi
 echo
 
+
 header "Extracting Jemalloc tarball..."
 run mkdir "$SRC_CONTAINER_DIR"
 run tar -xjf "$INPUT_PATH" -C "$SRC_CONTAINER_DIR"
@@ -38,6 +39,7 @@ echo "+ cd $SRC_CONTAINER_DIR/$subdir"
 cd "$SRC_CONTAINER_DIR/$subdir"
 echo
 
+
 header "Compiling..."
 run ./configure --prefix="$INSTALL_PREFIX" --enable-shared --disable-static
 run make "-j$BUILD_CONCURRENCY"
@@ -46,5 +48,6 @@ run strip --strip-debug "$INSTALL_PREFIX/lib/libjemalloc.so"
 run rm -rf "$INSTALL_PREFIX/lib/pkgconfig"
 echo
 
-header "Generating output package..."
+
+header "Packaging up..."
 run tar -czf "$OUTPUT_PATH" -C "$INSTALL_PREFIX" include lib

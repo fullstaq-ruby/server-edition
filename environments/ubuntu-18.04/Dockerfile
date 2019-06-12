@@ -7,7 +7,7 @@ FROM ubuntu:18.04
 RUN set -x && \
     apt update && \
     apt install -y autoconf bison bzip2 build-essential \
-        curl ca-certificates ccache \
+        dpkg-dev curl ca-certificates ccache \
     	libssl-dev libyaml-dev libreadline-dev zlib1g-dev \
     	libncurses5-dev libffi-dev libgdbm5 libgdbm-dev && \
     \

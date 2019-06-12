@@ -1,4 +1,6 @@
 .DS_Store
 *.tar.gz
 *.tar.bz2
+*.deb
 /cache
+/my-*

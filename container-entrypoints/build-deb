@@ -6,31 +6,19 @@ SELFDIR=$(cd "$SELFDIR" && pwd)
 # shellcheck source=lib/library.sh
 source "$SELFDIR/../lib/library.sh"
 
-WORK_DIR=/home/builder/work
+WORK_DIR=/home/utility/work
 INPUT_PATH=/input/ruby-bin.tar.gz
 OUTPUT_PATH=/output/ruby.deb
 
 require_container_mount "$INPUT_PATH"
 require_container_mount "$OUTPUT_PATH"
 
-BUILD_CONCURRENCY="${BUILD_CONCURRENCY:-1}"
-
 
 header "Extracting binaries..."
 run mkdir "$WORK_DIR"
 run tar -xzf "$INPUT_PATH" -C "$WORK_DIR"
-echo
-
-header "Analyzing binaries..."
-echo "+ /system/scripts/autodetect-shlib-dependencies"
-DEPS=$(/system/scripts/autodetect-shlib-dependencies)
-#set -o pipefail
-#IFS='\n'
-#DEPS=($(/system/scripts/autodetect-shlib-dependencies | perl -pe 's/ *, */\n/g'))
-#unset IFS
-#ruby -e 'puts "Detected dependencies: #{ARGV.inspect}"' "${DEPS[@]}"
-echo "Detected dependencies:"
-echo "$DEPS"
+echo "+ cd $WORK_DIR"
+cd "$WORK_DIR"
 echo
 
 header "Building package..."
@@ -40,5 +28,6 @@ run bundle exec fpm -s dir -t deb -f \
 	-C "$WORK_DIR" \
 	-n ruby \
 	-p ruby.deb \
-	-d "$DEPS" \
-	.
+	-d "$(cat shlib-deps.txt)" \
+	usr
+run cp ruby.deb "$OUTPUT_PATH"

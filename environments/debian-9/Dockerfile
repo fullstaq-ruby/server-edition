@@ -7,7 +7,7 @@ FROM debian:9
 RUN set -x && \
     apt update && \
     apt install -y autoconf bison bzip2 build-essential \
-        curl ca-certificates ccache \
+        dpkg-dev curl ca-certificates ccache \
         libssl-dev libyaml-dev libreadline-dev zlib1g-dev \
         libncurses5-dev libffi-dev libgdbm3 libgdbm-dev && \
     \

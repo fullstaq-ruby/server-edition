@@ -1,4 +1,6 @@
-#!/bin/bash
+#!/usr/bin/env ruby
+# encoding: utf-8
+#
 # Usage: ./scripts/autodetect-shlib-dependencies
 #
 # This script autodetects shared library dependencies of all
@@ -41,50 +43,111 @@
 #     libruby 2.6.1 foo
 #     libjemalloc 2 foo
 
-set -e
-set -o pipefail
+require 'fileutils'
+require 'tempfile'
 
-# shellcheck source=lib/library.sh
-source "$SELFDIR/../lib/library.sh"
+DUMMY_PACKAGE_NAME = 'foo'
 
-TEMP_DIR=$(mktemp -d /tmp/shlibdeps.XXXXXX)
-function _cleanup()
-{
-	rm -rf "$TEMP_DIR"
-}
+def capture!(*command)
+  data = IO.popen(command + [in: :in], 'r:utf-8') do |io|
+    io.read
+  end
+  if $?.exitstatus != 0
+    abort "ERROR: command failed: #{command.join(' ')}"
+  else
+    data
+  end
+end
 
+def list_executable_and_library_files
+  executables = capture!('find', '.', '-executable', '-type', 'f').split("\n").sort
+  libs = capture!('find', '.', '-name', '*.so').split("\n").sort
+  [executables, libs]
+end
 
-DUMMY_PACKAGE_NAME=foo
-PWD=$(pwd)
-LIBS=($( find "$PWD" -name '*.so' ))
-ALL_FILES=($( (find "$PWD" -executable -type f && find "$PWD" -name '*.so' ) | sort -u ))
+def create_dummy_debian_dir
+  begin
+    FileUtils.mkdir_p('debian/root/DEBIAN')
+    File.open('debian/control', 'w:utf-8') do |f|
+      f.write(
+        "Source: $DUMMY_PACKAGE_NAME\n" \
+        "Section: devel\n" \
+        "Priority: optional\n" \
+        "Maintainer: John Doe <john@doe.com>\n" \
+        "\n" \
+        "Package: #{DUMMY_PACKAGE_NAME}\n" \
+        "Architecture: any\n" \
+        "Description: #{DUMMY_PACKAGE_NAME}\n"
+      )
+    end
+    yield
+  ensure
+    FileUtils.remove_entry_secure('debian')
+  end
+end
 
-cd "$TEMP_DIR"
-mkdir debian
-mkdir -p debian/root/DEBIAN
+def create_debian_shlibs_file(libs)
+  File.open('debian/root/DEBIAN/shlibs', 'w:utf-8') do |f|
+    libs.each do |lib|
+      soname_lines = capture!('objdump', '-p', lib).split("\n").grep(/SONAME/)
+      next if soname_lines.empty?
 
-cat > debian/control <<EOF
-Source: $DUMMY_PACKAGE_NAME
-Section: devel
-Priority: optional
-Maintainer: John Doe <john@doe.com>
+      soname = soname_lines[0].strip.split(/ +/)[1]
+      next if soname.empty?
 
-Package: $DUMMY_PACKAGE_NAME
-Architecture: any
-Description: $DUMMY_PACKAGE_NAME
-EOF
+      sobarename = soname.sub(/\.so\..*/, '')
+      soversion = soname.sub(/.*\.so\./, '')
 
-for LIB in "${LIBS[@]}"; do
-	SONAME=$(objdump -p "$LIB" | grep SONAME | awk '{ print $2 }')
-	SOBARENAME=$(echo "$SONAME" | sed 's/\.so\..*//')
-	SOVERSION=$(echo "$SONAME" | sed 's/.*\.so\.//')
-	if [[ "$SONAME" != "" && "$SOVERSION" != "" ]]; then
-		echo "$SOBARENAME $SOVERSION $DUMMY_PACKAGE_NAME" >> debian/root/DEBIAN/shlibs
-	fi
-done
+      if !soversion.empty?
+        f.puts "#{sobarename} #{soversion} #{DUMMY_PACKAGE_NAME}"
+      end
+    end
+  end
+end
 
-# dpkg-shlibdeps outputs something like:
-# shlibs:Depends=foo, libc6 (>= 2.25), zlib1g (>= 1:1.1.4)
-#
-# There may be multiple lines like these.
-dpkg-shlibdeps -O "${FILES[@]}" | sed -E 's/.*?=//'
+def run_dpkg_shlibdeps(executables, libs)
+  # dpkg-shlibdeps outputs something like:
+  # shlibs:Depends=foo, libc6 (>= 2.25), zlib1g (>= 1:1.1.4)
+  #
+  # There may be multiple lines like these.
+
+  all_files = [executables, libs].sort.uniq
+  command = ['dpkg-shlibdeps', '-O', all_files].flatten
+
+  Tempfile.open('dpkg-shlibdeps-stderr', encoding: 'utf-8') do |tmpfile|
+    result = []
+
+    IO.popen(command + [in: :in, err: tmpfile], 'r:utf-8') do |io|
+      io.each_line do |line|
+        result.concat(line.strip.sub(/.*?=/, '').split(/ *, */))
+      end
+    end
+
+    result.delete(DUMMY_PACKAGE_NAME)
+
+    # Print dpkg-shlibdeps stderr except for some expected and
+    # uninteresting messages.
+    tmpfile.rewind
+    stderr_lines = tmpfile.read.split("\n")
+    stderr_lines.reject! do |line|
+      line =~ /binaries to analyze should already be installed in their package's directory/
+    end
+    STDERR.puts stderr_lines
+    puts result.join(', ')
+
+    if $?.exitstatus != 0
+      abort "ERROR: command failed: dpkg-shlibdeps -O <FILES...>"
+    end
+  end
+end
+
+def main
+  Dir.chdir(ARGV[0]) if ARGV[0]
+  executables, libs = list_executable_and_library_files
+  create_dummy_debian_dir do
+    create_debian_shlibs_file(libs)
+    run_dpkg_shlibdeps(executables, libs)
+  end
+end
+
+main

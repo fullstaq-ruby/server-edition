@@ -15,6 +15,14 @@ indent_size = 4
 indent_style = space
 indent_size = 4
 
-[{fetch-jemalloc-source,build-jemalloc,fetch-ruby-source,build-ruby,build-deb}]
+[*.rb]
+indent_style = space
+indent_size = 2
+
+[{build-jemalloc,build-ruby,build-deb}]
 indent_style = space
 indent_size = 4
+
+[scripts/autodetect-shlib-dependencies]
+indent_style = space
+indent_size = 2

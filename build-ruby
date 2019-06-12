@@ -79,7 +79,7 @@ function parse_options()
         exit 1
     fi
     if [[ "$SOURCE_PATH" = "" ]]; then
-        echo 'ERROR: please specify a Jemalloc source tarball path with -s.' >&2
+        echo 'ERROR: please specify a Ruby source tarball path with -s.' >&2
         exit 1
     fi
     if [[ ! -e "$SOURCE_PATH" ]]; then

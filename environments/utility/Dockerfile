@@ -8,7 +8,7 @@ COPY Gemfile Gemfile.lock /utility_build/
 
 RUN set -x && \
     apt update && \
-    apt install -y wget ca-certificates binutils dpkg-dev \
+    apt install -y wget ca-certificates binutils \
         curl ca-certificates ruby ruby-dev rubygems sudo && \
     \
     curl -sSLo /sbin/activatecontaineruid.gz https://github.com/fullstaq-labs/activatecontaineruid/releases/download/v0.9.1/activatecontaineruid-0.9.1-x86_64-linux.gz && \
@@ -21,9 +21,11 @@ RUN set -x && \
     addgroup --gid 9999 utility && \
     adduser --uid 9999 --gid 9999 --disabled-password --gecos Utility utility && \
     usermod -L utility && \
+    mkdir /bundle && \
+    chown utility: /bundle && \
     cp /utility_build/* /home/utility/ && \
     cd /home/utility && \
-    sudo -H -u utility bundle install -j4 --path /home/utility/bundle && \
+    sudo -H -u utility bundle install -j4 --path /bundle && \
     apt clean && \
     rm -rf /utility_build /tmp/* /var/tmp/* /var/lib/apt/lists/*
 

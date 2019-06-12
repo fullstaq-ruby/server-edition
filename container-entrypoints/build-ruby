@@ -41,10 +41,12 @@ else
 fi
 echo
 
+
 header "Extracting Jemalloc binaries..."
 run mkdir "$JEMALLOC_DIR"
 run tar -xzf "$JEMALLOC_BIN_TARBALL_PATH" -C "$JEMALLOC_DIR"
 echo
+
 
 header "Extracting Ruby sources..."
 run mkdir "$RUBY_SRC_CONTAINER_DIR"
@@ -55,12 +57,14 @@ echo "+ cd $RUBY_SRC_CONTAINER_DIR/$subdir"
 cd "$RUBY_SRC_CONTAINER_DIR/$subdir"
 echo
 
+
 header "Configuring and compiling Ruby..."
 run ./configure --prefix="$INSTALL_PREFIX" \
     --enable-shared --disable-install-static-library \
     --with-jemalloc --disable-install-rdoc
 run make "-j$BUILD_CONCURRENCY"
 echo
+
 
 header "Creating install directory structure..."
 run make install DESTDIR="$DESTDIR"
@@ -76,5 +80,20 @@ run ln -s "$INSTALL_PREFIX" "$DESTDIR/usr/lib/rbenv/versions/$VERSION"
 
 run cp -R "$JEMALLOC_DIR"/include/jemalloc "$DESTDIR/$INSTALL_PREFIX"/include/
 run cp "$JEMALLOC_DIR"/lib/libjemalloc* "$DESTDIR/$INSTALL_PREFIX"/lib/
+echo
 
+
+header "Autodetecting package dependencies..."
+ABI_VERSION=$(ls "$DESTDIR/$INSTALL_PREFIX/lib/ruby/site_ruby")
+PLATFORM_NAME=$(ls "$DESTDIR/$INSTALL_PREFIX/lib/ruby/vendor_ruby/$ABI_VERSION")
+export LD_LIBRARY_PATH="$DESTDIR/$INSTALL_PREFIX/lib"
+export RUBYPATH="$DESTDIR/$INSTALL_PREFIX/bin"
+export RUBYLIB="$DESTDIR/$INSTALL_PREFIX/lib/ruby/$ABI_VERSION:$DESTDIR/$INSTALL_PREFIX/lib/ruby/$ABI_VERSION/$PLATFORM_NAME"
+
+echo "+ $RUBYPATH/ruby /system/scripts/autodetect-shlib-dependencies $DESTDIR | tee $DESTDIR/shlib-deps.txt"
+"$RUBYPATH/ruby" /system/scripts/autodetect-shlib-dependencies "$DESTDIR" | tee "$DESTDIR/shlib-deps.txt"
+echo
+
+
+header "Packaging up..."
 run tar -czf "$OUTPUT_PATH" -C "$DESTDIR" .
