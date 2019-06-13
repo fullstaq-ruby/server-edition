@@ -55,7 +55,7 @@ VERSION=$(ls usr/lib/fullstaq-ruby/versions)
 
 set -x
 bundle exec fpm -s dir -t rpm -f --log info -C "$WORK_DIR" \
-	--name "fullstaq-ruby-$VERSION" \
+    --name "fullstaq-ruby-$VERSION" \
     --version "rev$REVISION" \
     --iteration "$DISTRO" \
     --license MIT \

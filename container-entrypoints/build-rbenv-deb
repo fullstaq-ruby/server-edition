@@ -1,0 +1,51 @@
+#!/bin/bash
+set -e
+
+SELFDIR=$(dirname "$0")
+SELFDIR=$(cd "$SELFDIR" && pwd)
+# shellcheck source=lib/library.sh
+source "$SELFDIR/../lib/library.sh"
+
+WORK_DIR=/home/utility/work
+INPUT_PATH=/input/rbenv
+OUTPUT_PATH=/output/rbenv.deb
+
+require_container_mount "$INPUT_PATH"
+require_container_mount "$OUTPUT_PATH"
+require_container_envvar REVISION
+
+
+header "Preparing input..."
+run mkdir "$WORK_DIR"
+echo "+ cd $WORK_DIR"
+cd "$WORK_DIR"
+run cp -dpR "$INPUT_PATH"/* ./
+VERSION=$(./bin/rbenv --version | awk '{ print $2 }')
+run rm bin/rbenv
+run ln -s /usr/lib/rbenv/libexec/rbenv bin/rbenv
+echo
+
+header "Building package..."
+echo "+ cd $WORK_DIR"
+cd "$WORK_DIR"
+echo "+ export BUNDLE_GEMFILE=/home/utility/Gemfile"
+export BUNDLE_GEMFILE=/home/utility/Gemfile
+
+set -x
+bundle exec fpm -s dir -t deb -f --log info \
+    --name "fullstaq-rbenv" \
+    --version "$VERSION" \
+    --iteration "$REVISION" \
+    --architecture all \
+    --license MIT \
+    --vendor Fullstaq \
+    --maintainer "Fullstaq <info@fullstaq.com>" \
+    --description "Fullstaq Ruby $VERSION" \
+    --url "https://github.com/fullstaq-labs/fullstaq-ruby-server-edition" \
+    --provides rbenv \
+    bin=/usr/ \
+    libexec=/usr/lib/rbenv/ \
+    rbenv.d=/usr/lib/rbenv/ \
+    completions=/usr/lib/rbenv/
+set +x
+run cp *.deb "$OUTPUT_PATH"

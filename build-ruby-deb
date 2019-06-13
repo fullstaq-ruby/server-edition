@@ -13,7 +13,7 @@ REVISION=0
 
 function usage()
 {
-    echo "Usage: ./build-deb <OPTIONS>"
+    echo "Usage: ./build-ruby-deb <OPTIONS>"
     echo "Build a Ruby Debian package from its binary tarball (which is produced by ./build-ruby)."
     echo
     echo "Required options:"
@@ -85,7 +85,7 @@ else
     TTY_ARGS=()
 fi
 
-IMAGE_VERSION=$(read_single_value_file "$SELFDIR/environments/deb-utility/image_tag")
+IMAGE_VERSION=$(read_single_value_file "$SELFDIR/environments/utility/image_tag")
 create_file_if_missing "$OUTPUT_PATH"
 
 echo '--- Entering Docker container ---'
@@ -97,4 +97,4 @@ verbose_exec docker run --rm --init "${TTY_ARGS[@]}" \
     -e "DISTRO=$DISTRO" \
     --user "$(id -u):$(id -g)" \
     "fullstaq/ruby-build-env-utility:$IMAGE_VERSION" \
-    /system/container-entrypoints/build-deb
+    /system/container-entrypoints/build-ruby-deb

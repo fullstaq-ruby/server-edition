@@ -31,16 +31,17 @@ VERSION=$(ls usr/lib/fullstaq-ruby/versions)
 
 set -x
 bundle exec fpm -s dir -t deb -f --log info -C "$WORK_DIR" \
-	--name "fullstaq-ruby-$VERSION" \
-    --version "rev$REVISION" \
+    --name "fullstaq-ruby-$VERSION" \
+    --version "$REVISION" \
     --iteration "$DISTRO" \
     --license MIT \
     --vendor Fullstaq \
     --maintainer "Fullstaq <info@fullstaq.com>" \
     --description "Fullstaq Ruby $VERSION" \
     --url "https://github.com/fullstaq-labs/fullstaq-ruby-server-edition" \
-	--depends "$DEPS" \
+    --depends "$DEPS" \
     --provides fullstaq-ruby \
+    --deb-recommends fullstaq-rbenv \
     --deb-dist "$DISTRO" \
     usr
 set +x
