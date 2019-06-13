@@ -8,7 +8,7 @@ source "$SELFDIR/../lib/library.sh"
 
 WORK_DIR=/home/utility/work
 INPUT_PATH=/input/rbenv
-OUTPUT_PATH=/output/rbenv.deb
+OUTPUT_PATH=/output/rbenv.rpm
 
 require_container_mount "$INPUT_PATH"
 require_container_mount "$OUTPUT_PATH"
@@ -32,7 +32,7 @@ echo "+ export BUNDLE_GEMFILE=/home/utility/Gemfile"
 export BUNDLE_GEMFILE=/home/utility/Gemfile
 
 set -x
-bundle exec fpm -s dir -t deb -f --log info \
+bundle exec fpm -s dir -t rpm -f --log info \
     --name "fullstaq-rbenv" \
     --version "$VERSION" \
     --iteration "$REVISION" \
@@ -48,4 +48,4 @@ bundle exec fpm -s dir -t deb -f --log info \
     rbenv.d=/usr/lib/rbenv/ \
     completions=/usr/lib/rbenv/
 set +x
-run cp *.deb "$OUTPUT_PATH"
+run cp *.rpm "$OUTPUT_PATH"
