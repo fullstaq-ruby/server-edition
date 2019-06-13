@@ -19,7 +19,11 @@ indent_size = 4
 indent_style = space
 indent_size = 2
 
-[{build-jemalloc,build-ruby,build-deb}]
+[container-entrypoints/*]
+indent_style = space
+indent_size = 4
+
+[{build-jemalloc,build-ruby,build-deb,build-rpm}]
 indent_style = space
 indent_size = 4
 

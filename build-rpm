@@ -13,13 +13,13 @@ REVISION=0
 
 function usage()
 {
-    echo "Usage: ./build-deb <OPTIONS>"
-    echo "Build a Ruby Debian package from its binary tarball (which is produced by ./build-ruby)."
+    echo "Usage: ./build-rpm <OPTIONS>"
+    echo "Build a Ruby RPM package from its binary tarball (which is produced by ./build-ruby)."
     echo
     echo "Required options:"
     echo "  -b PATH     Path to Ruby binary tarball (as built by ./build-ruby)"
     echo "  -o PATH     Path to output package file"
-    echo "  -d DISTRO   Name of distribution for which package is intended (e.g. debian-9)"
+    echo "  -d DISTRO   Name of distribution for which package is intended (e.g. centos7)"
     echo
     echo "Optional options:"
     echo "  -r REVISION Package revision number (default: $REVISION)"
@@ -85,16 +85,16 @@ else
     TTY_ARGS=()
 fi
 
-IMAGE_VERSION=$(read_single_value_file "$SELFDIR/environments/deb-utility/image_tag")
+IMAGE_VERSION=$(read_single_value_file "$SELFDIR/environments/rpm-utility/image_tag")
 create_file_if_missing "$OUTPUT_PATH"
 
 echo '--- Entering Docker container ---'
 verbose_exec docker run --rm --init "${TTY_ARGS[@]}" \
     -v "$SELFDIR:/system:ro" \
     -v "$BINARY_TARBALL_PATH:/input/ruby-bin.tar.gz:ro" \
-    -v "$OUTPUT_PATH:/output/ruby.deb" \
+    -v "$OUTPUT_PATH:/output/ruby.rpm" \
     -e "REVISION=$REVISION" \
     -e "DISTRO=$DISTRO" \
     --user "$(id -u):$(id -g)" \
     "fullstaq/ruby-build-env-utility:$IMAGE_VERSION" \
-    /system/container-entrypoints/build-deb
+    /system/container-entrypoints/build-rpm

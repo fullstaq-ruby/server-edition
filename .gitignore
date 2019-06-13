@@ -2,5 +2,6 @@
 *.tar.gz
 *.tar.bz2
 *.deb
+*.rpm
 /cache
 /my-*

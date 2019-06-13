@@ -93,7 +93,7 @@ fi
 
 function list_environment_names()
 {
-    ls -1 "$1" | sort | xargs echo
+    ls -1 "$1" | grep -v '^utility$' | sort | xargs echo
 }
 
 function create_file_if_missing()

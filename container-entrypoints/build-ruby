@@ -83,16 +83,18 @@ run cp "$JEMALLOC_DIR"/lib/libjemalloc* "$DESTDIR/$INSTALL_PREFIX"/lib/
 echo
 
 
-header "Autodetecting package dependencies..."
-ABI_VERSION=$(ls "$DESTDIR/$INSTALL_PREFIX/lib/ruby/site_ruby")
-PLATFORM_NAME=$(ls "$DESTDIR/$INSTALL_PREFIX/lib/ruby/vendor_ruby/$ABI_VERSION")
-export LD_LIBRARY_PATH="$DESTDIR/$INSTALL_PREFIX/lib"
-export RUBYPATH="$DESTDIR/$INSTALL_PREFIX/bin"
-export RUBYLIB="$DESTDIR/$INSTALL_PREFIX/lib/ruby/$ABI_VERSION:$DESTDIR/$INSTALL_PREFIX/lib/ruby/$ABI_VERSION/$PLATFORM_NAME"
+if [[ -e /etc/debian_version ]]; then
+    header "Autodetecting package dependencies..."
+    ABI_VERSION=$(ls "$DESTDIR/$INSTALL_PREFIX/lib/ruby/site_ruby")
+    PLATFORM_NAME=$(ls "$DESTDIR/$INSTALL_PREFIX/lib/ruby/vendor_ruby/$ABI_VERSION")
+    export LD_LIBRARY_PATH="$DESTDIR/$INSTALL_PREFIX/lib"
+    export RUBYPATH="$DESTDIR/$INSTALL_PREFIX/bin"
+    export RUBYLIB="$DESTDIR/$INSTALL_PREFIX/lib/ruby/$ABI_VERSION:$DESTDIR/$INSTALL_PREFIX/lib/ruby/$ABI_VERSION/$PLATFORM_NAME"
 
-echo "+ $RUBYPATH/ruby /system/scripts/autodetect-shlib-dependencies $DESTDIR | tee $DESTDIR/shlib-deps.txt"
-"$RUBYPATH/ruby" /system/scripts/autodetect-shlib-dependencies "$DESTDIR" | tee "$DESTDIR/shlib-deps.txt"
-echo
+    echo "+ $RUBYPATH/ruby /system/scripts/autodetect-shlib-dependencies $DESTDIR | tee $DESTDIR/shlib-deps.txt"
+    "$RUBYPATH/ruby" /system/scripts/autodetect-shlib-dependencies "$DESTDIR" | tee "$DESTDIR/shlib-deps.txt"
+    echo
+fi
 
 
 header "Packaging up..."

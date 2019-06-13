@@ -1,0 +1,70 @@
+#!/bin/bash
+set -e
+
+SELFDIR=$(dirname "$0")
+SELFDIR=$(cd "$SELFDIR" && pwd)
+# shellcheck source=lib/library.sh
+source "$SELFDIR/../lib/library.sh"
+
+WORK_DIR=/home/utility/work
+INPUT_PATH=/input/ruby-bin.tar.gz
+OUTPUT_PATH=/output/ruby.rpm
+
+require_container_mount "$INPUT_PATH"
+require_container_mount "$OUTPUT_PATH"
+require_container_envvar REVISION
+require_container_envvar DISTRO
+
+
+header "Extracting binaries..."
+run mkdir "$WORK_DIR"
+run tar -xzf "$INPUT_PATH" -C "$WORK_DIR"
+echo "+ cd $WORK_DIR"
+cd "$WORK_DIR"
+echo
+
+
+header "Autodetecting dependencies..."
+
+DEP_BLACKLIST='libruby|libjemalloc|ld-linux'
+
+function filter_real_executables()
+{
+    while read -r F; do
+        if file "$F" | grep -q ' ELF '; then
+            echo "$F"
+        fi
+    done
+}
+
+set -o pipefail
+echo "+ find . -name '*.so' -print0 | xargs -0 objdump -p > /tmp/binaries.txt"
+find . -name '*.so' -print0 | xargs -0 objdump -p > /tmp/binaries.txt
+echo "+ find . -executable -type f | filter_real_executables | xargs -0 objdump -p >> /tmp/binaries.txt"
+find . -executable -type f | filter_real_executables | xargs objdump -p >> /tmp/binaries.txt
+echo "+ grep -vE 'libruby|libjemalloc' < /tmp/binaries.txt | grep NEEDED | sort -u | awk '{ print \$2 }"
+grep -vE "$DEP_BLACKLIST" < /tmp/binaries.txt | grep NEEDED | sort -u | awk '{ print $2 "()(64bit)" }' > /tmp/deps.txt
+echo "+ Reading /tmp/deps.txt"
+DEPS=$(cat /tmp/deps.txt | xargs echo)
+
+
+header "Building package..."
+echo "+ export BUNDLE_GEMFILE=/home/utility/Gemfile"
+export BUNDLE_GEMFILE=/home/utility/Gemfile
+VERSION=$(ls usr/lib/fullstaq-ruby/versions)
+
+set -x
+bundle exec fpm -s dir -t rpm -f --log info -C "$WORK_DIR" \
+	--name "fullstaq-ruby-$VERSION" \
+    --version "rev$REVISION" \
+    --iteration "$DISTRO" \
+    --license MIT \
+    --vendor Fullstaq \
+    --maintainer "Fullstaq <info@fullstaq.com>" \
+    --description "Fullstaq Ruby $VERSION" \
+    --url "https://github.com/fullstaq-labs/fullstaq-ruby-server-edition" \
+    --provides fullstaq-ruby \
+    --depends "$DEPS" \
+    usr
+set +x
+run cp *.rpm "$OUTPUT_PATH"

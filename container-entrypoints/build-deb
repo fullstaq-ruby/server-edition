@@ -12,6 +12,8 @@ OUTPUT_PATH=/output/ruby.deb
 
 require_container_mount "$INPUT_PATH"
 require_container_mount "$OUTPUT_PATH"
+require_container_envvar REVISION
+require_container_envvar DISTRO
 
 
 header "Extracting binaries..."
@@ -24,10 +26,22 @@ echo
 header "Building package..."
 echo "+ export BUNDLE_GEMFILE=/home/utility/Gemfile"
 export BUNDLE_GEMFILE=/home/utility/Gemfile
-run bundle exec fpm -s dir -t deb -f \
-	-C "$WORK_DIR" \
-	-n ruby \
-	-p ruby.deb \
-	-d "$(cat shlib-deps.txt)" \
-	usr
-run cp ruby.deb "$OUTPUT_PATH"
+DEPS=$(cat shlib-deps.txt)
+VERSION=$(ls usr/lib/fullstaq-ruby/versions)
+
+set -x
+bundle exec fpm -s dir -t deb -f --log info -C "$WORK_DIR" \
+	--name "fullstaq-ruby-$VERSION" \
+    --version "rev$REVISION" \
+    --iteration "$DISTRO" \
+    --license MIT \
+    --vendor Fullstaq \
+    --maintainer "Fullstaq <info@fullstaq.com>" \
+    --description "Fullstaq Ruby $VERSION" \
+    --url "https://github.com/fullstaq-labs/fullstaq-ruby-server-edition" \
+	--depends "$DEPS" \
+    --provides fullstaq-ruby \
+    --deb-dist "$DISTRO" \
+    usr
+set +x
+run cp *.deb "$OUTPUT_PATH"
