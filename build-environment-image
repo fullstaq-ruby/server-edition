@@ -58,13 +58,11 @@ parse_options "$@"
 
 NAME="$1"
 IMAGE_NAME=$(printf "$FORMAT" "$NAME")
-IMAGE_VERSION=$(read_single_value_file "environments/$NAME/image_tag")
+IMAGE_VERSION=$(read_single_value_file "$SELFDIR/environments/$NAME/image_tag")
 
-if [[ ! -e "environments/$NAME" ]]; then
+if [[ ! -e "$SELFDIR/environments/$NAME" ]]; then
 	echo "ERROR: $SELFDIR/environments/$NAME does not exist." >&2
 	exit 1
 fi
 
-echo "+ cd $SELFDIR"
-cd "$SELFDIR"
-run docker build --pull -t "$IMAGE_NAME:$IMAGE_VERSION" "environments/$NAME"
+run docker build --pull -t "$IMAGE_NAME:$IMAGE_VERSION" "$SELFDIR/environments/$NAME"
