@@ -1,0 +1,122 @@
+#!/bin/bash
+set -e
+
+SELFDIR=$(dirname "$0")
+SELFDIR=$(cd "$SELFDIR" && pwd)
+# shellcheck source=lib/library.sh
+source "$SELFDIR/lib/library.sh"
+
+RUBY_DEB_PATH=
+RBENV_DEB_PATH=
+IMAGE=
+DEBUG_ON_FAIL=false
+
+function usage()
+{
+    echo "Usage: ./test-debs <OPTIONS>"
+    echo "Test built Debian packages."
+    echo
+    echo "Required options:"
+    echo "  -r PATH     Path to Ruby DEB package"
+    echo "  -b PATH     Path to Rbenv DEB package"
+    echo "  -i IMAGE    Image name to run test in (e.g. ubuntu:18.04)"
+    echo
+    echo "Optional options:"
+    echo "  -D          Open a debug shell on failure"
+    echo "  -h          Show usage"
+}
+
+function parse_options()
+{
+    local OPTIND=1
+    local ORIG_ARGV
+    local opt
+    while getopts "r:b:i:Dh" opt; do
+        case "$opt" in
+        r)
+            RUBY_DEB_PATH=$(absolute_path "$OPTARG")
+            ;;
+        b)
+            RBENV_DEB_PATH=$(absolute_path "$OPTARG")
+            ;;
+        i)
+            IMAGE="$OPTARG"
+            ;;
+        D)
+            DEBUG_ON_FAIL=true
+            ;;
+        h)
+            usage
+            exit
+            ;;
+        *)
+            return 1
+            ;;
+        esac
+    done
+
+    (( OPTIND -= 1 )) || true
+    shift $OPTIND || true
+    ORIG_ARGV=("$@")
+
+    if [[ "$RUBY_DEB_PATH" = "" ]]; then
+        echo 'ERROR: please specify a Ruby DEB package path with -r.' >&2
+        exit 1
+    fi
+    if [[ ! -e "$RUBY_DEB_PATH" ]]; then
+        echo "ERROR: $RUBY_DEB_PATH does not exist." >&2
+        exit 1
+    fi
+    if [[ "$RBENV_DEB_PATH" = "" ]]; then
+        echo 'ERROR: please specify an Rbenv DEB package path with -b.' >&2
+        exit 1
+    fi
+    if [[ ! -e "$RBENV_DEB_PATH" ]]; then
+        echo "ERROR: $RBENV_DEB_PATH does not exist." >&2
+        exit 1
+    fi
+    if [[ "$IMAGE" = "" ]]; then
+        echo 'ERROR: please specify an image name with -i.' >&2
+        exit 1
+    fi
+}
+
+parse_options "$@"
+
+if tty -s; then
+    TTY_ARGS=(-t -i)
+else
+    TTY_ARGS=()
+fi
+
+UTILITY_IMAGE_VERSION=$(read_single_value_file "$SELFDIR/environments/utility/image_tag")
+RUBY_PACKAGE_VERSION=$(basename "$RUBY_DEB_PATH" | sed 's/_.*//; s/.*-//')
+
+TEMP_DIR=$(mktemp -d /tmp/test.XXXXXX)
+function _cleanup()
+{
+    rm -rf "$TEMP_DIR"
+}
+mkdir -p "$TEMP_DIR/repo"
+
+echo '--- Entering preparation Docker container ---'
+verbose_run docker run --rm --init "${TTY_ARGS[@]}" \
+    -v "$SELFDIR:/system:ro" \
+    -v "$RUBY_DEB_PATH:/input/fullstaq-ruby.deb:ro" \
+    -v "$RBENV_DEB_PATH:/input/fullstaq-rbenv.deb:ro" \
+    -v "$TEMP_DIR/repo:/output" \
+    --user "$(id -u):$(id -g)" \
+    "fullstaq/ruby-build-env-utility:$UTILITY_IMAGE_VERSION" \
+    /system/container-entrypoints/test-debs-prepare
+echo
+
+
+echo '--- Entering main Docker container ---'
+verbose_run docker run --rm --init "${TTY_ARGS[@]}" \
+    -v "$SELFDIR:/system:ro" \
+    -v "$TEMP_DIR/repo:/input/repo:ro" \
+    -e "RUBY_PACKAGE_VERSION=$RUBY_PACKAGE_VERSION" \
+    -e "DEBUG_ON_FAIL=$DEBUG_ON_FAIL" \
+    --user root \
+    --entrypoint /system/container-entrypoints/test-debs \
+    "$IMAGE"

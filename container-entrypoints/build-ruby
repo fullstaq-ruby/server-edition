@@ -78,14 +78,14 @@ run rm -rf "$DESTDIR/$INSTALL_PREFIX/share/man"
 run mkdir -p "$DESTDIR/usr/lib/rbenv/versions"
 run ln -s "$INSTALL_PREFIX" "$DESTDIR/usr/lib/rbenv/versions/$VERSION"
 
-run cp -R "$JEMALLOC_DIR"/include/jemalloc "$DESTDIR/$INSTALL_PREFIX"/include/
+ABI_VERSION=$(ls "$DESTDIR/$INSTALL_PREFIX/lib/ruby/site_ruby")
+run cp -R "$JEMALLOC_DIR"/include/jemalloc "$DESTDIR/$INSTALL_PREFIX/include/ruby-$ABI_VERSION"/
 run cp "$JEMALLOC_DIR"/lib/libjemalloc* "$DESTDIR/$INSTALL_PREFIX"/lib/
 echo
 
 
 if [[ -e /etc/debian_version ]]; then
     header "Autodetecting package dependencies..."
-    ABI_VERSION=$(ls "$DESTDIR/$INSTALL_PREFIX/lib/ruby/site_ruby")
     PLATFORM_NAME=$(ls "$DESTDIR/$INSTALL_PREFIX/lib/ruby/vendor_ruby/$ABI_VERSION")
     export LD_LIBRARY_PATH="$DESTDIR/$INSTALL_PREFIX/lib"
     export RUBYPATH="$DESTDIR/$INSTALL_PREFIX/bin"

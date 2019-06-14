@@ -4,4 +4,5 @@
 *.deb
 *.rpm
 /cache
+/tmp
 /my-*

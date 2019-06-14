@@ -1,0 +1,21 @@
+#!/bin/bash
+set -e
+
+SELFDIR=$(dirname "$0")
+SELFDIR=$(cd "$SELFDIR" && pwd)
+# shellcheck source=lib/library.sh
+source "$SELFDIR/../lib/library.sh"
+
+RUBY_DEB_PATH=/input/fullstaq-ruby.deb
+RBENV_DEB_PATH=/input/fullstaq-rbenv.deb
+OUTPUT_PATH=/output
+
+require_container_mount "$RUBY_DEB_PATH"
+require_container_mount "$RBENV_DEB_PATH"
+require_container_mount "$OUTPUT_PATH"
+
+
+run aptly repo create test
+run aptly repo add test "$RUBY_DEB_PATH" "$RBENV_DEB_PATH"
+run aptly publish repo -skip-signing -distribution=test test
+run cp -dpR ~/.aptly/public/* "$OUTPUT_PATH/"

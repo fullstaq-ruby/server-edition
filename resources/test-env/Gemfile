@@ -1,0 +1,9 @@
+# This Gemfile will be installed into the test container
+# when running a test suite.
+source 'https://rubygems.org'
+
+# Test engine to use
+gem 'rspec'
+
+# Tests whether installing native extensions works
+gem 'bcrypt'

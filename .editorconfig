@@ -23,10 +23,14 @@ indent_size = 2
 indent_style = space
 indent_size = 4
 
-[{build-jemalloc,build-ruby,build-ruby-deb,build-rbenv-deb,build-ruby-rpm,build-rbenv-rpm}]
+[{build-jemalloc,build-ruby,build-ruby-deb,build-rbenv-deb,build-ruby-rpm,build-rbenv-rpm,test-debs,test-rpms}]
 indent_style = space
 indent_size = 4
 
 [scripts/autodetect-shlib-dependencies]
+indent_style = space
+indent_size = 2
+
+[aptly.conf]
 indent_style = space
 indent_size = 2

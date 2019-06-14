@@ -49,7 +49,7 @@ _Fullstaq Ruby is a sister project of [Rubywhale](https://gist.github.com/FooBar
    - [Why does Fullstaq Ruby integrate with Rbenv?](#why-does-fullstaq-ruby-integrate-with-rbenv)
    - [I do not need multiple Rubies (and have no need for Rbenv), is Fullstaq Ruby suitable for me?](#i-do-not-need-multiple-rubies-and-have-no-need-for-rbenv-is-fullstaq-ruby-suitable-for-me)
    - [Which variant should I pick?](#which-variant-should-i-pick)
- 
+
 
 ---
 
@@ -526,7 +526,13 @@ But for convenience, it's better to add `/usr/lib/fullstaq-ruby/versions/<VERSIO
 
 The recommended way to use Fullstaq Ruby is through the Rbenv integration. You should [learn Rbenv](https://github.com/rbenv/rbenv#readme) if you are not familiar with it. Here is a handy [cheat sheet](https://devhints.io/rbenv).
 
-Suppose you installed Ruby 2.6 (normal variant). Just activate it using Rbenv:
+Suppose you installed Ruby 2.6 (normal variant). You can run that Ruby by setting `RBENV_VERSION` and prefixing yours commands with `rbenv exec`:
+
+    $ export RBENV_VERSION=2.6
+    $ rbenv exec ruby --version
+    ruby 2.6.3
+
+Or, if you've activated the Rbenv shell integration, just running `ruby` would also work, provided that you've activated a certain version:
 
     $ rbenv local 2.6
     $ ruby --version
@@ -572,7 +578,7 @@ WantedBy=multi-user.target
 Make sure that your `ExecStart` command is prefixed by a call to `/full-path-to-ruby -S`, like this:
 
 ~~~ini
-ExecStart=/usr/lib/fullstaq-ruby/versions/2.6.2-jemalloc/bin/ruby -S bundle exec puma -C puma.rb
+ExecStart=/usr/lib/fullstaq-ruby/versions/2.6.3-jemalloc/bin/ruby -S bundle exec puma -C puma.rb
 ~~~
 
 > Don't forget the `-S`!
@@ -587,11 +593,11 @@ If you use Capistrano to deploy your app, then you should use the [capistrano-rb
 # Use Ruby 2.6 (latest tiny version), normal variant
 set :rbenv_ruby, '2.6'
 
-# Use Ruby 2.6.2, normal variant
-set :rbenv_ruby, '2.6.2'
+# Use Ruby 2.6.3, normal variant
+set :rbenv_ruby, '2.6.3'
 
-# Use Ruby 2.6.2, jemalloc variant
-set :rbenv_ruby, '2.6.2-jemalloc'
+# Use Ruby 2.6.3, jemalloc variant
+set :rbenv_ruby, '2.6.3-jemalloc'
 ~~~
 
 ## FAQ
