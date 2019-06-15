@@ -1,0 +1,13 @@
+diff --git a/version.h b/version.h
+index df6930e4fb..819a262479 100644
+--- a/version.h
++++ b/version.h
+@@ -65,7 +65,7 @@
+     RUBY_PATCHLEVEL_STR		    \
+     " ("RUBY_RELEASE_DATE	    \
+     RUBY_REVISION_STR") "	    \
+-    "["RUBY_PLATFORM"]"
++    "["RUBY_PLATFORM"] +jemalloc"
+ # define RUBY_COPYRIGHT		    \
+     "ruby - Copyright (C) "	    \
+     RUBY_BIRTH_YEAR_STR"-"   \

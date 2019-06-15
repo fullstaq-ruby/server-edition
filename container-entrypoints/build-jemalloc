@@ -13,6 +13,7 @@ OUTPUT_PATH=/output/jemalloc-bin.tar.gz
 
 require_container_mount "$INPUT_PATH"
 require_container_mount "$OUTPUT_PATH"
+require_container_envvar ENVIRONMENT_NAME
 
 BUILD_CONCURRENCY="${BUILD_CONCURRENCY:-1}"
 
@@ -50,4 +51,6 @@ echo
 
 
 header "Packaging up..."
-run tar -czf "$OUTPUT_PATH" -C "$INSTALL_PREFIX" include lib
+echo "+ echo $ENVIRONMENT_NAME > $INSTALL_PREFIX/ENVIRONMENT"
+echo "$ENVIRONMENT_NAME" > "$INSTALL_PREFIX/ENVIRONMENT"
+run tar -czf "$OUTPUT_PATH" -C "$INSTALL_PREFIX" ENVIRONMENT include lib

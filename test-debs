@@ -9,6 +9,7 @@ source "$SELFDIR/lib/library.sh"
 RUBY_DEB_PATH=
 RBENV_DEB_PATH=
 IMAGE=
+EXPECTED_VARIANT=
 DEBUG_ON_FAIL=false
 
 function usage()
@@ -20,6 +21,7 @@ function usage()
     echo "  -r PATH     Path to Ruby DEB package"
     echo "  -b PATH     Path to Rbenv DEB package"
     echo "  -i IMAGE    Image name to run test in (e.g. ubuntu:18.04)"
+    echo "  -v VARIANT  Expected variant name (one of: normal, jemalloc, malloctrim)"
     echo
     echo "Optional options:"
     echo "  -D          Open a debug shell on failure"
@@ -31,7 +33,7 @@ function parse_options()
     local OPTIND=1
     local ORIG_ARGV
     local opt
-    while getopts "r:b:i:Dh" opt; do
+    while getopts "r:b:i:v:Dh" opt; do
         case "$opt" in
         r)
             RUBY_DEB_PATH=$(absolute_path "$OPTARG")
@@ -41,6 +43,9 @@ function parse_options()
             ;;
         i)
             IMAGE="$OPTARG"
+            ;;
+        v)
+            EXPECTED_VARIANT="$OPTARG"
             ;;
         D)
             DEBUG_ON_FAIL=true
@@ -79,6 +84,10 @@ function parse_options()
         echo 'ERROR: please specify an image name with -i.' >&2
         exit 1
     fi
+    if [[ "$EXPECTED_VARIANT" != normal && "$EXPECTED_VARIANT" != jemalloc && "$EXPECTED_VARIANT" != malloctrim ]]; then
+        echo 'ERROR: please specify a valid variant name with -v.' >&2
+        exit 1
+    fi
 }
 
 parse_options "$@"
@@ -90,7 +99,7 @@ else
 fi
 
 UTILITY_IMAGE_VERSION=$(read_single_value_file "$SELFDIR/environments/utility/image_tag")
-RUBY_PACKAGE_VERSION=$(basename "$RUBY_DEB_PATH" | sed 's/_.*//; s/.*-//')
+RUBY_PACKAGE_VERSION=$(basename "$RUBY_DEB_PATH" | sed -E 's/(-[a-zA-Z]+)?_.*//; s/.*-//')
 
 TEMP_DIR=$(mktemp -d /tmp/test.XXXXXX)
 function _cleanup()
@@ -102,8 +111,8 @@ mkdir -p "$TEMP_DIR/repo"
 echo '--- Entering preparation Docker container ---'
 verbose_run docker run --rm --init "${TTY_ARGS[@]}" \
     -v "$SELFDIR:/system:ro" \
-    -v "$RUBY_DEB_PATH:/input/fullstaq-ruby.deb:ro" \
-    -v "$RBENV_DEB_PATH:/input/fullstaq-rbenv.deb:ro" \
+    -v "$RUBY_DEB_PATH:/input/$(basename "$RUBY_DEB_PATH"):ro" \
+    -v "$RBENV_DEB_PATH:/input/$(basename "$RBENV_DEB_PATH"):ro" \
     -v "$TEMP_DIR/repo:/output" \
     --user "$(id -u):$(id -g)" \
     "fullstaq/ruby-build-env-utility:$UTILITY_IMAGE_VERSION" \
@@ -116,6 +125,7 @@ verbose_run docker run --rm --init "${TTY_ARGS[@]}" \
     -v "$SELFDIR:/system:ro" \
     -v "$TEMP_DIR/repo:/input/repo:ro" \
     -e "RUBY_PACKAGE_VERSION=$RUBY_PACKAGE_VERSION" \
+    -e "EXPECTED_VARIANT=$EXPECTED_VARIANT" \
     -e "DEBUG_ON_FAIL=$DEBUG_ON_FAIL" \
     --user root \
     --entrypoint /system/container-entrypoints/test-debs \

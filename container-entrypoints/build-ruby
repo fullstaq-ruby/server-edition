@@ -6,26 +6,35 @@ SELFDIR=$(cd "$SELFDIR" && pwd)
 # shellcheck source=lib/library.sh
 source "$SELFDIR/../lib/library.sh"
 
-JEMALLOC_DIR=/home/builder/jemalloc
 RUBY_SRC_CONTAINER_DIR=/home/builder/ruby-src
 DESTDIR=/home/builder/ruby-inst
 INPUT_PATH=/input/ruby-src.tar.gz
-JEMALLOC_BIN_TARBALL_PATH=/input/jemalloc-bin.tar.gz
 OUTPUT_PATH=/output/ruby-bin.tar.gz
 
 require_container_mount "$INPUT_PATH"
-require_container_mount "$JEMALLOC_BIN_TARBALL_PATH"
 require_container_mount "$OUTPUT_PATH"
-require_container_envvar VERSION
+require_container_envvar PACKAGE_VERSION
+require_container_envvar VARIANT
+require_container_envvar ENVIRONMENT_NAME
+if [[ "$VARIANT" != normal ]]; then
+    VARIANT_SUFFIX="-$VARIANT"
+fi
+if [[ "$VARIANT" = jemalloc ]]; then
+    JEMALLOC_BIN_TARBALL_PATH=/input/jemalloc-bin.tar.gz
+    require_container_mount "$JEMALLOC_BIN_TARBALL_PATH"
+fi
 
 BUILD_CONCURRENCY="${BUILD_CONCURRENCY:-4}"
-INSTALL_PREFIX="/usr/lib/fullstaq-ruby/versions/$VERSION"
+INSTALL_PREFIX="/usr/lib/fullstaq-ruby/versions/$PACKAGE_VERSION$VARIANT_SUFFIX"
 
 
-export C_INCLUDE_PATH="$JEMALLOC_DIR/include"
-export CPLUS_INCLUDE_PATH="$JEMALLOC_DIR/include"
-export LIBRARY_PATH="$JEMALLOC_DIR/lib"
-export LD_LIBRARY_PATH="$JEMALLOC_DIR/lib"
+if [[ "$VARIANT" = jemalloc ]]; then
+    JEMALLOC_DIR=/home/builder/jemalloc
+    export C_INCLUDE_PATH="$JEMALLOC_DIR/include"
+    export CPLUS_INCLUDE_PATH="$JEMALLOC_DIR/include"
+    export LIBRARY_PATH="$JEMALLOC_DIR/lib"
+    export LD_LIBRARY_PATH="$JEMALLOC_DIR/lib"
+fi
 export LD_RUN_PATH="$INSTALL_PREFIX/lib"
 
 
@@ -42,10 +51,18 @@ fi
 echo
 
 
-header "Extracting Jemalloc binaries..."
-run mkdir "$JEMALLOC_DIR"
-run tar -xzf "$JEMALLOC_BIN_TARBALL_PATH" -C "$JEMALLOC_DIR"
-echo
+if [[ "$VARIANT" = jemalloc ]]; then
+    header "Extracting Jemalloc binaries..."
+    run mkdir "$JEMALLOC_DIR"
+    run tar -xzf "$JEMALLOC_BIN_TARBALL_PATH" -C "$JEMALLOC_DIR"
+    JEMALLOC_ENVIRONMENT_NAME=$(cat "$JEMALLOC_DIR/ENVIRONMENT")
+    echo "+ Detected build environment in which Jemalloc was built: $JEMALLOC_ENVIRONMENT_NAME"
+    if [[ "$JEMALLOC_ENVIRONMENT_NAME" != "$ENVIRONMENT_NAME" ]]; then
+        echo "ERROR: we are currently in environment $ENVIRONMENT_NAME, but Jemalloc was built in another environment." >&2
+        exit 1
+    fi
+    echo
+fi
 
 
 header "Extracting Ruby sources..."
@@ -59,9 +76,27 @@ echo
 
 
 header "Configuring and compiling Ruby..."
+if [[ "$VARIANT" = jemalloc ]]; then
+    EXTRA_CONFIGURE_ARGS=(--with-jemalloc)
+    if [[ "$PACKAGE_VERSION" =~ ^2\.5 ]]; then
+        run patch -p1 -ti /system/resources/ruby_25_jemalloc.patch
+    else
+        run patch -p1 -ti /system/resources/ruby_26_jemalloc.patch
+    fi
+elif [[ "$VARIANT" = malloctrim ]]; then
+    EXTRA_CONFIGURE_ARGS=()
+    run patch -p1 -ti /system/resources/ruby_malloctrim.patch
+    if [[ "$PACKAGE_VERSION" =~ ^2\.5 ]]; then
+        run patch -p1 -ti /system/resources/ruby_25_malloctrim.patch
+    else
+        run patch -p1 -ti /system/resources/ruby_26_malloctrim.patch
+    fi
+else
+    EXTRA_CONFIGURE_ARGS=()
+fi
 run ./configure --prefix="$INSTALL_PREFIX" \
     --enable-shared --disable-install-static-library \
-    --with-jemalloc --disable-install-rdoc
+    --disable-install-rdoc "${EXTRA_CONFIGURE_ARGS[@]}"
 run make "-j$BUILD_CONCURRENCY"
 echo
 
@@ -76,11 +111,15 @@ find "$DESTDIR/$INSTALL_PREFIX" -name '*.so' -print0 | xargs -0 strip --strip-de
 
 run rm -rf "$DESTDIR/$INSTALL_PREFIX/share/man"
 run mkdir -p "$DESTDIR/usr/lib/rbenv/versions"
-run ln -s "$INSTALL_PREFIX" "$DESTDIR/usr/lib/rbenv/versions/$VERSION"
+run ln -s "$INSTALL_PREFIX" "$DESTDIR/usr/lib/rbenv/versions/$PACKAGE_VERSION$VARIANT_SUFFIX"
 
 ABI_VERSION=$(ls "$DESTDIR/$INSTALL_PREFIX/lib/ruby/site_ruby")
-run cp -R "$JEMALLOC_DIR"/include/jemalloc "$DESTDIR/$INSTALL_PREFIX/include/ruby-$ABI_VERSION"/
-run cp "$JEMALLOC_DIR"/lib/libjemalloc* "$DESTDIR/$INSTALL_PREFIX"/lib/
+
+if [[ "$VARIANT" = jemalloc ]]; then
+    run cp -R "$JEMALLOC_DIR"/include/jemalloc "$DESTDIR/$INSTALL_PREFIX/include/ruby-$ABI_VERSION"/
+    run cp "$JEMALLOC_DIR"/lib/libjemalloc* "$DESTDIR/$INSTALL_PREFIX"/lib/
+fi
+
 echo
 
 
@@ -91,11 +130,15 @@ if [[ -e /etc/debian_version ]]; then
     export RUBYPATH="$DESTDIR/$INSTALL_PREFIX/bin"
     export RUBYLIB="$DESTDIR/$INSTALL_PREFIX/lib/ruby/$ABI_VERSION:$DESTDIR/$INSTALL_PREFIX/lib/ruby/$ABI_VERSION/$PLATFORM_NAME"
 
-    echo "+ $RUBYPATH/ruby /system/scripts/autodetect-shlib-dependencies $DESTDIR | tee $DESTDIR/shlib-deps.txt"
-    "$RUBYPATH/ruby" /system/scripts/autodetect-shlib-dependencies "$DESTDIR" | tee "$DESTDIR/shlib-deps.txt"
+    echo "+ $RUBYPATH/ruby /system/internal-scripts/autodetect-shlib-dependencies $DESTDIR | tee $DESTDIR/shlib-deps.txt"
+    "$RUBYPATH/ruby" /system/internal-scripts/autodetect-shlib-dependencies "$DESTDIR" | tee "$DESTDIR/shlib-deps.txt"
     echo
 fi
 
 
 header "Packaging up..."
+echo "+ echo $VARIANT > $DESTDIR/VARIANT"
+echo "$VARIANT" > "$DESTDIR/VARIANT"
+echo "+ echo $ENVIRONMENT_NAME > $DESTDIR/ENVIRONMENT"
+echo "$ENVIRONMENT_NAME" > "$DESTDIR/ENVIRONMENT"
 run tar -czf "$OUTPUT_PATH" -C "$DESTDIR" .

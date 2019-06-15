@@ -9,6 +9,7 @@ source "$SELFDIR/lib/library.sh"
 RUBY_RPM_PATH=
 RBENV_RPM_PATH=
 IMAGE=
+EXPECTED_VARIANT=
 DEBUG_ON_FAIL=false
 
 function usage()
@@ -20,6 +21,7 @@ function usage()
     echo "  -r PATH     Path to Ruby RPM package"
     echo "  -b PATH     Path to Rbenv RPM package"
     echo "  -i IMAGE    Image name to run test in (e.g. centos:7)"
+    echo "  -v VARIANT  Expected variant name (one of: normal, jemalloc, malloctrim)"
     echo
     echo "Optional options:"
     echo "  -D          Open a debug shell on failure"
@@ -31,7 +33,7 @@ function parse_options()
     local OPTIND=1
     local ORIG_ARGV
     local opt
-    while getopts "r:b:i:Dh" opt; do
+    while getopts "r:b:i:v:Dh" opt; do
         case "$opt" in
         r)
             RUBY_RPM_PATH=$(absolute_path "$OPTARG")
@@ -41,6 +43,9 @@ function parse_options()
             ;;
         i)
             IMAGE="$OPTARG"
+            ;;
+        v)
+            EXPECTED_VARIANT="$OPTARG"
             ;;
         D)
             DEBUG_ON_FAIL=true
@@ -77,6 +82,10 @@ function parse_options()
     fi
     if [[ "$IMAGE" = "" ]]; then
         echo 'ERROR: please specify an image name with -i.' >&2
+        exit 1
+    fi
+    if [[ "$EXPECTED_VARIANT" != normal && "$EXPECTED_VARIANT" != jemalloc && "$EXPECTED_VARIANT" != malloctrim ]]; then
+        echo 'ERROR: please specify a valid variant name with -v.' >&2
         exit 1
     fi
 }
@@ -116,6 +125,7 @@ verbose_run docker run --rm --init "${TTY_ARGS[@]}" \
     -v "$SELFDIR:/system:ro" \
     -v "$TEMP_DIR/repo:/input/repo:ro" \
     -e "RUBY_PACKAGE_VERSION=$RUBY_PACKAGE_VERSION" \
+    -e "EXPECTED_VARIANT=$EXPECTED_VARIANT" \
     -e "DEBUG_ON_FAIL=$DEBUG_ON_FAIL" \
     --user root \
     --entrypoint /system/container-entrypoints/test-rpms \

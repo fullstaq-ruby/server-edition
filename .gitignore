@@ -1,8 +1,11 @@
 .DS_Store
+.bundle
 *.tar.gz
 *.tar.bz2
 *.deb
 *.rpm
+/config-dev.yml
 /cache
-/tmp
+/output
+/logs
 /my-*

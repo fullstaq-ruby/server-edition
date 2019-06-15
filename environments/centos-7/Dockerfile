@@ -7,8 +7,9 @@ FROM centos:7
 RUN set -x && \
     yum install -y epel-release && \
     yum install -y --enablerepo epel \
-        gcc gcc-c++ make bzip2 curl openssl-devel libyaml-devel libffi-devel \
-        readline-devel zlib-devel gdbm-devel ncurses-devel ccache && \
+        gcc gcc-c++ make patch bzip2 curl autoconf automake \
+        openssl-devel libyaml-devel libffi-devel readline-devel zlib-devel \
+        gdbm-devel ncurses-devel ccache && \
     \
     curl -sSLo /sbin/activatecontaineruid.gz https://github.com/fullstaq-labs/activatecontaineruid/releases/download/v0.9.1/activatecontaineruid-0.9.1-x86_64-linux.gz && \
     gunzip /sbin/activatecontaineruid.gz && \

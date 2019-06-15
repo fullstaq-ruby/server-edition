@@ -8,9 +8,10 @@ source "$SELFDIR/lib/library.sh"
 
 ENVIRONMENT_NAME=
 SOURCE_PATH=
-VERSION=
-JEMALLOC_BIN_PATH=
+PACKAGE_VERSION=
 OUTPUT_PATH=
+VARIANT=normal
+JEMALLOC_BIN_PATH=
 BUILD_CONCURRENCY=1
 CACHE_PATH=
 
@@ -23,8 +24,11 @@ function usage()
     echo "  -n NAME     Name of environment to build in (one of: $(list_environment_names "$SELFDIR/environments"))"
     echo "  -s PATH     Path to Ruby source tarball"
     echo "  -v VERSION  Package version number"
-    echo "  -m PATH     Path to Jemalloc binary tarball (as built by ./build-jemalloc)"
     echo "  -o PATH     Path to output tarball"
+    echo
+    echo "Build variant (required):"
+    echo "  -m PATH     Build with Jemalloc support, using this Jemalloc binary tarball (as built by ./build-jemalloc)"
+    echo "  -t          Build with malloc_trim support"
     echo
     echo "Optional options:"
     echo "  -j NUM      Build concurrency (default: $BUILD_CONCURRENCY)"
@@ -37,7 +41,7 @@ function parse_options()
     local OPTIND=1
     local ORIG_ARGV
     local opt
-    while getopts "n:s:v:m:o:j:c:h" opt; do
+    while getopts "n:s:v:o:m:tj:c:h" opt; do
         case "$opt" in
         n)
             ENVIRONMENT_NAME="$OPTARG"
@@ -46,13 +50,17 @@ function parse_options()
             SOURCE_PATH=$(absolute_path "$OPTARG")
             ;;
         v)
-            VERSION="$OPTARG"
-            ;;
-        m)
-            JEMALLOC_BIN_PATH=$(absolute_path "$OPTARG")
+            PACKAGE_VERSION="$OPTARG"
             ;;
         o)
             OUTPUT_PATH=$(absolute_path "$OPTARG")
+            ;;
+        m)
+            VARIANT=jemalloc
+            JEMALLOC_BIN_PATH=$(absolute_path "$OPTARG")
+            ;;
+        t)
+            VARIANT=malloctrim
             ;;
         j)
             BUILD_CONCURRENCY="$OPTARG"
@@ -86,17 +94,19 @@ function parse_options()
         echo "ERROR: $SOURCE_PATH does not exist." >&2
         exit 1
     fi
-    if [[ "$VERSION" = "" ]]; then
+    if [[ "$PACKAGE_VERSION" = "" ]]; then
         echo 'ERROR: please specify a package version number with -v.' >&2
         exit 1
     fi
-    if [[ "$JEMALLOC_BIN_PATH" = "" ]]; then
-        echo 'ERROR: please specify a Jemalloc binary tarball path with -m.' >&2
-        exit 1
-    fi
-    if [[ ! -e "$JEMALLOC_BIN_PATH" ]]; then
-        echo "ERROR: $JEMALLOC_BIN_PATH does not exist." >&2
-        exit 1
+    if [[ "$VARIANT" = jemalloc ]]; then
+        if [[ "$JEMALLOC_BIN_PATH" = "" ]]; then
+            echo 'ERROR: please specify a Jemalloc binary tarball path with -m.' >&2
+            exit 1
+        fi
+        if [[ "$JEMALLOC_BIN_PATH" != "" && ! -e "$JEMALLOC_BIN_PATH" ]]; then
+            echo "ERROR: $JEMALLOC_BIN_PATH does not exist." >&2
+            exit 1
+        fi
     fi
     if [[ "$OUTPUT_PATH" = "" ]]; then
         echo 'ERROR: please specify an output tarball path with -o.' >&2
@@ -115,10 +125,12 @@ if tty -s; then
 else
     TTY_ARGS=()
 fi
+MOUNT_ARGS=()
+if [[ "$VARIANT" = jemalloc ]]; then
+    MOUNT_ARGS+=(-v "$JEMALLOC_BIN_PATH:/input/jemalloc-bin.tar.gz:ro")
+fi
 if [[ "$CACHE_PATH" != "" ]]; then
-    CACHE_PATH_MOUNT_ARGS=(-v "$CACHE_PATH:/cache:delegated")
-else
-    CACHE_PATH_MOUNT_ARGS=()
+    MOUNT_ARGS+=(-v "$CACHE_PATH:/cache:delegated")
 fi
 
 IMAGE_VERSION=$(read_single_value_file "$SELFDIR/environments/$ENVIRONMENT_NAME/image_tag")
@@ -128,11 +140,12 @@ echo '--- Entering Docker container ---'
 verbose_exec docker run --rm --init "${TTY_ARGS[@]}" \
     -v "$SELFDIR:/system:ro" \
     -v "$SOURCE_PATH:/input/ruby-src.tar.gz:ro" \
-    -v "$JEMALLOC_BIN_PATH:/input/jemalloc-bin.tar.gz:ro" \
     -v "$OUTPUT_PATH:/output/ruby-bin.tar.gz" \
-    "${CACHE_PATH_MOUNT_ARGS[@]}" \
+    "${MOUNT_ARGS[@]}" \
+    -e "VARIANT=$VARIANT" \
     -e "BUILD_CONCURRENCY=$BUILD_CONCURRENCY" \
-    -e "VERSION=$VERSION" \
+    -e "PACKAGE_VERSION=$PACKAGE_VERSION" \
+    -e "ENVIRONMENT_NAME=$ENVIRONMENT_NAME" \
     --user "$(id -u):$(id -g)" \
     "fullstaq/ruby-build-env-$ENVIRONMENT_NAME:$IMAGE_VERSION" \
     /system/container-entrypoints/build-ruby

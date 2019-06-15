@@ -108,6 +108,7 @@ verbose_exec docker run --rm --init "${TTY_ARGS[@]}" \
     -v "$SOURCE_PATH:/input/jemalloc-src.tar.bz2:ro" \
     -v "$OUTPUT_PATH:/output/jemalloc-bin.tar.gz" \
     "${CACHE_PATH_MOUNT_ARGS[@]}" \
+    -e "ENVIRONMENT_NAME=$ENVIRONMENT_NAME" \
     -e "BUILD_CONCURRENCY=$BUILD_CONCURRENCY" \
     --user "$(id -u):$(id -g)" \
     "fullstaq/ruby-build-env-$ENVIRONMENT_NAME:$IMAGE_VERSION" \

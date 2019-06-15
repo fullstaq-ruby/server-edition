@@ -531,12 +531,16 @@ Suppose you installed Ruby 2.6 (normal variant). You can run that Ruby by settin
     $ export RBENV_VERSION=2.6
     $ rbenv exec ruby --version
     ruby 2.6.3
+    $ rbenv exec gem env
+    ...
 
-Or, if you've activated the Rbenv shell integration, just running `ruby` would also work, provided that you've activated a certain version:
+Or, if you've activated the Rbenv shell integration, just running `ruby`, `gem` and various other Ruby would also work, provided that you've activated a certain version and that there's an [Rbenv shim](https://github.com/rbenv/rbenv#understanding-shims) available:
 
     $ rbenv local 2.6
     $ ruby --version
     ruby 2.6.3
+    $ gem env
+    ...
 
 ### Passenger for Nginx/Apache integration
 

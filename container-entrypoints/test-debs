@@ -9,10 +9,11 @@ source "$SELFDIR/../lib/library.sh"
 export REPO_PATH=/input/repo
 
 require_container_mount "$REPO_PATH"
+require_container_envvar EXPECTED_VARIANT
 require_container_envvar RUBY_PACKAGE_VERSION
 require_container_envvar DEBUG_ON_FAIL
 
-if ! /system/scripts/test-debs; then
+if ! /system/internal-scripts/test-debs; then
     echo
     echo '-------------------'
     if $DEBUG_ON_FAIL; then

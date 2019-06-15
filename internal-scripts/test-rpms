@@ -8,18 +8,31 @@ source "$SELFDIR/../lib/library.sh"
 
 
 header "Installing packages"
-echo "+ Create /etc/apt/sources.list.d/local.list"
-echo "deb [allow-insecure=yes] file:$REPO_PATH test main" > /etc/apt/sources.list.d/local.list
-cat /etc/apt/sources.list.d/local.list
-run apt update
-run apt install -y --allow-unauthenticated "fullstaq-ruby-$RUBY_PACKAGE_VERSION" sudo
+if ls -d /input/repo/pool/main/f/*jemalloc 2>/dev/null; then
+    VARIANT=jemalloc
+    VARIANT_VERSION_SUFFIX=-jemalloc
+elif ls -d /input/repo/pool/main/f/*malloctrim 2>/dev/null; then
+    VARIANT=malloctrim
+    VARIANT_VERSION_SUFFIX=-malloctrim
+else
+    VARIANT=normal
+    VARIANT_VERSION_SUFFIX=
+fi
+echo "+ Detected variant: $VARIANT"
+echo "+ Create /etc/yum.repos.d/local.repo"
+cat <<EOF > /etc/yum.repos.d/local.repo
+[local]
+name=local
+baseurl=file:///input/repo
+gpgcheck=0
+EOF
+run yum install -y "fullstaq-ruby-$RUBY_PACKAGE_VERSION" fullstaq-rbenv sudo which
 echo
 
 
 header "Setting up"
-run addgroup --gid 9999 utility
-run adduser --uid 9999 --gid 9999 --disabled-password --gecos Utility utility
-run usermod -L utility
+groupadd --gid 9999 utility
+adduser --uid 9999 --gid 9999 --password '#' utility
 echo "+ Loading Rbenv environment"
 eval "$(rbenv init -)"
 run rbenv global "$RUBY_PACKAGE_VERSION"
@@ -27,7 +40,7 @@ run sudo -u utility -H rbenv global "$RUBY_PACKAGE_VERSION"
 echo
 
 
-header "Basic sanity checks"
+header "Basic checks"
 
 function assert_equals()
 {
@@ -43,25 +56,28 @@ function assert_equals()
     fi
 }
 
+echo -n "Checking whether variant is $EXPECTED_VARIANT... "
+assert_equals "$VARIANT" "$EXPECTED_VARIANT"
+
 echo -n "Checking whether Rbenv is in /usr/bin/rbenv... "
 output=$(which rbenv)
 assert_equals "$output" /usr/bin/rbenv
 
-echo -n "Checking whether Fullstaq Ruby $RUBY_PACKAGE_VERSION is in /usr/lib/fullstaq-ruby/versions/$RUBY_PACKAGE_VERSION... "
-if [[ -e "/usr/lib/fullstaq-ruby/versions/$RUBY_PACKAGE_VERSION/bin/ruby" ]]; then
+echo -n "Checking whether Fullstaq Ruby $RUBY_PACKAGE_VERSION is in /usr/lib/fullstaq-ruby/versions/$RUBY_PACKAGE_VERSION$VARIANT_VERSION_SUFFIX... "
+if [[ -e "/usr/lib/fullstaq-ruby/versions/$RUBY_PACKAGE_VERSION$VARIANT_VERSION_SUFFIX/bin/ruby" ]]; then
     echo yes
 else
     echo no
     exit 1
 fi
 
-echo -n "Checking whether active Ruby for root is /usr/lib/rbenv/versions/$RUBY_PACKAGE_VERSION/bin/ruby... "
+echo -n "Checking whether active Ruby for root is /usr/lib/rbenv/versions/$RUBY_PACKAGE_VERSION$VARIANT_VERSION_SUFFIX/bin/ruby... "
 output=$(rbenv which ruby)
-assert_equals "$output" "/usr/lib/rbenv/versions/$RUBY_PACKAGE_VERSION/bin/ruby"
+assert_equals "$output" "/usr/lib/rbenv/versions/$RUBY_PACKAGE_VERSION$VARIANT_VERSION_SUFFIX/bin/ruby"
 
-echo -n "Checking whether active Ruby for utility is /usr/lib/rbenv/versions/$RUBY_PACKAGE_VERSION/bin/ruby... "
+echo -n "Checking whether active Ruby for utility is /usr/lib/rbenv/versions/$RUBY_PACKAGE_VERSION$VARIANT_VERSION_SUFFIX/bin/ruby... "
 output=$(sudo -u utility -H sh -c 'eval "$(rbenv init -)" && rbenv which ruby')
-assert_equals "$output" "/usr/lib/rbenv/versions/$RUBY_PACKAGE_VERSION/bin/ruby"
+assert_equals "$output" "/usr/lib/rbenv/versions/$RUBY_PACKAGE_VERSION$VARIANT_VERSION_SUFFIX/bin/ruby"
 
 echo -n "Checking whether Ruby works... "
 output=$(ruby -e 'puts "hello world"')
@@ -82,7 +98,7 @@ fi
 
 echo -n "Checking whether gem works... "
 output=$(gem env)
-if [[ "$output" =~ "RUBY VERSION: $RUBY_PACKAGE_VERSION" ]]; then
+if grep -Fq "RUBY VERSION: $RUBY_PACKAGE_VERSION" <<<"$output"; then
     echo yes
 else
     echo no
@@ -93,7 +109,7 @@ echo
 
 
 header "Test installing gems"
-run apt install -y build-essential
+run yum install -y gcc gcc-c++ make
 run gem install bundler -v 1.17.3 --no-document
 run sudo -u utility -H cp /system/resources/test-env/Gemfile* ~utility/
 run sudo -u utility -H env BUNDLE_GEMFILE=/home/utility/Gemfile \

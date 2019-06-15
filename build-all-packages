@@ -1,0 +1,14 @@
+#!/bin/bash
+set -e
+
+SELFDIR=$(dirname "$0")
+cd "$SELFDIR"
+source lib/library.sh
+
+if [[ $# -eq 0 ]]; then
+	ARGS=(test)
+else
+	ARGS=("$@")
+fi
+
+verbose_exec bundle exec drake -f internal-scripts/build-everything.rb _start "${ARGS[@]}"

@@ -1,0 +1,86 @@
+## This is the configuration file for ./build-all-packages
+## and ./publish-all-packages.
+
+## (Required)
+## Where to store output packages. This directory will be automatically
+## created.
+output_dir: ./output
+
+## (Required)
+## Where to store build logs to.
+logs_dir: ./logs
+
+## (Required)
+## Where to store cache files, to speed up future invocations of
+## ./build-all-packages. This directory will be automatically created.
+cache_dir: ./cache
+
+## (Required)
+## Ruby package settings.
+ruby:
+  ## (Optional)
+  ## Which minor Ruby version packages to build, and what their latest tiny
+  ## version is.
+  minor_version_packages:
+    - minor_version: 2.6
+      full_version: 2.6.3
+      package_revision: 0
+    - minor_version: 2.5
+      full_version: 2.5.5
+      package_revision: 0
+
+  ## (Optional)
+  ## Which tiny Ruby version packages to build.
+  tiny_version_packages:
+    - full_version: 2.6.3
+      package_revision: 0
+    - full_version: 2.5.5
+      package_revision: 0
+
+## (Required)
+## Which Rbenv version to package.
+rbenv:
+  ## (Required: specify either 'repo' and 'ref', or just 'path')
+
+  ## Package Rbenv from the following Git repo at the given commit hash or
+  ## tag.
+  ##
+  ## NOTE: if you change one of these, but the Rbenv version number hasn't
+  ## changed since the last fullstaq-rbenv package release, then be sure to
+  ## bump `package_revision`!
+  repo: https://github.com/fullstaq-labs/fullstaq-rbenv.git
+  ref: d160ae006017
+
+  ## Or package Rbenv from the following local directory.
+  ## Be sure to comment out 'repo' and 'ref' if you use this.
+  # path: /path-to-your-local-fork
+
+  ## (Required)
+  ## Package revision number.
+  package_revision: 0
+
+## (Required)
+## Which variants to build.
+variants:
+  normal: true
+  jemalloc: true
+  malloctrim: true
+
+## (Required if variants.jemalloc is true)
+## Version of Jemalloc to compile against.
+##
+## NOTE: If you change this, then be sure to bump the Ruby
+## `package_revision` numbers too!
+jemalloc_version: 5.2.0
+
+## (Required)
+## Specify which distributions to build packages for.
+## When set to 'all', will build for all supported distributions.
+distributions: all
+## You can also set it to a list of distribution names.
+## The names must match the folder names found in the environments/
+## directory in this project.
+# distributions:
+#   - centos-7
+#   - debian-9
+#   - ubuntu-18.04

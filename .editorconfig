@@ -23,7 +23,7 @@ indent_size = 2
 indent_style = space
 indent_size = 4
 
-[{build-jemalloc,build-ruby,build-ruby-deb,build-rbenv-deb,build-ruby-rpm,build-rbenv-rpm,test-debs,test-rpms}]
+[{build-everything,build-jemalloc,build-ruby,build-ruby-deb,build-rbenv-deb,build-ruby-rpm,build-rbenv-rpm,test-debs,test-rpms}]
 indent_style = space
 indent_size = 4
 

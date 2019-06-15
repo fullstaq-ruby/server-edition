@@ -13,7 +13,6 @@ OUTPUT_PATH=/output/ruby.rpm
 require_container_mount "$INPUT_PATH"
 require_container_mount "$OUTPUT_PATH"
 require_container_envvar REVISION
-require_container_envvar DISTRO
 
 
 header "Extracting binaries..."
@@ -21,6 +20,8 @@ run mkdir "$WORK_DIR"
 run tar -xzf "$INPUT_PATH" -C "$WORK_DIR"
 echo "+ cd $WORK_DIR"
 cd "$WORK_DIR"
+ENVIRONMENT=$(cat ENVIRONMENT)
+echo "+ Detected environment in which binaries were built: $ENVIRONMENT"
 echo
 
 
@@ -52,10 +53,17 @@ header "Building package..."
 echo "+ export BUNDLE_GEMFILE=/home/utility/Gemfile"
 export BUNDLE_GEMFILE=/home/utility/Gemfile
 VERSION=$(ls usr/lib/fullstaq-ruby/versions)
+VARIANT=$(cat VARIANT)
+echo "+ Package version detected: $VERSION"
+echo "+ Variant detected: $VARIANT"
+if [[ "$VARIANT" != normal ]]; then
+    VARIANT_SUFFIX="-$VARIANT"
+fi
 
 set -x
+DISTRO=$(sed 's/-//g' <<<"$ENVIRONMENT")
 bundle exec fpm -s dir -t rpm -f --log info -C "$WORK_DIR" \
-    --name "fullstaq-ruby-$VERSION" \
+    --name "fullstaq-ruby-$VERSION$VARIANT_SUFFIX" \
     --version "rev$REVISION" \
     --iteration "$DISTRO" \
     --license MIT \
