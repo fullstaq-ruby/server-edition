@@ -11,4 +11,4 @@ else
 	ARGS=("$@")
 fi
 
-verbose_exec bundle exec drake -f internal-scripts/build-everything.rb _start "${ARGS[@]}"
+verbose_exec bundle exec drake -f internal-scripts/build-all-packages.rb _start "${ARGS[@]}"

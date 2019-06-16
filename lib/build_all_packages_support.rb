@@ -219,29 +219,12 @@ module Support
     def start_progress_tracking
       @progress_tracker_bg_thread = Thread.new do
         while ! @progress_tracker.mutex.synchronize { @exiting }
-          buf_colorized = StringIO.new
-          buf_nocolor = StringIO.new
-          @progress_tracker.write(buf_colorized, true)
-          @progress_tracker.write(buf_nocolor, false)
-
-          File.open("#{logs_dir}/summary.log", 'w:utf-8') do |f|
-            f.write(buf_nocolor.string)
-          end
-
-          OUTPUT_MUTEX.synchronize do
-            print_line
-            STDERR.write(buf_colorized.string)
-            print_line
-          end
-
+          write_progress_summary_logs
           IO.select([@progress_tracker_pipe[0]], nil, nil, 5)
         end
+
         @progress_tracker_pipe[0].close
-        OUTPUT_MUTEX.synchronize do
-          print_line
-          @progress_tracker.write(STDERR)
-          print_line
-        end
+        write_progress_summary_logs
       end
     end
 
@@ -430,6 +413,26 @@ module Support
         end
       end
       nil
+    end
+
+    def write_progress_summary_logs
+      buf_colorized = StringIO.new
+      buf_nocolor = StringIO.new
+      @progress_tracker.write(buf_colorized, true)
+      @progress_tracker.write(buf_nocolor, false)
+
+      File.open("#{logs_dir}/summary.log", 'w:utf-8') do |f|
+        f.write(buf_nocolor.string)
+      end
+      File.open("#{logs_dir}/summary-color.log", 'w:utf-8') do |f|
+        f.write(buf_colorized.string)
+      end
+
+      OUTPUT_MUTEX.synchronize do
+        print_line
+        STDERR.write(buf_colorized.string)
+        print_line
+      end
     end
   end
 end

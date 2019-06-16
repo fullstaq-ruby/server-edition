@@ -49,7 +49,7 @@ rbenv:
   ## changed since the last fullstaq-rbenv package release, then be sure to
   ## bump `package_revision`!
   repo: https://github.com/fullstaq-labs/fullstaq-rbenv.git
-  ref: d160ae006017
+  ref: 67b668a36e1651
 
   ## Or package Rbenv from the following local directory.
   ## Be sure to comment out 'repo' and 'ref' if you use this.

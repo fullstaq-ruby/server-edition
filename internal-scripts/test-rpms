@@ -8,6 +8,8 @@ source "$SELFDIR/../lib/library.sh"
 
 
 header "Installing packages"
+run yum install -y perl sudo binutils which
+
 if ls /input/repo/*jemalloc* 2>/dev/null; then
     VARIANT=jemalloc
 elif ls /input/repo/*malloctrim* 2>/dev/null; then
@@ -15,8 +17,10 @@ elif ls /input/repo/*malloctrim* 2>/dev/null; then
 else
     VARIANT=normal
 fi
+RUBY_PACKAGE_VERSION=$(perl -pe 's/.+?-([0-9].+?)-rev.+/\1/' <<<"$RUBY_PACKAGE_NAME")
 RUBY_PACKAGE_VERSION_WITHOUT_VARIANT_SUFFIX=$(sed 's/-.*//' <<<"$RUBY_PACKAGE_VERSION")
 echo "+ Detected variant: $VARIANT"
+
 echo "+ Create /etc/yum.repos.d/local.repo"
 cat <<EOF > /etc/yum.repos.d/local.repo
 [local]
@@ -24,7 +28,8 @@ name=local
 baseurl=file:///input/repo
 gpgcheck=0
 EOF
-run yum install -y "fullstaq-ruby-$RUBY_PACKAGE_VERSION" fullstaq-rbenv sudo which
+run yum install -y "fullstaq-ruby-$RUBY_PACKAGE_VERSION" fullstaq-rbenv
+
 echo
 
 

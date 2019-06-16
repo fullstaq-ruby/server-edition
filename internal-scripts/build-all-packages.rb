@@ -1,7 +1,7 @@
 #!/usr/bin/env ruby
 # This is a Rakefile, to be run in Drake for parallelization.
 
-require_relative '../lib/build_everything_support'
+require_relative '../lib/build_all_packages_support'
 
 Support.initialize_progress_tracking
 Support.load_config

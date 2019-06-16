@@ -12,9 +12,6 @@ require_container_mount "$REPO_PATH"
 require_container_envvar RUBY_PACKAGE_NAME
 require_container_envvar DEBUG_ON_FAIL
 
-RUBY_PACKAGE_VERSION=$(sed -E 's/-rev.*//; s/.*?-([0-9])/\1/' <<<"$RUBY_PACKAGE_NAME")
-export RUBY_PACKAGE_VERSION
-
 if ! /system/internal-scripts/test-rpms; then
     echo
     echo '-------------------'

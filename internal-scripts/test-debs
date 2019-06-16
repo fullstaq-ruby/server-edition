@@ -8,6 +8,9 @@ source "$SELFDIR/../lib/library.sh"
 
 
 header "Installing packages"
+run apt update
+run apt install -y perl sudo binutils
+
 if ls -d /input/repo/pool/main/f/*jemalloc 2>/dev/null; then
     VARIANT=jemalloc
 elif ls -d /input/repo/pool/main/f/*malloctrim 2>/dev/null; then
@@ -15,13 +18,16 @@ elif ls -d /input/repo/pool/main/f/*malloctrim 2>/dev/null; then
 else
     VARIANT=normal
 fi
+RUBY_PACKAGE_VERSION=$(perl -pe 's/.+?_(.+?)_.*/\1/' <<<"$RUBY_PACKAGE_NAME")
 RUBY_PACKAGE_VERSION_WITHOUT_VARIANT_SUFFIX=$(sed 's/-.*//' <<<"$RUBY_PACKAGE_VERSION")
 echo "+ Detected variant: $VARIANT"
+
 echo "+ Create /etc/apt/sources.list.d/local.list"
 echo "deb [allow-insecure=yes] file:$REPO_PATH test main" > /etc/apt/sources.list.d/local.list
 cat /etc/apt/sources.list.d/local.list
 run apt update
-run apt install -y --allow-unauthenticated "fullstaq-ruby-$RUBY_PACKAGE_VERSION" sudo
+run apt install -y --allow-unauthenticated "fullstaq-ruby-$RUBY_PACKAGE_VERSION"
+
 echo
 
 
