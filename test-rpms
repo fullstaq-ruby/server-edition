@@ -99,7 +99,6 @@ else
 fi
 
 UTILITY_IMAGE_VERSION=$(read_single_value_file "$SELFDIR/environments/utility/image_tag")
-RUBY_PACKAGE_VERSION=$(basename "$RUBY_RPM_PATH" | sed 's/-rev.*//; s/.*-//')
 
 TEMP_DIR=$(mktemp -d /tmp/test.XXXXXX)
 function _cleanup()
@@ -124,7 +123,7 @@ echo '--- Entering main Docker container ---'
 verbose_run docker run --rm --init "${TTY_ARGS[@]}" \
     -v "$SELFDIR:/system:ro" \
     -v "$TEMP_DIR/repo:/input/repo:ro" \
-    -e "RUBY_PACKAGE_VERSION=$RUBY_PACKAGE_VERSION" \
+    -e "RUBY_PACKAGE_NAME=$(basename "$RUBY_RPM_PATH")" \
     -e "EXPECTED_VARIANT=$EXPECTED_VARIANT" \
     -e "DEBUG_ON_FAIL=$DEBUG_ON_FAIL" \
     --user root \

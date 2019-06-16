@@ -10,14 +10,12 @@ source "$SELFDIR/../lib/library.sh"
 header "Installing packages"
 if ls -d /input/repo/pool/main/f/*jemalloc 2>/dev/null; then
     VARIANT=jemalloc
-    VARIANT_VERSION_SUFFIX=-jemalloc
 elif ls -d /input/repo/pool/main/f/*malloctrim 2>/dev/null; then
     VARIANT=malloctrim
-    VARIANT_VERSION_SUFFIX=-malloctrim
 else
     VARIANT=normal
-    VARIANT_VERSION_SUFFIX=
 fi
+RUBY_PACKAGE_VERSION_WITHOUT_VARIANT_SUFFIX=$(sed 's/-.*//' <<<"$RUBY_PACKAGE_VERSION")
 echo "+ Detected variant: $VARIANT"
 echo "+ Create /etc/apt/sources.list.d/local.list"
 echo "deb [allow-insecure=yes] file:$REPO_PATH test main" > /etc/apt/sources.list.d/local.list
@@ -61,21 +59,51 @@ echo -n "Checking whether Rbenv is in /usr/bin/rbenv... "
 output=$(which rbenv)
 assert_equals "$output" /usr/bin/rbenv
 
-echo -n "Checking whether Fullstaq Ruby $RUBY_PACKAGE_VERSION is in /usr/lib/fullstaq-ruby/versions/$RUBY_PACKAGE_VERSION$VARIANT_VERSION_SUFFIX... "
-if [[ -e "/usr/lib/fullstaq-ruby/versions/$RUBY_PACKAGE_VERSION$VARIANT_VERSION_SUFFIX/bin/ruby" ]]; then
+echo -n "Checking whether Fullstaq Ruby $RUBY_PACKAGE_VERSION is in /usr/lib/fullstaq-ruby/versions/$RUBY_PACKAGE_VERSION... "
+if [[ -e "/usr/lib/fullstaq-ruby/versions/$RUBY_PACKAGE_VERSION/bin/ruby" ]]; then
     echo yes
 else
     echo no
     exit 1
 fi
 
-echo -n "Checking whether active Ruby for root is /usr/lib/rbenv/versions/$RUBY_PACKAGE_VERSION$VARIANT_VERSION_SUFFIX/bin/ruby... "
+echo -n "Checking whether active Ruby for root is /usr/lib/rbenv/versions/$RUBY_PACKAGE_VERSION/bin/ruby... "
 output=$(rbenv which ruby)
-assert_equals "$output" "/usr/lib/rbenv/versions/$RUBY_PACKAGE_VERSION$VARIANT_VERSION_SUFFIX/bin/ruby"
+assert_equals "$output" "/usr/lib/rbenv/versions/$RUBY_PACKAGE_VERSION/bin/ruby"
 
-echo -n "Checking whether active Ruby for utility is /usr/lib/rbenv/versions/$RUBY_PACKAGE_VERSION$VARIANT_VERSION_SUFFIX/bin/ruby... "
+echo -n "Checking whether the package version contains the proper variant suffix... "
+if [[ "$VARIANT" = normal ]]; then
+    if [[ ! "$RUBY_PACKAGE_VERSION" =~ - ]]; then
+        echo yes
+    else
+        echo no
+        echo "  '$RUBY_PACKAGE_VERSION' contains a dash, so it is presumed to contain a variant suffix."
+        exit 1
+    fi
+elif [[ "$VARIANT" = jemalloc ]]; then
+    if [[ "$RUBY_PACKAGE_VERSION" =~ -jemalloc$ ]]; then
+        echo yes
+    else
+        echo no
+        echo "  Expected '$RUBY_PACKAGE_VERSION' to end with '-jemalloc'."
+        exit 1
+    fi
+elif [[ "$VARIANT" = malloctrim ]]; then
+    if [[ "$RUBY_PACKAGE_VERSION" =~ -malloctrim$ ]]; then
+        echo yes
+    else
+        echo no
+        echo "  Expected '$RUBY_PACKAGE_VERSION' to end with '-malloctrim'."
+        exit 1
+    fi
+else
+    echo "BUG: unsupported variant $VARIANT" >&2
+    exit 1
+fi
+
+echo -n "Checking whether active Ruby for utility is /usr/lib/rbenv/versions/$RUBY_PACKAGE_VERSION/bin/ruby... "
 output=$(sudo -u utility -H sh -c 'eval "$(rbenv init -)" && rbenv which ruby')
-assert_equals "$output" "/usr/lib/rbenv/versions/$RUBY_PACKAGE_VERSION$VARIANT_VERSION_SUFFIX/bin/ruby"
+assert_equals "$output" "/usr/lib/rbenv/versions/$RUBY_PACKAGE_VERSION/bin/ruby"
 
 echo -n "Checking whether Ruby works... "
 output=$(ruby -e 'puts "hello world"')
@@ -96,22 +124,67 @@ fi
 
 echo -n "Checking whether gem works... "
 output=$(gem env)
-if grep -Fq "RUBY VERSION: $RUBY_PACKAGE_VERSION" <<<"$output"; then
+if grep -Fq "RUBY VERSION: $RUBY_PACKAGE_VERSION_WITHOUT_VARIANT_SUFFIX" <<<"$output"; then
     echo yes
 else
     echo no
+    echo "  Expected 'gem env' output to contain 'RUBY VERSION: $RUBY_PACKAGE_VERSION_WITHOUT_VARIANT_SUFFIX'"
     exit 1
 fi
 
 if [[ "$VARIANT" = jemalloc ]]; then
-    echo "Checking whether Jemalloc library exists"
-    echo "Checking whether Ruby is linked to Jemalloc"
-    echo "Checking whether 'ruby -v' mentions Jemalloc"
+    echo -n "Checking whether Jemalloc library exists... "
+    if [[ -e "/usr/lib/rbenv/versions/$RUBY_PACKAGE_VERSION/lib/libjemalloc.so" ]]; then
+        echo yes
+    else
+        echo no
+        exit 1
+    fi
+
+    echo -n "Checking whether Ruby is linked to Jemalloc... "
+    output=$(objdump -p "/usr/lib/rbenv/versions/$RUBY_PACKAGE_VERSION/lib/libruby.so")
+    if grep NEEDED <<<"$output" | grep -q libjemalloc.so; then
+        echo yes
+    else
+        echo no
+        exit 1
+    fi
+
+    echo -n "Checking whether 'ruby -v' mentions Jemalloc... "
+    output=$(ruby -v)
+    if grep -qF '+jemalloc' <<<"$output"; then
+        echo yes
+    else
+        echo no
+        exit 1
+    fi
 else
-    echo "Checking whether Jemalloc library does not exist"
-    echo "Checking whether Ruby is not linked to Jemalloc"
+    echo -n "Checking whether Jemalloc library does not exist... "
+    if [[ ! -e "/usr/lib/rbenv/versions/$RUBY_PACKAGE_VERSION/lib/libjemalloc.so" ]]; then
+        echo yes
+    else
+        echo no
+        exit 1
+    fi
+
+    echo -n "Checking whether Ruby is not linked to Jemalloc... "
+    output=$(objdump -p "/usr/lib/rbenv/versions/$RUBY_PACKAGE_VERSION/lib/libruby.so")
+    if ! grep NEEDED <<<"$output" | grep -q libjemalloc.so; then
+        echo yes
+    else
+        echo no
+        exit 1
+    fi
+
     if [[ "$VARIANT" = malloctrim ]]; then
-        echo "Checking whether 'ruby -v' mentions malloctrim"
+        echo -n "Checking whether 'ruby -v' mentions malloctrim... "
+        output=$(ruby -v)
+        if grep -qF '+malloctrim' <<<"$output"; then
+            echo yes
+        else
+            echo no
+            exit 1
+        fi
     fi
 fi
 

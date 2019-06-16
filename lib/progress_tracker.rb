@@ -217,12 +217,14 @@ class ProgressTracker
   def write(io, colorize = true)
     if colorize
       colors = {
+        in_progress: [:yellow, :bold],
         success: [:green],
         error: [:red],
         neutral: []
       }
     else
       colors = {
+        in_progress: [],
         success: [],
         error: [],
         neutral: []
@@ -271,6 +273,8 @@ class ProgressTracker
 private
   def pick_status_color(entry_or_stage, format, colors)
     case entry_or_stage.status
+    when :in_progress
+      colors = colors[:in_progress]
     when :done
       colors = colors[:success]
     when :error

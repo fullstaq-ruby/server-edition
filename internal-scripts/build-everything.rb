@@ -238,13 +238,13 @@ Support.ruby_package_versions.each do |ruby_package_version|
               Support.sh './test-debs',
                 '-r', ruby_package_path,
                 '-b', rbenv_package_path,
-                '-i', determine_test_image_for(distro),
+                '-i', Support.determine_test_image_for(distro),
                 '-v', variant[:name]
             when :RPM
               Support.sh './test-rpms',
                 '-r', ruby_package_path,
                 '-b', rbenv_package_path,
-                '-i', determine_test_image_for(distro),
+                '-i', Support.determine_test_image_for(distro),
                 '-v', variant[:name]
             else
               raise "BUG: unsupported package format: #{distro[:package_format].inspect}"

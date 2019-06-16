@@ -30,11 +30,8 @@ export BUNDLE_GEMFILE=/home/utility/Gemfile
 DEPS=$(cat shlib-deps.txt)
 VERSION=$(ls usr/lib/fullstaq-ruby/versions)
 VARIANT=$(cat VARIANT)
-echo "+ Package version detected: $VERSION"
+echo "+ Package version (with variant suffix) detected: $VERSION"
 echo "+ Variant detected: $VARIANT"
-if [[ "$VARIANT" != normal ]]; then
-    VARIANT_SUFFIX="-$VARIANT"
-fi
 echo
 
 set -x

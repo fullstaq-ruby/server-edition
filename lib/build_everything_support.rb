@@ -146,7 +146,7 @@ module Support
     end
 
     def jemalloc_bin_path(distro)
-      "#{cache_dir}/jemalloc-bin-#{@config[:jemalloc_version]}-#{distro[:name]}.tar.gz"
+      "#{output_dir}/jemalloc-bin-#{@config[:jemalloc_version]}-#{distro[:name]}.tar.gz"
     end
 
 
@@ -195,7 +195,7 @@ module Support
     end
 
     def ruby_bin_path(package_version, distro, variant)
-      "#{cache_dir}/ruby-bin-#{package_version[:id]}-#{distro[:name]}-#{variant[:name]}.tar.gz"
+      "#{output_dir}/ruby-bin-#{package_version[:id]}-#{distro[:name]}-#{variant[:name]}.tar.gz"
     end
 
     def ruby_package_path(package_version, distro, variant)
@@ -219,11 +219,21 @@ module Support
     def start_progress_tracking
       @progress_tracker_bg_thread = Thread.new do
         while ! @progress_tracker.mutex.synchronize { @exiting }
+          buf_colorized = StringIO.new
+          buf_nocolor = StringIO.new
+          @progress_tracker.write(buf_colorized, true)
+          @progress_tracker.write(buf_nocolor, false)
+
+          File.open("#{logs_dir}/summary.log", 'w:utf-8') do |f|
+            f.write(buf_nocolor.string)
+          end
+
           OUTPUT_MUTEX.synchronize do
             print_line
-            @progress_tracker.write(STDERR)
+            STDERR.write(buf_colorized.string)
             print_line
           end
+
           IO.select([@progress_tracker_pipe[0]], nil, nil, 5)
         end
         @progress_tracker_pipe[0].close
