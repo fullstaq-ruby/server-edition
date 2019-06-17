@@ -71,7 +71,7 @@ variants:
 ##
 ## NOTE: If you change this, then be sure to bump the Ruby
 ## `package_revision` numbers too!
-jemalloc_version: 5.2.0
+jemalloc_version: 3.6.0
 
 ## (Required)
 ## Specify which distributions to build packages for.
