@@ -138,7 +138,7 @@ module Support
     end
 
     def jemalloc_source_url
-      "https://github.com/jemalloc/jemalloc/releases/download/5.2.0/#{jemalloc_source_basename}"
+      "https://github.com/jemalloc/jemalloc/releases/download/#{@config[:jemalloc_version]}/#{jemalloc_source_basename}"
     end
 
     def jemalloc_source_path
@@ -287,7 +287,7 @@ module Support
 
     def download(url, output)
       if has_curl?
-        sh 'curl', '-sSLo', output, url
+        sh 'curl', '-fSLo', output, url
       elsif has_wget?
         sh 'wget', '-O', output, url
       else
