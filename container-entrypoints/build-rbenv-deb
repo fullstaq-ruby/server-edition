@@ -1,6 +1,9 @@
 #!/bin/bash
 set -e
 
+# If you make a change that changes the DEB's contents or metadata,
+# then be sure to bump `rbenv.package_revision` in config.yml.
+
 SELFDIR=$(dirname "$0")
 SELFDIR=$(cd "$SELFDIR" && pwd)
 # shellcheck source=lib/library.sh
