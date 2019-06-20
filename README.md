@@ -27,7 +27,6 @@ You can think of Fullstaq Ruby as a competitor of `apt/yum install ruby`, `rbenv
      + [Vs Ruby packages included in operating systems' official repositories](#vs-ruby-packages-included-in-operating-systems-official-repositories)
      + [Vs the Brightbox PPA](#vs-the-brightbox-ppa)
      + [Vs JRuby, TruffleRuby and Rubinius](#vs-jruby-truffleruby-and-rubinius)
-     + [Vs Rubywhale](#vs-rubywhale)
  * [Installation](#installation)
    - [RHEL/CentOS](#rhelcentos)
    - [Debian/Ubuntu](#debianubuntu)
@@ -354,10 +353,6 @@ The differences are:
 JRuby, TruffleRuby and Rubinius are alternative Ruby implementations, that are different from the official Ruby (MRI).
 
 Fullstaq Ruby is not an alternative Ruby implementation. It is a distribution of MRI.
-
-#### Vs Rubywhale
-
-[Rubywhale](https://gist.github.com/FooBarWidget/b9f01c777a6fcdbe0c0e8d69a1c26ad3#mounting-a-directory-and-running-the-container-with-user) is a Ruby Docker base image that's highly optimized for container- and cloud-native environments. Rubywhale also integrates with Jemalloc and malloc_trim, and so provides similar benefits as Fullstaq Ruby. However, Fullstaq Ruby is not especially designed for containerization, and thus provides no Docker base images.
 
 ## Installation
 
