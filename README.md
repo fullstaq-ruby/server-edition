@@ -47,6 +47,7 @@ You can think of Fullstaq Ruby as a competitor of `apt/yum install ruby`, `rbenv
    - [Why does Fullstaq Ruby integrate with Rbenv?](#why-does-fullstaq-ruby-integrate-with-rbenv)
    - [I do not need multiple Rubies (and have no need for Rbenv), is Fullstaq Ruby suitable for me?](#i-do-not-need-multiple-rubies-and-have-no-need-for-rbenv-is-fullstaq-ruby-suitable-for-me)
    - [Which variant should I pick?](#which-variant-should-i-pick)
+   - [Why a new distribution? Why not contribute to Ruby core?](#why-a-new-distribution-why-not-contribute-to-ruby-core)
 
 
 ---
@@ -586,3 +587,15 @@ Yes. The multi-Ruby-support via Rbenv is quite lightweight and is unintrusive, w
 ### Which variant should I pick?
 
 See: [About variants](#about-variants).
+
+### Why a new distribution? Why not contribute to Ruby core?
+
+The Ruby core team is reluctant or slow to incorporate certain changes. And for a good reason: whether a change is an _improvement_ depends on the perspective. The Ruby core team has to care about a wide range of users and use cases. Incorporating Jemalloc or `malloc_trim` is not necessarily an improvement for *all* their users.
+
+While understandable, that attitude does not help users for which those changes *are* actual improvement. Fullstaq Ruby's goal is to help people who use Ruby in a server context, in production environments, on x86-64 Linux. For example we don't care about development environments like macOS, or Raspberry PIs. This allows us to make less conservative choices than the Ruby core team.
+
+Furthermore, the Ruby core team does not want to be responsible for certain aspects, such as distributing binaries. But binaries are valuable. So we take up the responsibility of packaging binaries.
+
+The Ruby core team have debated for years on whether to incorporate Jemalloc, and so far they've only been reluctant. Furthermore, Hongli Lai's research and discussions with various experts have [revealed](https://twitter.com/jashmatthews/status/1140670189954129920) that the only way to make optimal use of Jemalloc is through the `LD_PRELOAD` mechanism: compiling Ruby with `--with-jemalloc` is not enough! `LD_PRELOAD` is such an intrusive and platform-specific change, that we're confident that the Ruby core team will never accept using such a mechanism by default.
+
+In short: Fullstaq Ruby's goal is to bring value to server-production users as soon as possible, and we think maintaining our own distribution is the fastest and best way to achieve that goal.
