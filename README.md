@@ -553,7 +553,7 @@ set :rbenv_ruby, '2.6.3-jemalloc'
 
 ### What is Jemalloc and how does it benefit me?
 
-[Jemalloc](http://jemalloc.net/) is the FreeBSD libc memory allocator. It uses a more complex algorithm than the default Linux glibc memory allocator, and but is faster and results in less memory fragmentation (which reduces memory usage significantly). Jemalloc has been used successfully by e.g. Firefox and Redis to reduce their memory footprint and ongoing development is supported by Facebook.
+[Jemalloc](http://jemalloc.net/) is the FreeBSD libc memory allocator. It uses a more complex algorithm than the default Linux glibc memory allocator, but is faster and results in less memory fragmentation (which reduces memory usage significantly). Jemalloc has been used successfully by e.g. Firefox and Redis to reduce their memory footprint and ongoing development is supported by Facebook.
 
 ### What is malloc_trim and how does it benefit me?
 
