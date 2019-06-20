@@ -44,7 +44,7 @@ bundle exec fpm -s dir -t deb -f --log info \
     --vendor Fullstaq \
     --maintainer "Fullstaq <info@fullstaq.com>" \
     --description "Fullstaq Ruby $VERSION" \
-    --url "https://github.com/fullstaq-labs/fullstaq-ruby-server-edition" \
+    --url "https://github.com/fullstaq-labs/fullstaq-rbenv" \
     --provides rbenv \
     bin=/usr/ \
     libexec=/usr/lib/rbenv/ \

@@ -57,7 +57,7 @@ rbenv:
 
   ## (Required)
   ## Package revision number.
-  package_revision: 0
+  package_revision: 1
 
 ## (Required)
 ## Which variants to build.
