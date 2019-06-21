@@ -27,7 +27,7 @@ You can think of Fullstaq Ruby as a competitor of `apt/yum install ruby`, `rbenv
      + [Vs Ruby packages included in operating systems' official repositories](#vs-ruby-packages-included-in-operating-systems-official-repositories)
      + [Vs the Brightbox PPA](#vs-the-brightbox-ppa)
      + [Vs JRuby, TruffleRuby and Rubinius](#vs-jruby-truffleruby-and-rubinius)
-     + [Vs LD_PRELOADing Jemalloc yourself](#vs-ld-preloading-jemalloc-yourself)
+     + [Vs LD_PRELOADing Jemalloc yourself](#vs-ld_preloading-jemalloc-yourself)
  * [Installation](#installation)
    - [RHEL/CentOS](#rhelcentos)
    - [Debian/Ubuntu](#debianubuntu)
