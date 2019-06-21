@@ -49,6 +49,7 @@ You can think of Fullstaq Ruby as a competitor of `apt/yum install ruby`, `rbenv
    - [Which variant should I pick?](#which-variant-should-i-pick)
    - [Why a new distribution? Why not contribute to Ruby core?](#why-a-new-distribution-why-not-contribute-to-ruby-core)
    - [Will Fullstaq Ruby become paid in the future?](#will-fullstaq-ruby-become-paid-in-the-future)
+   - [I am wary of vendor lock-in or that I will become dependent on a specific party for supplying packages. What is Fullstaq Ruby's take on this?](#i-am-wary-of-vendor-lock-in-or-that-i-will-become-dependent-on-a-specific-party-for-supplying-packages-what-is-fullstaq-rubys-take-on-this)
 
 
 ---
