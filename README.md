@@ -27,6 +27,7 @@ You can think of Fullstaq Ruby as a competitor of `apt/yum install ruby`, `rbenv
      + [Vs Ruby packages included in operating systems' official repositories](#vs-ruby-packages-included-in-operating-systems-official-repositories)
      + [Vs the Brightbox PPA](#vs-the-brightbox-ppa)
      + [Vs JRuby, TruffleRuby and Rubinius](#vs-jruby-truffleruby-and-rubinius)
+     + [Vs LD_PRELOADing Jemalloc yourself](#vs-ld-preloading-jemalloc-yourself)
  * [Installation](#installation)
    - [RHEL/CentOS](#rhelcentos)
    - [Debian/Ubuntu](#debianubuntu)
@@ -47,6 +48,7 @@ You can think of Fullstaq Ruby as a competitor of `apt/yum install ruby`, `rbenv
    - [I do not need multiple Rubies (and have no need for Rbenv), is Fullstaq Ruby suitable for me?](#i-do-not-need-multiple-rubies-and-have-no-need-for-rbenv-is-fullstaq-ruby-suitable-for-me)
    - [Which variant should I pick?](#which-variant-should-i-pick)
    - [Why a new distribution? Why not contribute to Ruby core?](#why-a-new-distribution-why-not-contribute-to-ruby-core)
+   - [Will Fullstaq Ruby become paid in the future?](#will-fullstaq-ruby-become-paid-in-the-future)
 
 
 ---
@@ -354,6 +356,16 @@ JRuby, TruffleRuby and Rubinius are alternative Ruby implementations, that are d
 
 Fullstaq Ruby is not an alternative Ruby implementation. It is a distribution of MRI.
 
+#### Vs LD_PRELOADing Jemalloc yourself
+
+You can enjoy reduced memory usage and higher performance with a do-it-yourself solution that involves `LD_PRELOAD`ing Jemalloc. The difference with Fullstaq Ruby is not on a technical level, but on a service level.
+
+With a DIY solution, you are responsible for lifecycle management and for ensuring that the right version of Jemalloc is picked. Only Jemalloc 3 yields reduced memory usage, Jemalloc 5 does not. If you for example install Jemalloc from your distribution's package manager, then you must double-check that your distribution doesn't distribute a too new Jemalloc.
+
+You can of course install Jemalloc from source (assuming you don't mind compiling). But then you become responsible for keeping it security-patched.
+
+Fullstaq Ruby, ensures that the right version of Jemalloc is used. We are a bunch of people that care about this subject, so we are constantly researching better ways to integrate Jemalloc. For example there are some efforts on the way to research how to make use of Jemalloc 5. We also keep an eye on security issues and supply security updates, so that you can sit back and relax.
+
 ## Installation
 
 ### RHEL/CentOS
@@ -594,3 +606,7 @@ Furthermore, the Ruby core team does not want to be responsible for certain aspe
 The Ruby core team have debated for years on whether to incorporate Jemalloc, and so far they've only been reluctant. Furthermore, Hongli Lai's research and discussions with various experts have [revealed](https://twitter.com/jashmatthews/status/1140670189954129920) that the only way to make optimal use of Jemalloc is through the `LD_PRELOAD` mechanism: compiling Ruby with `--with-jemalloc` is not enough! `LD_PRELOAD` is such an intrusive and platform-specific change, that we're confident that the Ruby core team will never accept using such a mechanism by default.
 
 In short: Fullstaq Ruby's goal is to bring value to server-production users as soon as possible, and we think maintaining our own distribution is the fastest and best way to achieve that goal.
+
+### Will Fullstaq Ruby become paid in the future?
+
+There will be no paid version. Fullstaq Ruby is fully open source. It is also intended to be a community project where anyone can contribute. There are no monetization plans.
