@@ -610,3 +610,13 @@ In short: Fullstaq Ruby's goal is to bring value to server-production users as s
 ### Will Fullstaq Ruby become paid in the future?
 
 There will be no paid version. Fullstaq Ruby is fully open source. It is also intended to be a community project where anyone can contribute. There are no monetization plans.
+
+### I am wary of vendor lock-in or that I will become dependent on a specific party for supplying packages. What is Fullstaq Ruby's take on this?
+
+Vendor lock-in is a valid concern that many of us have. It is something we thought about from the beginning and that are *are* addressing.
+
+We have architected our systems in such a way that anyone will be able to build packages themselves. If we ever become slow or defunct, then anyone can easily take matters into own hands. Building Fullstaq Ruby packages from your own systems is so simple that nearly anyone can do it: just install Docker, edit a config file and run a command.
+
+This is achieved by automating the entire build process, and by releasing the making the build tooling as open source. There are almost no manual processes. Please take a look at this repository's source code.
+
+Because Fullstaq Ruby is still a work-in-progress, we don't have documentation yet on how to build packages yourself. Such documentation is [planned](https://github.com/fullstaq-labs/fullstaq-ruby-server-edition/issues/1) for [epic 5 of the roadmap](https://github.com/fullstaq-labs/fullstaq-ruby-umbrella/projects).
