@@ -572,7 +572,7 @@ set :rbenv_ruby, '2.6.3-jemalloc'
 
 [`malloc_trim()`](http://man7.org/linux/man-pages/man3/malloc_trim.3.html) is an API that is part of the glibc memory allocator. In Hongli Lai's research project [What Causes Ruby Memory Bloat?](https://www.joyfulbikeshedding.com/blog/2019-03-14-what-causes-ruby-memory-bloat.html), Hongli has identified the OS memory allocator as a major cause of memory bloating in Ruby. Luckily, simple fixes exist, and one fix is to invoke `malloc_trim()` which tells the glibc memory allocator to release free memory back to the kernel.
 
-Is is found that, if Ruby calls `malloc_trim()` during a garbage collection, then memory usage can be reduced significantly.
+It is found that, if Ruby calls `malloc_trim()` during a garbage collection, then memory usage can be reduced significantly.
 
 However, `malloc_trim` may have some [performance impact](https://www.joyfulbikeshedding.com/blog/2019-03-29-the-status-of-ruby-memory-trimming-and-how-you-can-help-with-testing.html).
 
