@@ -63,7 +63,7 @@ bundle exec fpm -s dir -t rpm -f --log info -C "$WORK_DIR" \
     --name "fullstaq-ruby-$VERSION" \
     --version "rev$REVISION" \
     --iteration "$DISTRO" \
-    --license MIT \
+    --license 'BSD 2-clause' \
     --vendor Fullstaq \
     --maintainer "Fullstaq <info@fullstaq.com>" \
     --description "Fullstaq Ruby $VERSION" \

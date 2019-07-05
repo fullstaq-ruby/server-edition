@@ -39,7 +39,7 @@ bundle exec fpm -s dir -t deb -f --log info -C "$WORK_DIR" \
     --name "fullstaq-ruby-$VERSION$VARIANT_SUFFIX" \
     --version "$REVISION" \
     --iteration "$ENVIRONMENT" \
-    --license MIT \
+    --license 'BSD 2-clause' \
     --vendor Fullstaq \
     --maintainer "Fullstaq <info@fullstaq.com>" \
     --description "Fullstaq Ruby $VERSION ($VARIANT variant)" \
