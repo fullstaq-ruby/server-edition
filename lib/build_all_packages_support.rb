@@ -124,7 +124,7 @@ module Support
     def rbenv_package_path(package_format)
       case package_format
       when :DEB
-        "#{output_dir}/fullstaq-rbenv_#{rbenv_version}-#{rbenv_package_revision}_all.deb"
+        "#{output_dir}/fullstaq-rbenv_#{rbenv_version}_#{rbenv_package_revision}_all.deb"
       when :RPM
         "#{output_dir}/fullstaq-rbenv-#{rbenv_version}-#{rbenv_package_revision}.noarch.rpm"
       else
