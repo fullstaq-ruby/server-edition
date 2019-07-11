@@ -248,7 +248,7 @@ module Support
         log "--> Running: #{Shellwords.shelljoin(command)}"
         spawn_opts = {
           in: '/dev/null',
-          err: :out,
+          err: [:child, :out],
           close_others: true
         }
         IO.popen(command + [spawn_opts], 'rb') do |io|
