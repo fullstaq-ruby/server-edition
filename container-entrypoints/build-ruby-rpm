@@ -58,15 +58,20 @@ echo "+ Package version (with variant suffix) detected: $VERSION"
 echo "+ Variant detected: $VARIANT"
 
 set -x
-DISTRO=$(sed 's/-//g' <<<"$ENVIRONMENT")
+ITERATION=$(sed 's/-//g' <<<"$ENVIRONMENT")
+# We embed metadata (variant and distro name) in the description field.
+# This metadata is used by scripts such as internal-scripts/upload-rpm.
 bundle exec fpm -s dir -t rpm -f --log info -C "$WORK_DIR" \
     --name "fullstaq-ruby-$VERSION" \
     --version "rev$REVISION" \
-    --iteration "$DISTRO" \
+    --iteration "$ITERATION" \
     --license 'BSD 2-clause' \
     --vendor Fullstaq \
     --maintainer "Fullstaq <info@fullstaq.com>" \
-    --description "Fullstaq Ruby $VERSION" \
+    --rpm-summary "Fullstaq Ruby $VERSION ($VARIANT variant)" \
+    --description "Fullstaq Ruby $VERSION
+Variant: $VARIANT
+Distribution: $ENVIRONMENT" \
     --url "https://github.com/fullstaq-labs/fullstaq-ruby-server-edition" \
     --provides fullstaq-ruby \
     --depends "$DEPS" \

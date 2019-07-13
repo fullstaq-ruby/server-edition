@@ -35,6 +35,8 @@ echo "+ Variant detected: $VARIANT"
 echo
 
 set -x
+# We embed metadata (variant and distro name) in the description field.
+# This metadata is used by scripts such as internal-scripts/upload-deb.
 bundle exec fpm -s dir -t deb -f --log info -C "$WORK_DIR" \
     --name "fullstaq-ruby-$VERSION$VARIANT_SUFFIX" \
     --version "$REVISION" \
@@ -42,7 +44,9 @@ bundle exec fpm -s dir -t deb -f --log info -C "$WORK_DIR" \
     --license 'BSD 2-clause' \
     --vendor Fullstaq \
     --maintainer "Fullstaq <info@fullstaq.com>" \
-    --description "Fullstaq Ruby $VERSION ($VARIANT variant)" \
+    --description "Fullstaq Ruby $VERSION
+Variant: $VARIANT
+Distribution: $ENVIRONMENT" \
     --url "https://github.com/fullstaq-labs/fullstaq-ruby-server-edition" \
     --depends "$DEPS" \
     --provides fullstaq-ruby \
