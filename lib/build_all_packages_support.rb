@@ -2,6 +2,7 @@ require 'yaml'
 require 'shellwords'
 require 'fileutils'
 require 'stringio'
+require 'rbconfig'
 require 'paint'
 require 'paint/rgb_colors'
 require_relative 'progress_tracker'
@@ -201,9 +202,9 @@ module Support
     def ruby_package_path(package_version, distro, variant)
       case distro[:package_format]
       when :DEB
-        "#{output_dir}/fullstaq-ruby_#{package_version[:id]}#{variant[:package_suffix]}_#{package_version[:package_revision]}-#{distro[:name]}_amd64.deb"
+        "#{output_dir}/fullstaq-ruby_#{package_version[:id]}#{variant[:package_suffix]}_#{package_version[:package_revision]}-#{distro[:name]}_#{deb_arch}.deb"
       when :RPM
-        "#{output_dir}/fullstaq-ruby-#{package_version[:id]}#{variant[:package_suffix]}-rev#{package_version[:package_revision]}-#{distro[:name]}.x86_64.rpm"
+        "#{output_dir}/fullstaq-ruby-#{package_version[:id]}#{variant[:package_suffix]}-rev#{package_version[:package_revision]}-#{sanitize_distro_name_for_rpm(distro[:name])}.#{rpm_arch}.rpm"
       else
         raise "Unsupported package format: #{package_format.inspect}"
       end
@@ -389,6 +390,10 @@ module Support
       end
     end
 
+    def sanitize_distro_name_for_rpm(distro_name)
+      distro_name.gsub('-', '')
+    end
+
     def recursively_symbolize_keys(thing)
       case thing
       when Array
@@ -403,6 +408,65 @@ module Support
         result
       else
         thing
+      end
+    end
+
+    def deb_arch
+      @deb_arch ||= begin
+        if on_macos?
+          # Assuming macOS with Docker for Mac
+          return 'amd64'
+        end
+
+        arch = cpu_architecture
+        case arch
+        when 'x86'
+          'i386'
+        when 'x86_64'
+          'amd64'
+        else
+          arch
+        end
+      end
+    end
+
+    def rpm_arch
+      @rpm_arch ||= begin
+        if on_macos?
+          # Assuming macOS with Docker for Mac
+          return 'x86_64'
+        end
+
+        arch = cpu_architecture
+        case arch
+        when 'x86'
+          'i686'
+        else
+          arch
+        end
+      end
+    end
+
+    def on_macos?
+      RbConfig::CONFIG['target_os'] =~ /darwin/ && File.exist?('/usr/bin/sw_vers')
+    end
+
+    def cpu_architecture
+      @cpu_architecture ||= begin
+        arch = `uname -p`.strip
+        # On some systems 'uname -p' returns something like
+        # 'Intel(R) Pentium(R) M processor 1400MHz' or
+        # 'Intel(R)_Xeon(R)_CPU___________X7460__@_2.66GHz'.
+        if arch == "unknown" || arch =~ / / || arch =~ /Hz$/
+          arch = `uname -m`.strip
+        end
+        if arch =~ /^i.86$/
+          'x86'
+        elsif arch == 'amd64'
+          'x86_64'
+        else
+          arch
+        end
       end
     end
 
