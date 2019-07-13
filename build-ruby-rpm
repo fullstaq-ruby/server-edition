@@ -77,14 +77,23 @@ else
 fi
 
 IMAGE_VERSION=$(read_single_value_file "$SELFDIR/environments/utility/image_tag")
-create_file_if_missing "$OUTPUT_PATH"
+OUTPUT_TEMP_PATH=$(mktemp "$OUTPUT_PATH.XXXXXX")
+create_file_if_missing "$OUTPUT_TEMP_PATH"
 
 echo '--- Entering Docker container ---'
-verbose_exec docker run --rm --init "${TTY_ARGS[@]}" \
+verbose_run docker run --rm --init "${TTY_ARGS[@]}" \
     -v "$SELFDIR:/system:ro" \
     -v "$BINARY_TARBALL_PATH:/input/ruby-bin.tar.gz:ro" \
-    -v "$OUTPUT_PATH:/output/ruby.rpm" \
+    -v "$OUTPUT_TEMP_PATH:/output/ruby.rpm" \
     -e "REVISION=$REVISION" \
     --user "$(id -u):$(id -g)" \
     "fullstaq/ruby-build-env-utility:$IMAGE_VERSION" \
     /system/container-entrypoints/build-ruby-rpm
+EXIT_STATUS=$?
+set -e
+echo '--- Exited Docker container ---'
+if [[ "$EXIT_STATUS" -eq 0 ]]; then
+    run mv "$OUTPUT_TEMP_PATH" "$OUTPUT_PATH"
+else
+    run rm -f "$OUTPUT_TEMP_PATH"
+fi
