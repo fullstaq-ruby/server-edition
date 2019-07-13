@@ -31,9 +31,17 @@ indent_size = 4
 indent_style = space
 indent_size = 4
 
-[scripts/autodetect-shlib-dependencies]
+[internal-scripts/autodetect-shlib-dependencies]
 indent_style = space
 indent_size = 2
+
+[internal-scripts/test-debs]
+indent_style = space
+indent_size = 4
+
+[internal-scripts/test-rpms]
+indent_style = space
+indent_size = 4
 
 [aptly.conf]
 indent_style = space
