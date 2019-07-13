@@ -10,7 +10,7 @@ RUN set -x && \
     apt update && \
     apt install -y wget ca-certificates binutils build-essential \
         curl ca-certificates rpm file ruby ruby-dev rubygems sudo \
-        aptly createrepo && \
+        aptly createrepo parallel && \
     \
     curl -sSLo /sbin/activatecontaineruid.gz https://github.com/fullstaq-labs/activatecontaineruid/releases/download/v0.9.1/activatecontaineruid-0.9.1-x86_64-linux.gz && \
     gunzip /sbin/activatecontaineruid.gz && \

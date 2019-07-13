@@ -1,0 +1,35 @@
+#!/bin/bash
+set -e
+
+SELFDIR=$(dirname "$0")
+SELFDIR=$(cd "$SELFDIR" && pwd)
+# shellcheck source=lib/library.sh
+source "$SELFDIR/../lib/library.sh"
+
+require_container_mount /input
+require_container_mount /bintray_api_key.txt
+require_container_envvar API_USERNAME
+require_container_envvar CONCURRENCY
+require_container_envvar DRY_RUN
+
+set -o pipefail
+cd /input
+
+echo "machine api.bintray.com login $API_USERNAME password $(cat /bintray_api_key.txt)" > /tmp/curl-creds
+chmod 600 /tmp/curl-creds
+find . -type f -name '*.deb' > /tmp/deb-files.txt
+
+exec parallel --will-cite \
+    --linebuffer \
+    "-j$CONCURRENCY" \
+    -a /tmp/deb-files.txt \
+    --tag-string '{#}: {=
+        use File::Basename;
+        my $basename = basename($_);
+        if (length($basename) > 60) {
+            $_ = sprintf("..%s | ", substr($basename, length($basename) - 58));
+        } else {
+            $_ = sprintf("%-60s | ", $basename);
+        }
+    =}' \
+    /system/internal-scripts/upload-deb '{}' '{/}'

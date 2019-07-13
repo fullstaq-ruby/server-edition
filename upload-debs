@@ -1,0 +1,104 @@
+#!/bin/bash
+set -e
+
+SELFDIR=$(dirname "$0")
+SELFDIR=$(cd "$SELFDIR" && pwd)
+# shellcheck source=../lib/library.sh
+source "$SELFDIR/lib/library.sh"
+
+API_USERNAME=
+API_KEY_PATH=
+CONCURRENCY=4
+DRY_RUN=false
+FILES=()
+
+function usage()
+{
+    echo "Usage: ./upload-debs <OPTIONS> <FILES...>"
+    echo "Upload DEB packages to Fullstaq Ruby's official APT server."
+    echo
+    echo "Required options:"
+    echo "  -u          Bintray API username"
+    echo "  -k          Path to Bintray API key file"
+    echo
+    echo "Optional options:"
+    echo "  -j NUM      Upload concurrency (default: $CONCURRENCY)"
+    echo "  -R          Dry run: don't actually upload"
+    echo "  -h          Show usage"
+}
+
+function parse_options()
+{
+    local OPTIND=1
+    local ORIG_ARGV
+    local opt
+    while getopts "u:k:j:Rh" opt; do
+        case "$opt" in
+        u)
+            API_USERNAME="$OPTARG"
+            ;;
+        k)
+            API_KEY_PATH=$(absolute_path "$OPTARG")
+            ;;
+        j)
+            CONCURRENCY="$OPTARG"
+            ;;
+        R)
+            DRY_RUN=true
+            ;;
+        h)
+            usage
+            exit
+            ;;
+        *)
+            return 1
+            ;;
+        esac
+    done
+
+    (( OPTIND -= 1 )) || true
+    shift $OPTIND || true
+    ORIG_ARGV=("$@")
+
+    if [[ "$API_USERNAME" = "" ]]; then
+        echo 'ERROR: please specify a Bintray API username with -u.' >&2
+        exit 1
+    fi
+    if [[ "$API_KEY_PATH" = "" ]]; then
+        echo 'ERROR: please specify a Bintray API key file path with -k.' >&2
+        exit 1
+    fi
+    if [[ $# -eq 0 ]]; then
+        echo 'ERROR: please specify one or more DEB files to upload.' >&2
+        exit 1
+    fi
+    FILES=("$@")
+}
+
+parse_options "$@"
+
+if tty -s; then
+    TTY_ARGS=(-t -i)
+else
+    TTY_ARGS=()
+fi
+
+UTILITY_IMAGE_VERSION=$(read_single_value_file "$SELFDIR/environments/utility/image_tag")
+
+MOUNT_ARGS=()
+for F in "${FILES[@]}"; do
+    ABS_PATH=$(absolute_path "$F")
+    MOUNT_ARGS+=(-v "$ABS_PATH:/input/$ABS_PATH:ro")
+done
+
+echo '--- Entering main Docker container ---'
+verbose_run docker run --rm --init "${TTY_ARGS[@]}" \
+    -v "$SELFDIR:/system:ro" \
+    -v "$API_KEY_PATH:/bintray_api_key.txt:ro" \
+    "${MOUNT_ARGS[@]}" \
+    -e "API_USERNAME=$API_USERNAME" \
+    -e "CONCURRENCY=$CONCURRENCY" \
+    -e "DRY_RUN=$DRY_RUN" \
+    --user "$(id -u):$(id -g)" \
+    "fullstaq/ruby-build-env-utility:$UTILITY_IMAGE_VERSION" \
+    /system/container-entrypoints/upload-debs

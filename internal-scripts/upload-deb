@@ -1,0 +1,63 @@
+#!/bin/bash
+set -e
+
+SELFDIR=$(dirname "$0")
+SELFDIR=$(cd "$SELFDIR" && pwd)
+# shellcheck source=../lib/library.sh
+source "$SELFDIR/../lib/library.sh"
+
+function list_deb_environments()
+{
+    grep -l 'apt install' /system/environments/*/Dockerfile |
+        xargs -n 1 dirname |
+        xargs -n 1 basename |
+        grep -v utility
+}
+
+function upload()
+{
+    local REPO_DISTRO="$1"
+    local REPO_ARCH="$2"
+    local -a CURL_COMMAND=(
+        curl -sSLf --netrc-file /tmp/curl-creds -X PUT -T "$FILE"
+        "https://api.bintray.com/api/v1/content/fullstaq/fullstaq-ruby-apt/fullstaq-ruby/all/$BASENAME;deb_distribution=$REPO_DISTRO;deb_component=main;deb_architecture=$REPO_ARCH"
+    )
+    if $DRY_RUN; then
+        echo "+ Dry-running: ${CURL_COMMAND[*]}"
+    else
+        set +e
+        run "${CURL_COMMAND[@]}" 2>&1
+        local EXITSTATUS=$?
+        set -e
+
+        # Ensure that the output ends with a newline even if the HTTP response doesn't.
+        echo
+        return "$EXITSTATUS"
+    fi
+}
+
+FILE="$1"
+BASENAME="$2"
+
+ALL_SUPPORTED_DISTROS=($(list_deb_environments))
+ALL_SUPPORTED_ARCHITECTURES=(amd64)
+
+set -o pipefail
+
+ARCHS=($(cut -d _ -f 4 <<<"$BASENAME" | sed 's/\..*//'))
+if [[ "${ARCHS[0]}" = all ]]; then
+    ARCHS=("${ALL_SUPPORTED_ARCHITECTURES[@]}")
+fi
+
+DEB_INFO=$(dpkg-deb -I "$FILE")
+if grep -q '^  Distribution:' <<<"$DEB_INFO"; then
+    DISTROS=($(grep '^  Distribution:' <<<"$DEB_INFO" | perl -pe 's/.*?: *//'))
+else
+    DISTROS=("${ALL_SUPPORTED_DISTROS[@]}")
+fi
+
+for REPO_DISTRO in "${DISTROS[@]}"; do
+    for REPO_ARCH in "${ARCHS[@]}"; do
+        upload "$REPO_DISTRO" "$REPO_ARCH"
+    done
+done
