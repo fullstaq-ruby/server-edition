@@ -16,11 +16,12 @@ function list_deb_environments()
 
 function upload()
 {
-    local REPO_DISTRO="$1"
-    local REPO_ARCH="$2"
+    local REPO_DISTROS="$1"
+    local REPO_ARCHS="$2"
+    local REPO_OVERRIDE="$3"
     local -a CURL_COMMAND=(
         curl -sSLf --netrc-file /tmp/curl-creds -X PUT -T "$FILE"
-        "https://api.bintray.com/api/v1/content/fullstaq/fullstaq-ruby-apt/fullstaq-ruby/all/$BASENAME;deb_distribution=$REPO_DISTRO;deb_component=main;deb_architecture=$REPO_ARCH"
+        "https://api.bintray.com/api/v1/content/fullstaq/fullstaq-ruby-apt/fullstaq-ruby/all/$BASENAME;deb_distribution=$REPO_DISTROS;deb_component=main;deb_architecture=$REPO_ARCHS;override=$REPO_OVERRIDE"
     )
     if $DRY_RUN; then
         echo "+ Dry-running: ${CURL_COMMAND[*]}"
@@ -38,6 +39,7 @@ function upload()
 
 FILE="$1"
 BASENAME="$2"
+REPUBLISH="$3"
 
 ALL_SUPPORTED_DISTROS=($(list_deb_environments))
 ALL_SUPPORTED_ARCHITECTURES=(amd64)
@@ -56,8 +58,14 @@ else
     DISTROS=("${ALL_SUPPORTED_DISTROS[@]}")
 fi
 
-for REPO_DISTRO in "${DISTROS[@]}"; do
-    for REPO_ARCH in "${ARCHS[@]}"; do
-        upload "$REPO_DISTRO" "$REPO_ARCH"
-    done
-done
+IFS=,
+ARCHS_STRING="${ARCHS[*]}"
+DISTROS_STRING="${DISTROS[*]}"
+if $REPUBLISH; then
+    OVERRIDE=1
+else
+    OVERRIDE=0
+fi
+unset IFS
+
+upload "$DISTROS_STRING" "$ARCHS_STRING" "$OVERRIDE"
