@@ -18,8 +18,12 @@ elif ls -d /input/repo/pool/main/f/*malloctrim 2>/dev/null; then
 else
     VARIANT=normal
 fi
-RUBY_PACKAGE_VERSION=$(perl -pe 's/.+?_(.+?)_.*/\1/' <<<"$RUBY_PACKAGE_NAME")
-RUBY_PACKAGE_VERSION_WITHOUT_VARIANT_SUFFIX=$(sed 's/-.*//' <<<"$RUBY_PACKAGE_VERSION")
+
+DEB_INFO=$(dpkg-deb -I /input/repo/pool/main/f/fullstaq-ruby-*/*.deb)
+RUBY_PACKAGE_VERSION=$(grep '^  Package version with variant suffix:' <<<"$DEB_INFO" | perl -pe 's/.*?: *//')
+RUBY_PACKAGE_VERSION_WITHOUT_VARIANT_SUFFIX=$(grep '^  Package version without variant suffix:' <<<"$DEB_INFO" | perl -pe 's/.*?: *//')
+echo "+ Detected package version (with variant suffix): $RUBY_PACKAGE_VERSION"
+echo "+ Detected package version (without variant suffix): $RUBY_PACKAGE_VERSION_WITHOUT_VARIANT_SUFFIX"
 echo "+ Detected variant: $VARIANT"
 
 echo "+ Create /etc/apt/sources.list.d/local.list"

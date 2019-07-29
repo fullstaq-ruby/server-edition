@@ -125,7 +125,7 @@ module Support
     def rbenv_package_path(package_format)
       case package_format
       when :DEB
-        "#{output_dir}/fullstaq-rbenv_#{rbenv_version}_#{rbenv_package_revision}_all.deb"
+        "#{output_dir}/fullstaq-rbenv_#{rbenv_version}-#{rbenv_package_revision}_all.deb"
       when :RPM
         "#{output_dir}/fullstaq-rbenv-#{rbenv_version}-#{rbenv_package_revision}.noarch.rpm"
       else
@@ -202,7 +202,7 @@ module Support
     def ruby_package_path(package_version, distro, variant)
       case distro[:package_format]
       when :DEB
-        "#{output_dir}/fullstaq-ruby_#{package_version[:id]}#{variant[:package_suffix]}_#{package_version[:package_revision]}-#{distro[:name]}_#{deb_arch}.deb"
+        "#{output_dir}/fullstaq-ruby-#{package_version[:id]}#{variant[:package_suffix]}_#{package_version[:package_revision]}-#{distro[:name]}_#{deb_arch}.deb"
       when :RPM
         "#{output_dir}/fullstaq-ruby-#{package_version[:id]}#{variant[:package_suffix]}-rev#{package_version[:package_revision]}-#{sanitize_distro_name_for_rpm(distro[:name])}.#{rpm_arch}.rpm"
       else
