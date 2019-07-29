@@ -8,22 +8,43 @@ source "$SELFDIR/../lib/library.sh"
 
 
 header "Installing packages"
+ESSENTIAL_PACKAGES=(perl sudo binutils)
 run apt update
-run apt install -y perl sudo binutils
 
-DEB_INFO=$(dpkg-deb -I /input/repo/pool/main/f/fullstaq-ruby-*/*.deb)
-RUBY_PACKAGE_VERSION=$(grep '^  Package version with variant suffix:' <<<"$DEB_INFO" | perl -pe 's/.*?: *//')
-RUBY_PACKAGE_VERSION_WITHOUT_VARIANT_SUFFIX=$(grep '^  Package version without variant suffix:' <<<"$DEB_INFO" | perl -pe 's/.*?: *//')
-VARIANT=$(grep '^  Variant:' <<<"$DEB_INFO" | perl -pe 's/.*?: *//')
-echo "+ Detected package version (with variant suffix): $RUBY_PACKAGE_VERSION"
-echo "+ Detected package version (without variant suffix): $RUBY_PACKAGE_VERSION_WITHOUT_VARIANT_SUFFIX"
-echo "+ Detected variant: $VARIANT"
+if [[ "$SERVER" = "" ]]; then
+    run apt install -y "${ESSENTIAL_PACKAGES[@]}"
 
-echo "+ Create /etc/apt/sources.list.d/local.list"
-echo "deb [allow-insecure=yes] file:$REPO_PATH test main" > /etc/apt/sources.list.d/local.list
-cat /etc/apt/sources.list.d/local.list
-run apt update
-run apt install -y --allow-unauthenticated "fullstaq-ruby-$RUBY_PACKAGE_VERSION"
+    DEB_INFO=$(dpkg-deb -I /input/repo/pool/main/f/fullstaq-ruby-*/*.deb)
+    RUBY_PACKAGE_VERSION=$(grep '^  Package version with variant suffix:' <<<"$DEB_INFO" | perl -pe 's/.*?: *//')
+    RUBY_PACKAGE_VERSION_WITHOUT_VARIANT_SUFFIX=$(grep '^  Package version without variant suffix:' <<<"$DEB_INFO" | perl -pe 's/.*?: *//')
+    VARIANT=$(grep '^  Variant:' <<<"$DEB_INFO" | perl -pe 's/.*?: *//')
+    echo "+ Detected package version (possibly with variant suffix): $RUBY_PACKAGE_VERSION"
+    echo "+ Detected package version (without variant suffix): $RUBY_PACKAGE_VERSION_WITHOUT_VARIANT_SUFFIX"
+    echo "+ Detected variant: $VARIANT"
+
+    echo "+ Create /etc/apt/sources.list.d/local.list"
+    echo "deb [allow-insecure=yes] file:$REPO_PATH test main" > /etc/apt/sources.list.d/local.list
+    cat /etc/apt/sources.list.d/local.list
+    run apt update
+    run apt install -y --allow-unauthenticated "fullstaq-ruby-$RUBY_PACKAGE_VERSION"
+else
+    run apt install -y "${ESSENTIAL_PACKAGES[@]}" gnupg apt-transport-https ca-certificates
+    run apt-key add /system/fullstaq-ruby.asc
+    echo "+ Create /etc/apt/sources.list.d/server.list"
+    echo "deb $SERVER $APT_DISTRO_NAME main" > /etc/apt/sources.list.d/server.list
+    cat /etc/apt/sources.list.d/server.list
+    run apt update
+
+    echo "+ apt-cache show fullstaq-ruby-$RUBY_PACKAGE_VERSION"
+    DEB_INFO=$(apt-cache show "fullstaq-ruby-$RUBY_PACKAGE_VERSION")
+    RUBY_PACKAGE_VERSION_WITHOUT_VARIANT_SUFFIX=$(grep '^ Package version without variant suffix:' <<<"$DEB_INFO" | perl -pe 's/.*?: *//')
+    VARIANT=$(grep '^ Variant:' <<<"$DEB_INFO" | perl -pe 's/.*?: *//')
+    echo "+ Detected package version (possibly with variant suffix): $RUBY_PACKAGE_VERSION"
+    echo "+ Detected package version (without variant suffix): $RUBY_PACKAGE_VERSION_WITHOUT_VARIANT_SUFFIX"
+    echo "+ Detected variant: $VARIANT"
+
+    run apt install -y fullstaq-ruby-"$RUBY_PACKAGE_VERSION"
+fi
 
 echo
 

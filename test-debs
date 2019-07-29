@@ -6,22 +6,35 @@ SELFDIR=$(cd "$SELFDIR" && pwd)
 # shellcheck source=lib/library.sh
 source "$SELFDIR/lib/library.sh"
 
-RUBY_DEB_PATH=
-RBENV_DEB_PATH=
+SERVER=
 IMAGE=
 EXPECTED_VARIANT=
+RUBY_DEB_PATH=
+RBENV_DEB_PATH=
+APT_DISTRO_NAME=
+RUBY_PACKAGE_VERSION=
 DEBUG_ON_FAIL=false
 
 function usage()
 {
     echo "Usage: ./test-debs <OPTIONS>"
-    echo "Test built Debian packages."
+    echo "Test built Debian packages. Either tests local .deb files (which"
+    echo "is the default mode), or tests packages on an actual APT server."
     echo
     echo "Required options:"
-    echo "  -r PATH     Path to Ruby DEB package"
-    echo "  -b PATH     Path to Rbenv DEB package"
+    echo "  -S URL      Test packages on the given APT server, not local files"
+    echo "              (e.g. https://apt.fullstaqruby.org)"
     echo "  -i IMAGE    Image name to run test in (e.g. ubuntu:18.04)"
     echo "  -v VARIANT  Expected variant name (one of: normal, jemalloc, malloctrim)"
+    echo
+    echo "Required options (local file mode):"
+    echo "  -r PATH     Path to Ruby DEB package"
+    echo "  -b PATH     Path to Rbenv DEB package"
+    echo
+    echo "Required options (server mode):"
+    echo "  -d NAME     APT repo distribution name (e.g. ubuntu-18.04)"
+    echo "  -n VERSION  Ruby package version to test against"
+    echo "              (e.g. 2.6; 2.6-jemalloc)"
     echo
     echo "Optional options:"
     echo "  -D          Open a debug shell on failure"
@@ -33,19 +46,28 @@ function parse_options()
     local OPTIND=1
     local ORIG_ARGV
     local opt
-    while getopts "r:b:i:v:Dh" opt; do
+    while getopts "S:i:v:r:b:d:n:Dh" opt; do
         case "$opt" in
-        r)
-            RUBY_DEB_PATH=$(absolute_path "$OPTARG")
-            ;;
-        b)
-            RBENV_DEB_PATH=$(absolute_path "$OPTARG")
+        S)
+            SERVER="$OPTARG"
             ;;
         i)
             IMAGE="$OPTARG"
             ;;
         v)
             EXPECTED_VARIANT="$OPTARG"
+            ;;
+        r)
+            RUBY_DEB_PATH=$(absolute_path "$OPTARG")
+            ;;
+        b)
+            RBENV_DEB_PATH=$(absolute_path "$OPTARG")
+            ;;
+        d)
+            APT_DISTRO_NAME="$OPTARG"
+            ;;
+        n)
+            RUBY_PACKAGE_VERSION="$OPTARG"
             ;;
         D)
             DEBUG_ON_FAIL=true
@@ -64,21 +86,48 @@ function parse_options()
     shift $OPTIND || true
     ORIG_ARGV=("$@")
 
-    if [[ "$RUBY_DEB_PATH" = "" ]]; then
-        echo 'ERROR: please specify a Ruby DEB package path with -r.' >&2
-        exit 1
-    fi
-    if [[ ! -e "$RUBY_DEB_PATH" ]]; then
-        echo "ERROR: $RUBY_DEB_PATH does not exist." >&2
-        exit 1
-    fi
-    if [[ "$RBENV_DEB_PATH" = "" ]]; then
-        echo 'ERROR: please specify an Rbenv DEB package path with -b.' >&2
-        exit 1
-    fi
-    if [[ ! -e "$RBENV_DEB_PATH" ]]; then
-        echo "ERROR: $RBENV_DEB_PATH does not exist." >&2
-        exit 1
+    if [[ "$SERVER" = "" ]]; then
+        if [[ "$RUBY_DEB_PATH" = "" ]]; then
+            echo 'ERROR: please specify a Ruby DEB package path with -r.' >&2
+            exit 1
+        fi
+        if [[ ! -e "$RUBY_DEB_PATH" ]]; then
+            echo "ERROR: $RUBY_DEB_PATH does not exist." >&2
+            exit 1
+        fi
+        if [[ "$RBENV_DEB_PATH" = "" ]]; then
+            echo 'ERROR: please specify an Rbenv DEB package path with -b.' >&2
+            exit 1
+        fi
+        if [[ ! -e "$RBENV_DEB_PATH" ]]; then
+            echo "ERROR: $RBENV_DEB_PATH does not exist." >&2
+            exit 1
+        fi
+        if [[ "$APT_DISTRO_NAME" != "" ]]; then
+            echo 'ERROR: if -S is not given, then -d may also not be given.' >&2
+            exit 1
+        fi
+        if [[ "$RUBY_PACKAGE_VERSION" != "" ]]; then
+            echo 'ERROR: if -S is not given, then -n may also not be given.' >&2
+            exit 1
+        fi
+    else
+        if [[ "$RUBY_DEB_PATH" != "" ]]; then
+            echo 'ERROR: is -S is given, then -r may not be given.' >&2
+            exit 1
+        fi
+        if [[ "$RBENV_DEB_PATH" != "" ]]; then
+            echo 'ERROR: is -S is given, then -b may not be given.' >&2
+            exit 1
+        fi
+        if [[ "$APT_DISTRO_NAME" = "" ]]; then
+            echo 'ERROR: please specify an APT repo distro name with -d.' >&2
+            exit 1
+        fi
+        if [[ "$RUBY_PACKAGE_VERSION" = "" ]]; then
+            echo 'ERROR: please specify a Ruby package version to test with -n.' >&2
+            exit 1
+        fi
     fi
     if [[ "$IMAGE" = "" ]]; then
         echo 'ERROR: please specify an image name with -i.' >&2
@@ -98,6 +147,7 @@ else
     TTY_ARGS=()
 fi
 
+RUN_ARGS=()
 UTILITY_IMAGE_VERSION=$(read_single_value_file "$SELFDIR/environments/utility/image_tag")
 
 TEMP_DIR=$(mktemp -d /tmp/test.XXXXXX)
@@ -107,25 +157,34 @@ function _cleanup()
 }
 mkdir -p "$TEMP_DIR/repo"
 
-echo '--- Entering preparation Docker container ---'
-verbose_run docker run --rm --init "${TTY_ARGS[@]}" \
-    -v "$SELFDIR:/system:ro" \
-    -v "$RUBY_DEB_PATH:/input/$(basename "$RUBY_DEB_PATH"):ro" \
-    -v "$RBENV_DEB_PATH:/input/$(basename "$RBENV_DEB_PATH"):ro" \
-    -v "$TEMP_DIR/repo:/output" \
-    --user "$(id -u):$(id -g)" \
-    "fullstaq/ruby-build-env-utility:$UTILITY_IMAGE_VERSION" \
-    /system/container-entrypoints/test-debs-prepare
-echo
+if [[ "$SERVER" = "" ]]; then
+    echo '--- Entering preparation Docker container ---'
+    verbose_run docker run --rm --init "${TTY_ARGS[@]}" \
+        -v "$SELFDIR:/system:ro" \
+        -v "$RUBY_DEB_PATH:/input/$(basename "$RUBY_DEB_PATH"):ro" \
+        -v "$RBENV_DEB_PATH:/input/$(basename "$RBENV_DEB_PATH"):ro" \
+        -v "$TEMP_DIR/repo:/output" \
+        --user "$(id -u):$(id -g)" \
+        "fullstaq/ruby-build-env-utility:$UTILITY_IMAGE_VERSION" \
+        /system/container-entrypoints/test-debs-prepare
+    echo
+    RUN_ARGS+=()
+else
+    RUN_ARGS+=(
+        -e "APT_DISTRO_NAME=$APT_DISTRO_NAME"
+        -e "RUBY_PACKAGE_VERSION=$RUBY_PACKAGE_VERSION"
+    )
+fi
 
 
 echo '--- Entering main Docker container ---'
 verbose_run docker run --rm --init "${TTY_ARGS[@]}" \
     -v "$SELFDIR:/system:ro" \
     -v "$TEMP_DIR/repo:/input/repo:ro" \
-    -e "RUBY_PACKAGE_NAME=$(basename "$RUBY_DEB_PATH")" \
+    -e "SERVER=$SERVER" \
     -e "EXPECTED_VARIANT=$EXPECTED_VARIANT" \
     -e "DEBUG_ON_FAIL=$DEBUG_ON_FAIL" \
+    "${RUN_ARGS[@]}" \
     --user root \
     --entrypoint /system/container-entrypoints/test-debs \
     "$IMAGE"
