@@ -126,11 +126,11 @@ function parse_options()
         fi
     else
         if [[ "$RUBY_DEB_PATH" != "" ]]; then
-            echo 'ERROR: is -S is given, then -r may not be given.' >&2
+            echo 'ERROR: if -S is given, then -r may not be given.' >&2
             exit 1
         fi
         if [[ "$RBENV_DEB_PATH" != "" ]]; then
-            echo 'ERROR: is -S is given, then -b may not be given.' >&2
+            echo 'ERROR: if -S is given, then -b may not be given.' >&2
             exit 1
         fi
         if [[ "$COMMON_DEB_PATH" != "" ]]; then
