@@ -46,12 +46,13 @@ ALL_SUPPORTED_ARCHITECTURES=(amd64)
 
 set -o pipefail
 
-ARCHS=($(cut -d _ -f 3 <<<"$BASENAME" | sed 's/\..*//'))
+DEB_INFO=$(dpkg-deb -I "$FILE")
+
+ARCHS=($(grep '^ Architecture:' <<<"$DEB_INFO" | perl -pe 's/.*?: *//'))
 if [[ "${ARCHS[0]}" = all ]]; then
     ARCHS=("${ALL_SUPPORTED_ARCHITECTURES[@]}")
 fi
 
-DEB_INFO=$(dpkg-deb -I "$FILE")
 if grep -q '^  Distribution:' <<<"$DEB_INFO"; then
     DISTROS=($(grep '^  Distribution:' <<<"$DEB_INFO" | perl -pe 's/.*?: *//'))
 else

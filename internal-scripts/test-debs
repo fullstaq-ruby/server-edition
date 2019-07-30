@@ -11,17 +11,10 @@ header "Installing packages"
 run apt update
 run apt install -y perl sudo binutils
 
-if ls -d /input/repo/pool/main/f/*jemalloc 2>/dev/null; then
-    VARIANT=jemalloc
-elif ls -d /input/repo/pool/main/f/*malloctrim 2>/dev/null; then
-    VARIANT=malloctrim
-else
-    VARIANT=normal
-fi
-
 DEB_INFO=$(dpkg-deb -I /input/repo/pool/main/f/fullstaq-ruby-*/*.deb)
 RUBY_PACKAGE_VERSION=$(grep '^  Package version with variant suffix:' <<<"$DEB_INFO" | perl -pe 's/.*?: *//')
 RUBY_PACKAGE_VERSION_WITHOUT_VARIANT_SUFFIX=$(grep '^  Package version without variant suffix:' <<<"$DEB_INFO" | perl -pe 's/.*?: *//')
+VARIANT=$(grep '^  Variant:' <<<"$DEB_INFO" | perl -pe 's/.*?: *//')
 echo "+ Detected package version (with variant suffix): $RUBY_PACKAGE_VERSION"
 echo "+ Detected package version (without variant suffix): $RUBY_PACKAGE_VERSION_WITHOUT_VARIANT_SUFFIX"
 echo "+ Detected variant: $VARIANT"
