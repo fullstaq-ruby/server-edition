@@ -10,6 +10,7 @@ API_USERNAME=
 API_KEY_PATH=
 CONCURRENCY=4
 DRY_RUN=false
+REPUBLISH=false
 FILES=()
 
 function usage()
@@ -24,6 +25,7 @@ function usage()
     echo "Optional options:"
     echo "  -j NUM      Upload concurrency (default: $CONCURRENCY)"
     echo "  -R          Dry run: don't actually upload"
+    echo "  -f          Re-publish already published package"
     echo "  -h          Show usage"
 }
 
@@ -32,7 +34,7 @@ function parse_options()
     local OPTIND=1
     local ORIG_ARGV
     local opt
-    while getopts "u:k:j:Rh" opt; do
+    while getopts "u:k:j:Rfh" opt; do
         case "$opt" in
         u)
             API_USERNAME="$OPTARG"
@@ -45,6 +47,9 @@ function parse_options()
             ;;
         R)
             DRY_RUN=true
+            ;;
+        f)
+            REPUBLISH=true
             ;;
         h)
             usage
@@ -99,6 +104,7 @@ verbose_run docker run --rm --init "${TTY_ARGS[@]}" \
     -e "API_USERNAME=$API_USERNAME" \
     -e "CONCURRENCY=$CONCURRENCY" \
     -e "DRY_RUN=$DRY_RUN" \
+    -e "REPUBLISH=$REPUBLISH" \
     --user "$(id -u):$(id -g)" \
     "fullstaq/ruby-build-env-utility:$UTILITY_IMAGE_VERSION" \
     /system/container-entrypoints/upload-rpms

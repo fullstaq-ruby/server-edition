@@ -11,6 +11,7 @@ require_container_mount /bintray_api_key.txt
 require_container_envvar API_USERNAME
 require_container_envvar CONCURRENCY
 require_container_envvar DRY_RUN
+require_container_envvar REPUBLISH
 
 set -o pipefail
 cd /input
@@ -32,4 +33,4 @@ exec parallel --will-cite \
             $_ = sprintf("%-60s | ", $basename);
         }
     =}' \
-    /system/internal-scripts/upload-rpm '{}' '{/}'
+    /system/internal-scripts/upload-rpm '{}' '{/}' "$REPUBLISH"
