@@ -10,21 +10,41 @@ source "$SELFDIR/../lib/library.sh"
 header "Installing packages"
 run yum install -y perl sudo binutils which
 
-RPM_INFO=$(rpm -qpi /input/repo/fullstaq-ruby-*.rpm)
-RUBY_PACKAGE_VERSION=$(grep '^Package version with variant suffix:' <<<"$RPM_INFO" | perl -pe 's/.*?: *//')
-RUBY_PACKAGE_VERSION_WITHOUT_VARIANT_SUFFIX=$(grep '^Package version without variant suffix:' <<<"$RPM_INFO" | perl -pe 's/.*?: *//')
-VARIANT=$(grep '^Variant:' <<<"$RPM_INFO" | perl -pe 's/.*?: *//')
-echo "+ Detected package version (with variant suffix): $RUBY_PACKAGE_VERSION"
-echo "+ Detected package version (without variant suffix): $RUBY_PACKAGE_VERSION_WITHOUT_VARIANT_SUFFIX"
-echo "+ Detected variant: $VARIANT"
+if [[ "$SERVER" = "" ]]; then
+    RPM_INFO=$(rpm -qpi /input/repo/fullstaq-ruby-*.rpm)
+    RUBY_PACKAGE_VERSION=$(grep '^Package version with variant suffix:' <<<"$RPM_INFO" | perl -pe 's/.*?: *//')
+    RUBY_PACKAGE_VERSION_WITHOUT_VARIANT_SUFFIX=$(grep '^Package version without variant suffix:' <<<"$RPM_INFO" | perl -pe 's/.*?: *//')
+    VARIANT=$(grep '^Variant:' <<<"$RPM_INFO" | perl -pe 's/.*?: *//')
 
-echo "+ Create /etc/yum.repos.d/local.repo"
-cat <<EOF > /etc/yum.repos.d/local.repo
+    echo "+ Create /etc/yum.repos.d/local.repo"
+    cat <<EOF > /etc/yum.repos.d/local.repo
 [local]
 name=local
 baseurl=file:///input/repo
 gpgcheck=0
+enabled=1
 EOF
+else
+    echo "+ Create /etc/yum.repos.d/fullstaq-ruby.repo"
+    cat <<EOF > /etc/yum.repos.d/fullstaq-ruby.repo
+[fullstaq-ruby]
+name=fullstaq-ruby
+baseurl=$SERVER/\$basearch
+gpgcheck=0
+repo_gpgcheck=1
+enabled=1
+gpgkey=file:///system/fullstaq-ruby.asc
+sslverify=1
+EOF
+    run yum -q makecache -y --disablerepo='*' --enablerepo=fullstaq-ruby
+    RPM_INFO=$(yum info "fullstaq-ruby-$RUBY_PACKAGE_VERSION")
+    RUBY_PACKAGE_VERSION_WITHOUT_VARIANT_SUFFIX=$(grep 'Package version without variant suffix:' <<<"$RPM_INFO" | perl -pe 's/ *:.*?: *//')
+    VARIANT=$(grep 'Variant:' <<<"$RPM_INFO" | perl -pe 's/ *:.*?: *//')
+fi
+
+echo "+ Detected package version (possibly with variant suffix): $RUBY_PACKAGE_VERSION"
+echo "+ Detected package version (without variant suffix): $RUBY_PACKAGE_VERSION_WITHOUT_VARIANT_SUFFIX"
+echo "+ Detected variant: $VARIANT"
 run yum install -y "fullstaq-ruby-$RUBY_PACKAGE_VERSION" fullstaq-rbenv
 
 echo

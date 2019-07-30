@@ -44,7 +44,7 @@ ALL_SUPPORTED_ARCHITECTURES=(x86_64)
 
 set -o pipefail
 
-RPM_INFO=$(rpm -qpi "$FILE" )
+RPM_INFO=$(rpm -qpi "$FILE")
 
 ARCHS=($(grep '^Architecture *:' <<<"$RPM_INFO" | perl -pe 's/.*?: *//'))
 if [[ "${ARCHS[0]}" = noarch ]]; then
