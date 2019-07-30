@@ -54,7 +54,7 @@ Distribution: $ENVIRONMENT" \
     --url "https://github.com/fullstaq-labs/fullstaq-ruby-server-edition" \
     --depends "$DEPS" \
     --provides fullstaq-ruby \
-    --deb-recommends fullstaq-rbenv \
+    --deb-recommends fullstaq-ruby-common \
     --deb-dist "$ENVIRONMENT" \
     usr
 set +x

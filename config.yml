@@ -60,6 +60,16 @@ rbenv:
   package_revision: 1
 
 ## (Required)
+## fullstaq-ruby-common package parameters.
+common:
+  rpm:
+    version: 1.0
+    package_revision: 0
+  deb:
+    version: 1.0
+    package_revision: 0
+
+## (Required)
 ## Which variants to build.
 variants:
   normal: true
