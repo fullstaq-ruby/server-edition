@@ -43,7 +43,7 @@ bundle exec fpm -s dir -t deb -f --log info \
     --license MIT \
     --vendor Fullstaq \
     --maintainer "Fullstaq <info@fullstaq.com>" \
-    --description "Fullstaq Ruby $VERSION" \
+    --description "Fullstaq Rbenv $VERSION" \
     --url "https://github.com/fullstaq-labs/fullstaq-rbenv" \
     --provides rbenv \
     bin=/usr/ \
