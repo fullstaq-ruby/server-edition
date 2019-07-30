@@ -18,6 +18,9 @@ task('build' => [Support.rbenv_deb_path, Support.rbenv_rpm_path])
 desc('Test all packages')
 task('test' => [Support.rbenv_deb_path, Support.rbenv_rpm_path])
 
+desc('Test all public repository packages')
+task('repotest')
+
 ### Lifecycle tasks ###
 
 task '_start' do
@@ -140,6 +143,9 @@ Support.ruby_package_versions.each do |ruby_package_version|
 
   desc("Test all packages for Ruby #{ruby_package_version[:id]}")
   task("test:ruby-#{ruby_package_version[:id]}")
+
+  desc("Test all public repository packages for Ruby #{ruby_package_version[:id]}")
+  task("repotest:ruby-#{ruby_package_version[:id]}")
 end
 
 Support.ruby_package_versions.each do |ruby_package_version|
@@ -162,6 +168,9 @@ Support.ruby_package_versions.each do |ruby_package_version|
 
       task('test' => "test:ruby-#{ruby_package_version[:id]}:#{distro[:name]}:#{variant[:name]}")
       task("test:ruby-#{ruby_package_version[:id]}" => "test:ruby-#{ruby_package_version[:id]}:#{distro[:name]}:#{variant[:name]}")
+
+      task('repotest' => "repotest:ruby-#{ruby_package_version[:id]}:#{distro[:name]}:#{variant[:name]}")
+      task("repotest:ruby-#{ruby_package_version[:id]}" => "repotest:ruby-#{ruby_package_version[:id]}:#{distro[:name]}:#{variant[:name]}")
 
 
       # ruby-bin-XXX-VARIANT-DISTRO.tar.gz
@@ -246,6 +255,31 @@ Support.ruby_package_versions.each do |ruby_package_version|
                 '-b', rbenv_package_path,
                 '-i', Support.determine_test_image_for(distro),
                 '-v', variant[:name]
+            else
+              raise "BUG: unsupported package format: #{distro[:package_format].inspect}"
+            end
+          end
+        end
+      end
+
+      progress_entry.define_stage('RepoTest', "ruby-#{ruby_package_version[:id]}:#{distro[:name]}:#{variant[:name]}:repotest") do |progress_stage|
+        desc("Public repo test #{distro[:package_format]} for Ruby #{ruby_package_version[:id]}, for #{distro[:name]}, variant #{variant[:name]}")
+        task("repotest:ruby-#{ruby_package_version[:id]}:#{distro[:name]}:#{variant[:name]}") do
+          progress_stage.track_work do
+            case distro[:package_format]
+            when :DEB
+              Support.sh './test-debs',
+                '-S', 'https://apt.fullstaqruby.org',
+                '-i', Support.determine_test_image_for(distro),
+                '-v', variant[:name],
+                '-d', distro[:name],
+                '-n', "#{ruby_package_version[:id]}#{variant[:package_suffix]}"
+            when :RPM
+              Support.sh './test-rpms',
+                '-S', "https://yum.fullstaqruby.org/#{distro[:name]}",
+                '-i', Support.determine_test_image_for(distro),
+                '-v', variant[:name],
+                '-n', "#{ruby_package_version[:id]}#{variant[:package_suffix]}"
             else
               raise "BUG: unsupported package format: #{distro[:package_format].inspect}"
             end
