@@ -13,6 +13,8 @@ require_container_envvar CONCURRENCY
 require_container_envvar DRY_RUN
 require_container_envvar REPUBLISH
 
+export REPO_NAME="${REPO_NAME:-fullstaq-ruby-apt}"
+
 set -o pipefail
 cd /input
 
@@ -33,4 +35,4 @@ exec parallel --will-cite \
             $_ = sprintf("%-60s | ", $basename);
         }
     =}' \
-    /system/internal-scripts/upload-deb '{}' '{/}' "$REPUBLISH"
+    /system/internal-scripts/upload-deb "$REPO_NAME" '{}' '{/}' "$REPUBLISH"
