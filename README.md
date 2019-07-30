@@ -184,17 +184,17 @@ The Fullstaq Ruby native OS packages allow you to install Rubies by adding our r
 Let's say you're on Ubuntu (RHEL/CentOS packages use a different naming scheme). Let's pretend Fullstaq Ruby only packages Ruby 2.6.2 and Ruby 2.6.3 (and let's pretend the latter is also the latest release). You will be able to install the following packages:
 
  * Version 2.6:
-    - Normal variant: `fullstaq-ruby-2.6`
-    - Jemalloc variant: `fullstaq-ruby-2.6-jemalloc`
-    - Malloctrim variant: `fullstaq-ruby-2.6-malloctrim`
+    - Normal variant: `apt install fullstaq-ruby-2.6`
+    - Jemalloc variant: `apt install fullstaq-ruby-2.6-jemalloc`
+    - Malloctrim variant: `apt install fullstaq-ruby-2.6-malloctrim`
  * Version 2.6.2:
-    - Normal variant: `fullstaq-ruby-2.6.2`
-    - Jemalloc variant: `fullstaq-ruby-2.6.2-jemalloc`
-    - Malloctrim variant: `fullstaq-ruby-2.6.2-malloctrim`
+    - Normal variant: `apt install fullstaq-ruby-2.6.2`
+    - Jemalloc variant: `apt install fullstaq-ruby-2.6.2-jemalloc`
+    - Malloctrim variant: `apt install fullstaq-ruby-2.6.2-malloctrim`
  * Version 2.6.3:
-    - Normal variant: `fullstaq-ruby-2.6.3`
-    - Jemalloc variant: `fullstaq-ruby-2.6.3-jemalloc`
-    - Malloctrim variant: `fullstaq-ruby-2.6.3-malloctrim`
+    - Normal variant: `apt install fullstaq-ruby-2.6.3`
+    - Jemalloc variant: `apt install fullstaq-ruby-2.6.3-jemalloc`
+    - Malloctrim variant: `apt install fullstaq-ruby-2.6.3-malloctrim`
 
 All these packages can be installed in parallel. None of them conflict with each other, not even the variants.
 
@@ -374,22 +374,56 @@ Fullstaq Ruby, ensures that the right version of Jemalloc is used. We are a bunc
  * Supported RHEL/CentOS versions: 7
  * Supported architectures: x86-64
 
-> We don't have a YUM repository yet. That is planned for [epic 2 in the roadmap](https://github.com/fullstaq-labs/fullstaq-ruby-umbrella/projects).
+Add the Fullstaq Ruby repository by creating `/etc/yum.repos.d/fullstaq-ruby.repo`:
 
-You can find RPMs in the [Github releases page](https://github.com/fullstaq-labs/fullstaq-ruby-server-edition/releases). Please download two files:
+    [fullstaq-ruby]
+    name=fullstaq-ruby
+    baseurl=https://yum.fullstaqruby.org/centos-7/$basearch
+    gpgcheck=0
+    repo_gpgcheck=1
+    enabled=1
+    gpgkey=https://raw.githubusercontent.com/fullstaq-labs/fullstaq-ruby-server-edition/master/fullstaq-ruby.asc
+    sslverify=1
 
- 1. The `fullstaq-rbenv` RPM.
- 2. A Ruby RPM that matches the Ruby version, variant and distribution you want, e.g. `fullstaq-ruby-2.6-jemalloc-rev0-centos-7.x86_64.rpm`.
+Then install `fullstaq-ruby-common`:
 
-We recommend that you download a [minor version package](#minor_version_packages), e.g. `2.6` instead of `2.6.3`. That way you can easily stay up-to-date with tiny version upgrades and security patches.
+    sudo yum install fullstaq-ruby-common
 
-After downloading, install them both with YUM:
+Ruby packages are now available as `fullstaq-ruby-<VERSION>`:
+
+    $ sudo yum search fullstaq-ruby
+    ...
+    fullstaq-ruby-2.5.x86_64 : Fullstaq Ruby 2.5
+    fullstaq-ruby-2.5-jemalloc.x86_64 : Fullstaq Ruby 2.5-jemalloc
+    fullstaq-ruby-2.5-malloctrim.x86_64 : Fullstaq Ruby 2.5-malloctrim
+    ...
+    fullstaq-ruby-2.6.x86_64 : Fullstaq Ruby 2.6
+    fullstaq-ruby-2.6-jemalloc.x86_64 : Fullstaq Ruby 2.6-jemalloc
+    fullstaq-ruby-2.6-malloctrim.x86_64 : Fullstaq Ruby 2.6-malloctrim
+    ...
+
+You can either install a specific tiny version....
 
 ~~~bash
-sudo yum install fullstaq-rbenv-[...].noarch.rpm fullstaq-ruby-[...]-centos-7.x86_64.rpm
+sudo yum install fullstaq-ruby-2.6.3
 ~~~
 
-Note that you can even install multiple versions in parallel if you really want to. E.g. you can install a 2.6, 2.6.3 and 2.5.5 in parallel.
+...or ([recommended!](#minor_version_packages)) you can install the latest tiny version of a minor release (e.g. the latest Ruby 2.6):
+
+~~~bash
+# This will auto-update to the latest tiny version when it's released
+sudo yum install fullstaq-ruby-2.6
+~~~
+
+You can even install multiple versions in parallel if you really want to:
+
+~~~bash
+# Installs the latest 2.6
+sudo yum install fullstaq-ruby-2.6
+
+# In parallel, *also* install Ruby 2.6.3
+sudo yum install fullstaq-ruby-2.6.3
+~~~
 
 **Next steps:**
 
@@ -403,24 +437,73 @@ Note that you can even install multiple versions in parallel if you really want 
  * Supported Ubuntu versions: 18.04
  * Supported architectures: x86-64
 
-> We don't have an APT repository yet. That is planned for [epic 2 in the roadmap](https://github.com/fullstaq-labs/fullstaq-ruby-umbrella/projects).
-
-You can find DEBs in the [Github releases page](https://github.com/fullstaq-labs/fullstaq-ruby-server-edition/releases). Please download two files:
-
- 1. The `fullstaq-rbenv` DEB.
- 2. A Ruby DEB that matches the Ruby version, variant and distribution you want, e.g. `fullstaq-ruby_2.6-jemalloc_0-ubuntu-18.04_amd64.deb`.
-
-We recommend that you download a [minor version package](#minor_version_packages), e.g. `2.6` instead of `2.6.3`. That way you can easily stay up-to-date with tiny version upgrades and security patches.
-
-After downloading, install them both with APT:
+First, make sure your package manager supports HTTPS and that the necessary crypto tools are installed:
 
 ~~~bash
-sudo apt install ./fullstaq-rbenv_[...]_all.deb ./fullstaq-ruby_[...]_amd64.deb
+sudo apt install gnupg apt-transport-https ca-certificates curl
 ~~~
 
-**Note:** be sure to pass a directory prefix like `./` to `apt install`, otherwise APT won't recognize them as files and will think they're package names in APT!
+Next, add the Fullstaq Ruby repository by creating `/etc/apt/sources.list.d/fullstaq-ruby.list`. Paste **one** of the lines below depending your distro:
 
-Also note that you can even install multiple versions in parallel if you really want to. E.g. you can install a 2.6, 2.6.3 and 2.5.5 in parallel.
+~~~bash
+# Ubuntu 18.04
+deb https://apt.fullstaqruby.org ubuntu-18.04 main
+
+# Debian 9
+deb https://apt.fullstaqruby.org debian-9 main
+~~~
+
+Then run:
+
+~~~bash
+curl -SLfO https://raw.githubusercontent.com/fullstaq-labs/fullstaq-ruby-server-edition/master/fullstaq-ruby.asc
+sudo apt-key add fullstaq-ruby.asc
+sudo apt update
+~~~
+
+Ruby packages are now available as `fullstaq-ruby-<VERSION>`:
+
+    $ sudo apt search fullstaq-ruby
+    ...
+    fullstaq-ruby-2.5/ubuntu-18.04 1-ubuntu-18.04 amd64
+      Fullstaq Ruby 2.5
+
+    fullstaq-ruby-2.5-jemalloc/ubuntu-18.04 1-ubuntu-18.04 amd64
+      Fullstaq Ruby 2.5-jemalloc
+
+    fullstaq-ruby-2.5-malloctrim/ubuntu-18.04 1-ubuntu-18.04 amd64
+      Fullstaq Ruby 2.5-malloctrim
+    ...
+    fullstaq-ruby-2.6/ubuntu-18.04 1-ubuntu-18.04 amd64
+      Fullstaq Ruby 2.6
+
+    fullstaq-ruby-2.6-jemalloc/ubuntu-18.04 1-ubuntu-18.04 amd64
+      Fullstaq Ruby 2.6-jemalloc
+
+    fullstaq-ruby-2.6-malloctrim/ubuntu-18.04 1-ubuntu-18.04 amd64
+      Fullstaq Ruby 2.6-malloctrim
+    ...
+
+You can either install a specific tiny version....
+
+    sudo apt install fullstaq-ruby-2.6.3
+
+...or ([recommended!](#minor_version_packages)) you can install the latest tiny version of a minor release (e.g. the latest Ruby 2.6):
+
+~~~bash
+# This will auto-update to the latest tiny version when it's released
+sudo apt install fullstaq-ruby-2.6
+~~~
+
+You can even install multiple versions in parallel if you really want to:
+
+~~~bash
+# Installs the latest 2.6
+sudo apt install fullstaq-ruby-2.6
+
+# In parallel, *also* install Ruby 2.6.3
+sudo apt install fullstaq-ruby-2.6.3
+~~~
 
 **Next steps:**
 
