@@ -17,8 +17,8 @@ cat config.yml | ruby -ryaml -e 'puts YAML.load(STDIN)["rbenv"]["ref"]'
 
  * If true, then check whether the new Rbenv commit ref changed its version number compared to the previous Fullstaq Ruby release.
 
-    - If true, then reset `rbenv.ref` to 0.
-    - Otherwise, bump `rbenv.ref` if not already done.
+    - If true, then reset `rbenv.package_revision` to 0.
+    - Otherwise, bump `rbenv.package_revision` if not already done.
 
  * Otherwise, check whether any of these files have changed in such a way that they would change the Rbenv package contents or metadata:
 
@@ -26,7 +26,7 @@ cat config.yml | ruby -ryaml -e 'puts YAML.load(STDIN)["rbenv"]["ref"]'
             container-entrypoints/build-rbenv-deb \
             container-entrypoints/build-rbenv-rpm
 
-   If true, then bump `rbenv.ref` if not already done.
+   If true, then bump `rbenv.package_revision` if not already done.
 
 ## Step 2: check whether the fullstaq-ruby-common package version or revision needs to be changed
 
