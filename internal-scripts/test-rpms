@@ -10,15 +10,12 @@ source "$SELFDIR/../lib/library.sh"
 header "Installing packages"
 run yum install -y perl sudo binutils which
 
-if ls /input/repo/*jemalloc* 2>/dev/null; then
-    VARIANT=jemalloc
-elif ls /input/repo/*malloctrim* 2>/dev/null; then
-    VARIANT=malloctrim
-else
-    VARIANT=normal
-fi
-RUBY_PACKAGE_VERSION=$(perl -pe 's/.+?-([0-9].+?)-rev.+/\1/' <<<"$RUBY_PACKAGE_NAME")
-RUBY_PACKAGE_VERSION_WITHOUT_VARIANT_SUFFIX=$(sed 's/-.*//' <<<"$RUBY_PACKAGE_VERSION")
+RPM_INFO=$(rpm -qpi /input/repo/fullstaq-ruby-*.rpm)
+RUBY_PACKAGE_VERSION=$(grep '^Package version with variant suffix:' <<<"$RPM_INFO" | perl -pe 's/.*?: *//')
+RUBY_PACKAGE_VERSION_WITHOUT_VARIANT_SUFFIX=$(grep '^Package version without variant suffix:' <<<"$RPM_INFO" | perl -pe 's/.*?: *//')
+VARIANT=$(grep '^Variant:' <<<"$RPM_INFO" | perl -pe 's/.*?: *//')
+echo "+ Detected package version (with variant suffix): $RUBY_PACKAGE_VERSION"
+echo "+ Detected package version (without variant suffix): $RUBY_PACKAGE_VERSION_WITHOUT_VARIANT_SUFFIX"
 echo "+ Detected variant: $VARIANT"
 
 echo "+ Create /etc/yum.repos.d/local.repo"
