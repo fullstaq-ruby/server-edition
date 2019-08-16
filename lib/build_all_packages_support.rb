@@ -134,6 +134,42 @@ module Support
     end
 
 
+    def common_deb_version
+      @config[:common][:deb][:version]
+    end
+
+    def common_deb_package_revision
+      @config[:common][:deb][:package_revision]
+    end
+
+    def common_deb_path
+      common_package_path(:DEB)
+    end
+
+    def common_rpm_version
+      @config[:common][:rpm][:version]
+    end
+
+    def common_rpm_package_revision
+      @config[:common][:rpm][:package_revision]
+    end
+
+    def common_rpm_path
+      common_package_path(:RPM)
+    end
+
+    def common_package_path(package_format)
+      case package_format
+      when :DEB
+        "#{output_dir}/fullstaq-ruby-common_#{common_deb_version}-#{common_deb_package_revision}_all.deb"
+      when :RPM
+        "#{output_dir}/fullstaq-ruby-common-#{common_rpm_version}-#{common_rpm_package_revision}.noarch.rpm"
+      else
+        raise "Unsupported package format: #{package_format.inspect}"
+      end
+    end
+
+
     def jemalloc_source_basename
       "jemalloc-#{@config[:jemalloc_version]}.tar.bz2"
     end

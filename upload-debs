@@ -10,6 +10,7 @@ API_USERNAME=
 API_KEY_PATH=
 CONCURRENCY=4
 DRY_RUN=false
+REPO_NAME=fullstaq-ruby-apt
 REPUBLISH=false
 FILES=()
 
@@ -25,6 +26,7 @@ function usage()
     echo "Optional options:"
     echo "  -j NUM      Upload concurrency (default: $CONCURRENCY)"
     echo "  -R          Dry run: don't actually upload"
+    echo "  -n          Repository name to upload to (default: fullstaq-ruby-apt)"
     echo "  -f          Re-publish already published package"
     echo "  -h          Show usage"
 }
@@ -34,7 +36,7 @@ function parse_options()
     local OPTIND=1
     local ORIG_ARGV
     local opt
-    while getopts "u:k:j:Rfh" opt; do
+    while getopts "u:k:j:Rn:fh" opt; do
         case "$opt" in
         u)
             API_USERNAME="$OPTARG"
@@ -47,6 +49,9 @@ function parse_options()
             ;;
         R)
             DRY_RUN=true
+            ;;
+        n)
+            REPO_NAME="$OPTARG"
             ;;
         f)
             REPUBLISH=true
@@ -104,6 +109,7 @@ verbose_run docker run --rm --init "${TTY_ARGS[@]}" \
     -e "API_USERNAME=$API_USERNAME" \
     -e "CONCURRENCY=$CONCURRENCY" \
     -e "DRY_RUN=$DRY_RUN" \
+    -e "REPO_NAME=$REPO_NAME" \
     -e "REPUBLISH=$REPUBLISH" \
     --user "$(id -u):$(id -g)" \
     "fullstaq/ruby-build-env-utility:$UTILITY_IMAGE_VERSION" \

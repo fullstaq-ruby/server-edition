@@ -18,9 +18,10 @@ function upload()
 {
     local REPO_DISTRO="$1"
     local REPO_ARCH="$2"
+    local REPO_OVERRIDE="$3"
     local -a CURL_COMMAND=(
         curl -sSLf --netrc-file /tmp/curl-creds -X PUT -T "$FILE"
-        "https://api.bintray.com/api/v1/content/fullstaq/fullstaq-ruby-yum/fullstaq-ruby/all/$REPO_DISTRO/$REPO_ARCH/$BASENAME"
+        "https://api.bintray.com/api/v1/content/fullstaq/$REPO_NAME/fullstaq-ruby/all/$REPO_DISTRO/$REPO_ARCH/$BASENAME?override=$REPO_OVERRIDE"
     )
     if $DRY_RUN; then
         echo "+ Dry-running: ${CURL_COMMAND[*]}"
@@ -36,8 +37,10 @@ function upload()
     fi
 }
 
-FILE="$1"
-BASENAME="$2"
+REPO_NAME="$1"
+FILE="$2"
+BASENAME="$3"
+REPUBLISH="$4"
 
 ALL_SUPPORTED_DISTROS=($(list_rpm_environments))
 ALL_SUPPORTED_ARCHITECTURES=(x86_64)
@@ -57,8 +60,14 @@ else
     DISTROS=("${ALL_SUPPORTED_DISTROS[@]}")
 fi
 
+if $REPUBLISH; then
+    OVERRIDE=1
+else
+    OVERRIDE=0
+fi
+
 for REPO_DISTRO in "${DISTROS[@]}"; do
     for REPO_ARCH in "${ARCHS[@]}"; do
-        upload "$REPO_DISTRO" "$REPO_ARCH"
+        upload "$REPO_DISTRO" "$REPO_ARCH" "$OVERRIDE"
     done
 done

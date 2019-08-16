@@ -11,6 +11,7 @@ IMAGE=
 EXPECTED_VARIANT=
 RUBY_RPM_PATH=
 RBENV_RPM_PATH=
+COMMON_RPM_PATH=
 DEBUG_ON_FAIL=false
 
 function usage()
@@ -28,6 +29,7 @@ function usage()
     echo "Required options (local file mode):"
     echo "  -r PATH     Path to Ruby RPM package"
     echo "  -b PATH     Path to Rbenv RPM package"
+    echo "  -c PATH     Path to fullstaq-ruby-common RPM package"
     echo
     echo "Required options (server mode):"
     echo "  -n VERSION  Ruby package version to test against"
@@ -43,7 +45,7 @@ function parse_options()
     local OPTIND=1
     local ORIG_ARGV
     local opt
-    while getopts "S:i:v:r:b:n:Dh" opt; do
+    while getopts "S:i:v:r:b:c:n:Dh" opt; do
         case "$opt" in
         S)
             SERVER="$OPTARG"
@@ -59,6 +61,9 @@ function parse_options()
             ;;
         b)
             RBENV_RPM_PATH=$(absolute_path "$OPTARG")
+            ;;
+        c)
+            COMMON_RPM_PATH=$(absolute_path "$OPTARG")
             ;;
         n)
             RUBY_PACKAGE_VERSION="$OPTARG"
@@ -97,17 +102,29 @@ function parse_options()
             echo "ERROR: $RBENV_RPM_PATH does not exist." >&2
             exit 1
         fi
+        if [[ "$COMMON_RPM_PATH" = "" ]]; then
+            echo 'ERROR: please specify a fullstaq-ruby-common RPM package path with -c.' >&2
+            exit 1
+        fi
+        if [[ ! -e "$COMMON_RPM_PATH" ]]; then
+            echo "ERROR: $COMMON_RPM_PATH does not exist." >&2
+            exit 1
+        fi
         if [[ "$RUBY_PACKAGE_VERSION" != "" ]]; then
             echo 'ERROR: if -S is not given, then -n may also not be given.' >&2
             exit 1
         fi
     else
         if [[ "$RUBY_RPM_PATH" != "" ]]; then
-            echo 'ERROR: is -S is given, then -r may not be given.' >&2
+            echo 'ERROR: if -S is given, then -r may not be given.' >&2
             exit 1
         fi
         if [[ "$RBENV_RPM_PATH" != "" ]]; then
-            echo 'ERROR: is -S is given, then -b may not be given.' >&2
+            echo 'ERROR: if -S is given, then -b may not be given.' >&2
+            exit 1
+        fi
+        if [[ "$COMMON_RPM_PATH" != "" ]]; then
+            echo 'ERROR: if -S is given, then -c may not be given.' >&2
             exit 1
         fi
         if [[ "$RUBY_PACKAGE_VERSION" = "" ]]; then
@@ -149,6 +166,7 @@ if [[ "$SERVER" = "" ]]; then
         -v "$SELFDIR:/system:ro" \
         -v "$RUBY_RPM_PATH:/input/$(basename "$RUBY_RPM_PATH"):ro" \
         -v "$RBENV_RPM_PATH:/input/$(basename "$RBENV_RPM_PATH"):ro" \
+        -v "$COMMON_RPM_PATH:/input/$(basename "$COMMON_RPM_PATH"):ro" \
         -v "$TEMP_DIR/repo:/output" \
         --user "$(id -u):$(id -g)" \
         "fullstaq/ruby-build-env-utility:$UTILITY_IMAGE_VERSION" \

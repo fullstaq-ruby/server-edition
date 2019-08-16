@@ -1,0 +1,92 @@
+#!/bin/bash
+set -e
+
+SELFDIR=$(dirname "$0")
+SELFDIR=$(cd "$SELFDIR" && pwd)
+# shellcheck source=lib/library.sh
+source "$SELFDIR/lib/library.sh"
+
+OUTPUT_PATH=
+VERSION=1.0
+REVISION=0
+
+function usage()
+{
+    echo "Usage: ./build-rbenv-rpm <OPTIONS>"
+    echo "Build the fullstaq-ruby-common RPM package."
+    echo
+    echo "Required options:"
+    echo "  -o PATH     Path to output package file"
+    echo
+    echo "Optional options:"
+    echo "  -v REVISION Package version number (default: $VERSION)"
+    echo "  -r REVISION Package revision number (default: $REVISION)"
+    echo "  -h          Show usage"
+}
+
+function parse_options()
+{
+    local OPTIND=1
+    local ORIG_ARGV
+    local opt
+    while getopts "o:v:r:h" opt; do
+        case "$opt" in
+        o)
+            OUTPUT_PATH=$(absolute_path "$OPTARG")
+            ;;
+        v)
+            VERSION="$OPTARG"
+            ;;
+        r)
+            REVISION="$OPTARG"
+            ;;
+        h)
+            usage
+            exit
+            ;;
+        *)
+            return 1
+            ;;
+        esac
+    done
+
+    (( OPTIND -= 1 )) || true
+    shift $OPTIND || true
+    ORIG_ARGV=("$@")
+
+    if [[ "$OUTPUT_PATH" = "" ]]; then
+        echo 'ERROR: please specify an output package path with -o.' >&2
+        exit 1
+    fi
+}
+
+parse_options "$@"
+
+if tty -s; then
+    TTY_ARGS=(-t -i)
+else
+    TTY_ARGS=()
+fi
+
+IMAGE_VERSION=$(read_single_value_file "$SELFDIR/environments/utility/image_tag")
+OUTPUT_TEMP_PATH=$(mktemp "$OUTPUT_PATH.XXXXXX")
+create_file_if_missing "$OUTPUT_TEMP_PATH"
+
+echo '--- Entering Docker container ---'
+set +e
+verbose_run docker run --rm --init "${TTY_ARGS[@]}" \
+    -v "$SELFDIR:/system:ro" \
+    -v "$OUTPUT_TEMP_PATH:/output/common.rpm" \
+    -e "VERSION=$VERSION" \
+    -e "REVISION=$REVISION" \
+    --user "$(id -u):$(id -g)" \
+    "fullstaq/ruby-build-env-utility:$IMAGE_VERSION" \
+    /system/container-entrypoints/build-common-rpm
+EXIT_STATUS=$?
+set -e
+echo '--- Exited Docker container ---'
+if [[ "$EXIT_STATUS" -eq 0 ]]; then
+    run mv "$OUTPUT_TEMP_PATH" "$OUTPUT_PATH"
+else
+    run rm -f "$OUTPUT_TEMP_PATH"
+fi

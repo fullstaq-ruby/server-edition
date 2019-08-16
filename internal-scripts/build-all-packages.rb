@@ -13,10 +13,12 @@ desc('Test all packages')
 task 'default' => 'test'
 
 desc('Build all packages')
-task('build' => [Support.rbenv_deb_path, Support.rbenv_rpm_path])
+task('build' => [Support.rbenv_deb_path, Support.rbenv_rpm_path,
+  Support.common_deb_path, Support.common_rpm_path])
 
 desc('Test all packages')
-task('test' => [Support.rbenv_deb_path, Support.rbenv_rpm_path])
+task('test' => [Support.rbenv_deb_path, Support.rbenv_rpm_path,
+  Support.common_deb_path, Support.common_rpm_path])
 
 desc('Test all public repository packages')
 task('repotest')
@@ -52,6 +54,42 @@ Support.define_progress_category('Sources') do |progress_category|
       progress_entry.track_work do
         Support.download(Support.ruby_source_url(ruby_source_version),
           ruby_source_path)
+      end
+    end
+  end
+end
+
+
+### fullstaq-ruby-common ###
+
+Support.define_progress_category('Common') do |progress_category|
+  desc 'Build all fullstaq-ruby-common packages'
+  task('build:common' => [Support.common_deb_path, Support.common_rpm_path])
+
+  desc('Build fullstaq-ruby-common DEB')
+  task('build:common:deb' => Support.common_deb_path)
+
+  desc('Build fullstaq-ruby-common RPM')
+  task('build:common:rpm' => Support.common_rpm_path)
+
+  # fullstaq-ruby-common_XXX_all.deb
+  progress_category.define_entry('DEB', 'common:deb') do |progress_entry|
+    file(Support.common_deb_path) do
+      progress_entry.track_work do
+        Support.sh './build-common-deb',
+          '-o', Support.common_deb_path,
+          '-r', Support.config[:common][:deb][:package_revision].to_s
+      end
+    end
+  end
+
+  # fullstaq-ruby-common-XXX.noarch.rpm
+  progress_category.define_entry('RPM', 'common:rpm') do |progress_entry|
+    file(Support.common_rpm_path) do
+      progress_entry.track_work do
+        Support.sh './build-common-rpm',
+          '-o', Support.common_rpm_path,
+          '-r', Support.config[:common][:rpm][:package_revision].to_s
       end
     end
   end
@@ -158,6 +196,7 @@ Support.ruby_package_versions.each do |ruby_package_version|
       ruby_bin_path = Support.ruby_bin_path(ruby_package_version, distro, variant)
       ruby_source_path = Support.ruby_source_path_for_package_version(ruby_package_version)
       rbenv_package_path = Support.rbenv_package_path(distro[:package_format])
+      common_package_path = Support.common_package_path(distro[:package_format])
       jemalloc_bin_path = Support.jemalloc_bin_path(distro)
 
       task('build' => ruby_package_path)
@@ -239,7 +278,7 @@ Support.ruby_package_versions.each do |ruby_package_version|
 
       progress_entry.define_stage('Test', "ruby-#{ruby_package_version[:id]}:#{distro[:name]}:#{variant[:name]}:test") do |progress_stage|
         desc("Test #{distro[:package_format]} for Ruby #{ruby_package_version[:id]}, for #{distro[:name]}, variant #{variant[:name]}")
-        deps = [ruby_package_path, rbenv_package_path]
+        deps = [ruby_package_path, rbenv_package_path, common_package_path]
         task("test:ruby-#{ruby_package_version[:id]}:#{distro[:name]}:#{variant[:name]}" => deps) do
           progress_stage.track_work do
             case distro[:package_format]
@@ -247,12 +286,14 @@ Support.ruby_package_versions.each do |ruby_package_version|
               Support.sh './test-debs',
                 '-r', ruby_package_path,
                 '-b', rbenv_package_path,
+                '-c', common_package_path,
                 '-i', Support.determine_test_image_for(distro),
                 '-v', variant[:name]
             when :RPM
               Support.sh './test-rpms',
                 '-r', ruby_package_path,
                 '-b', rbenv_package_path,
+                '-c', common_package_path,
                 '-i', Support.determine_test_image_for(distro),
                 '-v', variant[:name]
             else
