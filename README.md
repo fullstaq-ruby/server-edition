@@ -151,7 +151,7 @@ The Fullstaq Ruby native OS packages allow you to install Rubies by adding our r
 
  * **We supply packages for each minor version.**
 
-   For example, there are packages for Ruby 2.5 and 2.6. These packages always contain the most recent tiny version. Learn more below in subsection [Minor version packages](#minor-version-packages).
+   For example, there are packages for Ruby 2.5 and 2.6. These packages always contain the most recent tiny version. Learn more below in subsection [Minor version packages](#minor_version_packages).
 
  * **We _also_ supply packages for each tiny version.**
 
