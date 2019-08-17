@@ -68,7 +68,7 @@ You can think of Fullstaq Ruby as a competitor of `apt/yum install ruby`, `rbenv
 
    > Main articles:
    > - [What is Jemalloc and how does it benefit me?](#what-is-jemalloc-and-how-does-it-benefit-me)
-   > - [What is malloc_trim and how does it benefit me?](#what-is-malloc-trim-and-how-does-it-benefit-me)
+   > - [What is malloc_trim and how does it benefit me?](#what-is-malloc_trim-and-how-does-it-benefit-me)
    > - [Is Fullstaq Ruby faster than regular Ruby (MRI)?](#is-fullstaq-ruby-faster-than-regular-ruby-mri)
 
    In Hongli Lai's research project [What Causes Ruby Memory Bloat?](https://www.joyfulbikeshedding.com/blog/2019-03-14-what-causes-ruby-memory-bloat.html), Hongli has identified the OS memory allocator as a major cause of memory bloating in Ruby.
