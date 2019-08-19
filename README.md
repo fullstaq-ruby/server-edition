@@ -7,7 +7,7 @@ Fullstaq Ruby is a Ruby distribution that's optimized for use in servers. It is 
  * Significantly reduce memory usage of your Ruby apps — a memory reduction of 50% is quite realistic.
  * Increase performance — thanks to the usage of better memory allocators.
 
-You can think of Fullstaq Ruby as a competitor of `apt/yum install ruby`, `rbenv install` and `rvm install`. We supply [native OS packages](#how-it-works) for various Ruby versions, which are optionally compiled with [Jemalloc](#what-is-jemalloc-and-how-does-it-benefit-me) or [malloc_trim](#what-is-malloc-trim-and-how-does-it-benefit-me), allowing for lower memory usage and potentially increased performance. Our [packaging method](#minor_version_packages) allows much easier security patching.
+You can think of Fullstaq Ruby as a competitor of `apt/yum install ruby`, `rbenv install` and `rvm install`. We supply [native OS packages](#how-it-works) for various Ruby versions, which are optionally compiled with [Jemalloc](#what-is-jemalloc-and-how-does-it-benefit-me) or [malloc_trim](#what-is-malloc_trim-and-how-does-it-benefit-me), allowing for lower memory usage and potentially increased performance. Our [packaging method](#minor_version_packages) allows much easier security patching.
 
 > Fullstaq Ruby is a work-in-progress! Features like APT/YUM repo, editions optimized for containers and Heroku, and much more, are planned. Please see [our roadmap](https://github.com/fullstaq-labs/fullstaq-ruby-umbrella/projects).
 
@@ -42,7 +42,7 @@ You can think of Fullstaq Ruby as a competitor of `apt/yum install ruby`, `rbenv
    - [Capistrano integration](#capistrano-integration)
  * [FAQ](#faq)
    - [What is Jemalloc and how does it benefit me?](#what-is-jemalloc-and-how-does-it-benefit-me)
-   - [What is malloc_trim and how does it benefit me?](#what-is-malloc-trim-and-how-does-it-benefit-me)
+   - [What is malloc_trim and how does it benefit me?](#what-is-malloc_trim-and-how-does-it-benefit-me)
    - [Is Fullstaq Ruby faster than regular Ruby (MRI)?](#is-fullstaq-ruby-faster-than-regular-ruby-mri)
    - [Why does Fullstaq Ruby integrate with Rbenv?](#why-does-fullstaq-ruby-integrate-with-rbenv)
    - [I do not need multiple Rubies (and have no need for Rbenv), is Fullstaq Ruby suitable for me?](#i-do-not-need-multiple-rubies-and-have-no-need-for-rbenv-is-fullstaq-ruby-suitable-for-me)
@@ -73,7 +73,7 @@ You can think of Fullstaq Ruby as a competitor of `apt/yum install ruby`, `rbenv
 
    In Hongli Lai's research project [What Causes Ruby Memory Bloat?](https://www.joyfulbikeshedding.com/blog/2019-03-14-what-causes-ruby-memory-bloat.html), Hongli has identified the OS memory allocator as a major cause of memory bloating in Ruby.
 
-   There are two good solutions for this problem: either by using [the Jemalloc memory allocator](#what-is-jemalloc-and-how-does-it-benefit-me), or by using [the `malloc_trim` API](#what-is-malloc-trim-and-how-does-it-benefit-me).
+   There are two good solutions for this problem: either by using [the Jemalloc memory allocator](#what-is-jemalloc-and-how-does-it-benefit-me), or by using [the `malloc_trim` API](#what-is-malloc_trim-and-how-does-it-benefit-me).
 
    Both solutions require patching the Ruby interpreter, but we've done that for you so that you don't have to. Use our binaries, and benefit from reduced memory usage and potentially increased performance out-of-the-box and in a hassle-free manner.
 
@@ -97,7 +97,7 @@ Fullstaq Ruby came about for two reasons:
 
    > Main articles:
    > - [What is Jemalloc and how does it benefit me?](#what-is-jemalloc-and-how-does-it-benefit-me)
-   > - [What is malloc_trim and how does it benefit me?](#what-is-malloc-trim-and-how-does-it-benefit-me)
+   > - [What is malloc_trim and how does it benefit me?](#what-is-malloc_trim-and-how-does-it-benefit-me)
    > - [Is Fullstaq Ruby faster than regular Ruby (MRI)?](#is-fullstaq-ruby-faster-than-regular-ruby-mri)
 
    Unfortunately for people who use Ruby in server use cases (e.g. most Ruby web apps), Ruby core developers are a bit careful/conservative and are hesitant to adopt Jemalloc, citing concerns that Jemalloc may cause regressions in non-server use cases, as well as other compatibility-related concerns.
@@ -285,7 +285,7 @@ So there are 3 variants: normal, jemalloc, malloctrim. What are the differences?
     * Pro: Unlike _jemalloc_, there are no compatibility problems.
     * Con: _May_ be slightly slower. ([How much slower?](https://www.joyfulbikeshedding.com/blog/2019-03-29-the-status-of-ruby-memory-trimming-and-how-you-can-help-with-testing.html))
 
-   Learn more: [What is malloc_trim and how does it benefit me?](#what-is-malloc-trim-and-how-does-it-benefit-me)
+   Learn more: [What is malloc_trim and how does it benefit me?](#what-is-malloc_trim-and-how-does-it-benefit-me)
 
    Malloctrim variant packages/images have the `-malloctrim` suffix, e.g.: `apt install fullstaq-ruby-2.6.2-malloctrim`
 
@@ -309,7 +309,7 @@ The differences between `rvm/rbenv install` and Fullstaq Ruby are:
 
  * Fullstaq Ruby provides Ruby [variants with Jemalloc and malloc_trim integration](#about-variants). RVM and Rbenv do not.
 
-   The Jemalloc and malloc_trim variants allow significant reduction in memory usage, and possibly also performance improvements. Learn more: [What is Jemalloc and how does it benefit me?](#what-is-jemalloc-and-how-does-it-benefit-me), [What is malloc_trim and how does it benefit me?](#what-is-malloc-trim-and-how-does-it-benefit-me)
+   The Jemalloc and malloc_trim variants allow significant reduction in memory usage, and possibly also performance improvements. Learn more: [What is Jemalloc and how does it benefit me?](#what-is-jemalloc-and-how-does-it-benefit-me), [What is malloc_trim and how does it benefit me?](#what-is-malloc_trim-and-how-does-it-benefit-me)
 
    RVM and Rbenv still allow you to apply the Jemalloc and malloc_trim patches, but they don't provide binaries for that (while Fullstaq Ruby does) and so you will be required to compile from source.
 
@@ -329,7 +329,7 @@ The differences between `rvm/rbenv install` and Fullstaq Ruby are:
 
  * Fullstaq Ruby provides [Jemalloc and malloc_trim integration](#about-variants). OS official repositories do not.
 
-   The Jemalloc and malloc_trim variants allow significant reduction in memory usage, and possibly also performance improvements. Learn more: [What is Jemalloc and how does it benefit me?](#what-is-jemalloc-and-how-does-it-benefit-me), [What is malloc_trim and how does it benefit me?](#what-is-malloc-trim-and-how-does-it-benefit-me)
+   The Jemalloc and malloc_trim variants allow significant reduction in memory usage, and possibly also performance improvements. Learn more: [What is Jemalloc and how does it benefit me?](#what-is-jemalloc-and-how-does-it-benefit-me), [What is malloc_trim and how does it benefit me?](#what-is-malloc_trim-and-how-does-it-benefit-me)
 
 #### Vs the Brightbox PPA
 
@@ -345,7 +345,7 @@ The differences are:
 
  * Fullstaq Ruby provides [Jemalloc and malloc_trim integration](#about-variants). The Brightbox PPA does not.
 
-   The Jemalloc and malloc_trim variants allow significant reduction in memory usage, and possibly also performance improvements. Learn more: [What is Jemalloc and how does it benefit me?](#what-is-jemalloc-and-how-does-it-benefit-me), [What is malloc_trim and how does it benefit me?](#what-is-malloc-trim-and-how-does-it-benefit-me)
+   The Jemalloc and malloc_trim variants allow significant reduction in memory usage, and possibly also performance improvements. Learn more: [What is Jemalloc and how does it benefit me?](#what-is-jemalloc-and-how-does-it-benefit-me), [What is malloc_trim and how does it benefit me?](#what-is-malloc_trim-and-how-does-it-benefit-me)
 
  * Fullstaq Ruby also provides Debian, RHEL and CentOS packages.
 
