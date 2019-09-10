@@ -9,7 +9,7 @@ Fullstaq Ruby is a Ruby distribution that's optimized for use in servers. It is 
 
 You can think of Fullstaq Ruby as a competitor of `apt/yum install ruby`, `rbenv install` and `rvm install`. We supply [native OS packages](#how-it-works) for various Ruby versions, which are optionally compiled with [Jemalloc](#what-is-jemalloc-and-how-does-it-benefit-me) or [malloc_trim](#what-is-malloc_trim-and-how-does-it-benefit-me), allowing for lower memory usage and potentially increased performance. Our [packaging method](#minor_version_packages) allows much easier security patching.
 
-> Fullstaq Ruby is a work-in-progress! Features like APT/YUM repo, editions optimized for containers and Heroku, and much more, are planned. Please see [our roadmap](https://github.com/fullstaq-labs/fullstaq-ruby-umbrella/projects).
+> Fullstaq Ruby is a work-in-progress! Features like editions optimized for containers and Heroku, better system integration, and much more, are planned. Please see [our roadmap](https://github.com/fullstaq-labs/fullstaq-ruby-umbrella/projects).
 
 **Table of contents:**
 
