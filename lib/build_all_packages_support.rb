@@ -247,9 +247,10 @@ module Support
     end
 
 
-    def initialize_progress_tracking
+    def initialize_progress_tracking(rake_context)
       @progress_tracker = ProgressTracker.new
       @progress_tracker_pipe = IO.pipe
+      @rake_context = rake_context
       @exiting = false
     end
 
@@ -277,6 +278,45 @@ module Support
 
     def define_progress_category(name, &block)
       @progress_tracker.define_category(name, &block)
+    end
+
+    def define_file_task(progress_category_or_entry, name:, id:, path:, deps: nil)
+      if progress_category_or_entry.is_a?(ProgressTracker::Category)
+        progress_stage = progress_category_or_entry.define_entry(name, id)
+      else
+        progress_stage = progress_category_or_entry.define_stage(name, id)
+      end
+      if deps
+        task_spec = { path => deps }
+      else
+        task_spec = path
+      end
+      @rake_context.send(:file, task_spec) do
+        progress_stage.track_work do
+          yield(progress_stage)
+        end
+      end
+    end
+
+    def define_task(progress_category_or_entry, name:, id:, task:, deps: nil, desc: nil)
+      if progress_category_or_entry.is_a?(ProgressTracker::Category)
+        progress_stage = progress_category_or_entry.define_entry(name, id)
+      else
+        progress_stage = progress_category_or_entry.define_stage(name, id)
+      end
+      if deps
+        task_spec = { task => deps }
+      else
+        task_spec = task
+      end
+      if desc
+        @rake_context.send(:desc, desc)
+      end
+      @rake_context.send(:task, task_spec) do
+        progress_stage.track_work do
+          yield(progress_stage)
+        end
+      end
     end
 
 

@@ -3,7 +3,7 @@
 
 require_relative '../lib/build_all_packages_support'
 
-Support.initialize_progress_tracking
+Support.initialize_progress_tracking(self)
 Support.load_config
 
 
@@ -35,26 +35,26 @@ end
 
 Support.define_progress_category('Sources') do |progress_category|
   # jemalloc-XXX.tar.bz2
-  progress_category.define_entry('Jemalloc', 'sources:jemalloc') do |progress_entry|
-    file(Support.jemalloc_source_path) do
-      progress_entry.track_work do
-        Support.download(Support.jemalloc_source_url,
-          Support.jemalloc_source_path)
-      end
-    end
+  Support.define_file_task(progress_category,
+    name: 'Jemalloc',
+    id: 'sources:jemalloc',
+    path: Support.jemalloc_source_path) \
+  do |_|
+    Support.download(Support.jemalloc_source_url,
+      Support.jemalloc_source_path)
   end
 
   # ruby-XXX.tar.gz
   Support.ruby_source_versions.each do |ruby_source_version|
-    progress_entry = progress_category.define_entry("Ruby #{ruby_source_version}",
-      "sources:ruby-#{ruby_source_version}")
     ruby_source_path = Support.ruby_source_path(ruby_source_version)
 
-    file(ruby_source_path) do
-      progress_entry.track_work do
-        Support.download(Support.ruby_source_url(ruby_source_version),
+    Support.define_file_task(progress_category,
+      name: "Ruby #{ruby_source_version}",
+      id: "sources:ruby-#{ruby_source_version}",
+      path: ruby_source_path) \
+    do |_|
+      Support.download(Support.ruby_source_url(ruby_source_version),
           ruby_source_path)
-      end
     end
   end
 end
@@ -73,25 +73,25 @@ Support.define_progress_category('Common') do |progress_category|
   task('build:common:rpm' => Support.common_rpm_path)
 
   # fullstaq-ruby-common_XXX_all.deb
-  progress_category.define_entry('DEB', 'common:deb') do |progress_entry|
-    file(Support.common_deb_path) do
-      progress_entry.track_work do
-        Support.sh './build-common-deb',
-          '-o', Support.common_deb_path,
-          '-r', Support.config[:common][:deb][:package_revision].to_s
-      end
-    end
+  Support.define_file_task(progress_category,
+    name: 'DEB',
+    id: 'common:deb',
+    path: Support.common_deb_path) \
+  do |_|
+    Support.sh './build-common-deb',
+      '-o', Support.common_deb_path,
+      '-r', Support.config[:common][:deb][:package_revision].to_s
   end
 
   # fullstaq-ruby-common-XXX.noarch.rpm
-  progress_category.define_entry('RPM', 'common:rpm') do |progress_entry|
-    file(Support.common_rpm_path) do
-      progress_entry.track_work do
-        Support.sh './build-common-rpm',
-          '-o', Support.common_rpm_path,
-          '-r', Support.config[:common][:rpm][:package_revision].to_s
-      end
-    end
+  Support.define_file_task(progress_category,
+    name: 'RPM',
+    id: 'common:rpm',
+    path: Support.common_rpm_path) \
+  do |_|
+    Support.sh './build-common-rpm',
+      '-o', Support.common_rpm_path,
+      '-r', Support.config[:common][:rpm][:package_revision].to_s
   end
 end
 
@@ -109,37 +109,27 @@ Support.define_progress_category('Rbenv') do |progress_category|
   task('build:rbenv:rpm' => Support.rbenv_rpm_path)
 
   # fullstaq-rbenv_XXX_all.deb
-  progress_category.define_entry('DEB', 'rbenv:deb') do |progress_entry|
-    file(Support.rbenv_deb_path) do
-      progress_entry.track_work do
-        begin
-          Support.sh './build-rbenv-deb',
-            '-s', Support.rbenv_source_path,
-            '-o', Support.rbenv_deb_path,
-            '-r', Support.config[:rbenv][:package_revision].to_s
-        rescue Exception => e
-          Support.delete_empty_file(Support.rbenv_deb_path)
-          raise e
-        end
-      end
-    end
+  Support.define_file_task(progress_category,
+    name: 'DEB',
+    id: 'rbenv:deb',
+    path: Support.rbenv_deb_path) \
+  do |_|
+    Support.sh './build-rbenv-deb',
+      '-s', Support.rbenv_source_path,
+      '-o', Support.rbenv_deb_path,
+      '-r', Support.config[:rbenv][:package_revision].to_s
   end
 
   # fullstaq-rbenv-XXX.noarch.rpm
-  progress_category.define_entry('RPM', 'rbenv:rpm') do |progress_entry|
-    file(Support.rbenv_rpm_path) do
-      progress_entry.track_work do
-        begin
-          Support.sh './build-rbenv-rpm',
-            '-s', Support.rbenv_source_path,
-            '-o', Support.rbenv_rpm_path,
-            '-r', Support.config[:rbenv][:package_revision].to_s
-        rescue Exception => e
-          Support.delete_empty_file(Support.rbenv_rpm_path)
-          raise e
-        end
-      end
-    end
+  Support.define_file_task(progress_category,
+    name: 'RPM',
+    id: 'rbenv:rpm',
+    path: Support.rbenv_rpm_path) \
+  do |_|
+    Support.sh './build-rbenv-rpm',
+      '-s', Support.rbenv_source_path,
+      '-o', Support.rbenv_rpm_path,
+      '-r', Support.config[:rbenv][:package_revision].to_s
   end
 end
 
@@ -148,26 +138,22 @@ end
 
 Support.define_progress_category('Jemalloc') do |progress_category|
   Support.distributions.each do |distro|
-    progress_entry = progress_category.define_entry(distro[:name],
-      "jemalloc-bin:#{distro[:name]}")
     jemalloc_bin_path = Support.jemalloc_bin_path(distro)
 
     # jemalloc-bin-XXX-DISTRO.tar.gz
-    file(jemalloc_bin_path => [Support.jemalloc_source_path]) do
-      progress_entry.track_work do
-        cache_dir = "#{Support.cache_dir}/jemalloc-#{distro[:name]}"
-        Support.sh('mkdir', '-p', cache_dir)
-        begin
-          Support.sh './build-jemalloc',
-            '-n', distro[:name],
-            '-s', Support.jemalloc_source_path,
-            '-o', jemalloc_bin_path,
-            '-c', cache_dir
-        rescue Exception => e
-          Support.delete_empty_file(jemalloc_bin_path)
-          raise e
-        end
-      end
+    Support.define_file_task(progress_category,
+      name: distro[:name],
+      id: "jemalloc-bin:#{distro[:name]}",
+      path: jemalloc_bin_path,
+      deps: [Support.jemalloc_source_path]) \
+    do |_|
+      cache_dir = "#{Support.cache_dir}/jemalloc-#{distro[:name]}"
+      Support.sh('mkdir', '-p', cache_dir)
+      Support.sh './build-jemalloc',
+        '-n', distro[:name],
+        '-s', Support.jemalloc_source_path,
+        '-o', jemalloc_bin_path,
+        '-c', cache_dir
     end
   end
 end
@@ -213,118 +199,110 @@ Support.ruby_package_versions.each do |ruby_package_version|
 
 
       # ruby-bin-XXX-VARIANT-DISTRO.tar.gz
-      progress_entry.define_stage('Build', "ruby-#{ruby_package_version[:id]}:#{distro[:name]}:#{variant[:name]}:build") do |progress_stage|
-        file(ruby_bin_path => [ruby_source_path, jemalloc_bin_path]) do
-          progress_stage.track_work do
-            cache_dir = "#{Support.cache_dir}/ruby-#{ruby_package_version[:id]}-#{distro[:name]}-#{variant[:name]}"
+      Support.define_file_task(progress_entry,
+        name: 'Build',
+        id: "ruby-#{ruby_package_version[:id]}:#{distro[:name]}:#{variant[:name]}:build",
+        path: ruby_bin_path,
+        deps: [ruby_source_path, jemalloc_bin_path]) \
+      do |_|
+        cache_dir = "#{Support.cache_dir}/ruby-#{ruby_package_version[:id]}-#{distro[:name]}-#{variant[:name]}"
 
-            case variant[:name]
-            when 'normal'
-              extra_args = []
-            when 'jemalloc'
-              extra_args = ['-m', jemalloc_bin_path]
-            when 'malloctrim'
-              extra_args = ['-t']
-            else
-              raise "BUG: unsupported variant #{variant[:name].inspect}"
-            end
-
-            Support.sh('mkdir', '-p', cache_dir)
-            begin
-              Support.sh(
-                './build-ruby',
-                '-n', distro[:name],
-                '-s', ruby_source_path,
-                '-v', ruby_package_version[:id].to_s,
-                '-o', ruby_bin_path,
-                '-c', cache_dir,
-                *extra_args
-              )
-            rescue Exception => e
-              Support.delete_empty_file(ruby_bin_path)
-              raise e
-            end
-          end
+        case variant[:name]
+        when 'normal'
+          extra_args = []
+        when 'jemalloc'
+          extra_args = ['-m', jemalloc_bin_path]
+        when 'malloctrim'
+          extra_args = ['-t']
+        else
+          raise "BUG: unsupported variant #{variant[:name].inspect}"
         end
+
+        Support.sh('mkdir', '-p', cache_dir)
+        Support.sh(
+          './build-ruby',
+          '-n', distro[:name],
+          '-s', ruby_source_path,
+          '-v', ruby_package_version[:id].to_s,
+          '-o', ruby_bin_path,
+          '-c', cache_dir,
+          *extra_args
+        )
       end
 
       # fullstaq-ruby_XXX-YYY_ARCH.deb
       # fullstaq-ruby-XXX-YYY.ARCH.rpm
-      progress_entry.define_stage('Package', "ruby-#{ruby_package_version[:id]}:#{distro[:name]}:#{variant[:name]}:package") do |progress_stage|
-        file(ruby_package_path => [ruby_bin_path]) do
-          progress_stage.track_work do
-            begin
-              case distro[:package_format]
-              when :DEB
-                Support.sh './build-ruby-deb',
-                  '-b', ruby_bin_path,
-                  '-o', ruby_package_path,
-                  '-r', ruby_package_version[:package_revision].to_s
-              when :RPM
-                Support.sh './build-ruby-rpm',
-                  '-b', ruby_bin_path,
-                  '-o', ruby_package_path,
-                  '-r', ruby_package_version[:package_revision].to_s
-              else
-                raise "BUG: unsupported package format: #{distro[:package_format].inspect}"
-              end
-            rescue Exception => e
-              Support.delete_empty_file(ruby_package_path)
-              raise e
-            end
-          end
+      Support.define_file_task(progress_entry,
+        name: 'Package',
+        id: "ruby-#{ruby_package_version[:id]}:#{distro[:name]}:#{variant[:name]}:package",
+        path: ruby_package_path,
+        deps: [ruby_bin_path]) \
+      do |_|
+        case distro[:package_format]
+        when :DEB
+          Support.sh './build-ruby-deb',
+            '-b', ruby_bin_path,
+            '-o', ruby_package_path,
+            '-r', ruby_package_version[:package_revision].to_s
+        when :RPM
+          Support.sh './build-ruby-rpm',
+            '-b', ruby_bin_path,
+            '-o', ruby_package_path,
+            '-r', ruby_package_version[:package_revision].to_s
+        else
+          raise "BUG: unsupported package format: #{distro[:package_format].inspect}"
         end
       end
 
-      progress_entry.define_stage('Test', "ruby-#{ruby_package_version[:id]}:#{distro[:name]}:#{variant[:name]}:test") do |progress_stage|
-        desc("Test #{distro[:package_format]} for Ruby #{ruby_package_version[:id]}, for #{distro[:name]}, variant #{variant[:name]}")
-        deps = [ruby_package_path, rbenv_package_path, common_package_path]
-        task("test:ruby-#{ruby_package_version[:id]}:#{distro[:name]}:#{variant[:name]}" => deps) do
-          progress_stage.track_work do
-            case distro[:package_format]
-            when :DEB
-              Support.sh './test-debs',
-                '-r', ruby_package_path,
-                '-b', rbenv_package_path,
-                '-c', common_package_path,
-                '-i', Support.determine_test_image_for(distro),
-                '-v', variant[:name]
-            when :RPM
-              Support.sh './test-rpms',
-                '-r', ruby_package_path,
-                '-b', rbenv_package_path,
-                '-c', common_package_path,
-                '-i', Support.determine_test_image_for(distro),
-                '-v', variant[:name]
-            else
-              raise "BUG: unsupported package format: #{distro[:package_format].inspect}"
-            end
-          end
+      Support.define_task(progress_entry,
+        name: 'Test',
+        id: "ruby-#{ruby_package_version[:id]}:#{distro[:name]}:#{variant[:name]}:test",
+        desc: "Test #{distro[:package_format]} for Ruby #{ruby_package_version[:id]}, for #{distro[:name]}, variant #{variant[:name]}",
+        task: "test:ruby-#{ruby_package_version[:id]}:#{distro[:name]}:#{variant[:name]}",
+        deps: [ruby_package_path, rbenv_package_path, common_package_path]) \
+      do |_|
+        case distro[:package_format]
+        when :DEB
+          Support.sh './test-debs',
+            '-r', ruby_package_path,
+            '-b', rbenv_package_path,
+            '-c', common_package_path,
+            '-i', Support.determine_test_image_for(distro),
+            '-v', variant[:name]
+        when :RPM
+          Support.sh './test-rpms',
+            '-r', ruby_package_path,
+            '-b', rbenv_package_path,
+            '-c', common_package_path,
+            '-i', Support.determine_test_image_for(distro),
+            '-v', variant[:name]
+        else
+          raise "BUG: unsupported package format: #{distro[:package_format].inspect}"
         end
       end
 
-      progress_entry.define_stage('RepoTest', "ruby-#{ruby_package_version[:id]}:#{distro[:name]}:#{variant[:name]}:repotest") do |progress_stage|
-        desc("Public repo test #{distro[:package_format]} for Ruby #{ruby_package_version[:id]}, for #{distro[:name]}, variant #{variant[:name]}")
-        task("repotest:ruby-#{ruby_package_version[:id]}:#{distro[:name]}:#{variant[:name]}") do
-          progress_stage.track_work do
-            case distro[:package_format]
-            when :DEB
-              Support.sh './test-debs',
-                '-S', 'https://apt.fullstaqruby.org',
-                '-i', Support.determine_test_image_for(distro),
-                '-v', variant[:name],
-                '-d', distro[:name],
-                '-n', "#{ruby_package_version[:id]}#{variant[:package_suffix]}"
-            when :RPM
-              Support.sh './test-rpms',
-                '-S', "https://yum.fullstaqruby.org/#{distro[:name]}",
-                '-i', Support.determine_test_image_for(distro),
-                '-v', variant[:name],
-                '-n', "#{ruby_package_version[:id]}#{variant[:package_suffix]}"
-            else
-              raise "BUG: unsupported package format: #{distro[:package_format].inspect}"
-            end
-          end
+      Support.define_task(progress_entry,
+        name: 'RepoTest',
+        id: "ruby-#{ruby_package_version[:id]}:#{distro[:name]}:#{variant[:name]}:repotest",
+        desc: "Public repo test #{distro[:package_format]} for Ruby #{ruby_package_version[:id]}, for #{distro[:name]}, variant #{variant[:name]}",
+        task: "repotest:ruby-#{ruby_package_version[:id]}:#{distro[:name]}:#{variant[:name]}") \
+      do |_|
+        case distro[:package_format]
+        when :DEB
+          Support.sh './test-debs',
+            '-S', 'https://apt.fullstaqruby.org',
+            '-i', Support.determine_test_image_for(distro),
+            '-v', variant[:name],
+            '-d', distro[:name],
+            '-n', "#{ruby_package_version[:id]}#{variant[:package_suffix]}"
+        when :RPM
+          Support.sh './test-rpms',
+            '-S', "https://yum.fullstaqruby.org/#{distro[:name]}",
+            '-i', Support.determine_test_image_for(distro),
+            '-v', variant[:name],
+            '-n', "#{ruby_package_version[:id]}#{variant[:package_suffix]}"
+        else
+          raise "BUG: unsupported package format: #{distro[:package_format].inspect}"
         end
       end
     end
