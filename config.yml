@@ -21,6 +21,9 @@ ruby:
   ## (Optional)
   ## Which minor Ruby version packages to build, and what their latest tiny
   ## version is.
+  ##
+  ## NOTE: if you change an existing `full_version` value,
+  ## then be sure to bump the corresponding `package_revision`!
   minor_version_packages:
     - minor_version: 2.6
       full_version: 2.6.3

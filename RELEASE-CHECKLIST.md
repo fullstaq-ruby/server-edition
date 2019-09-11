@@ -50,3 +50,14 @@ Check whether any of these files have changed in such a way that they would chan
         container-entrypoints/build-ruby-rpm
 
 If true, then for all Ruby versions that aren't newly introduced in the next release, bump their package revision number (unless already done).
+
+## Step 4: check whether any minor Ruby package revisions need to be changed
+
+Inside config.yml, for each entry in `ruby.minor_version_packages`, check whether the `full_version` has changed since the previous release (ignore newly introduced entries):
+
+~~~bash
+git archive $PREV_RELEASE_TAG config.yml | tar -xO | ruby -ryaml -e 'puts YAML.load(STDIN)["ruby"]["minor_version_packages"]'
+cat config.yml | ruby -ryaml -e 'puts YAML.load(STDIN)["ruby"]["minor_version_packages"]'
+~~~
+
+If true, then for each changed entry, bump the corresponding `package_revision`.
