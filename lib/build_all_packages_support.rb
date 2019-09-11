@@ -242,7 +242,7 @@ module Support
       when :RPM
         "#{output_dir}/fullstaq-ruby-#{package_version[:id]}#{variant[:package_suffix]}-rev#{package_version[:package_revision]}-#{sanitize_distro_name_for_rpm(distro[:name])}.#{rpm_arch}.rpm"
       else
-        raise "Unsupported package format: #{package_format.inspect}"
+        raise "Unsupported package format: #{distro[:package_format].inspect}"
       end
     end
 
