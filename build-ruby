@@ -138,6 +138,13 @@ OUTPUT_TEMP_PATH=$(mktemp "$OUTPUT_PATH.XXXXXX")
 create_file_if_missing "$OUTPUT_TEMP_PATH"
 
 echo '--- Entering Docker container ---'
+
+function _cleanup() {
+    echo
+    echo '--- Exited Docker container ---'
+    run rm -f "$OUTPUT_TEMP_PATH"
+}
+
 verbose_run docker run --rm --init "${TTY_ARGS[@]}" \
     -v "$SELFDIR:/system:ro" \
     -v "$SOURCE_PATH:/input/ruby-src.tar.gz:ro" \
@@ -150,11 +157,8 @@ verbose_run docker run --rm --init "${TTY_ARGS[@]}" \
     --user "$(id -u):$(id -g)" \
     "fullstaq/ruby-build-env-$ENVIRONMENT_NAME:$IMAGE_VERSION" \
     /system/container-entrypoints/build-ruby
-EXIT_STATUS=$?
-set -e
-echo '--- Exited Docker container ---'
-if [[ "$EXIT_STATUS" -eq 0 ]]; then
+
+function _cleanup() {
+    echo '--- Exited Docker container ---'
     run mv "$OUTPUT_TEMP_PATH" "$OUTPUT_PATH"
-else
-    run rm -f "$OUTPUT_TEMP_PATH"
-fi
+}
