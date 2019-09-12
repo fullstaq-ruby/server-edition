@@ -12,7 +12,7 @@ RUN set -x && \
         curl ca-certificates rpm file ruby ruby-dev rubygems sudo \
         aptly createrepo parallel && \
     \
-    curl -sSLo /sbin/activatecontaineruid.gz https://github.com/fullstaq-labs/activatecontaineruid/releases/download/v0.9.1/activatecontaineruid-0.9.1-x86_64-linux.gz && \
+    curl -sSLo /sbin/activatecontaineruid.gz https://github.com/fullstaq-labs/activatecontaineruid/releases/download/v0.9.2/activatecontaineruid-0.9.2-x86_64-linux.gz && \
     gunzip /sbin/activatecontaineruid.gz && \
     chmod +x,+s /sbin/activatecontaineruid && \
     mkdir /etc/activatecontaineruid && \
