@@ -1,7 +1,7 @@
-RESET=$(echo -e "\\033[0m")
-BOLD=$(echo -e "\\033[1m")
-YELLOW=$(echo -e "\\033[33m")
-BLUE_BG=$(echo -e "\\033[44m")
+RESET=$'\033[0m'
+BOLD=$'\033[1m'
+YELLOW=$'\033[33m'
+BLUE_BG=$'\033[44m'
 
 if [[ "$VERBOSE" = "" ]]; then
     VERBOSE=false
