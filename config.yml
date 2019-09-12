@@ -26,8 +26,8 @@ ruby:
   ## then be sure to bump the corresponding `package_revision`!
   minor_version_packages:
     - minor_version: 2.6
-      full_version: 2.6.3
-      package_revision: 1
+      full_version: 2.6.4
+      package_revision: 2
     - minor_version: 2.5
       full_version: 2.5.5
       package_revision: 1
@@ -37,6 +37,8 @@ ruby:
   tiny_version_packages:
     - full_version: 2.6.3
       package_revision: 1
+    - full_version: 2.6.4
+      package_revision: 0
     - full_version: 2.5.5
       package_revision: 1
 
