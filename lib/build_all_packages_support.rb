@@ -544,7 +544,7 @@ module Support
 
     def download(url, output)
       if has_curl?
-        sh 'curl', '-fSLo', output, url
+        sh 'curl', '-fSLRo', output, url
       elsif has_wget?
         sh 'wget', '-O', output, url
       else
