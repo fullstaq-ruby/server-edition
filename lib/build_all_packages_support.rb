@@ -5,6 +5,7 @@ require 'stringio'
 require 'rbconfig'
 require 'paint'
 require 'paint/rgb_colors'
+require 'rest-client'
 require_relative 'progress_tracker'
 
 module Support
@@ -92,6 +93,19 @@ module Support
     end
 
 
+    def apt_repo_base_url
+      ENV['APT_REPO_BASE_URL'] || 'https://apt.fullstaqruby.org'
+    end
+
+    def yum_repo_base_url
+      ENV['YUM_REPO_BASE_URL'] || 'https://yum.fullstaqruby.org'
+    end
+
+
+    def checkout_rbenv_if_necessary
+      rbenv_source_path
+    end
+
     def rbenv_version
       @rbenv_version ||= begin
         output = capture_output("#{rbenv_source_path}/bin/rbenv", "--version").strip
@@ -114,22 +128,62 @@ module Support
       end
     end
 
+    def rbenv_deb_basename
+      rbenv_package_basename(:DEB)
+    end
+
     def rbenv_deb_path
       rbenv_package_path(:DEB)
+    end
+
+    def rbenv_deb_possible_repo_urls
+      distributions.find_all do |distro|
+        distro[:package_format] == :DEB
+      end.map do |distro|
+        rbenv_package_repo_url(distro)
+      end.uniq
+    end
+
+    def rbenv_rpm_basename
+      rbenv_package_basename(:RPM)
     end
 
     def rbenv_rpm_path
       rbenv_package_path(:RPM)
     end
 
-    def rbenv_package_path(package_format)
+    def rbenv_rpm_possible_repo_urls
+      distributions.find_all do |distro|
+        distro[:package_format] == :RPM
+      end.map do |distro|
+        rbenv_package_repo_url(distro)
+      end.uniq
+    end
+
+    def rbenv_package_basename(package_format)
       case package_format
       when :DEB
-        "#{output_dir}/fullstaq-rbenv_#{rbenv_version}-#{rbenv_package_revision}_all.deb"
+        "fullstaq-rbenv_#{rbenv_version}-#{rbenv_package_revision}_all.deb"
       when :RPM
-        "#{output_dir}/fullstaq-rbenv-#{rbenv_version}-#{rbenv_package_revision}.noarch.rpm"
+        "fullstaq-rbenv-#{rbenv_version}-#{rbenv_package_revision}.noarch.rpm"
       else
         raise "Unsupported package format: #{package_format.inspect}"
+      end
+    end
+
+    def rbenv_package_path(package_format)
+      "#{output_dir}/#{rbenv_package_basename(package_format)}"
+    end
+
+    def rbenv_package_repo_url(distro)
+      basename = rbenv_package_basename(distro[:package_format])
+      case distro[:package_format]
+      when :DEB
+        "#{apt_repo_base_url}/#{basename}"
+      when :RPM
+        "#{yum_repo_base_url}/#{distro[:name]}/#{rpm_arch}/#{basename}"
+      else
+        raise "Unsupported package format: #{distro[:package_format].inspect}"
       end
     end
 
@@ -142,8 +196,20 @@ module Support
       @config[:common][:deb][:package_revision]
     end
 
+    def common_deb_basename
+      common_package_basename(:DEB)
+    end
+
     def common_deb_path
       common_package_path(:DEB)
+    end
+
+    def common_deb_possible_repo_urls
+      distributions.find_all do |distro|
+        distro[:package_format] == :DEB
+      end.map do |distro|
+        common_package_repo_url(distro)
+      end.uniq
     end
 
     def common_rpm_version
@@ -154,18 +220,46 @@ module Support
       @config[:common][:rpm][:package_revision]
     end
 
+    def common_rpm_basename
+      common_package_basename(:RPM)
+    end
+
     def common_rpm_path
       common_package_path(:RPM)
     end
 
-    def common_package_path(package_format)
+    def common_rpm_possible_repo_urls
+      distributions.find_all do |distro|
+        distro[:package_format] == :RPM
+      end.map do |distro|
+        common_package_repo_url(distro)
+      end.uniq
+    end
+
+    def common_package_basename(package_format)
       case package_format
       when :DEB
-        "#{output_dir}/fullstaq-ruby-common_#{common_deb_version}-#{common_deb_package_revision}_all.deb"
+        "fullstaq-ruby-common_#{common_deb_version}-#{common_deb_package_revision}_all.deb"
       when :RPM
-        "#{output_dir}/fullstaq-ruby-common-#{common_rpm_version}-#{common_rpm_package_revision}.noarch.rpm"
+        "fullstaq-ruby-common-#{common_rpm_version}-#{common_rpm_package_revision}.noarch.rpm"
       else
         raise "Unsupported package format: #{package_format.inspect}"
+      end
+    end
+
+    def common_package_path(package_format)
+      "#{output_dir}/#{common_package_basename(package_format)}"
+    end
+
+    def common_package_repo_url(distro)
+      basename = common_package_basename(distro[:package_format])
+      case distro[:package_format]
+      when :DEB
+        "#{apt_repo_base_url}/#{basename}"
+      when :RPM
+        "#{yum_repo_base_url}/#{distro[:name]}/#{rpm_arch}/#{basename}"
+      else
+        raise "Unsupported package format: #{distro[:package_format].inspect}"
       end
     end
 
@@ -235,12 +329,28 @@ module Support
       "#{output_dir}/ruby-bin-#{package_version[:id]}-#{distro[:name]}-#{variant[:name]}.tar.gz"
     end
 
-    def ruby_package_path(package_version, distro, variant)
+    def ruby_package_basename(package_version, distro, variant)
       case distro[:package_format]
       when :DEB
-        "#{output_dir}/fullstaq-ruby-#{package_version[:id]}#{variant[:package_suffix]}_#{package_version[:package_revision]}-#{distro[:name]}_#{deb_arch}.deb"
+        "fullstaq-ruby-#{package_version[:id]}#{variant[:package_suffix]}_#{package_version[:package_revision]}-#{distro[:name]}_#{deb_arch}.deb"
       when :RPM
-        "#{output_dir}/fullstaq-ruby-#{package_version[:id]}#{variant[:package_suffix]}-rev#{package_version[:package_revision]}-#{sanitize_distro_name_for_rpm(distro[:name])}.#{rpm_arch}.rpm"
+        "fullstaq-ruby-#{package_version[:id]}#{variant[:package_suffix]}-rev#{package_version[:package_revision]}-#{sanitize_distro_name_for_rpm(distro[:name])}.#{rpm_arch}.rpm"
+      else
+        raise "Unsupported package format: #{distro[:package_format].inspect}"
+      end
+    end
+
+    def ruby_package_path(package_version, distro, variant)
+      "#{output_dir}/#{ruby_package_basename(package_version, distro, variant)}"
+    end
+
+    def ruby_package_repo_url(package_version, distro, variant)
+      basename = ruby_package_basename(package_version, distro, variant)
+      case distro[:package_format]
+      when :DEB
+        "#{apt_repo_base_url}/#{basename}"
+      when :RPM
+        "#{yum_repo_base_url}/#{distro[:name]}/#{rpm_arch}/#{basename}"
       else
         raise "Unsupported package format: #{distro[:package_format].inspect}"
       end
@@ -320,6 +430,76 @@ module Support
     end
 
 
+    def should_try_download_packages_from_repo?
+      ENV['DOWNLOAD_PACKAGES_FROM_REPO']
+    end
+
+    def check_which_packages_are_in_repo
+      require 'concurrent'
+
+      STDERR.puts "--> Checking which packages already exist in repositories"
+      pool = Concurrent::FixedThreadPool.new(16)
+      begin
+        @packages_in_repo = {}
+        promises = []
+
+        promises.concat(check_whether_common_packages_are_in_repo(pool))
+        promises.concat(check_whether_rbenv_packages_are_in_repo(pool))
+
+        ruby_package_versions.each do |package_version|
+          distributions.each do |distro|
+            variants.each do |variant|
+              promises << check_whether_ruby_package_is_in_repo(pool,
+                package_version, distro, variant)
+            end
+          end
+        end
+
+        promises.each_with_index do |promise, i|
+          basename, url, result = promise.value!
+          # Basename may not be unique, but we only care whether there's
+          # at least one existant URL for that basename.
+          @packages_in_repo[basename] ||= result
+
+          case result
+          when true
+            STDERR.puts Paint[sprintf("%03d/%03d | Exists   : %s",
+              i + 1, promises.size, basename), :green]
+            STDERR.puts "          Checked #{url}"
+            STDERR.puts "          Will download it"
+          when false
+            STDERR.puts Paint[sprintf("%03d/%03d | Not found: %s",
+              i + 1, promises.size, basename), :yellow, :bold]
+            STDERR.puts "          Checked #{url}"
+            STDERR.puts "          Will build it"
+          else
+            exception = result
+            STDERR.puts Paint[sprintf("%03d/%03d | Error    : %s",
+              i + 1, promises.size, basename), :red, :bold]
+            STDERR.puts "          Checked #{url}"
+            STDERR.puts "       => #{exception} (#{exception.class})"
+            STDERR.puts "          #{exception.backtrace.join("\n          ")}"
+          end
+        end
+
+        if promises.any? { |p| p.value![2].is_a?(Exception) }
+          abort
+        end
+      ensure
+        pool.shutdown
+        pool.wait_for_termination
+      end
+    end
+
+    def package_exists_in_repo?(package_basename)
+      if @packages_in_repo.key?(package_basename)
+        @packages_in_repo[package_basename]
+      else
+        raise "BUG: unknown whether #{package_basename} exists in repository."
+      end
+    end
+
+
     def sh(*command)
       if stage = Thread.current[:progress_tracking_stage]
         log "--> Running: #{Shellwords.shelljoin(command)}"
@@ -369,6 +549,27 @@ module Support
         sh 'wget', '-O', output, url
       else
         log "*** ERROR: Cannot download #{url}: no curl or wget installed"
+        abort
+      end
+    end
+
+    def download_from_one_of(urls, output)
+      urls.each_with_index do |url, i|
+        log "--> Checking whether #{url} exists"
+        begin
+          RestClient.head(url)
+        rescue RestClient::NotFound
+          if i == urls.size - 1
+            log "no"
+          else
+            log "no; trying next URL"
+          end
+        else
+          log "yes"
+          return download(url, output)
+        end
+
+        log "*** ERROR: none of the attempted URLs exist"
         abort
       end
     end
@@ -454,6 +655,56 @@ module Support
         sh('git', 'reset', '--hard', ref)
       end
       path
+    end
+
+    def check_whether_common_packages_are_in_repo(executor)
+      candidates = distributions.map do |distro|
+        basename = common_package_basename(distro[:package_format])
+        url = common_package_repo_url(distro)
+        [basename, url]
+      end
+      candidates.uniq!
+      candidates.map do |basename, url|
+        Concurrent::Promises.future_on(executor) do
+          check_whether_package_exists(basename, url)
+        end
+      end
+    end
+
+    def check_whether_rbenv_packages_are_in_repo(executor)
+      candidates = distributions.map do |distro|
+        basename = rbenv_package_basename(distro[:package_format])
+        url = rbenv_package_repo_url(distro)
+        [basename, url]
+      end
+      candidates.uniq!
+      candidates.map do |basename, url|
+        Concurrent::Promises.future_on(executor) do
+          check_whether_package_exists(basename, url)
+        end
+      end
+    end
+
+    def check_whether_ruby_package_is_in_repo(executor, package_version, distro, variant)
+      Concurrent::Promises.future_on(executor) do
+        basename = ruby_package_basename(package_version, distro, variant)
+        url = ruby_package_repo_url(package_version, distro, variant)
+        check_whether_package_exists(basename, url)
+      end
+    end
+
+    def check_whether_package_exists(basename, url)
+      begin
+        RestClient.head(url)
+      rescue RestClient::NotFound, RestClient::Unauthorized
+        # Bintray returns 401 Unauthorized if the package was uploaded but
+        # not yet published. We treat that as not found.
+        [basename, url, false]
+      rescue => e
+        [basename, url, e]
+      else
+        [basename, url, true]
+      end
     end
 
     def autodetect_package_format(environment)
