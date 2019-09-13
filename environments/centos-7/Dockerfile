@@ -11,7 +11,7 @@ RUN set -x && \
         openssl-devel libyaml-devel libffi-devel readline-devel zlib-devel \
         gdbm-devel ncurses-devel ccache && \
     \
-    curl -sSLo /sbin/activatecontaineruid.gz https://github.com/fullstaq-labs/activatecontaineruid/releases/download/v0.9.2/activatecontaineruid-0.9.2-x86_64-linux.gz && \
+    curl -sSLo /sbin/activatecontaineruid.gz https://github.com/fullstaq-labs/activatecontaineruid/releases/download/v0.9.3/activatecontaineruid-0.9.3-x86_64-linux.gz && \
     gunzip /sbin/activatecontaineruid.gz && \
     chmod +x,+s /sbin/activatecontaineruid && \
     mkdir /etc/activatecontaineruid && \
