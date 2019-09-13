@@ -9,6 +9,7 @@ Support.checkout_rbenv_if_necessary
 if Support.should_try_download_packages_from_repo?
   Support.check_which_packages_are_in_repo
 end
+puts
 
 
 ### Top-level tasks ###

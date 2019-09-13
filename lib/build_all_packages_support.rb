@@ -431,7 +431,7 @@ module Support
 
 
     def should_try_download_packages_from_repo?
-      ENV['DOWNLOAD_PACKAGES_FROM_REPO']
+      getenv_boolean('DOWNLOAD_PACKAGES_FROM_REPO')
     end
 
     def check_which_packages_are_in_repo
@@ -804,6 +804,11 @@ module Support
         end
       end
       nil
+    end
+
+    def getenv_boolean(name)
+      value = ENV[name].to_s.downcase
+      ['true', 't', 'yes', 'y', '1', 'on'].include?(value)
     end
 
     def write_progress_summary_logs

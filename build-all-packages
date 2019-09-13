@@ -2,13 +2,91 @@
 set -e
 
 SELFDIR=$(dirname "$0")
-cd "$SELFDIR"
-source lib/library.sh
+SELFDIR=$(cd "$SELFDIR" && pwd)
+# shellcheck source=lib/library.sh
+source "$SELFDIR/lib/library.sh"
 
-if [[ $# -eq 0 ]]; then
-	ARGS=(test)
-else
-	ARGS=("$@")
+TASKS=()
+ONLY_SHOW_TASKS=false
+CONFIG="$SELFDIR/config.yml"
+DOWNLOAD_PACKAGES_FROM_REPO=false
+SHOW_BACKTRACES=false
+BUILD_CONCURRENCY=1
+
+function usage()
+{
+    echo "Usage: ./build-all-packages [OPTIONS] [TASK NAME...]"
+    echo "Build some or all Fullstaq Ruby packages per the settings in config.yml."
+    echo "Which packages are built depends on the specified task names. If no task names"
+    echo "are given, then a list of tasks is shown."
+    echo
+    echo "Examples:"
+    echo "- To build all packages: ./build-all-packages build"
+    echo "- To test all packages: ./build-all-packages test"
+    echo
+    echo "Optional options:"
+    echo "  -T          Only show tasks, then exit. Any specified task names are used"
+    echo "              to filter the list"
+    echo "  -c PATH     Use given config file instead of config.yml"
+    echo "  -d          Download packages from APT/YUM repo if they exist, instead of"
+    echo "              building them"
+    echo "  -j NUM      Build concurrency (default: $BUILD_CONCURRENCY)"
+    echo
+    echo "  -t          Show Rake backtraces"
+    echo
+    echo "  -h          Show usage"
+}
+
+function parse_options()
+{
+    local OPTIND=1
+    local opt
+    while getopts "Tc:dj:th" opt; do
+        case "$opt" in
+    	T)
+			ONLY_SHOW_TASKS=true
+			;;
+		c)
+			CONFIG=$(absolute_path "$OPTARG")
+			;;
+		d)
+			DOWNLOAD_PACKAGES_FROM_REPO=true
+			;;
+		j)
+            BUILD_CONCURRENCY="$OPTARG"
+            ;;
+        t)
+			SHOW_BACKTRACES=true
+			;;
+        h)
+            usage
+            exit
+            ;;
+        *)
+            return 1
+            ;;
+        esac
+    done
+
+    (( OPTIND -= 1 )) || true
+    shift $OPTIND || true
+
+    TASKS=("$@")
+}
+
+parse_options "$@"
+
+ARGS=(-j "$BUILD_CONCURRENCY")
+if $SHOW_BACKTRACES; then
+	ARGS+=(--trace)
 fi
 
-verbose_exec bundle exec drake -f internal-scripts/build-all-packages.rb _start "${ARGS[@]}"
+export CONFIG
+export DOWNLOAD_PACKAGES_FROM_REPO
+
+cd "$SELFDIR"
+if [[ ${#TASKS} -eq 0 ]] || $ONLY_SHOW_TASKS; then
+	verbose_exec bundle exec drake -f internal-scripts/build-all-packages.rb "${ARGS[@]}" -T "${TASKS[@]}"
+else
+	verbose_exec bundle exec drake -f internal-scripts/build-all-packages.rb "${ARGS[@]}" _start "${TASKS[@]}"
+fi
