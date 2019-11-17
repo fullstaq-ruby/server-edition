@@ -433,7 +433,7 @@ sudo yum install fullstaq-ruby-2.6.3
 
 ### Debian/Ubuntu
 
- * Supported Debian versions: 9
+ * Supported Debian versions: 9 *(stretch)*, 10 *(buster)*
  * Supported Ubuntu versions: 18.04
  * Supported architectures: x86-64
 
@@ -451,6 +451,9 @@ deb https://apt.fullstaqruby.org ubuntu-18.04 main
 
 # Debian 9
 deb https://apt.fullstaqruby.org debian-9 main
+
+# Debian 10
+deb https://apt.fullstaqruby.org debian-10 main
 ~~~
 
 Then run:
