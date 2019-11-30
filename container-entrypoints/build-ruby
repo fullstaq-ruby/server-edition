@@ -122,14 +122,38 @@ fi
 
 echo
 
+PLATFORM_NAME=$(ls "$DESTDIR/$INSTALL_PREFIX/lib/ruby/vendor_ruby/$ABI_VERSION")
+export LD_LIBRARY_PATH="$DESTDIR/$INSTALL_PREFIX/lib"
+export RUBYPATH="$DESTDIR/$INSTALL_PREFIX/bin"
+export RUBYLIB="$DESTDIR/$INSTALL_PREFIX/lib/ruby/$ABI_VERSION:\
+$DESTDIR/$INSTALL_PREFIX/lib/ruby/$ABI_VERSION/$PLATFORM_NAME"
+
+# Run a few tests to ensure that Ruby is working and compiled correctly
+printf "Checking ruby --version: "
+if ! $RUBYPATH/ruby --version | grep "$PACKAGE_VERSION"; then
+    echo "Ruby version did not include '$PACKAGE_VERSION'!"
+    exit 1
+fi
+printf "Checking ruby -e 'a = 3 + 4; puts a': "
+RESULT="$($RUBYPATH/ruby -e 'a = 3 + 4; puts a')"
+if [[ "$RESULT" = "7" ]]; then
+    echo success
+else
+    echo "ruby -e \"puts 3 + 4\" returned: $RESULT"
+    exit 1
+fi
+if [[ "$VARIANT" = jemalloc ]]; then
+    printf "Checking RbConfig LIBS and SOLIBS for jemalloc: "
+    RB_CONFIG_LIBS="$($RUBYPATH/ruby -r rbconfig -e "puts ['LIBS', 'SOLIBS'].map { |k| RbConfig::CONFIG[k] }.join")"
+    echo $RB_CONFIG_LIBS
+    if ! echo $RB_CONFIG_LIBS | grep -q jemalloc; then
+        echo "Ruby was not compiled with jemalloc!"
+        exit 1
+    fi
+fi
 
 if [[ -e /etc/debian_version ]]; then
     header "Autodetecting package dependencies..."
-    PLATFORM_NAME=$(ls "$DESTDIR/$INSTALL_PREFIX/lib/ruby/vendor_ruby/$ABI_VERSION")
-    export LD_LIBRARY_PATH="$DESTDIR/$INSTALL_PREFIX/lib"
-    export RUBYPATH="$DESTDIR/$INSTALL_PREFIX/bin"
-    export RUBYLIB="$DESTDIR/$INSTALL_PREFIX/lib/ruby/$ABI_VERSION:$DESTDIR/$INSTALL_PREFIX/lib/ruby/$ABI_VERSION/$PLATFORM_NAME"
-
     echo "+ $RUBYPATH/ruby /system/internal-scripts/autodetect-shlib-dependencies $DESTDIR | tee $DESTDIR/shlib-deps.txt"
     "$RUBYPATH/ruby" /system/internal-scripts/autodetect-shlib-dependencies "$DESTDIR" | tee "$DESTDIR/shlib-deps.txt"
     echo
