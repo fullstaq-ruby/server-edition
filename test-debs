@@ -14,7 +14,7 @@ RBENV_DEB_PATH=
 COMMON_DEB_PATH=
 APT_DISTRO_NAME=
 RUBY_PACKAGE_VERSION=
-DEBUG_ON_FAIL=false
+DEBUG_AFTER_TESTS=false
 
 function usage()
 {
@@ -39,7 +39,7 @@ function usage()
     echo "              (e.g. 2.6; 2.6-jemalloc)"
     echo
     echo "Optional options:"
-    echo "  -D          Open a debug shell on failure"
+    echo "  -D          Open a debug shell after tests have run"
     echo "  -h          Show usage"
 }
 
@@ -75,7 +75,7 @@ function parse_options()
             RUBY_PACKAGE_VERSION="$OPTARG"
             ;;
         D)
-            DEBUG_ON_FAIL=true
+            DEBUG_AFTER_TESTS=true
             ;;
         h)
             usage
@@ -201,7 +201,7 @@ verbose_run docker run --rm --init "${TTY_ARGS[@]}" \
     -v "$TEMP_DIR/repo:/input/repo:ro" \
     -e "SERVER=$SERVER" \
     -e "EXPECTED_VARIANT=$EXPECTED_VARIANT" \
-    -e "DEBUG_ON_FAIL=$DEBUG_ON_FAIL" \
+    -e "DEBUG_AFTER_TESTS=$DEBUG_AFTER_TESTS" \
     "${RUN_ARGS[@]}" \
     --user root \
     --entrypoint /system/container-entrypoints/test-debs \

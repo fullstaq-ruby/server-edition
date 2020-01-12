@@ -14,12 +14,25 @@ if [[ "$SERVER" != "" ]]; then
     require_container_envvar APT_DISTRO_NAME
     require_container_envvar RUBY_PACKAGE_VERSION
 fi
-require_container_envvar DEBUG_ON_FAIL
+require_container_envvar DEBUG_AFTER_TESTS
 
-if ! /system/internal-scripts/test-debs; then
+if /system/internal-scripts/test-debs; then
     echo
     echo '-------------------'
-    if $DEBUG_ON_FAIL; then
+    if $DEBUG_AFTER_TESTS; then
+        if tty -s; then
+            echo '*** NOTICE: Test run succeeded. Opening a shell session for debugging.'
+            echo '    TIP: run this to activate Rbenv: eval "$(rbenv init -)"'
+            bash -l
+        else
+            echo '*** ERROR: Cannot open a debug shell session because there is no TTY.'
+        fi
+    fi
+    exit 0
+else
+    echo
+    echo '-------------------'
+    if $DEBUG_AFTER_TESTS; then
         if tty -s; then
             echo '*** ERROR: Test run failed. Opening a shell session for debugging.'
             echo '    TIP: run this to activate Rbenv: eval "$(rbenv init -)"'
