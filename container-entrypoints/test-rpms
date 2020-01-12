@@ -21,6 +21,7 @@ if ! /system/internal-scripts/test-rpms; then
     if $DEBUG_ON_FAIL; then
         if tty -s; then
             echo '*** ERROR: Test run failed. Opening a shell session for debugging.'
+            echo '    TIP: run this to activate Rbenv: eval "$(rbenv init -)"'
             bash -l
         else
             echo '*** ERROR: Test run failed. Cannot open a debug shell session either because there is no TTY.'
