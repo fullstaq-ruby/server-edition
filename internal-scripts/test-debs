@@ -135,7 +135,7 @@ output=$(ruby -e 'puts "hello world"')
 assert_equals "$output" "hello world"
 
 echo -n "Checking whether Ruby native libraries work... "
-output=$(ruby -rbigdecimal -e "puts BigDecimal.new(0)")
+output=$(ruby -rbigdecimal -e "puts BigDecimal(0)")
 assert_equals "$output" "0.0"
 
 echo -n "Checking whether irb works... "
