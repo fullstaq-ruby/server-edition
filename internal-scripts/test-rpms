@@ -217,7 +217,7 @@ echo
 
 header "Test installing gems"
 run yum install -y gcc gcc-c++ make
-run gem install bundler -v 1.17.3 --no-document
+run gem install bundler -v 2.1.4 --no-document
 run sudo -u utility -H cp /system/resources/test-env/Gemfile* ~utility/
 run sudo -u utility -H env BUNDLE_GEMFILE=/home/utility/Gemfile \
     rbenv exec bundle install --path=/home/utility/bundle -j 4
