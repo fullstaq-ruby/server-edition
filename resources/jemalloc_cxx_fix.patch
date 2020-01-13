@@ -1,0 +1,62 @@
+diff --git a/include/jemalloc/jemalloc_macros.h.in b/include/jemalloc/jemalloc_macros.h.in
+index 13dbdd9..b8187e1 100644
+--- a/include/jemalloc/jemalloc_macros.h.in
++++ b/include/jemalloc/jemalloc_macros.h.in
+@@ -8,6 +8,12 @@
+ #define	JEMALLOC_VERSION_NREV @jemalloc_version_nrev@
+ #define	JEMALLOC_VERSION_GID "@jemalloc_version_gid@"
+ 
++#if defined(__cplusplus)
++#  define JEMALLOC_CXX_THROW throw()
++#else
++#  define JEMALLOC_CXX_THROW
++#endif
++
+ #  define MALLOCX_LG_ALIGN(la)	(la)
+ #  if LG_SIZEOF_PTR == 2
+ #    define MALLOCX_ALIGN(a)	(ffs(a)-1)
+diff --git a/include/jemalloc/jemalloc_protos.h.in b/include/jemalloc/jemalloc_protos.h.in
+index 25446de..52f8aaa 100644
+--- a/include/jemalloc/jemalloc_protos.h.in
++++ b/include/jemalloc/jemalloc_protos.h.in
+@@ -7,15 +7,15 @@ extern JEMALLOC_EXPORT const char	*@je_@malloc_conf;
+ extern JEMALLOC_EXPORT void		(*@je_@malloc_message)(void *cbopaque,
+     const char *s);
+ 
+-JEMALLOC_EXPORT void	*@je_@malloc(size_t size) JEMALLOC_ATTR(malloc);
++JEMALLOC_EXPORT void	*@je_@malloc(size_t size) JEMALLOC_CXX_THROW JEMALLOC_ATTR(malloc);
+ JEMALLOC_EXPORT void	*@je_@calloc(size_t num, size_t size)
+-    JEMALLOC_ATTR(malloc);
++    JEMALLOC_CXX_THROW JEMALLOC_ATTR(malloc);
+ JEMALLOC_EXPORT int	@je_@posix_memalign(void **memptr, size_t alignment,
+-    size_t size) JEMALLOC_ATTR(nonnull(1));
++    size_t size) JEMALLOC_CXX_THROW JEMALLOC_ATTR(nonnull(1));
+ JEMALLOC_EXPORT void	*@je_@aligned_alloc(size_t alignment, size_t size)
+-    JEMALLOC_ATTR(malloc);
+-JEMALLOC_EXPORT void	*@je_@realloc(void *ptr, size_t size);
+-JEMALLOC_EXPORT void	@je_@free(void *ptr);
++    JEMALLOC_CXX_THROW JEMALLOC_ATTR(malloc);
++JEMALLOC_EXPORT void	*@je_@realloc(void *ptr, size_t size) JEMALLOC_CXX_THROW;
++JEMALLOC_EXPORT void	@je_@free(void *ptr) JEMALLOC_CXX_THROW;
+ 
+ JEMALLOC_EXPORT void	*@je_@mallocx(size_t size, int flags);
+ JEMALLOC_EXPORT void	*@je_@rallocx(void *ptr, size_t size, int flags);
+@@ -34,15 +34,15 @@ JEMALLOC_EXPORT int	@je_@mallctlbymib(const size_t *mib, size_t miblen,
+ JEMALLOC_EXPORT void	@je_@malloc_stats_print(void (*write_cb)(void *,
+     const char *), void *@je_@cbopaque, const char *opts);
+ JEMALLOC_EXPORT size_t	@je_@malloc_usable_size(
+-    JEMALLOC_USABLE_SIZE_CONST void *ptr);
++    JEMALLOC_USABLE_SIZE_CONST void *ptr) JEMALLOC_CXX_THROW;
+ 
+ #ifdef JEMALLOC_OVERRIDE_MEMALIGN
+ JEMALLOC_EXPORT void *	@je_@memalign(size_t alignment, size_t size)
+-    JEMALLOC_ATTR(malloc);
++    JEMALLOC_CXX_THROW JEMALLOC_ATTR(malloc);
+ #endif
+ 
+ #ifdef JEMALLOC_OVERRIDE_VALLOC
+-JEMALLOC_EXPORT void *	@je_@valloc(size_t size) JEMALLOC_ATTR(malloc);
++JEMALLOC_EXPORT void *	@je_@valloc(size_t size) JEMALLOC_CXX_THROW JEMALLOC_ATTR(malloc);
+ #endif
+ 
+ #ifdef JEMALLOC_EXPERIMENTAL

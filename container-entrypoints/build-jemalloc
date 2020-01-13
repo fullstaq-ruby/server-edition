@@ -42,11 +42,18 @@ echo
 
 
 header "Compiling..."
+
+# https://github.com/fullstaq-labs/fullstaq-ruby-server-edition/issues/34
+# https://github.com/fullstaq-labs/fullstaq-ruby-server-edition/pull/32#issuecomment-554764548
+echo "+ patch -p1 < /system/resources/jemalloc_cxx_fix.patch"
+patch -t -p1 < /system/resources/jemalloc_cxx_fix.patch
+
 run ./configure --prefix="$INSTALL_PREFIX" --enable-shared --disable-static
 run make "-j$BUILD_CONCURRENCY"
 run make install
 run strip --strip-debug "$INSTALL_PREFIX/lib/libjemalloc.so"
 run rm -rf "$INSTALL_PREFIX/lib/pkgconfig"
+
 echo
 
 

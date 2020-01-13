@@ -224,6 +224,17 @@ run sudo -u utility -H env BUNDLE_GEMFILE=/home/utility/Gemfile \
     rbenv exec bundle install --path=/home/utility/bundle -j 4
 run sudo -u utility -H env BUNDLE_GEMFILE=/home/utility/Gemfile \
     rbenv exec bundle exec rspec --version
+echo
+
+
+if [[ "$VARIANT" = jemalloc ]]; then
+    # https://github.com/fullstaq-labs/fullstaq-ruby-server-edition/issues/34
+    # https://github.com/fullstaq-labs/fullstaq-ruby-server-edition/pull/32#issuecomment-554764548
+    header "Test Jemalloc C++ compatibility"
+    INCLUDE_DIR=$(ruby -rrbconfig -e 'puts RbConfig::CONFIG["rubyhdrdir"]')
+    run c++ "-I$INCLUDE_DIR" -Wall /system/resources/test-env/jemalloc-cxx.cpp -o /tmp/jemalloc_cxx
+fi
+
 
 echo
 echo "All tests pass."
