@@ -3,9 +3,11 @@
 
 require_relative '../lib/build_all_packages_support'
 
+Support.initialize_for_rake
 Support.initialize_progress_tracking(self)
 Support.load_config
 Support.checkout_rbenv_if_necessary
+Support.verify_rbenv_version_in_config
 if Support.should_try_download_packages_from_repo?
   Support.check_which_packages_are_in_repo
 end
@@ -91,6 +93,7 @@ Support.define_progress_category('Common') do |progress_category|
     else
       Support.sh './build-common-deb',
         '-o', Support.common_deb_path,
+        '-v', Support.config[:common][:deb][:version].to_s,
         '-r', Support.config[:common][:deb][:package_revision].to_s
     end
   end
@@ -109,6 +112,7 @@ Support.define_progress_category('Common') do |progress_category|
     else
       Support.sh './build-common-rpm',
         '-o', Support.common_rpm_path,
+        '-v', Support.config[:common][:rpm][:version].to_s,
         '-r', Support.config[:common][:rpm][:package_revision].to_s
     end
   end

@@ -3,10 +3,6 @@ require 'shellwords'
 require 'fileutils'
 require 'stringio'
 require 'rbconfig'
-require 'paint'
-require 'paint/rgb_colors'
-require 'rest-client'
-require_relative 'progress_tracker'
 
 module Support
   ROOT = File.absolute_path(File.dirname(__FILE__) + '/..')
@@ -44,6 +40,7 @@ module Support
             File.basename(path)
           end
           envs.delete('utility')
+          envs.sort!
           names = envs
         elsif @config[:distributions].is_a?(Array)
           names = @config[:distributions]
@@ -57,6 +54,14 @@ module Support
             package_format: autodetect_package_format(name)
           }
         end
+      end
+    end
+
+    def distributions_with_test_image_info
+      distributions.map do |distro|
+        distro.merge(
+          test_image: determine_test_image_for(distro)
+        )
       end
     end
 
@@ -103,14 +108,27 @@ module Support
 
 
     def checkout_rbenv_if_necessary
-      rbenv_source_path
+      if @config[:rbenv][:repo]
+        checkout_rbenv_from_git(@config[:rbenv][:repo], @config[:rbenv][:ref])
+      end
     end
 
-    def rbenv_version
-      @rbenv_version ||= begin
+    def verify_rbenv_version_in_config
+      if rbenv_version_according_to_source != rbenv_version
+        abort("Config error: 'rbenv.version' is set to #{rbenv_version.inspect}," \
+            " but it should be #{rbenv_version_according_to_source.inspect}")
+      end
+    end
+
+    def rbenv_version_according_to_source
+      @rbenv_version_according_to_source ||= begin
         output = capture_output("#{rbenv_source_path}/bin/rbenv", "--version").strip
         output.split(' ')[1].sub(/(.+)-.*/, '\1')
       end
+    end
+
+    def rbenv_version
+      @config[:rbenv][:version]
     end
 
     def rbenv_package_revision
@@ -120,7 +138,7 @@ module Support
     def rbenv_source_path
       @rbenv_source_path ||= begin
         if @config[:rbenv][:repo]
-          checkout_rbenv_from_git(@config[:rbenv][:repo], @config[:rbenv][:ref])
+          "#{cache_dir}/rbenv"
         else
           @config[:rbenv][:path] ||
             abort("Config error: either 'rbenv.repo' + 'rbenv.ref' must be specified, or 'rbenv.path' must be specified")
@@ -264,12 +282,16 @@ module Support
     end
 
 
+    def jemalloc_version
+      @config[:jemalloc_version]
+    end
+
     def jemalloc_source_basename
       "jemalloc-#{@config[:jemalloc_version]}.tar.bz2"
     end
 
     def jemalloc_source_url
-      "https://github.com/jemalloc/jemalloc/releases/download/#{@config[:jemalloc_version]}/#{jemalloc_source_basename}"
+      "https://github.com/jemalloc/jemalloc/releases/download/#{jemalloc_version}/#{jemalloc_source_basename}"
     end
 
     def jemalloc_source_path
@@ -277,7 +299,7 @@ module Support
     end
 
     def jemalloc_bin_path(distro)
-      "#{output_dir}/jemalloc-bin-#{@config[:jemalloc_version]}-#{distro[:name]}.tar.gz"
+      "#{output_dir}/jemalloc-bin-#{jemalloc_version}-#{distro[:name]}.tar.gz"
     end
 
 
@@ -357,7 +379,14 @@ module Support
     end
 
 
+    def initialize_for_rake
+      require 'rest-client'
+    end
+
     def initialize_progress_tracking(rake_context)
+      require 'paint'
+      require 'paint/rgb_colors'
+      require_relative 'progress_tracker'
       @progress_tracker = ProgressTracker.new
       @progress_tracker_pipe = IO.pipe
       @rake_context = rake_context

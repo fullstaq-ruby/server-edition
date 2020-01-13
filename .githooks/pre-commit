@@ -1,0 +1,6 @@
+#!/bin/sh
+set -e
+exec 2>&1
+echo 'Regenerating .github/workflows/ci-cd.yml'
+./internal-scripts/generate-ci-cd-yaml.rb
+git add .github/workflows/ci-cd.yml

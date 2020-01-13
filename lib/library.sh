@@ -1,6 +1,8 @@
 RESET=$'\033[0m'
 BOLD=$'\033[1m'
 YELLOW=$'\033[33m'
+# shellcheck disable=SC2034
+CYAN=$'\033[36m'
 BLUE_BG=$'\033[44m'
 
 if [[ "$VERBOSE" = "" ]]; then
@@ -50,6 +52,16 @@ function require_args_exact()
     shift
     if [[ $# -ne $count ]]; then
         echo "ERROR: $count arguments expected, but got $#."
+        exit 1
+    fi
+}
+
+function require_envvar()
+{
+    local name="$1"
+    local value=$(eval "echo \$$name")
+    if [[ "$value" = "" ]]; then
+        echo "ERROR: please pass the '$name' environment variable to this script."
         exit 1
     fi
 }

@@ -1,0 +1,515 @@
+<%= editing_warning_comment %>
+
+name: CI/CD
+
+on: [push]
+
+jobs:
+  check_workflow_uptodate:
+    name: Check whether workflow is up-to-date
+    runs-on: ubuntu-18.04
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-ruby@v1
+        with:
+          ruby-version: '2.6'
+
+      - name: Check
+        run: ./internal-scripts/ci-cd/check-workflow-uptodate/check.sh
+      - name: Show differences
+        run: git diff --no-index --color .github/workflows/ci-cd.yml .github/workflows/ci-cd.yml.2
+        if: '!cancelled() && failure()'
+
+  check_version_numbers_need_bumping:
+    name: Check whether any version numbers need to be changed
+    needs: download_rbenv_source
+    runs-on: ubuntu-18.04
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-ruby@v1
+        with:
+          ruby-version: '2.6'
+      - name: Fetch Rbenv source
+        uses: actions/download-artifact@v1
+        with:
+          name: rbenv-src
+          path: .
+
+      - name: Extract Rbenv source
+        run: ./internal-scripts/ci-cd/check-version-numbers-need-changing/extract-rbenv-source.sh
+      - name: Determine latest release tag
+        # Sets environment variable $LATEST_RELEASE_TAG
+        run: ./internal-scripts/ci-cd/check-version-numbers-need-changing/determine-latest-release-tag.sh
+
+      - name: Check whether the Rbenv version in config.yml is correct
+        run: ./internal-scripts/ci-cd/check-version-numbers-need-changing/check-rbenv-version.sh
+        if: '!cancelled()'
+      - name: Check whether the Rbenv package revision needs to be changed
+        run: ./internal-scripts/ci-cd/check-version-numbers-need-changing/check-rbenv-package-revision.sh
+        if: '!cancelled()'
+
+      - name: Check whether the fullstaq-ruby-common Debian package version or revision needs to be changed
+        run: ./internal-scripts/ci-cd/check-version-numbers-need-changing/check-common-deb-version-revision.sh
+        if: '!cancelled()'
+      - name: Check whether the fullstaq-ruby-common RPM package version or revision needs to be changed
+        run: ./internal-scripts/ci-cd/check-version-numbers-need-changing/check-common-rpm-version-revision.sh
+        if: '!cancelled()'
+
+      - name: Check whether any Ruby package revisions need to be changed
+        run: ./internal-scripts/ci-cd/check-version-numbers-need-changing/check-ruby-package-revisions.sh
+        if: '!cancelled()'
+
+      - name: Check whether any minor Ruby package revisions need to be changed
+        run: ./internal-scripts/ci-cd/check-version-numbers-need-changing/check-minor-ruby-package-revisions.sh
+        if: '!cancelled()'
+
+
+  ### Docker images ###
+
+  build_docker_images:
+    name: Build Docker images
+    runs-on: ubuntu-18.04
+    strategy:
+      matrix:
+        image: <%=indentyaml docker_images %>
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Determine whether image needs to be built
+        id: prepare
+        run: ./internal-scripts/ci-cd/build-docker-images/prepare.sh
+        env:
+          IMAGE_NAME: ${{ matrix.image.name }}
+          IMAGE_TAG: ${{ matrix.image.tag }}
+          IMAGE_ID: ${{ matrix.image.id }}
+          CI_REF: ${{ github.ref }}
+          CI_RUN_NUMBER: ${{ github.run_number }}
+
+      - name: Login to Google Container Registry
+        id: gcloud_login
+        if: steps.prepare.outputs.needs-building == 'true'
+        run: ./internal-scripts/ci-cd/build-docker-images/login-gcr.sh
+        env:
+          SERVICE_ACCOUNT_KEY_JSON: ${{ secrets.GCLOUD_KEY }}
+      - name: Build
+        if: steps.prepare.outputs.needs-building == 'true'
+        run: ./internal-scripts/ci-cd/build-docker-images/build.sh
+        env:
+          IMAGE_NAME: ${{ steps.prepare.outputs.image-name }}
+          IMAGE_TAG: ${{ steps.prepare.outputs.image-tag }}
+          SOURCE_DIR: environments/${{ matrix.image.id }}
+      - name: Publish
+        if: steps.prepare.outputs.needs-building == 'true'
+        run: ./internal-scripts/ci-cd/build-docker-images/publish.sh
+        env:
+          IMAGE_NAME: ${{ steps.prepare.outputs.image-name }}
+          IMAGE_TAG: ${{ steps.prepare.outputs.image-tag }}
+
+      - name: Create artifact
+        run: ./internal-scripts/ci-cd/build-docker-images/create-artifact.sh
+        env:
+          IMAGE_NAME: ${{ steps.prepare.outputs.image-name }}
+          IMAGE_TAG: ${{ steps.prepare.outputs.image-tag }}
+      - name: Archive artifact
+        uses: actions/upload-artifact@v1
+        with:
+          name: docker-image-info-${{ matrix.image.id }}
+          path: output
+
+
+  ### Sources ###
+
+  download_ruby_sources:
+    name: Download Ruby sources
+    runs-on: ubuntu-18.04
+    strategy:
+      matrix:
+        ruby_version: <%=indentyaml ruby_source_versions %>
+    steps:
+      - name: Fetch cache
+        id: fetch_cache
+        uses: actions/cache@v1
+        with:
+          path: output
+          key: v3-ruby-src-${{ matrix.ruby_version }}
+
+      - uses: actions/checkout@v2
+        if: steps.fetch_cache.outputs.cache-hit != 'true'
+      - name: Download
+        run: ./internal-scripts/ci-cd/download-ruby-sources/download.sh
+        if: steps.fetch_cache.outputs.cache-hit != 'true'
+        env:
+          RUBY_VERSION: ${{ matrix.ruby_version }}
+
+      - name: Archive artifact
+        uses: actions/upload-artifact@v1
+        with:
+          name: ruby-src-${{ matrix.ruby_version }}
+          path: output
+
+
+  download_rbenv_source:
+    name: Download Rbenv source
+    runs-on: ubuntu-18.04
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-ruby@v1
+        with:
+          ruby-version: '2.6'
+      - name: Prepare
+        id: prepare
+        run: ./internal-scripts/ci-cd/download-rbenv-source/prepare.sh
+      - name: Fetch cache
+        uses: actions/cache@v1
+        with:
+          path: output
+          key: v2-rbenv-src-${{ steps.prepare.outputs.cache_key }}
+
+      - name: Download
+        run: ./internal-scripts/ci-cd/download-rbenv-source/download.sh
+        env:
+          RBENV_REPO_URL: ${{ steps.prepare.outputs.repo_url }}
+          RBENV_REPO_REF: ${{ steps.prepare.outputs.ref }}
+
+      - name: Archive artifact
+        uses: actions/upload-artifact@v1
+        with:
+          name: rbenv-src
+          path: output
+
+
+  ### Jemalloc ###
+
+  build_jemalloc_binaries:
+    name: Build Jemalloc binaries
+    needs: build_docker_images
+    runs-on: ubuntu-18.04
+    strategy:
+      matrix:
+        distribution: <%=indentyaml distributions %>
+    steps:
+      - uses: actions/checkout@v2
+      - name: Fetch cache
+        uses: actions/cache@v1
+        with:
+          path: cache
+          key: jemalloc-bin-${{ matrix.distribution.name }}-<%= jemalloc_version %>
+      - name: Create cache dir
+        run: mkdir -p cache
+
+      - name: Determine which Docker image to use for building
+        uses: actions/download-artifact@v1
+        with:
+          name: docker-image-info-${{ matrix.distribution.name }}
+          path: .
+      - name: Load build image info
+        id: load_build_image_info
+        run: ./internal-scripts/ci-cd/load-docker-image-info.sh
+
+      - name: Download source
+        run: ./internal-scripts/ci-cd/build-jemalloc-binaries/download-source.sh
+        env:
+          JEMALLOC_VERSION: "<%= jemalloc_version %>"
+
+      - name: Build
+        run: ./internal-scripts/ci-cd/build-jemalloc-binaries/build.sh
+        env:
+          BUILD_IMAGE_NAME: ${{ steps.load_build_image_info.outputs.image-name }}
+          BUILD_IMAGE_TAG: ${{ steps.load_build_image_info.outputs.image-tag }}
+          ENVIRONMENT_NAME: ${{ matrix.distribution.name }}
+
+      - name: Archive artifact
+        uses: actions/upload-artifact@v1
+        with:
+          name: jemalloc-bin-${{ matrix.distribution.name }}
+          path: output
+
+
+  ### fullstaq-ruby-common ###
+
+  build_common_deb:
+    name: Build common DEB
+    needs: build_docker_images
+    runs-on: ubuntu-18.04
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Determine which Docker image to use for building
+        uses: actions/download-artifact@v1
+        with:
+          name: docker-image-info-utility
+          path: .
+      - name: Load utility image info
+        id: load_utility_image_info
+        run: ./internal-scripts/ci-cd/load-docker-image-info.sh
+
+      - name: Build package
+        run: ./internal-scripts/ci-cd/build-common-deb/build-package.sh
+        env:
+          UTILITY_IMAGE_NAME: ${{ steps.load_utility_image_info.outputs.image-name }}
+          UTILITY_IMAGE_TAG: ${{ steps.load_utility_image_info.outputs.image-tag }}
+          PACKAGE_BASENAME: "<%= common_package_basename(:DEB) %>"
+          VERSION: "<%= common_deb_version %>"
+          REVISION: "<%= common_deb_package_revision %>"
+
+      - name: Archive artifact
+        uses: actions/upload-artifact@v1
+        with:
+          name: common-deb
+          path: output
+
+
+  build_common_rpm:
+    name: Build common RPM
+    needs: build_docker_images
+    runs-on: ubuntu-18.04
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Determine which Docker image to use for building
+        uses: actions/download-artifact@v1
+        with:
+          name: docker-image-info-utility
+          path: .
+      - name: Load utility image info
+        id: load_utility_image_info
+        run: ./internal-scripts/ci-cd/load-docker-image-info.sh
+
+      - name: Build package
+        run: ./internal-scripts/ci-cd/build-common-rpm/build-package.sh
+        env:
+          UTILITY_IMAGE_NAME: ${{ steps.load_utility_image_info.outputs.image-name }}
+          UTILITY_IMAGE_TAG: ${{ steps.load_utility_image_info.outputs.image-tag }}
+          PACKAGE_BASENAME: "<%= common_package_basename(:RPM) %>"
+          VERSION: "<%= common_rpm_version %>"
+          REVISION: "<%= common_rpm_package_revision %>"
+
+      - name: Archive artifact
+        uses: actions/upload-artifact@v1
+        with:
+          name: common-rpm
+          path: output
+
+
+  ### Rbenv ###
+
+  build_rbenv_deb:
+    name: Build Rbenv DEB
+    needs:
+      - download_rbenv_source
+      - build_docker_images
+    runs-on: ubuntu-18.04
+    steps:
+      - uses: actions/checkout@v2
+      - name: Fetch Rbenv source
+        uses: actions/download-artifact@v1
+        with:
+          name: rbenv-src
+          path: .
+
+      - name: Determine which Docker image to use for building
+        uses: actions/download-artifact@v1
+        with:
+          name: docker-image-info-utility
+          path: .
+      - name: Load utility image info
+        id: load_utility_image_info
+        run: ./internal-scripts/ci-cd/load-docker-image-info.sh
+
+      - name: Build package
+        run: ./internal-scripts/ci-cd/build-rbenv-deb/build-package.sh
+        env:
+          UTILITY_IMAGE_NAME: ${{ steps.load_utility_image_info.outputs.image-name }}
+          UTILITY_IMAGE_TAG: ${{ steps.load_utility_image_info.outputs.image-tag }}
+          PACKAGE_BASENAME: "<%= rbenv_package_basename(:DEB) %>"
+          REVISION: "<%= rbenv_package_revision %>"
+
+      - name: Archive artifact
+        uses: actions/upload-artifact@v1
+        with:
+          name: rbenv-deb
+          path: output
+
+
+  build_rbenv_rpm:
+    name: Build Rbenv RPM
+    needs:
+      - download_rbenv_source
+      - build_docker_images
+    runs-on: ubuntu-18.04
+    steps:
+      - uses: actions/checkout@v2
+      - name: Fetch Rbenv source
+        uses: actions/download-artifact@v1
+        with:
+          name: rbenv-src
+          path: .
+
+      - name: Determine which Docker image to use for building
+        uses: actions/download-artifact@v1
+        with:
+          name: docker-image-info-utility
+          path: .
+      - name: Load utility image info
+        id: load_utility_image_info
+        run: ./internal-scripts/ci-cd/load-docker-image-info.sh
+
+      - name: Build package
+        run: ./internal-scripts/ci-cd/build-rbenv-rpm/build-package.sh
+        env:
+          UTILITY_IMAGE_NAME: ${{ steps.load_utility_image_info.outputs.image-name }}
+          UTILITY_IMAGE_TAG: ${{ steps.load_utility_image_info.outputs.image-tag }}
+          PACKAGE_BASENAME: "<%= rbenv_package_basename(:RPM) %>"
+          REVISION: "<%= rbenv_package_revision %>"
+
+      - name: Archive artifact
+        uses: actions/upload-artifact@v1
+        with:
+          name: rbenv-rpm
+          path: output
+
+
+  ### Ruby ###
+
+  build_ruby_packages:
+    name: Build Ruby packages
+    needs:
+      - download_ruby_sources
+      - build_jemalloc_binaries
+      - build_docker_images
+    runs-on: ubuntu-18.04
+    strategy:
+      matrix:
+        ruby_package_version: <%=indentyaml ruby_package_versions %>
+        distribution: <%=indentyaml distributions %>
+        variant: <%=indentyaml variants %>
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Fetch Ruby source
+        uses: actions/download-artifact@v1
+        with:
+          name: ruby-src-${{ matrix.ruby_package_version.full_version }}
+          path: .
+      - name: Fetch Jemalloc binary
+        uses: actions/download-artifact@v1
+        with:
+          name: jemalloc-bin-${{ matrix.distribution.name }}
+          path: .
+        if: matrix.variant.name == 'jemalloc'
+      - name: Fetch cache
+        uses: actions/cache@v1
+        with:
+          path: cache
+          key: ruby-bin-${{ matrix.ruby_package_version.id }}-${{ matrix.distribution.name }}-${{ matrix.variant.name }}
+      - name: Create cache dir
+        run: mkdir -p cache
+
+      - name: Determine which Docker image to use for building
+        uses: actions/download-artifact@v1
+        with:
+          name: docker-image-info-${{ matrix.distribution.name }}
+          path: .
+      - name: Load build image info
+        id: load_build_image_info
+        run: ./internal-scripts/ci-cd/load-docker-image-info.sh
+      - name: Build binaries
+        run: ./internal-scripts/ci-cd/build-ruby-packages/build-binaries.sh
+        env:
+          BUILD_IMAGE_NAME: ${{ steps.load_build_image_info.outputs.image-name }}
+          BUILD_IMAGE_TAG: ${{ steps.load_build_image_info.outputs.image-tag }}
+          ENVIRONMENT_NAME: ${{ matrix.distribution.name }}
+          VARIANT_NAME: ${{ matrix.variant.name }}
+          RUBY_PACKAGE_VERSION_ID: ${{ matrix.ruby_package_version.id }}
+
+      - name: Determine which Docker image to use for packaging
+        uses: actions/download-artifact@v1
+        with:
+          name: docker-image-info-utility
+          path: .
+      - name: Load utility image info
+        id: load_utility_image_info
+        run: ./internal-scripts/ci-cd/load-docker-image-info.sh
+      - name: Build package
+        run: ./internal-scripts/ci-cd/build-ruby-packages/build-package.sh
+        env:
+          UTILITY_IMAGE_NAME: ${{ steps.load_utility_image_info.outputs.image-name }}
+          UTILITY_IMAGE_TAG: ${{ steps.load_utility_image_info.outputs.image-tag }}
+          DISTRIBUTION_NAME: ${{ matrix.distribution.name }}
+          VARIANT_NAME: ${{ matrix.variant.name }}
+          VARIANT_PACKAGE_SUFFIX: ${{ matrix.variant.package_suffix }}
+          PACKAGE_FORMAT: ${{ matrix.distribution.package_format }}
+          RUBY_PACKAGE_VERSION_ID: ${{ matrix.ruby_package_version.id }}
+          RUBY_PACKAGE_REVISION: ${{ matrix.ruby_package_version.package_revision }}
+
+      - name: Archive package artifact
+        uses: actions/upload-artifact@v1
+        with:
+          name: ruby-pkg_${{ matrix.ruby_package_version.id }}_${{ matrix.distribution.name }}_${{ matrix.variant.name }}
+          path: output
+
+
+  ### Tests ###
+
+  test_ruby_packages:
+    name: Test Ruby packages
+    needs:
+      - build_docker_images
+      - build_common_deb
+      - build_common_rpm
+      - build_rbenv_deb
+      - build_rbenv_rpm
+      - build_ruby_packages
+    runs-on: ubuntu-18.04
+    strategy:
+      matrix:
+        ruby_package_version: <%=indentyaml ruby_package_versions %>
+        distribution: <%=indentyaml distributions_with_test_image_info %>
+        variant: <%=indentyaml variants %>
+    steps:
+      - uses: actions/checkout@v2
+      - name: Determine parameters
+        id: params
+        run: |
+          FORMAT=$(tr '[:upper]' '[:lower]' <<<"${{ matrix.distribution.package_format }}")
+          echo "::set-output name=package_format_lowercase::$FORMAT"
+
+      - name: Fetch common package
+        uses: actions/download-artifact@v1
+        with:
+          name: common-${{ steps.params.outputs.package_format_lowercase }}
+          path: .
+      - name: Fetch Rbenv package
+        uses: actions/download-artifact@v1
+        with:
+          name: rbenv-${{ steps.params.outputs.package_format_lowercase }}
+          path: .
+      - name: Fetch Ruby package
+        uses: actions/download-artifact@v1
+        with:
+          name: ruby-pkg_${{ matrix.ruby_package_version.id }}_${{ matrix.distribution.name }}_${{ matrix.variant.name }}
+          path: ruby-pkgs
+
+      - name: Determine which Docker image to use for test preparation
+        uses: actions/download-artifact@v1
+        with:
+          name: docker-image-info-utility
+          path: .
+      - name: Load utility image info
+        id: load_utility_image_info
+        run: ./internal-scripts/ci-cd/load-docker-image-info.sh
+
+      - name: Run tests
+        run: ./internal-scripts/ci-cd/test-ruby-packages/run-tests.sh
+        env:
+          UTILITY_IMAGE_NAME: ${{ steps.load_utility_image_info.outputs.image-name }}
+          UTILITY_IMAGE_TAG: ${{ steps.load_utility_image_info.outputs.image-tag }}
+          PACKAGE_FORMAT: ${{ matrix.distribution.package_format }}
+          VARIANT_NAME: ${{ matrix.variant.name }}
+          TEST_IMAGE_NAME: ${{ matrix.distribution.test_image }}
+          RBENV_PACKAGE_BASENAME_DEB: "<%= rbenv_package_basename(:DEB) %>"
+          RBENV_PACKAGE_BASENAME_RPM: "<%= rbenv_package_basename(:RPM) %>"
+          COMMON_PACKAGE_BASENAME_DEB: "<%= common_package_basename(:DEB) %>"
+          COMMON_PACKAGE_BASENAME_RPM: "<%= common_package_basename(:RPM) %>"
