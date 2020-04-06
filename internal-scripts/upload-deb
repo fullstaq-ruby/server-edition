@@ -42,6 +42,7 @@ FILE="$2"
 BASENAME="$3"
 REPUBLISH="$4"
 
+# shellcheck disable=SC2207
 ALL_SUPPORTED_DISTROS=($(list_deb_environments))
 ALL_SUPPORTED_ARCHITECTURES=(amd64)
 
@@ -49,12 +50,14 @@ set -o pipefail
 
 DEB_INFO=$(dpkg-deb -I "$FILE")
 
+# shellcheck disable=SC2207
 ARCHS=($(grep '^ Architecture:' <<<"$DEB_INFO" | perl -pe 's/.*?: *//'))
 if [[ "${ARCHS[0]}" = all ]]; then
     ARCHS=("${ALL_SUPPORTED_ARCHITECTURES[@]}")
 fi
 
 if grep -q '^  Distribution:' <<<"$DEB_INFO"; then
+    # shellcheck disable=SC2207
     DISTROS=($(grep '^  Distribution:' <<<"$DEB_INFO" | perl -pe 's/.*?: *//'))
 else
     DISTROS=("${ALL_SUPPORTED_DISTROS[@]}")

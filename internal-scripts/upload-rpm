@@ -42,6 +42,7 @@ FILE="$2"
 BASENAME="$3"
 REPUBLISH="$4"
 
+# shellcheck disable=SC2207
 ALL_SUPPORTED_DISTROS=($(list_rpm_environments))
 ALL_SUPPORTED_ARCHITECTURES=(x86_64)
 
@@ -49,12 +50,14 @@ set -o pipefail
 
 RPM_INFO=$(rpm -qpi "$FILE")
 
+# shellcheck disable=SC2207
 ARCHS=($(grep '^Architecture *:' <<<"$RPM_INFO" | perl -pe 's/.*?: *//'))
 if [[ "${ARCHS[0]}" = noarch ]]; then
     ARCHS=("${ALL_SUPPORTED_ARCHITECTURES[@]}")
 fi
 
 if grep -q '^Distribution:' <<<"$RPM_INFO"; then
+    # shellcheck disable=SC2207
     DISTROS=($(grep '^Distribution:' <<<"$RPM_INFO" | perl -pe 's/.*?: *//'))
 else
     DISTROS=("${ALL_SUPPORTED_DISTROS[@]}")
