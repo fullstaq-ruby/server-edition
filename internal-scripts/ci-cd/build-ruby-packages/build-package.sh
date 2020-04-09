@@ -10,10 +10,10 @@ require_envvar UTILITY_IMAGE_NAME
 require_envvar UTILITY_IMAGE_TAG
 require_envvar DISTRIBUTION_NAME
 require_envvar VARIANT_NAME
-require_envvar VARIANT_PACKAGE_SUFFIX
 require_envvar PACKAGE_FORMAT
 require_envvar RUBY_PACKAGE_VERSION_ID
 require_envvar RUBY_PACKAGE_REVISION
+# Optional envvar: VARIANT_PACKAGE_SUFFIX
 
 
 mkdir output
