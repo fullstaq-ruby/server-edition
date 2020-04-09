@@ -39,14 +39,7 @@ function docker_tag_exists() {
     curl --silent -f -lSL "https://index.docker.io/v1/repositories/$1/tags/$2" > /dev/null
 }
 
-if [[ "$CI_REF" = refs/heads/master ]]; then
-    echo "CI system is running on master branch."
-    echo "Will build a Docker image using this name and tag: $IMAGE_NAME:$IMAGE_TAG"
-    echo "::set-output name=needs-building::true"
-    echo "::set-output name=image-name::$IMAGE_NAME"
-    echo "::set-output name=image-tag::$IMAGE_TAG"
-    exit
-elif docker_tag_exists "$IMAGE_NAME" "$IMAGE_TAG"; then
+if docker_tag_exists "$IMAGE_NAME" "$IMAGE_TAG"; then
     echo "Docker image $IMAGE_NAME:$IMAGE_TAG already exists in the Docker Hub."
     echo "Will not build a Docker image."
     echo "::set-output name=needs-building::false"
@@ -55,8 +48,17 @@ elif docker_tag_exists "$IMAGE_NAME" "$IMAGE_TAG"; then
     exit
 fi
 
-
 echo "Docker image $IMAGE_NAME:$IMAGE_TAG does not exist in the Docker Hub."
+
+if [[ "$CI_REF" = refs/heads/master ]]; then
+    echo "CI system is running on master branch."
+    echo "Will build a Docker image using this name and tag: $IMAGE_NAME:$IMAGE_TAG"
+    echo "::set-output name=needs-building::true"
+    echo "::set-output name=image-name::$IMAGE_NAME"
+    echo "::set-output name=image-tag::$IMAGE_TAG"
+    exit
+fi
+
 TIMESTAMP=$(date +%s)
 RESULT_IMAGE_TAG="dev-${TIMESTAMP}-${CI_RUN_NUMBER}"
 echo "Will build a Docker image using this tag: $RESULT_IMAGE_TAG"
