@@ -22,7 +22,7 @@ function run_curl()
     echo "API response: HTTP $HTTP_CODE"
     # Print body.txt while ensuring that a trailing newline is also
     # printed.
-    # shellcheck ignore=SC2005
+    # shellcheck disable=SC2005
     echo "$(cat body.txt)"
 }
 

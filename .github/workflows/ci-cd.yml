@@ -12,7 +12,9 @@
 
 name: CI/CD
 
-on: [push]
+on:
+  - push
+  - pull_request
 
 env:
   BINTRAY_ORG: fullstaq
@@ -594,7 +596,8 @@ jobs:
           BINTRAY_API_USERNAME: ${{ secrets.BINTRAY_API_USERNAME }}
           BINTRAY_API_KEY: ${{ secrets.BINTRAY_API_KEY }}
           REPO_NAME: fullstaq-ruby-apt-ci-${{ github.run_number }}
-          REPUBLISH: false
+          DRY_RUN: false
+          IGNORE_EXISTING: false
 
 
   publish_common_and_rbenv_rpms_test:
@@ -633,7 +636,8 @@ jobs:
           BINTRAY_API_USERNAME: ${{ secrets.BINTRAY_API_USERNAME }}
           BINTRAY_API_KEY: ${{ secrets.BINTRAY_API_KEY }}
           REPO_NAME: fullstaq-ruby-yum-ci-${{ github.run_number }}
-          REPUBLISH: false
+          DRY_RUN: false
+          IGNORE_EXISTING: false
 
 
   ### Publish Ruby packages to test repos
@@ -1171,7 +1175,8 @@ jobs:
           BINTRAY_API_USERNAME: ${{ secrets.BINTRAY_API_USERNAME }}
           BINTRAY_API_KEY: ${{ secrets.BINTRAY_API_KEY }}
           REPO_NAME: fullstaq-ruby-apt-ci-${{ github.run_number }}
-          REPUBLISH: false
+          DRY_RUN: false
+          IGNORE_EXISTING: false
       - name: Upload RPMs to repo
         run: ./internal-scripts/ci-cd/publish/publish-rpms.sh ruby-pkgs/*.rpm
         env:
@@ -1180,7 +1185,8 @@ jobs:
           BINTRAY_API_USERNAME: ${{ secrets.BINTRAY_API_USERNAME }}
           BINTRAY_API_KEY: ${{ secrets.BINTRAY_API_KEY }}
           REPO_NAME: fullstaq-ruby-yum-ci-${{ github.run_number }}
-          REPUBLISH: false
+          DRY_RUN: false
+          IGNORE_EXISTING: false
 
   commit_published_packages_test:
     name: Commit packages published to test repo
@@ -1207,10 +1213,10 @@ jobs:
           REPO_NAME: fullstaq-ruby-yum-ci-${{ github.run_number }}
 
 
-  ### Test packages ###
+  ### Test packages against test repos ###
 
-  test_packages:
-    name: Test Ruby packages
+  test_packages_against_test:
+    name: Test Ruby packages against test repos
     needs: commit_published_packages_test
     runs-on: ubuntu-18.04
     strategy:
@@ -1270,3 +1276,683 @@ jobs:
           TEST_IMAGE_NAME: ${{ matrix.distribution.test_image }}
           APT_REPO_URL: https://dl.bintray.com/fullstaq/fullstaq-ruby-apt-ci-${{ github.run_number }}
           YUM_REPO_URL: https://dl.bintray.com/fullstaq/fullstaq-ruby-yum-ci-${{ github.run_number }}
+
+
+  ### Publish packages to production repo ###
+
+  publish_packages_production:
+    name: Publish packages to production repos
+    needs: test_packages_against_test
+    runs-on: ubuntu-18.04
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Download fullstaq-common DEB
+        uses: actions/download-artifact@v1
+        with:
+          name: common-deb
+          path: .
+      - name: Download fullstaq-common RPM
+        uses: actions/download-artifact@v1
+        with:
+          name: common-rpm
+          path: .
+      - name: Download Rbenv DEB
+        uses: actions/download-artifact@v1
+        with:
+          name: rbenv-deb
+          path: .
+      - name: Download Rbenv RPM
+        uses: actions/download-artifact@v1
+        with:
+          name: rbenv-rpm
+          path: .
+
+
+
+      - name: Fetch ruby-pkg_2.7_centos-7_normal
+        uses: actions/download-artifact@v1
+        with:
+          name: ruby-pkg_2.7_centos-7_normal
+          path: .
+
+
+      - name: Fetch ruby-pkg_2.7_centos-7_jemalloc
+        uses: actions/download-artifact@v1
+        with:
+          name: ruby-pkg_2.7_centos-7_jemalloc
+          path: .
+
+
+      - name: Fetch ruby-pkg_2.7_centos-7_malloctrim
+        uses: actions/download-artifact@v1
+        with:
+          name: ruby-pkg_2.7_centos-7_malloctrim
+          path: .
+
+
+      - name: Fetch ruby-pkg_2.7_debian-10_normal
+        uses: actions/download-artifact@v1
+        with:
+          name: ruby-pkg_2.7_debian-10_normal
+          path: .
+
+
+      - name: Fetch ruby-pkg_2.7_debian-10_jemalloc
+        uses: actions/download-artifact@v1
+        with:
+          name: ruby-pkg_2.7_debian-10_jemalloc
+          path: .
+
+
+      - name: Fetch ruby-pkg_2.7_debian-10_malloctrim
+        uses: actions/download-artifact@v1
+        with:
+          name: ruby-pkg_2.7_debian-10_malloctrim
+          path: .
+
+
+      - name: Fetch ruby-pkg_2.7_debian-9_normal
+        uses: actions/download-artifact@v1
+        with:
+          name: ruby-pkg_2.7_debian-9_normal
+          path: .
+
+
+      - name: Fetch ruby-pkg_2.7_debian-9_jemalloc
+        uses: actions/download-artifact@v1
+        with:
+          name: ruby-pkg_2.7_debian-9_jemalloc
+          path: .
+
+
+      - name: Fetch ruby-pkg_2.7_debian-9_malloctrim
+        uses: actions/download-artifact@v1
+        with:
+          name: ruby-pkg_2.7_debian-9_malloctrim
+          path: .
+
+
+      - name: Fetch ruby-pkg_2.7_ubuntu-18.04_normal
+        uses: actions/download-artifact@v1
+        with:
+          name: ruby-pkg_2.7_ubuntu-18.04_normal
+          path: .
+
+
+      - name: Fetch ruby-pkg_2.7_ubuntu-18.04_jemalloc
+        uses: actions/download-artifact@v1
+        with:
+          name: ruby-pkg_2.7_ubuntu-18.04_jemalloc
+          path: .
+
+
+      - name: Fetch ruby-pkg_2.7_ubuntu-18.04_malloctrim
+        uses: actions/download-artifact@v1
+        with:
+          name: ruby-pkg_2.7_ubuntu-18.04_malloctrim
+          path: .
+
+
+      - name: Fetch ruby-pkg_2.6_centos-7_normal
+        uses: actions/download-artifact@v1
+        with:
+          name: ruby-pkg_2.6_centos-7_normal
+          path: .
+
+
+      - name: Fetch ruby-pkg_2.6_centos-7_jemalloc
+        uses: actions/download-artifact@v1
+        with:
+          name: ruby-pkg_2.6_centos-7_jemalloc
+          path: .
+
+
+      - name: Fetch ruby-pkg_2.6_centos-7_malloctrim
+        uses: actions/download-artifact@v1
+        with:
+          name: ruby-pkg_2.6_centos-7_malloctrim
+          path: .
+
+
+      - name: Fetch ruby-pkg_2.6_debian-10_normal
+        uses: actions/download-artifact@v1
+        with:
+          name: ruby-pkg_2.6_debian-10_normal
+          path: .
+
+
+      - name: Fetch ruby-pkg_2.6_debian-10_jemalloc
+        uses: actions/download-artifact@v1
+        with:
+          name: ruby-pkg_2.6_debian-10_jemalloc
+          path: .
+
+
+      - name: Fetch ruby-pkg_2.6_debian-10_malloctrim
+        uses: actions/download-artifact@v1
+        with:
+          name: ruby-pkg_2.6_debian-10_malloctrim
+          path: .
+
+
+      - name: Fetch ruby-pkg_2.6_debian-9_normal
+        uses: actions/download-artifact@v1
+        with:
+          name: ruby-pkg_2.6_debian-9_normal
+          path: .
+
+
+      - name: Fetch ruby-pkg_2.6_debian-9_jemalloc
+        uses: actions/download-artifact@v1
+        with:
+          name: ruby-pkg_2.6_debian-9_jemalloc
+          path: .
+
+
+      - name: Fetch ruby-pkg_2.6_debian-9_malloctrim
+        uses: actions/download-artifact@v1
+        with:
+          name: ruby-pkg_2.6_debian-9_malloctrim
+          path: .
+
+
+      - name: Fetch ruby-pkg_2.6_ubuntu-18.04_normal
+        uses: actions/download-artifact@v1
+        with:
+          name: ruby-pkg_2.6_ubuntu-18.04_normal
+          path: .
+
+
+      - name: Fetch ruby-pkg_2.6_ubuntu-18.04_jemalloc
+        uses: actions/download-artifact@v1
+        with:
+          name: ruby-pkg_2.6_ubuntu-18.04_jemalloc
+          path: .
+
+
+      - name: Fetch ruby-pkg_2.6_ubuntu-18.04_malloctrim
+        uses: actions/download-artifact@v1
+        with:
+          name: ruby-pkg_2.6_ubuntu-18.04_malloctrim
+          path: .
+
+
+      - name: Fetch ruby-pkg_2.5_centos-7_normal
+        uses: actions/download-artifact@v1
+        with:
+          name: ruby-pkg_2.5_centos-7_normal
+          path: .
+
+
+      - name: Fetch ruby-pkg_2.5_centos-7_jemalloc
+        uses: actions/download-artifact@v1
+        with:
+          name: ruby-pkg_2.5_centos-7_jemalloc
+          path: .
+
+
+      - name: Fetch ruby-pkg_2.5_centos-7_malloctrim
+        uses: actions/download-artifact@v1
+        with:
+          name: ruby-pkg_2.5_centos-7_malloctrim
+          path: .
+
+
+      - name: Fetch ruby-pkg_2.5_debian-10_normal
+        uses: actions/download-artifact@v1
+        with:
+          name: ruby-pkg_2.5_debian-10_normal
+          path: .
+
+
+      - name: Fetch ruby-pkg_2.5_debian-10_jemalloc
+        uses: actions/download-artifact@v1
+        with:
+          name: ruby-pkg_2.5_debian-10_jemalloc
+          path: .
+
+
+      - name: Fetch ruby-pkg_2.5_debian-10_malloctrim
+        uses: actions/download-artifact@v1
+        with:
+          name: ruby-pkg_2.5_debian-10_malloctrim
+          path: .
+
+
+      - name: Fetch ruby-pkg_2.5_debian-9_normal
+        uses: actions/download-artifact@v1
+        with:
+          name: ruby-pkg_2.5_debian-9_normal
+          path: .
+
+
+      - name: Fetch ruby-pkg_2.5_debian-9_jemalloc
+        uses: actions/download-artifact@v1
+        with:
+          name: ruby-pkg_2.5_debian-9_jemalloc
+          path: .
+
+
+      - name: Fetch ruby-pkg_2.5_debian-9_malloctrim
+        uses: actions/download-artifact@v1
+        with:
+          name: ruby-pkg_2.5_debian-9_malloctrim
+          path: .
+
+
+      - name: Fetch ruby-pkg_2.5_ubuntu-18.04_normal
+        uses: actions/download-artifact@v1
+        with:
+          name: ruby-pkg_2.5_ubuntu-18.04_normal
+          path: .
+
+
+      - name: Fetch ruby-pkg_2.5_ubuntu-18.04_jemalloc
+        uses: actions/download-artifact@v1
+        with:
+          name: ruby-pkg_2.5_ubuntu-18.04_jemalloc
+          path: .
+
+
+      - name: Fetch ruby-pkg_2.5_ubuntu-18.04_malloctrim
+        uses: actions/download-artifact@v1
+        with:
+          name: ruby-pkg_2.5_ubuntu-18.04_malloctrim
+          path: .
+
+
+      - name: Fetch ruby-pkg_2.7.0_centos-7_normal
+        uses: actions/download-artifact@v1
+        with:
+          name: ruby-pkg_2.7.0_centos-7_normal
+          path: .
+
+
+      - name: Fetch ruby-pkg_2.7.0_centos-7_jemalloc
+        uses: actions/download-artifact@v1
+        with:
+          name: ruby-pkg_2.7.0_centos-7_jemalloc
+          path: .
+
+
+      - name: Fetch ruby-pkg_2.7.0_centos-7_malloctrim
+        uses: actions/download-artifact@v1
+        with:
+          name: ruby-pkg_2.7.0_centos-7_malloctrim
+          path: .
+
+
+      - name: Fetch ruby-pkg_2.7.0_debian-10_normal
+        uses: actions/download-artifact@v1
+        with:
+          name: ruby-pkg_2.7.0_debian-10_normal
+          path: .
+
+
+      - name: Fetch ruby-pkg_2.7.0_debian-10_jemalloc
+        uses: actions/download-artifact@v1
+        with:
+          name: ruby-pkg_2.7.0_debian-10_jemalloc
+          path: .
+
+
+      - name: Fetch ruby-pkg_2.7.0_debian-10_malloctrim
+        uses: actions/download-artifact@v1
+        with:
+          name: ruby-pkg_2.7.0_debian-10_malloctrim
+          path: .
+
+
+      - name: Fetch ruby-pkg_2.7.0_debian-9_normal
+        uses: actions/download-artifact@v1
+        with:
+          name: ruby-pkg_2.7.0_debian-9_normal
+          path: .
+
+
+      - name: Fetch ruby-pkg_2.7.0_debian-9_jemalloc
+        uses: actions/download-artifact@v1
+        with:
+          name: ruby-pkg_2.7.0_debian-9_jemalloc
+          path: .
+
+
+      - name: Fetch ruby-pkg_2.7.0_debian-9_malloctrim
+        uses: actions/download-artifact@v1
+        with:
+          name: ruby-pkg_2.7.0_debian-9_malloctrim
+          path: .
+
+
+      - name: Fetch ruby-pkg_2.7.0_ubuntu-18.04_normal
+        uses: actions/download-artifact@v1
+        with:
+          name: ruby-pkg_2.7.0_ubuntu-18.04_normal
+          path: .
+
+
+      - name: Fetch ruby-pkg_2.7.0_ubuntu-18.04_jemalloc
+        uses: actions/download-artifact@v1
+        with:
+          name: ruby-pkg_2.7.0_ubuntu-18.04_jemalloc
+          path: .
+
+
+      - name: Fetch ruby-pkg_2.7.0_ubuntu-18.04_malloctrim
+        uses: actions/download-artifact@v1
+        with:
+          name: ruby-pkg_2.7.0_ubuntu-18.04_malloctrim
+          path: .
+
+
+      - name: Fetch ruby-pkg_2.6.5_centos-7_normal
+        uses: actions/download-artifact@v1
+        with:
+          name: ruby-pkg_2.6.5_centos-7_normal
+          path: .
+
+
+      - name: Fetch ruby-pkg_2.6.5_centos-7_jemalloc
+        uses: actions/download-artifact@v1
+        with:
+          name: ruby-pkg_2.6.5_centos-7_jemalloc
+          path: .
+
+
+      - name: Fetch ruby-pkg_2.6.5_centos-7_malloctrim
+        uses: actions/download-artifact@v1
+        with:
+          name: ruby-pkg_2.6.5_centos-7_malloctrim
+          path: .
+
+
+      - name: Fetch ruby-pkg_2.6.5_debian-10_normal
+        uses: actions/download-artifact@v1
+        with:
+          name: ruby-pkg_2.6.5_debian-10_normal
+          path: .
+
+
+      - name: Fetch ruby-pkg_2.6.5_debian-10_jemalloc
+        uses: actions/download-artifact@v1
+        with:
+          name: ruby-pkg_2.6.5_debian-10_jemalloc
+          path: .
+
+
+      - name: Fetch ruby-pkg_2.6.5_debian-10_malloctrim
+        uses: actions/download-artifact@v1
+        with:
+          name: ruby-pkg_2.6.5_debian-10_malloctrim
+          path: .
+
+
+      - name: Fetch ruby-pkg_2.6.5_debian-9_normal
+        uses: actions/download-artifact@v1
+        with:
+          name: ruby-pkg_2.6.5_debian-9_normal
+          path: .
+
+
+      - name: Fetch ruby-pkg_2.6.5_debian-9_jemalloc
+        uses: actions/download-artifact@v1
+        with:
+          name: ruby-pkg_2.6.5_debian-9_jemalloc
+          path: .
+
+
+      - name: Fetch ruby-pkg_2.6.5_debian-9_malloctrim
+        uses: actions/download-artifact@v1
+        with:
+          name: ruby-pkg_2.6.5_debian-9_malloctrim
+          path: .
+
+
+      - name: Fetch ruby-pkg_2.6.5_ubuntu-18.04_normal
+        uses: actions/download-artifact@v1
+        with:
+          name: ruby-pkg_2.6.5_ubuntu-18.04_normal
+          path: .
+
+
+      - name: Fetch ruby-pkg_2.6.5_ubuntu-18.04_jemalloc
+        uses: actions/download-artifact@v1
+        with:
+          name: ruby-pkg_2.6.5_ubuntu-18.04_jemalloc
+          path: .
+
+
+      - name: Fetch ruby-pkg_2.6.5_ubuntu-18.04_malloctrim
+        uses: actions/download-artifact@v1
+        with:
+          name: ruby-pkg_2.6.5_ubuntu-18.04_malloctrim
+          path: .
+
+
+      - name: Fetch ruby-pkg_2.5.7_centos-7_normal
+        uses: actions/download-artifact@v1
+        with:
+          name: ruby-pkg_2.5.7_centos-7_normal
+          path: .
+
+
+      - name: Fetch ruby-pkg_2.5.7_centos-7_jemalloc
+        uses: actions/download-artifact@v1
+        with:
+          name: ruby-pkg_2.5.7_centos-7_jemalloc
+          path: .
+
+
+      - name: Fetch ruby-pkg_2.5.7_centos-7_malloctrim
+        uses: actions/download-artifact@v1
+        with:
+          name: ruby-pkg_2.5.7_centos-7_malloctrim
+          path: .
+
+
+      - name: Fetch ruby-pkg_2.5.7_debian-10_normal
+        uses: actions/download-artifact@v1
+        with:
+          name: ruby-pkg_2.5.7_debian-10_normal
+          path: .
+
+
+      - name: Fetch ruby-pkg_2.5.7_debian-10_jemalloc
+        uses: actions/download-artifact@v1
+        with:
+          name: ruby-pkg_2.5.7_debian-10_jemalloc
+          path: .
+
+
+      - name: Fetch ruby-pkg_2.5.7_debian-10_malloctrim
+        uses: actions/download-artifact@v1
+        with:
+          name: ruby-pkg_2.5.7_debian-10_malloctrim
+          path: .
+
+
+      - name: Fetch ruby-pkg_2.5.7_debian-9_normal
+        uses: actions/download-artifact@v1
+        with:
+          name: ruby-pkg_2.5.7_debian-9_normal
+          path: .
+
+
+      - name: Fetch ruby-pkg_2.5.7_debian-9_jemalloc
+        uses: actions/download-artifact@v1
+        with:
+          name: ruby-pkg_2.5.7_debian-9_jemalloc
+          path: .
+
+
+      - name: Fetch ruby-pkg_2.5.7_debian-9_malloctrim
+        uses: actions/download-artifact@v1
+        with:
+          name: ruby-pkg_2.5.7_debian-9_malloctrim
+          path: .
+
+
+      - name: Fetch ruby-pkg_2.5.7_ubuntu-18.04_normal
+        uses: actions/download-artifact@v1
+        with:
+          name: ruby-pkg_2.5.7_ubuntu-18.04_normal
+          path: .
+
+
+      - name: Fetch ruby-pkg_2.5.7_ubuntu-18.04_jemalloc
+        uses: actions/download-artifact@v1
+        with:
+          name: ruby-pkg_2.5.7_ubuntu-18.04_jemalloc
+          path: .
+
+
+      - name: Fetch ruby-pkg_2.5.7_ubuntu-18.04_malloctrim
+        uses: actions/download-artifact@v1
+        with:
+          name: ruby-pkg_2.5.7_ubuntu-18.04_malloctrim
+          path: .
+
+
+      - name: Determine which Docker image to use for publishing
+        uses: actions/download-artifact@v1
+        with:
+          name: docker-image-info-utility
+          path: .
+      - name: Load utility image info
+        id: load_utility_image_info
+        run: ./internal-scripts/ci-cd/load-docker-image-info.sh
+
+      - name: Upload DEBs to repo
+        run: ./internal-scripts/ci-cd/publish/publish-debs.sh *.deb
+        env:
+          UTILITY_IMAGE_NAME: ${{ steps.load_utility_image_info.outputs.image-name }}
+          UTILITY_IMAGE_TAG: ${{ steps.load_utility_image_info.outputs.image-tag }}
+          BINTRAY_API_USERNAME: ${{ secrets.BINTRAY_API_USERNAME }}
+          BINTRAY_API_KEY: ${{ secrets.BINTRAY_API_KEY }}
+          REPO_NAME: fullstaq-ruby-apt
+          DRY_RUN: ${{ github.ref != 'refs/heads/master' }}
+          IGNORE_EXISTING: true
+
+      - name: Commit files published to APT repo
+        run: ./internal-scripts/ci-cd/publish/commit-published-packages.sh
+        env:
+          BINTRAY_API_USERNAME: ${{ secrets.BINTRAY_API_USERNAME }}
+          BINTRAY_API_KEY: ${{ secrets.BINTRAY_API_KEY }}
+          REPO_NAME: fullstaq-ruby-apt
+
+      - name: Upload RPMs to repo
+        run: ./internal-scripts/ci-cd/publish/publish-rpms.sh *.rpm
+        env:
+          UTILITY_IMAGE_NAME: ${{ steps.load_utility_image_info.outputs.image-name }}
+          UTILITY_IMAGE_TAG: ${{ steps.load_utility_image_info.outputs.image-tag }}
+          BINTRAY_API_USERNAME: ${{ secrets.BINTRAY_API_USERNAME }}
+          BINTRAY_API_KEY: ${{ secrets.BINTRAY_API_KEY }}
+          REPO_NAME: fullstaq-ruby-yum
+          DRY_RUN: ${{ github.ref != 'refs/heads/master' }}
+          IGNORE_EXISTING: true
+
+      - name: Commit files published to YUM repo
+        run: ./internal-scripts/ci-cd/publish/commit-published-packages.sh
+        env:
+          BINTRAY_API_USERNAME: ${{ secrets.BINTRAY_API_USERNAME }}
+          BINTRAY_API_KEY: ${{ secrets.BINTRAY_API_KEY }}
+          REPO_NAME: fullstaq-ruby-yum
+
+
+  ### Test packages against production repos ###
+
+  test_packages_against_production:
+    name: Test Ruby packages against production repos
+    needs: publish_packages_production
+    runs-on: ubuntu-18.04
+    strategy:
+      matrix:
+        ruby_package_version: 
+          - minor_version: 2.7
+            full_version: 2.7.0
+            package_revision: 0
+            id: 2.7
+          - minor_version: 2.6
+            full_version: 2.6.5
+            package_revision: 4
+            id: 2.6
+          - minor_version: 2.5
+            full_version: 2.5.7
+            package_revision: 3
+            id: 2.5
+          - full_version: 2.7.0
+            package_revision: 0
+            id: 2.7.0
+          - full_version: 2.6.5
+            package_revision: 1
+            id: 2.6.5
+          - full_version: 2.5.7
+            package_revision: 1
+            id: 2.5.7
+        distribution: 
+          - name: centos-7
+            package_format: RPM
+            test_image: centos:7
+          - name: debian-10
+            package_format: DEB
+            test_image: debian:10
+          - name: debian-9
+            package_format: DEB
+            test_image: debian:9
+          - name: ubuntu-18.04
+            package_format: DEB
+            test_image: ubuntu:18.04
+        variant: 
+          - name: normal
+            package_suffix: ''
+          - name: jemalloc
+            package_suffix: "-jemalloc"
+          - name: malloctrim
+            package_suffix: "-malloctrim"
+    steps:
+      - uses: actions/checkout@v2
+      - name: Run tests
+        run: ./internal-scripts/ci-cd/test-packages/run-tests.sh
+        # The 'if' here is on the step level instead of job level.
+        # Otherwise, the 'create_git_tag' job won't always be triggered.
+        if: github.ref == 'refs/heads/master'
+        env:
+          DISTRIBUTION_NAME: ${{ matrix.distribution.name }}
+          RUBY_PACKAGE_ID: ${{ matrix.ruby_package_version.id }}
+          PACKAGE_FORMAT: ${{ matrix.distribution.package_format }}
+          PACKAGE_SUFFIX: ${{ matrix.variant.package_suffix }}
+          VARIANT_NAME: ${{ matrix.variant.name }}
+          TEST_IMAGE_NAME: ${{ matrix.distribution.test_image }}
+          APT_REPO_URL: https://apt.fullstaqruby.org
+          YUM_REPO_URL: https://yum.fullstaqruby.org
+
+
+  ### Create Git tag ###
+
+  create_git_tag:
+    name: Create Git tag
+    needs: test_packages_against_production
+    runs-on: ubuntu-18.04
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-ruby@v1
+        with:
+          ruby-version: '2.6'
+
+      - name: Determine latest release version
+        # Sets environment variable $LATEST_RELEASE_TAG
+        run: ./internal-scripts/ci-cd/check-version-numbers-need-changing/determine-latest-release-tag.sh
+
+      - name: Determine next epic version
+        # Sets environment variable $NEXT_RELEASE_VERSION
+        run: ./internal-scripts/ci-cd/create-git-tag/determine-next-epic-version.sh
+
+      - name: Create Git tag
+        run: git tag epic-${{ env.NEXT_RELEASE_VERSION }}
+
+      - name: Push Git tag
+        if: github.ref == 'refs/heads/master'
+        run: git push origin epic-${{ env.NEXT_RELEASE_VERSION }}

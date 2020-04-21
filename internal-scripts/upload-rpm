@@ -19,20 +19,39 @@ function upload()
     local REPO_DISTRO="$1"
     local REPO_ARCH="$2"
     local REPO_OVERRIDE="$3"
+    local PID="$$"
     local -a CURL_COMMAND=(
-        curl -sSLf --netrc-file /tmp/curl-creds -X PUT -T "$FILE"
+        curl -sSL --netrc-file /tmp/curl-creds
+        -w '%{http_code}' -o "/tmp/body-$PID.txt"
+        -X PUT -T "$FILE"
         "https://api.bintray.com/api/v1/content/fullstaq/$REPO_NAME/fullstaq-ruby/all/$REPO_DISTRO/$REPO_ARCH/$BASENAME?override=$REPO_OVERRIDE"
     )
     if $DRY_RUN; then
         echo "+ Dry-running: ${CURL_COMMAND[*]}"
     else
+        echo "+ ${CURL_COMMAND[*]}"
         set +e
-        run "${CURL_COMMAND[@]}" 2>&1
+        HTTP_CODE=$("${CURL_COMMAND[@]}" 2>"/tmp/stderr-$PID.txt")
         local EXITSTATUS=$?
         set -e
 
-        # Ensure that the output ends with a newline even if the HTTP response doesn't.
-        echo
+        if [[ "$EXITSTATUS" = 0 ]]; then
+            echo "HTTP response code: $HTTP_CODE"
+            # Print body.txt while ensuring that a trailing newline is also
+            # printed.
+            echo "HTTP body: $(cat /tmp/body-$$.txt)"
+            cat /tmp/stderr-$PID.txt
+            if [[ "$HTTP_CODE" =~ ^2 ]] || [[ "$HTTP_CODE" = 409 && "$IGNORE_EXISTING" = true ]]; then
+                return 0
+            else
+                echo "*** ERROR DETECTED"
+                return 1
+            fi
+        else
+            # Print stderr.txt while ensuring that a trailing newline is also
+            # printed.
+            echo "ERROR: $(cat /tmp/stderr-$PID.txt)"
+        fi
         return "$EXITSTATUS"
     fi
 }
@@ -41,6 +60,7 @@ REPO_NAME="$1"
 FILE="$2"
 BASENAME="$3"
 REPUBLISH="$4"
+IGNORE_EXISTING="$5"
 
 # shellcheck disable=SC2207
 ALL_SUPPORTED_DISTROS=($(list_rpm_environments))

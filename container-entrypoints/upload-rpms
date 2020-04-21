@@ -12,6 +12,7 @@ require_container_envvar API_USERNAME
 require_container_envvar CONCURRENCY
 require_container_envvar DRY_RUN
 require_container_envvar REPUBLISH
+require_container_envvar IGNORE_EXISTING
 
 export REPO_NAME="${REPO_NAME:-fullstaq-ruby-yum}"
 
@@ -35,4 +36,4 @@ exec parallel --will-cite \
             $_ = sprintf("%-60s | ", $basename);
         }
     =}' \
-    /system/internal-scripts/upload-rpm "$REPO_NAME" '{}' '{/}' "$REPUBLISH"
+    /system/internal-scripts/upload-rpm "$REPO_NAME" '{}' '{/}' "$REPUBLISH" "$IGNORE_EXISTING"

@@ -111,6 +111,7 @@ verbose_run docker run --rm --init "${TTY_ARGS[@]}" \
     -e "DRY_RUN=$DRY_RUN" \
     -e "REPO_NAME=$REPO_NAME" \
     -e "REPUBLISH=$REPUBLISH" \
+    -e "IGNORE_EXISTING=false" \
     --user "$(id -u):$(id -g)" \
     "fullstaq/ruby-build-env-utility:$UTILITY_IMAGE_VERSION" \
     /system/container-entrypoints/upload-debs
