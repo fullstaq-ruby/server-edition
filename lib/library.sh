@@ -1,5 +1,7 @@
 RESET=$'\033[0m'
 BOLD=$'\033[1m'
+# shellcheck disable=SC2034
+RED=$'\031[36m'
 YELLOW=$'\033[33m'
 # shellcheck disable=SC2034
 CYAN=$'\033[36m'
