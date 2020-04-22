@@ -36,8 +36,8 @@ else
     cat /etc/apt/sources.list.d/server.list
     run apt update
 
-    echo "+ apt-cache show fullstaq-ruby-$RUBY_PACKAGE_VERSION"
-    DEB_INFO=$(apt-cache show "fullstaq-ruby-$RUBY_PACKAGE_VERSION")
+    echo "+ apt-cache show --no-all-versions fullstaq-ruby-$RUBY_PACKAGE_VERSION"
+    DEB_INFO=$(apt-cache show --no-all-versions "fullstaq-ruby-$RUBY_PACKAGE_VERSION")
     RUBY_PACKAGE_VERSION_WITHOUT_VARIANT_SUFFIX=$(grep '^ Package version without variant suffix:' <<<"$DEB_INFO" | perl -pe 's/.*?: *//')
     VARIANT=$(grep '^ Variant:' <<<"$DEB_INFO" | perl -pe 's/.*?: *//')
     echo "+ Detected package version (possibly with variant suffix): $RUBY_PACKAGE_VERSION"
