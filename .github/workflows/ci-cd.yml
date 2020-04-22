@@ -415,8 +415,13 @@ jobs:
 
   ### Ruby ###
 
-  build_ruby_packages:
-    name: Build Ruby packages
+  # The Github Actions matrix is limited to producing 256 jobs. Given the
+  # combinatorial explosion, it's very easy to reach that limit, so we
+  # preprocess distribution information using ERB templating instead.
+
+
+  build_ruby_packages_centos_7:
+    name: Build Ruby packages [centos-7]
     needs:
       - download_ruby_sources
       - build_jemalloc_binaries
@@ -425,43 +430,34 @@ jobs:
     strategy:
       matrix:
         ruby_package_version: 
-          - minor_version: 2.7
-            full_version: 2.7.0
-            package_revision: 0
-            id: 2.7
-          - minor_version: 2.6
-            full_version: 2.6.5
-            package_revision: 4
-            id: 2.6
-          - minor_version: 2.5
-            full_version: 2.5.7
-            package_revision: 3
-            id: 2.5
-          - full_version: 2.7.0
-            package_revision: 0
-            id: 2.7.0
-          - full_version: 2.6.5
-            package_revision: 1
-            id: 2.6.5
-          - full_version: 2.5.7
-            package_revision: 1
-            id: 2.5.7
-        distribution: 
-          - name: centos-7
-            package_format: RPM
-          - name: debian-10
-            package_format: DEB
-          - name: debian-9
-            package_format: DEB
-          - name: ubuntu-18.04
-            package_format: DEB
+        - minor_version: 2.7
+          full_version: 2.7.0
+          package_revision: 0
+          id: 2.7
+        - minor_version: 2.6
+          full_version: 2.6.5
+          package_revision: 4
+          id: 2.6
+        - minor_version: 2.5
+          full_version: 2.5.7
+          package_revision: 3
+          id: 2.5
+        - full_version: 2.7.0
+          package_revision: 0
+          id: 2.7.0
+        - full_version: 2.6.5
+          package_revision: 1
+          id: 2.6.5
+        - full_version: 2.5.7
+          package_revision: 1
+          id: 2.5.7
         variant: 
-          - name: normal
-            package_suffix: ''
-          - name: jemalloc
-            package_suffix: "-jemalloc"
-          - name: malloctrim
-            package_suffix: "-malloctrim"
+        - name: normal
+          package_suffix: ''
+        - name: jemalloc
+          package_suffix: "-jemalloc"
+        - name: malloctrim
+          package_suffix: "-malloctrim"
     steps:
       - uses: actions/checkout@v2
 
@@ -473,21 +469,21 @@ jobs:
       - name: Fetch Jemalloc binary
         uses: actions/download-artifact@v1
         with:
-          name: jemalloc-bin-${{ matrix.distribution.name }}
+          name: jemalloc-bin-centos-7
           path: .
         if: matrix.variant.name == 'jemalloc'
       - name: Fetch cache
         uses: actions/cache@v1
         with:
           path: cache
-          key: ruby-bin-${{ matrix.ruby_package_version.id }}-${{ matrix.distribution.name }}-${{ matrix.variant.name }}
+          key: ruby-bin-${{ matrix.ruby_package_version.id }}-centos-7-${{ matrix.variant.name }}
       - name: Create cache dir
         run: mkdir -p cache
 
       - name: Determine which Docker image to use for building
         uses: actions/download-artifact@v1
         with:
-          name: docker-image-info-${{ matrix.distribution.name }}
+          name: docker-image-info-centos-7
           path: .
       - name: Load build image info
         id: load_build_image_info
@@ -497,7 +493,7 @@ jobs:
         env:
           BUILD_IMAGE_NAME: ${{ steps.load_build_image_info.outputs.image-name }}
           BUILD_IMAGE_TAG: ${{ steps.load_build_image_info.outputs.image-tag }}
-          ENVIRONMENT_NAME: ${{ matrix.distribution.name }}
+          ENVIRONMENT_NAME: "centos-7"
           VARIANT_NAME: ${{ matrix.variant.name }}
           RUBY_PACKAGE_VERSION_ID: ${{ matrix.ruby_package_version.id }}
 
@@ -514,18 +510,331 @@ jobs:
         env:
           UTILITY_IMAGE_NAME: ${{ steps.load_utility_image_info.outputs.image-name }}
           UTILITY_IMAGE_TAG: ${{ steps.load_utility_image_info.outputs.image-tag }}
-          DISTRIBUTION_NAME: ${{ matrix.distribution.name }}
+          DISTRIBUTION_NAME: "centos-7"
           VARIANT_NAME: ${{ matrix.variant.name }}
           VARIANT_PACKAGE_SUFFIX: ${{ matrix.variant.package_suffix }}
-          PACKAGE_FORMAT: ${{ matrix.distribution.package_format }}
+          PACKAGE_FORMAT: "RPM"
           RUBY_PACKAGE_VERSION_ID: ${{ matrix.ruby_package_version.id }}
           RUBY_PACKAGE_REVISION: ${{ matrix.ruby_package_version.package_revision }}
 
       - name: Archive package artifact
         uses: actions/upload-artifact@v1
         with:
-          name: ruby-pkg_${{ matrix.ruby_package_version.id }}_${{ matrix.distribution.name }}_${{ matrix.variant.name }}
+          name: ruby-pkg_${{ matrix.ruby_package_version.id }}_centos-7_${{ matrix.variant.name }}
           path: output
+
+
+  build_ruby_packages_debian_10:
+    name: Build Ruby packages [debian-10]
+    needs:
+      - download_ruby_sources
+      - build_jemalloc_binaries
+      - build_docker_images
+    runs-on: ubuntu-18.04
+    strategy:
+      matrix:
+        ruby_package_version: 
+        - minor_version: 2.7
+          full_version: 2.7.0
+          package_revision: 0
+          id: 2.7
+        - minor_version: 2.6
+          full_version: 2.6.5
+          package_revision: 4
+          id: 2.6
+        - minor_version: 2.5
+          full_version: 2.5.7
+          package_revision: 3
+          id: 2.5
+        - full_version: 2.7.0
+          package_revision: 0
+          id: 2.7.0
+        - full_version: 2.6.5
+          package_revision: 1
+          id: 2.6.5
+        - full_version: 2.5.7
+          package_revision: 1
+          id: 2.5.7
+        variant: 
+        - name: normal
+          package_suffix: ''
+        - name: jemalloc
+          package_suffix: "-jemalloc"
+        - name: malloctrim
+          package_suffix: "-malloctrim"
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Fetch Ruby source
+        uses: actions/download-artifact@v1
+        with:
+          name: ruby-src-${{ matrix.ruby_package_version.full_version }}
+          path: .
+      - name: Fetch Jemalloc binary
+        uses: actions/download-artifact@v1
+        with:
+          name: jemalloc-bin-debian-10
+          path: .
+        if: matrix.variant.name == 'jemalloc'
+      - name: Fetch cache
+        uses: actions/cache@v1
+        with:
+          path: cache
+          key: ruby-bin-${{ matrix.ruby_package_version.id }}-debian-10-${{ matrix.variant.name }}
+      - name: Create cache dir
+        run: mkdir -p cache
+
+      - name: Determine which Docker image to use for building
+        uses: actions/download-artifact@v1
+        with:
+          name: docker-image-info-debian-10
+          path: .
+      - name: Load build image info
+        id: load_build_image_info
+        run: ./internal-scripts/ci-cd/load-docker-image-info.sh
+      - name: Build binaries
+        run: ./internal-scripts/ci-cd/build-ruby-packages/build-binaries.sh
+        env:
+          BUILD_IMAGE_NAME: ${{ steps.load_build_image_info.outputs.image-name }}
+          BUILD_IMAGE_TAG: ${{ steps.load_build_image_info.outputs.image-tag }}
+          ENVIRONMENT_NAME: "debian-10"
+          VARIANT_NAME: ${{ matrix.variant.name }}
+          RUBY_PACKAGE_VERSION_ID: ${{ matrix.ruby_package_version.id }}
+
+      - name: Determine which Docker image to use for packaging
+        uses: actions/download-artifact@v1
+        with:
+          name: docker-image-info-utility
+          path: .
+      - name: Load utility image info
+        id: load_utility_image_info
+        run: ./internal-scripts/ci-cd/load-docker-image-info.sh
+      - name: Build package
+        run: ./internal-scripts/ci-cd/build-ruby-packages/build-package.sh
+        env:
+          UTILITY_IMAGE_NAME: ${{ steps.load_utility_image_info.outputs.image-name }}
+          UTILITY_IMAGE_TAG: ${{ steps.load_utility_image_info.outputs.image-tag }}
+          DISTRIBUTION_NAME: "debian-10"
+          VARIANT_NAME: ${{ matrix.variant.name }}
+          VARIANT_PACKAGE_SUFFIX: ${{ matrix.variant.package_suffix }}
+          PACKAGE_FORMAT: "DEB"
+          RUBY_PACKAGE_VERSION_ID: ${{ matrix.ruby_package_version.id }}
+          RUBY_PACKAGE_REVISION: ${{ matrix.ruby_package_version.package_revision }}
+
+      - name: Archive package artifact
+        uses: actions/upload-artifact@v1
+        with:
+          name: ruby-pkg_${{ matrix.ruby_package_version.id }}_debian-10_${{ matrix.variant.name }}
+          path: output
+
+
+  build_ruby_packages_debian_9:
+    name: Build Ruby packages [debian-9]
+    needs:
+      - download_ruby_sources
+      - build_jemalloc_binaries
+      - build_docker_images
+    runs-on: ubuntu-18.04
+    strategy:
+      matrix:
+        ruby_package_version: 
+        - minor_version: 2.7
+          full_version: 2.7.0
+          package_revision: 0
+          id: 2.7
+        - minor_version: 2.6
+          full_version: 2.6.5
+          package_revision: 4
+          id: 2.6
+        - minor_version: 2.5
+          full_version: 2.5.7
+          package_revision: 3
+          id: 2.5
+        - full_version: 2.7.0
+          package_revision: 0
+          id: 2.7.0
+        - full_version: 2.6.5
+          package_revision: 1
+          id: 2.6.5
+        - full_version: 2.5.7
+          package_revision: 1
+          id: 2.5.7
+        variant: 
+        - name: normal
+          package_suffix: ''
+        - name: jemalloc
+          package_suffix: "-jemalloc"
+        - name: malloctrim
+          package_suffix: "-malloctrim"
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Fetch Ruby source
+        uses: actions/download-artifact@v1
+        with:
+          name: ruby-src-${{ matrix.ruby_package_version.full_version }}
+          path: .
+      - name: Fetch Jemalloc binary
+        uses: actions/download-artifact@v1
+        with:
+          name: jemalloc-bin-debian-9
+          path: .
+        if: matrix.variant.name == 'jemalloc'
+      - name: Fetch cache
+        uses: actions/cache@v1
+        with:
+          path: cache
+          key: ruby-bin-${{ matrix.ruby_package_version.id }}-debian-9-${{ matrix.variant.name }}
+      - name: Create cache dir
+        run: mkdir -p cache
+
+      - name: Determine which Docker image to use for building
+        uses: actions/download-artifact@v1
+        with:
+          name: docker-image-info-debian-9
+          path: .
+      - name: Load build image info
+        id: load_build_image_info
+        run: ./internal-scripts/ci-cd/load-docker-image-info.sh
+      - name: Build binaries
+        run: ./internal-scripts/ci-cd/build-ruby-packages/build-binaries.sh
+        env:
+          BUILD_IMAGE_NAME: ${{ steps.load_build_image_info.outputs.image-name }}
+          BUILD_IMAGE_TAG: ${{ steps.load_build_image_info.outputs.image-tag }}
+          ENVIRONMENT_NAME: "debian-9"
+          VARIANT_NAME: ${{ matrix.variant.name }}
+          RUBY_PACKAGE_VERSION_ID: ${{ matrix.ruby_package_version.id }}
+
+      - name: Determine which Docker image to use for packaging
+        uses: actions/download-artifact@v1
+        with:
+          name: docker-image-info-utility
+          path: .
+      - name: Load utility image info
+        id: load_utility_image_info
+        run: ./internal-scripts/ci-cd/load-docker-image-info.sh
+      - name: Build package
+        run: ./internal-scripts/ci-cd/build-ruby-packages/build-package.sh
+        env:
+          UTILITY_IMAGE_NAME: ${{ steps.load_utility_image_info.outputs.image-name }}
+          UTILITY_IMAGE_TAG: ${{ steps.load_utility_image_info.outputs.image-tag }}
+          DISTRIBUTION_NAME: "debian-9"
+          VARIANT_NAME: ${{ matrix.variant.name }}
+          VARIANT_PACKAGE_SUFFIX: ${{ matrix.variant.package_suffix }}
+          PACKAGE_FORMAT: "DEB"
+          RUBY_PACKAGE_VERSION_ID: ${{ matrix.ruby_package_version.id }}
+          RUBY_PACKAGE_REVISION: ${{ matrix.ruby_package_version.package_revision }}
+
+      - name: Archive package artifact
+        uses: actions/upload-artifact@v1
+        with:
+          name: ruby-pkg_${{ matrix.ruby_package_version.id }}_debian-9_${{ matrix.variant.name }}
+          path: output
+
+
+  build_ruby_packages_ubuntu_18_04:
+    name: Build Ruby packages [ubuntu-18.04]
+    needs:
+      - download_ruby_sources
+      - build_jemalloc_binaries
+      - build_docker_images
+    runs-on: ubuntu-18.04
+    strategy:
+      matrix:
+        ruby_package_version: 
+        - minor_version: 2.7
+          full_version: 2.7.0
+          package_revision: 0
+          id: 2.7
+        - minor_version: 2.6
+          full_version: 2.6.5
+          package_revision: 4
+          id: 2.6
+        - minor_version: 2.5
+          full_version: 2.5.7
+          package_revision: 3
+          id: 2.5
+        - full_version: 2.7.0
+          package_revision: 0
+          id: 2.7.0
+        - full_version: 2.6.5
+          package_revision: 1
+          id: 2.6.5
+        - full_version: 2.5.7
+          package_revision: 1
+          id: 2.5.7
+        variant: 
+        - name: normal
+          package_suffix: ''
+        - name: jemalloc
+          package_suffix: "-jemalloc"
+        - name: malloctrim
+          package_suffix: "-malloctrim"
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Fetch Ruby source
+        uses: actions/download-artifact@v1
+        with:
+          name: ruby-src-${{ matrix.ruby_package_version.full_version }}
+          path: .
+      - name: Fetch Jemalloc binary
+        uses: actions/download-artifact@v1
+        with:
+          name: jemalloc-bin-ubuntu-18.04
+          path: .
+        if: matrix.variant.name == 'jemalloc'
+      - name: Fetch cache
+        uses: actions/cache@v1
+        with:
+          path: cache
+          key: ruby-bin-${{ matrix.ruby_package_version.id }}-ubuntu-18.04-${{ matrix.variant.name }}
+      - name: Create cache dir
+        run: mkdir -p cache
+
+      - name: Determine which Docker image to use for building
+        uses: actions/download-artifact@v1
+        with:
+          name: docker-image-info-ubuntu-18.04
+          path: .
+      - name: Load build image info
+        id: load_build_image_info
+        run: ./internal-scripts/ci-cd/load-docker-image-info.sh
+      - name: Build binaries
+        run: ./internal-scripts/ci-cd/build-ruby-packages/build-binaries.sh
+        env:
+          BUILD_IMAGE_NAME: ${{ steps.load_build_image_info.outputs.image-name }}
+          BUILD_IMAGE_TAG: ${{ steps.load_build_image_info.outputs.image-tag }}
+          ENVIRONMENT_NAME: "ubuntu-18.04"
+          VARIANT_NAME: ${{ matrix.variant.name }}
+          RUBY_PACKAGE_VERSION_ID: ${{ matrix.ruby_package_version.id }}
+
+      - name: Determine which Docker image to use for packaging
+        uses: actions/download-artifact@v1
+        with:
+          name: docker-image-info-utility
+          path: .
+      - name: Load utility image info
+        id: load_utility_image_info
+        run: ./internal-scripts/ci-cd/load-docker-image-info.sh
+      - name: Build package
+        run: ./internal-scripts/ci-cd/build-ruby-packages/build-package.sh
+        env:
+          UTILITY_IMAGE_NAME: ${{ steps.load_utility_image_info.outputs.image-name }}
+          UTILITY_IMAGE_TAG: ${{ steps.load_utility_image_info.outputs.image-tag }}
+          DISTRIBUTION_NAME: "ubuntu-18.04"
+          VARIANT_NAME: ${{ matrix.variant.name }}
+          VARIANT_PACKAGE_SUFFIX: ${{ matrix.variant.package_suffix }}
+          PACKAGE_FORMAT: "DEB"
+          RUBY_PACKAGE_VERSION_ID: ${{ matrix.ruby_package_version.id }}
+          RUBY_PACKAGE_REVISION: ${{ matrix.ruby_package_version.package_revision }}
+
+      - name: Archive package artifact
+        uses: actions/upload-artifact@v1
+        with:
+          name: ruby-pkg_${{ matrix.ruby_package_version.id }}_ubuntu-18.04_${{ matrix.variant.name }}
+          path: output
+
 
 
   ### Create test APT/YUM repos ###
@@ -533,7 +842,14 @@ jobs:
   create_test_apt_repo:
     name: Create test APT repo
     runs-on: ubuntu-18.04
-    needs: build_ruby_packages
+    needs:
+
+      - build_ruby_packages_debian_10
+
+      - build_ruby_packages_debian_9
+
+      - build_ruby_packages_ubuntu_18_04
+
     steps:
       - uses: actions/checkout@v2
       - name: Recreate repo
@@ -546,7 +862,10 @@ jobs:
 
   create_test_yum_repo:
     name: Create test YUM repo
-    needs: build_ruby_packages
+    needs:
+
+      - build_ruby_packages_centos_7
+
     runs-on: ubuntu-18.04
     steps:
       - uses: actions/checkout@v2
@@ -1215,66 +1534,211 @@ jobs:
 
   ### Test packages against test repos ###
 
-  test_packages_against_test:
-    name: Test Ruby packages against test repos
+  # The Github Actions matrix is limited to producing 256 jobs. Given the
+  # combinatorial explosion, it's very easy to reach that limit, so we
+  # preprocess distribution information using ERB templating instead.
+
+
+  test_packages_against_test_centos_7:
+    name: Test Ruby packages against test repos [centos-7]
     needs: commit_published_packages_test
     runs-on: ubuntu-18.04
     strategy:
-      max-parallel: 16
+      max-parallel: 4 # avoid overloading Bintray
       matrix:
         ruby_package_version: 
-          - minor_version: 2.7
-            full_version: 2.7.0
-            package_revision: 0
-            id: 2.7
-          - minor_version: 2.6
-            full_version: 2.6.5
-            package_revision: 4
-            id: 2.6
-          - minor_version: 2.5
-            full_version: 2.5.7
-            package_revision: 3
-            id: 2.5
-          - full_version: 2.7.0
-            package_revision: 0
-            id: 2.7.0
-          - full_version: 2.6.5
-            package_revision: 1
-            id: 2.6.5
-          - full_version: 2.5.7
-            package_revision: 1
-            id: 2.5.7
-        distribution: 
-          - name: centos-7
-            package_format: RPM
-            test_image: centos:7
-          - name: debian-10
-            package_format: DEB
-            test_image: debian:10
-          - name: debian-9
-            package_format: DEB
-            test_image: debian:9
-          - name: ubuntu-18.04
-            package_format: DEB
-            test_image: ubuntu:18.04
+        - minor_version: 2.7
+          full_version: 2.7.0
+          package_revision: 0
+          id: 2.7
+        - minor_version: 2.6
+          full_version: 2.6.5
+          package_revision: 4
+          id: 2.6
+        - minor_version: 2.5
+          full_version: 2.5.7
+          package_revision: 3
+          id: 2.5
+        - full_version: 2.7.0
+          package_revision: 0
+          id: 2.7.0
+        - full_version: 2.6.5
+          package_revision: 1
+          id: 2.6.5
+        - full_version: 2.5.7
+          package_revision: 1
+          id: 2.5.7
         variant: 
-          - name: normal
-            package_suffix: ''
-          - name: jemalloc
-            package_suffix: "-jemalloc"
-          - name: malloctrim
-            package_suffix: "-malloctrim"
+        - name: normal
+          package_suffix: ''
+        - name: jemalloc
+          package_suffix: "-jemalloc"
+        - name: malloctrim
+          package_suffix: "-malloctrim"
     steps:
       - uses: actions/checkout@v2
       - name: Run tests
         run: ./internal-scripts/ci-cd/test-packages/run-tests.sh
         env:
-          DISTRIBUTION_NAME: ${{ matrix.distribution.name }}
+          DISTRIBUTION_NAME: "centos-7"
           RUBY_PACKAGE_ID: ${{ matrix.ruby_package_version.id }}
-          PACKAGE_FORMAT: ${{ matrix.distribution.package_format }}
+          PACKAGE_FORMAT: "RPM"
           VARIANT_NAME: ${{ matrix.variant.name }}
           VARIANT_PACKAGE_SUFFIX: ${{ matrix.variant.package_suffix }}
-          TEST_IMAGE_NAME: ${{ matrix.distribution.test_image }}
+          TEST_IMAGE_NAME: "centos:7"
+          APT_REPO_URL: https://dl.bintray.com/fullstaq/fullstaq-ruby-apt-ci-${{ github.run_number }}
+          YUM_REPO_URL: https://dl.bintray.com/fullstaq/fullstaq-ruby-yum-ci-${{ github.run_number }}
+
+
+  test_packages_against_test_debian_10:
+    name: Test Ruby packages against test repos [debian-10]
+    needs: commit_published_packages_test
+    runs-on: ubuntu-18.04
+    strategy:
+      max-parallel: 4 # avoid overloading Bintray
+      matrix:
+        ruby_package_version: 
+        - minor_version: 2.7
+          full_version: 2.7.0
+          package_revision: 0
+          id: 2.7
+        - minor_version: 2.6
+          full_version: 2.6.5
+          package_revision: 4
+          id: 2.6
+        - minor_version: 2.5
+          full_version: 2.5.7
+          package_revision: 3
+          id: 2.5
+        - full_version: 2.7.0
+          package_revision: 0
+          id: 2.7.0
+        - full_version: 2.6.5
+          package_revision: 1
+          id: 2.6.5
+        - full_version: 2.5.7
+          package_revision: 1
+          id: 2.5.7
+        variant: 
+        - name: normal
+          package_suffix: ''
+        - name: jemalloc
+          package_suffix: "-jemalloc"
+        - name: malloctrim
+          package_suffix: "-malloctrim"
+    steps:
+      - uses: actions/checkout@v2
+      - name: Run tests
+        run: ./internal-scripts/ci-cd/test-packages/run-tests.sh
+        env:
+          DISTRIBUTION_NAME: "debian-10"
+          RUBY_PACKAGE_ID: ${{ matrix.ruby_package_version.id }}
+          PACKAGE_FORMAT: "DEB"
+          VARIANT_NAME: ${{ matrix.variant.name }}
+          VARIANT_PACKAGE_SUFFIX: ${{ matrix.variant.package_suffix }}
+          TEST_IMAGE_NAME: "debian:10"
+          APT_REPO_URL: https://dl.bintray.com/fullstaq/fullstaq-ruby-apt-ci-${{ github.run_number }}
+          YUM_REPO_URL: https://dl.bintray.com/fullstaq/fullstaq-ruby-yum-ci-${{ github.run_number }}
+
+
+  test_packages_against_test_debian_9:
+    name: Test Ruby packages against test repos [debian-9]
+    needs: commit_published_packages_test
+    runs-on: ubuntu-18.04
+    strategy:
+      max-parallel: 4 # avoid overloading Bintray
+      matrix:
+        ruby_package_version: 
+        - minor_version: 2.7
+          full_version: 2.7.0
+          package_revision: 0
+          id: 2.7
+        - minor_version: 2.6
+          full_version: 2.6.5
+          package_revision: 4
+          id: 2.6
+        - minor_version: 2.5
+          full_version: 2.5.7
+          package_revision: 3
+          id: 2.5
+        - full_version: 2.7.0
+          package_revision: 0
+          id: 2.7.0
+        - full_version: 2.6.5
+          package_revision: 1
+          id: 2.6.5
+        - full_version: 2.5.7
+          package_revision: 1
+          id: 2.5.7
+        variant: 
+        - name: normal
+          package_suffix: ''
+        - name: jemalloc
+          package_suffix: "-jemalloc"
+        - name: malloctrim
+          package_suffix: "-malloctrim"
+    steps:
+      - uses: actions/checkout@v2
+      - name: Run tests
+        run: ./internal-scripts/ci-cd/test-packages/run-tests.sh
+        env:
+          DISTRIBUTION_NAME: "debian-9"
+          RUBY_PACKAGE_ID: ${{ matrix.ruby_package_version.id }}
+          PACKAGE_FORMAT: "DEB"
+          VARIANT_NAME: ${{ matrix.variant.name }}
+          VARIANT_PACKAGE_SUFFIX: ${{ matrix.variant.package_suffix }}
+          TEST_IMAGE_NAME: "debian:9"
+          APT_REPO_URL: https://dl.bintray.com/fullstaq/fullstaq-ruby-apt-ci-${{ github.run_number }}
+          YUM_REPO_URL: https://dl.bintray.com/fullstaq/fullstaq-ruby-yum-ci-${{ github.run_number }}
+
+
+  test_packages_against_test_ubuntu_18_04:
+    name: Test Ruby packages against test repos [ubuntu-18.04]
+    needs: commit_published_packages_test
+    runs-on: ubuntu-18.04
+    strategy:
+      max-parallel: 4 # avoid overloading Bintray
+      matrix:
+        ruby_package_version: 
+        - minor_version: 2.7
+          full_version: 2.7.0
+          package_revision: 0
+          id: 2.7
+        - minor_version: 2.6
+          full_version: 2.6.5
+          package_revision: 4
+          id: 2.6
+        - minor_version: 2.5
+          full_version: 2.5.7
+          package_revision: 3
+          id: 2.5
+        - full_version: 2.7.0
+          package_revision: 0
+          id: 2.7.0
+        - full_version: 2.6.5
+          package_revision: 1
+          id: 2.6.5
+        - full_version: 2.5.7
+          package_revision: 1
+          id: 2.5.7
+        variant: 
+        - name: normal
+          package_suffix: ''
+        - name: jemalloc
+          package_suffix: "-jemalloc"
+        - name: malloctrim
+          package_suffix: "-malloctrim"
+    steps:
+      - uses: actions/checkout@v2
+      - name: Run tests
+        run: ./internal-scripts/ci-cd/test-packages/run-tests.sh
+        env:
+          DISTRIBUTION_NAME: "ubuntu-18.04"
+          RUBY_PACKAGE_ID: ${{ matrix.ruby_package_version.id }}
+          PACKAGE_FORMAT: "DEB"
+          VARIANT_NAME: ${{ matrix.variant.name }}
+          VARIANT_PACKAGE_SUFFIX: ${{ matrix.variant.package_suffix }}
+          TEST_IMAGE_NAME: "ubuntu:18.04"
           APT_REPO_URL: https://dl.bintray.com/fullstaq/fullstaq-ruby-apt-ci-${{ github.run_number }}
           YUM_REPO_URL: https://dl.bintray.com/fullstaq/fullstaq-ruby-yum-ci-${{ github.run_number }}
 
@@ -1283,7 +1747,16 @@ jobs:
 
   publish_packages_production:
     name: Publish packages to production repos
-    needs: test_packages_against_test
+    needs:
+
+      - test_packages_against_test_centos_7
+
+      - test_packages_against_test_debian_10
+
+      - test_packages_against_test_debian_9
+
+      - test_packages_against_test_ubuntu_18_04
+
     runs-on: ubuntu-18.04
     steps:
       - uses: actions/checkout@v2
@@ -1863,55 +2336,47 @@ jobs:
 
   ### Test packages against production repos ###
 
-  test_packages_against_production:
-    name: Test Ruby packages against production repos
+  # The Github Actions matrix is limited to producing 256 jobs. Given the
+  # combinatorial explosion, it's very easy to reach that limit, so we
+  # preprocess distribution information using ERB templating instead.
+
+
+  test_packages_against_production_centos_7:
+    name: Test Ruby packages against production repos [centos-7]
     needs: publish_packages_production
     runs-on: ubuntu-18.04
     strategy:
-      max-parallel: 16
+      max-parallel: 4 # avoid overloading Bintray
       matrix:
         ruby_package_version: 
-          - minor_version: 2.7
-            full_version: 2.7.0
-            package_revision: 0
-            id: 2.7
-          - minor_version: 2.6
-            full_version: 2.6.5
-            package_revision: 4
-            id: 2.6
-          - minor_version: 2.5
-            full_version: 2.5.7
-            package_revision: 3
-            id: 2.5
-          - full_version: 2.7.0
-            package_revision: 0
-            id: 2.7.0
-          - full_version: 2.6.5
-            package_revision: 1
-            id: 2.6.5
-          - full_version: 2.5.7
-            package_revision: 1
-            id: 2.5.7
-        distribution: 
-          - name: centos-7
-            package_format: RPM
-            test_image: centos:7
-          - name: debian-10
-            package_format: DEB
-            test_image: debian:10
-          - name: debian-9
-            package_format: DEB
-            test_image: debian:9
-          - name: ubuntu-18.04
-            package_format: DEB
-            test_image: ubuntu:18.04
+        - minor_version: 2.7
+          full_version: 2.7.0
+          package_revision: 0
+          id: 2.7
+        - minor_version: 2.6
+          full_version: 2.6.5
+          package_revision: 4
+          id: 2.6
+        - minor_version: 2.5
+          full_version: 2.5.7
+          package_revision: 3
+          id: 2.5
+        - full_version: 2.7.0
+          package_revision: 0
+          id: 2.7.0
+        - full_version: 2.6.5
+          package_revision: 1
+          id: 2.6.5
+        - full_version: 2.5.7
+          package_revision: 1
+          id: 2.5.7
         variant: 
-          - name: normal
-            package_suffix: ''
-          - name: jemalloc
-            package_suffix: "-jemalloc"
-          - name: malloctrim
-            package_suffix: "-malloctrim"
+        - name: normal
+          package_suffix: ''
+        - name: jemalloc
+          package_suffix: "-jemalloc"
+        - name: malloctrim
+          package_suffix: "-malloctrim"
     steps:
       - uses: actions/checkout@v2
       - name: Run tests
@@ -1920,21 +2385,193 @@ jobs:
         # Otherwise, the 'create_git_tag' job won't always be triggered.
         if: github.ref == 'refs/heads/master'
         env:
-          DISTRIBUTION_NAME: ${{ matrix.distribution.name }}
+          DISTRIBUTION_NAME: "centos-7"
           RUBY_PACKAGE_ID: ${{ matrix.ruby_package_version.id }}
-          PACKAGE_FORMAT: ${{ matrix.distribution.package_format }}
+          PACKAGE_FORMAT: "RPM"
           VARIANT_NAME: ${{ matrix.variant.name }}
           VARIANT_PACKAGE_SUFFIX: ${{ matrix.variant.package_suffix }}
-          TEST_IMAGE_NAME: ${{ matrix.distribution.test_image }}
+          TEST_IMAGE_NAME: "centos:7"
           APT_REPO_URL: https://apt.fullstaqruby.org
           YUM_REPO_URL: https://yum.fullstaqruby.org
+
+
+  test_packages_against_production_debian_10:
+    name: Test Ruby packages against production repos [debian-10]
+    needs: publish_packages_production
+    runs-on: ubuntu-18.04
+    strategy:
+      max-parallel: 4 # avoid overloading Bintray
+      matrix:
+        ruby_package_version: 
+        - minor_version: 2.7
+          full_version: 2.7.0
+          package_revision: 0
+          id: 2.7
+        - minor_version: 2.6
+          full_version: 2.6.5
+          package_revision: 4
+          id: 2.6
+        - minor_version: 2.5
+          full_version: 2.5.7
+          package_revision: 3
+          id: 2.5
+        - full_version: 2.7.0
+          package_revision: 0
+          id: 2.7.0
+        - full_version: 2.6.5
+          package_revision: 1
+          id: 2.6.5
+        - full_version: 2.5.7
+          package_revision: 1
+          id: 2.5.7
+        variant: 
+        - name: normal
+          package_suffix: ''
+        - name: jemalloc
+          package_suffix: "-jemalloc"
+        - name: malloctrim
+          package_suffix: "-malloctrim"
+    steps:
+      - uses: actions/checkout@v2
+      - name: Run tests
+        run: ./internal-scripts/ci-cd/test-packages/run-tests.sh
+        # The 'if' here is on the step level instead of job level.
+        # Otherwise, the 'create_git_tag' job won't always be triggered.
+        if: github.ref == 'refs/heads/master'
+        env:
+          DISTRIBUTION_NAME: "debian-10"
+          RUBY_PACKAGE_ID: ${{ matrix.ruby_package_version.id }}
+          PACKAGE_FORMAT: "DEB"
+          VARIANT_NAME: ${{ matrix.variant.name }}
+          VARIANT_PACKAGE_SUFFIX: ${{ matrix.variant.package_suffix }}
+          TEST_IMAGE_NAME: "debian:10"
+          APT_REPO_URL: https://apt.fullstaqruby.org
+          YUM_REPO_URL: https://yum.fullstaqruby.org
+
+
+  test_packages_against_production_debian_9:
+    name: Test Ruby packages against production repos [debian-9]
+    needs: publish_packages_production
+    runs-on: ubuntu-18.04
+    strategy:
+      max-parallel: 4 # avoid overloading Bintray
+      matrix:
+        ruby_package_version: 
+        - minor_version: 2.7
+          full_version: 2.7.0
+          package_revision: 0
+          id: 2.7
+        - minor_version: 2.6
+          full_version: 2.6.5
+          package_revision: 4
+          id: 2.6
+        - minor_version: 2.5
+          full_version: 2.5.7
+          package_revision: 3
+          id: 2.5
+        - full_version: 2.7.0
+          package_revision: 0
+          id: 2.7.0
+        - full_version: 2.6.5
+          package_revision: 1
+          id: 2.6.5
+        - full_version: 2.5.7
+          package_revision: 1
+          id: 2.5.7
+        variant: 
+        - name: normal
+          package_suffix: ''
+        - name: jemalloc
+          package_suffix: "-jemalloc"
+        - name: malloctrim
+          package_suffix: "-malloctrim"
+    steps:
+      - uses: actions/checkout@v2
+      - name: Run tests
+        run: ./internal-scripts/ci-cd/test-packages/run-tests.sh
+        # The 'if' here is on the step level instead of job level.
+        # Otherwise, the 'create_git_tag' job won't always be triggered.
+        if: github.ref == 'refs/heads/master'
+        env:
+          DISTRIBUTION_NAME: "debian-9"
+          RUBY_PACKAGE_ID: ${{ matrix.ruby_package_version.id }}
+          PACKAGE_FORMAT: "DEB"
+          VARIANT_NAME: ${{ matrix.variant.name }}
+          VARIANT_PACKAGE_SUFFIX: ${{ matrix.variant.package_suffix }}
+          TEST_IMAGE_NAME: "debian:9"
+          APT_REPO_URL: https://apt.fullstaqruby.org
+          YUM_REPO_URL: https://yum.fullstaqruby.org
+
+
+  test_packages_against_production_ubuntu_18_04:
+    name: Test Ruby packages against production repos [ubuntu-18.04]
+    needs: publish_packages_production
+    runs-on: ubuntu-18.04
+    strategy:
+      max-parallel: 4 # avoid overloading Bintray
+      matrix:
+        ruby_package_version: 
+        - minor_version: 2.7
+          full_version: 2.7.0
+          package_revision: 0
+          id: 2.7
+        - minor_version: 2.6
+          full_version: 2.6.5
+          package_revision: 4
+          id: 2.6
+        - minor_version: 2.5
+          full_version: 2.5.7
+          package_revision: 3
+          id: 2.5
+        - full_version: 2.7.0
+          package_revision: 0
+          id: 2.7.0
+        - full_version: 2.6.5
+          package_revision: 1
+          id: 2.6.5
+        - full_version: 2.5.7
+          package_revision: 1
+          id: 2.5.7
+        variant: 
+        - name: normal
+          package_suffix: ''
+        - name: jemalloc
+          package_suffix: "-jemalloc"
+        - name: malloctrim
+          package_suffix: "-malloctrim"
+    steps:
+      - uses: actions/checkout@v2
+      - name: Run tests
+        run: ./internal-scripts/ci-cd/test-packages/run-tests.sh
+        # The 'if' here is on the step level instead of job level.
+        # Otherwise, the 'create_git_tag' job won't always be triggered.
+        if: github.ref == 'refs/heads/master'
+        env:
+          DISTRIBUTION_NAME: "ubuntu-18.04"
+          RUBY_PACKAGE_ID: ${{ matrix.ruby_package_version.id }}
+          PACKAGE_FORMAT: "DEB"
+          VARIANT_NAME: ${{ matrix.variant.name }}
+          VARIANT_PACKAGE_SUFFIX: ${{ matrix.variant.package_suffix }}
+          TEST_IMAGE_NAME: "ubuntu:18.04"
+          APT_REPO_URL: https://apt.fullstaqruby.org
+          YUM_REPO_URL: https://yum.fullstaqruby.org
+
 
 
   ### Create Git tag ###
 
   create_git_tag:
     name: Create Git tag
-    needs: test_packages_against_production
+    needs:
+
+      - test_packages_against_production_centos_7
+
+      - test_packages_against_production_debian_10
+
+      - test_packages_against_production_debian_9
+
+      - test_packages_against_production_ubuntu_18_04
+
     runs-on: ubuntu-18.04
     steps:
       - uses: actions/checkout@v2

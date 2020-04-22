@@ -76,6 +76,10 @@ Support.class_eval do
     @erb_out.slice!(pos..@erb_out.size)
   end
 
+  def self.slug(str)
+    str.scan(/[a-z0-9]+/).join('_')
+  end
+
   # A single-value file is a file such as environments/ubuntu-18.04/image_tag.
   # It contains exactly 1 line of usable value, and may optionally contain
   # comments that start with '#', which are ignored.

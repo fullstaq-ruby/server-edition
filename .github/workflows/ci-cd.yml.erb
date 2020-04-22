@@ -379,82 +379,88 @@ jobs:
 
   ### Ruby ###
 
-  build_ruby_packages:
-    name: Build Ruby packages
-    needs:
-      - download_ruby_sources
-      - build_jemalloc_binaries
-      - build_docker_images
-    runs-on: ubuntu-18.04
-    strategy:
-      matrix:
-        ruby_package_version: <%=indentyaml ruby_package_versions %>
-        distribution: <%=indentyaml distributions %>
-        variant: <%=indentyaml variants %>
-    steps:
-      - uses: actions/checkout@v2
+  # The Github Actions matrix is limited to producing 256 jobs. Given the
+  # combinatorial explosion, it's very easy to reach that limit, so we
+  # preprocess distribution information using ERB templating instead.
+  <%- distributions.each do |distribution| %>
+  <%- unindent(2) do %>
+    build_ruby_packages_<%= slug(distribution[:name]) %>:
+      name: Build Ruby packages [<%= distribution[:name] %>]
+      needs:
+        - download_ruby_sources
+        - build_jemalloc_binaries
+        - build_docker_images
+      runs-on: ubuntu-18.04
+      strategy:
+        matrix:
+          ruby_package_version: <%=indentyaml ruby_package_versions %>
+          variant: <%=indentyaml variants %>
+      steps:
+        - uses: actions/checkout@v2
 
-      - name: Fetch Ruby source
-        uses: actions/download-artifact@v1
-        with:
-          name: ruby-src-${{ matrix.ruby_package_version.full_version }}
-          path: .
-      - name: Fetch Jemalloc binary
-        uses: actions/download-artifact@v1
-        with:
-          name: jemalloc-bin-${{ matrix.distribution.name }}
-          path: .
-        if: matrix.variant.name == 'jemalloc'
-      - name: Fetch cache
-        uses: actions/cache@v1
-        with:
-          path: cache
-          key: ruby-bin-${{ matrix.ruby_package_version.id }}-${{ matrix.distribution.name }}-${{ matrix.variant.name }}
-      - name: Create cache dir
-        run: mkdir -p cache
+        - name: Fetch Ruby source
+          uses: actions/download-artifact@v1
+          with:
+            name: ruby-src-${{ matrix.ruby_package_version.full_version }}
+            path: .
+        - name: Fetch Jemalloc binary
+          uses: actions/download-artifact@v1
+          with:
+            name: jemalloc-bin-<%= distribution[:name] %>
+            path: .
+          if: matrix.variant.name == 'jemalloc'
+        - name: Fetch cache
+          uses: actions/cache@v1
+          with:
+            path: cache
+            key: ruby-bin-${{ matrix.ruby_package_version.id }}-<%= distribution[:name] %>-${{ matrix.variant.name }}
+        - name: Create cache dir
+          run: mkdir -p cache
 
-      - name: Determine which Docker image to use for building
-        uses: actions/download-artifact@v1
-        with:
-          name: docker-image-info-${{ matrix.distribution.name }}
-          path: .
-      - name: Load build image info
-        id: load_build_image_info
-        run: ./internal-scripts/ci-cd/load-docker-image-info.sh
-      - name: Build binaries
-        run: ./internal-scripts/ci-cd/build-ruby-packages/build-binaries.sh
-        env:
-          BUILD_IMAGE_NAME: ${{ steps.load_build_image_info.outputs.image-name }}
-          BUILD_IMAGE_TAG: ${{ steps.load_build_image_info.outputs.image-tag }}
-          ENVIRONMENT_NAME: ${{ matrix.distribution.name }}
-          VARIANT_NAME: ${{ matrix.variant.name }}
-          RUBY_PACKAGE_VERSION_ID: ${{ matrix.ruby_package_version.id }}
+        - name: Determine which Docker image to use for building
+          uses: actions/download-artifact@v1
+          with:
+            name: docker-image-info-<%= distribution[:name] %>
+            path: .
+        - name: Load build image info
+          id: load_build_image_info
+          run: ./internal-scripts/ci-cd/load-docker-image-info.sh
+        - name: Build binaries
+          run: ./internal-scripts/ci-cd/build-ruby-packages/build-binaries.sh
+          env:
+            BUILD_IMAGE_NAME: ${{ steps.load_build_image_info.outputs.image-name }}
+            BUILD_IMAGE_TAG: ${{ steps.load_build_image_info.outputs.image-tag }}
+            ENVIRONMENT_NAME: "<%= distribution[:name] %>"
+            VARIANT_NAME: ${{ matrix.variant.name }}
+            RUBY_PACKAGE_VERSION_ID: ${{ matrix.ruby_package_version.id }}
 
-      - name: Determine which Docker image to use for packaging
-        uses: actions/download-artifact@v1
-        with:
-          name: docker-image-info-utility
-          path: .
-      - name: Load utility image info
-        id: load_utility_image_info
-        run: ./internal-scripts/ci-cd/load-docker-image-info.sh
-      - name: Build package
-        run: ./internal-scripts/ci-cd/build-ruby-packages/build-package.sh
-        env:
-          UTILITY_IMAGE_NAME: ${{ steps.load_utility_image_info.outputs.image-name }}
-          UTILITY_IMAGE_TAG: ${{ steps.load_utility_image_info.outputs.image-tag }}
-          DISTRIBUTION_NAME: ${{ matrix.distribution.name }}
-          VARIANT_NAME: ${{ matrix.variant.name }}
-          VARIANT_PACKAGE_SUFFIX: ${{ matrix.variant.package_suffix }}
-          PACKAGE_FORMAT: ${{ matrix.distribution.package_format }}
-          RUBY_PACKAGE_VERSION_ID: ${{ matrix.ruby_package_version.id }}
-          RUBY_PACKAGE_REVISION: ${{ matrix.ruby_package_version.package_revision }}
+        - name: Determine which Docker image to use for packaging
+          uses: actions/download-artifact@v1
+          with:
+            name: docker-image-info-utility
+            path: .
+        - name: Load utility image info
+          id: load_utility_image_info
+          run: ./internal-scripts/ci-cd/load-docker-image-info.sh
+        - name: Build package
+          run: ./internal-scripts/ci-cd/build-ruby-packages/build-package.sh
+          env:
+            UTILITY_IMAGE_NAME: ${{ steps.load_utility_image_info.outputs.image-name }}
+            UTILITY_IMAGE_TAG: ${{ steps.load_utility_image_info.outputs.image-tag }}
+            DISTRIBUTION_NAME: "<%= distribution[:name] %>"
+            VARIANT_NAME: ${{ matrix.variant.name }}
+            VARIANT_PACKAGE_SUFFIX: ${{ matrix.variant.package_suffix }}
+            PACKAGE_FORMAT: "<%= distribution[:package_format] %>"
+            RUBY_PACKAGE_VERSION_ID: ${{ matrix.ruby_package_version.id }}
+            RUBY_PACKAGE_REVISION: ${{ matrix.ruby_package_version.package_revision }}
 
-      - name: Archive package artifact
-        uses: actions/upload-artifact@v1
-        with:
-          name: ruby-pkg_${{ matrix.ruby_package_version.id }}_${{ matrix.distribution.name }}_${{ matrix.variant.name }}
-          path: output
+        - name: Archive package artifact
+          uses: actions/upload-artifact@v1
+          with:
+            name: ruby-pkg_${{ matrix.ruby_package_version.id }}_<%= distribution[:name] %>_${{ matrix.variant.name }}
+            path: output
+  <%- end %>
+  <%- end %>
 
 
   ### Create test APT/YUM repos ###
@@ -462,7 +468,10 @@ jobs:
   create_test_apt_repo:
     name: Create test APT repo
     runs-on: ubuntu-18.04
-    needs: build_ruby_packages
+    needs:
+      <%- distributions.find_all{ |d| d[:package_format] == :DEB }.each do |distribution| %>
+      - build_ruby_packages_<%= slug(distribution[:name]) %>
+      <%- end %>
     steps:
       - uses: actions/checkout@v2
       - name: Recreate repo
@@ -475,7 +484,10 @@ jobs:
 
   create_test_yum_repo:
     name: Create test YUM repo
-    needs: build_ruby_packages
+    needs:
+      <%- distributions.find_all{ |d| d[:package_format] == :RPM }.each do |distribution| %>
+      - build_ruby_packages_<%= slug(distribution[:name]) %>
+      <%- end %>
     runs-on: ubuntu-18.04
     steps:
       - uses: actions/checkout@v2
@@ -648,36 +660,44 @@ jobs:
 
   ### Test packages against test repos ###
 
-  test_packages_against_test:
-    name: Test Ruby packages against test repos
-    needs: commit_published_packages_test
-    runs-on: ubuntu-18.04
-    strategy:
-      max-parallel: 16
-      matrix:
-        ruby_package_version: <%=indentyaml ruby_package_versions %>
-        distribution: <%=indentyaml distributions_with_test_image_info %>
-        variant: <%=indentyaml variants %>
-    steps:
-      - uses: actions/checkout@v2
-      - name: Run tests
-        run: ./internal-scripts/ci-cd/test-packages/run-tests.sh
-        env:
-          DISTRIBUTION_NAME: ${{ matrix.distribution.name }}
-          RUBY_PACKAGE_ID: ${{ matrix.ruby_package_version.id }}
-          PACKAGE_FORMAT: ${{ matrix.distribution.package_format }}
-          VARIANT_NAME: ${{ matrix.variant.name }}
-          VARIANT_PACKAGE_SUFFIX: ${{ matrix.variant.package_suffix }}
-          TEST_IMAGE_NAME: ${{ matrix.distribution.test_image }}
-          APT_REPO_URL: https://dl.bintray.com/fullstaq/fullstaq-ruby-apt-ci-${{ github.run_number }}
-          YUM_REPO_URL: https://dl.bintray.com/fullstaq/fullstaq-ruby-yum-ci-${{ github.run_number }}
-
+  # The Github Actions matrix is limited to producing 256 jobs. Given the
+  # combinatorial explosion, it's very easy to reach that limit, so we
+  # preprocess distribution information using ERB templating instead.
+  <%- distributions_with_test_image_info.each do |distribution| %>
+  <%- unindent(2) do %>
+    test_packages_against_test_<%= slug(distribution[:name]) %>:
+      name: Test Ruby packages against test repos [<%= distribution[:name] %>]
+      needs: commit_published_packages_test
+      runs-on: ubuntu-18.04
+      strategy:
+        max-parallel: 4 # avoid overloading Bintray
+        matrix:
+          ruby_package_version: <%=indentyaml ruby_package_versions %>
+          variant: <%=indentyaml variants %>
+      steps:
+        - uses: actions/checkout@v2
+        - name: Run tests
+          run: ./internal-scripts/ci-cd/test-packages/run-tests.sh
+          env:
+            DISTRIBUTION_NAME: "<%= distribution[:name] %>"
+            RUBY_PACKAGE_ID: ${{ matrix.ruby_package_version.id }}
+            PACKAGE_FORMAT: "<%= distribution[:package_format] %>"
+            VARIANT_NAME: ${{ matrix.variant.name }}
+            VARIANT_PACKAGE_SUFFIX: ${{ matrix.variant.package_suffix }}
+            TEST_IMAGE_NAME: "<%= distribution[:test_image] %>"
+            APT_REPO_URL: https://dl.bintray.com/fullstaq/fullstaq-ruby-apt-ci-${{ github.run_number }}
+            YUM_REPO_URL: https://dl.bintray.com/fullstaq/fullstaq-ruby-yum-ci-${{ github.run_number }}
+  <%- end %>
+  <%- end %>
 
   ### Publish packages to production repo ###
 
   publish_packages_production:
     name: Publish packages to production repos
-    needs: test_packages_against_test
+    needs:
+      <%- distributions.each do |distribution| %>
+      - test_packages_against_test_<%= slug(distribution[:name]) %>
+      <%- end %>
     runs-on: ubuntu-18.04
     steps:
       - uses: actions/checkout@v2
@@ -761,39 +781,48 @@ jobs:
 
   ### Test packages against production repos ###
 
-  test_packages_against_production:
-    name: Test Ruby packages against production repos
-    needs: publish_packages_production
-    runs-on: ubuntu-18.04
-    strategy:
-      max-parallel: 16
-      matrix:
-        ruby_package_version: <%=indentyaml ruby_package_versions %>
-        distribution: <%=indentyaml distributions_with_test_image_info %>
-        variant: <%=indentyaml variants %>
-    steps:
-      - uses: actions/checkout@v2
-      - name: Run tests
-        run: ./internal-scripts/ci-cd/test-packages/run-tests.sh
-        # The 'if' here is on the step level instead of job level.
-        # Otherwise, the 'create_git_tag' job won't always be triggered.
-        if: github.ref == 'refs/heads/master'
-        env:
-          DISTRIBUTION_NAME: ${{ matrix.distribution.name }}
-          RUBY_PACKAGE_ID: ${{ matrix.ruby_package_version.id }}
-          PACKAGE_FORMAT: ${{ matrix.distribution.package_format }}
-          VARIANT_NAME: ${{ matrix.variant.name }}
-          VARIANT_PACKAGE_SUFFIX: ${{ matrix.variant.package_suffix }}
-          TEST_IMAGE_NAME: ${{ matrix.distribution.test_image }}
-          APT_REPO_URL: https://apt.fullstaqruby.org
-          YUM_REPO_URL: https://yum.fullstaqruby.org
+  # The Github Actions matrix is limited to producing 256 jobs. Given the
+  # combinatorial explosion, it's very easy to reach that limit, so we
+  # preprocess distribution information using ERB templating instead.
+  <%- distributions_with_test_image_info.each do |distribution| %>
+  <%- unindent(2) do %>
+    test_packages_against_production_<%= slug(distribution[:name]) %>:
+      name: Test Ruby packages against production repos [<%= distribution[:name] %>]
+      needs: publish_packages_production
+      runs-on: ubuntu-18.04
+      strategy:
+        max-parallel: 4 # avoid overloading Bintray
+        matrix:
+          ruby_package_version: <%=indentyaml ruby_package_versions %>
+          variant: <%=indentyaml variants %>
+      steps:
+        - uses: actions/checkout@v2
+        - name: Run tests
+          run: ./internal-scripts/ci-cd/test-packages/run-tests.sh
+          # The 'if' here is on the step level instead of job level.
+          # Otherwise, the 'create_git_tag' job won't always be triggered.
+          if: github.ref == 'refs/heads/master'
+          env:
+            DISTRIBUTION_NAME: "<%= distribution[:name] %>"
+            RUBY_PACKAGE_ID: ${{ matrix.ruby_package_version.id }}
+            PACKAGE_FORMAT: "<%= distribution[:package_format] %>"
+            VARIANT_NAME: ${{ matrix.variant.name }}
+            VARIANT_PACKAGE_SUFFIX: ${{ matrix.variant.package_suffix }}
+            TEST_IMAGE_NAME: "<%= distribution[:test_image] %>"
+            APT_REPO_URL: https://apt.fullstaqruby.org
+            YUM_REPO_URL: https://yum.fullstaqruby.org
+  <%- end %>
+  <%- end %>
 
 
   ### Create Git tag ###
 
   create_git_tag:
     name: Create Git tag
-    needs: test_packages_against_production
+    needs:
+      <%- distributions.each do |distribution| %>
+      - test_packages_against_production_<%= slug(distribution[:name]) %>
+      <%- end %>
     runs-on: ubuntu-18.04
     steps:
       - uses: actions/checkout@v2
