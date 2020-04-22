@@ -38,6 +38,25 @@ function verbose_exec()
     exec "$@"
 }
 
+function run_with_retries()
+{
+    local TRY_NUM=1
+    local MAX_TRIES=3
+    while true; do
+        echo "+ (Try $TRY_NUM/$MAX_TRIES) $*"
+        if "$@"; then
+            return 0
+        else
+            (( TRY_NUM++ )) || true
+            if [[ $TRY_NUM -gt $MAX_TRIES ]]; then
+                return 1
+            else
+                echo "${BOLD}${YELLOW}*** WARNING: command failed, retrying...${RESET}"
+            fi
+        fi
+    done
+}
+
 # A single-value file is a file such as environments/ubuntu-18.04/image_tag.
 # It contains exactly 1 line of usable value, and may optionally contain
 # comments that start with '#', which are ignored.

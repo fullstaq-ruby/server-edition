@@ -45,7 +45,13 @@ fi
 echo "+ Detected package version (possibly with variant suffix): $RUBY_PACKAGE_VERSION"
 echo "+ Detected package version (without variant suffix): $RUBY_PACKAGE_VERSION_WITHOUT_VARIANT_SUFFIX"
 echo "+ Detected variant: $VARIANT"
-run yum install -y "fullstaq-ruby-$RUBY_PACKAGE_VERSION" fullstaq-ruby-common
+
+if [[ "$SERVER" = "" ]]; then
+    run yum install -y "fullstaq-ruby-$RUBY_PACKAGE_VERSION" fullstaq-ruby-common
+else
+    # Bintray could sometimes be flaky, so we retry on failure.
+    run_with_retries yum install -y "fullstaq-ruby-$RUBY_PACKAGE_VERSION" fullstaq-ruby-common
+fi
 
 echo
 
