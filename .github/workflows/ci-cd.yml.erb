@@ -665,8 +665,8 @@ jobs:
           DISTRIBUTION_NAME: ${{ matrix.distribution.name }}
           RUBY_PACKAGE_ID: ${{ matrix.ruby_package_version.id }}
           PACKAGE_FORMAT: ${{ matrix.distribution.package_format }}
-          PACKAGE_SUFFIX: ${{ matrix.variant.package_suffix }}
           VARIANT_NAME: ${{ matrix.variant.name }}
+          VARIANT_PACKAGE_SUFFIX: ${{ matrix.variant.package_suffix }}
           TEST_IMAGE_NAME: ${{ matrix.distribution.test_image }}
           APT_REPO_URL: https://dl.bintray.com/fullstaq/fullstaq-ruby-apt-ci-${{ github.run_number }}
           YUM_REPO_URL: https://dl.bintray.com/fullstaq/fullstaq-ruby-yum-ci-${{ github.run_number }}
@@ -780,8 +780,8 @@ jobs:
           DISTRIBUTION_NAME: ${{ matrix.distribution.name }}
           RUBY_PACKAGE_ID: ${{ matrix.ruby_package_version.id }}
           PACKAGE_FORMAT: ${{ matrix.distribution.package_format }}
-          PACKAGE_SUFFIX: ${{ matrix.variant.package_suffix }}
           VARIANT_NAME: ${{ matrix.variant.name }}
+          VARIANT_PACKAGE_SUFFIX: ${{ matrix.variant.package_suffix }}
           TEST_IMAGE_NAME: ${{ matrix.distribution.test_image }}
           APT_REPO_URL: https://apt.fullstaqruby.org
           YUM_REPO_URL: https://yum.fullstaqruby.org
