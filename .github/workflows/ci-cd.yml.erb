@@ -653,6 +653,7 @@ jobs:
     needs: commit_published_packages_test
     runs-on: ubuntu-18.04
     strategy:
+      max-parallel: 16
       matrix:
         ruby_package_version: <%=indentyaml ruby_package_versions %>
         distribution: <%=indentyaml distributions_with_test_image_info %>
@@ -765,6 +766,7 @@ jobs:
     needs: publish_packages_production
     runs-on: ubuntu-18.04
     strategy:
+      max-parallel: 16
       matrix:
         ruby_package_version: <%=indentyaml ruby_package_versions %>
         distribution: <%=indentyaml distributions_with_test_image_info %>
