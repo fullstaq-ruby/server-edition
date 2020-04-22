@@ -31,7 +31,7 @@ function upload()
 
     if $DRY_RUN; then
         echo "+ Dry-running: ${CURL_COMMAND[*]}"
-        return 1
+        return 0
     fi
 
     while true; do
