@@ -36,14 +36,14 @@ function verify_http_code_ok()
 
 
 header "Detecting old CI repos"
-OLD_CI_REPOS=$(jq -r '.[] | select(.name | test("-ci-")) | select(.lastUpdated | fromdate < now - (7 * 24 * 60 * 60)) | .name' repos.json)
-echo "The following CI repos are older than a week:"
+OLD_CI_REPOS=$(jq -r '.[] | select(.name | test("-ci-")) | select(.lastUpdated | fromdate < now - (3 * 24 * 60 * 60)) | .name' repos.json)
+echo "The following CI repos are older than 3 days:"
 echo "$OLD_CI_REPOS"
 echo
 
 
 header "Deleting old CI repos"
 for REPO_NAME in $OLD_CI_REPOS; do
-    echo curl -u "$BINTRAY_API_USERNAME:$BINTRAY_API_KEY" -X DELETE \
+    run curl -u "$BINTRAY_API_USERNAME:$BINTRAY_API_KEY" -X DELETE \
         "https://bintray.com/api/v1/repos/$BINTRAY_ORG/$REPO_NAME"
 done
