@@ -20,6 +20,7 @@ mkdir repo
 echo '--- Entering main Docker container ---'
 
 if [[ "$PACKAGE_FORMAT" == DEB ]]; then
+    set -x
     exec docker run --rm --init \
         -v "$ROOTDIR:/system:ro" \
         -v "$(pwd)/repo:/input/repo:ro" \
@@ -32,6 +33,7 @@ if [[ "$PACKAGE_FORMAT" == DEB ]]; then
         --entrypoint /system/container-entrypoints/test-debs \
         "$TEST_IMAGE_NAME"
 else
+    set -x
     exec docker run --rm --init \
         -v "$ROOTDIR:/system:ro" \
         -v "$(pwd)/repo:/input/repo:ro" \
