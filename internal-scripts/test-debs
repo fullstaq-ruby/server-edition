@@ -128,7 +128,7 @@ else
 fi
 
 echo -n "Checking whether active Ruby for utility is /usr/lib/rbenv/versions/$RUBY_PACKAGE_VERSION/bin/ruby... "
-output=$(sudo -u utility -H sh -c 'eval "$(rbenv init -)" && rbenv which ruby')
+output=$(sudo -u utility -H bash -c 'eval "$(rbenv init -)" && rbenv which ruby')
 assert_equals "$output" "/usr/lib/rbenv/versions/$RUBY_PACKAGE_VERSION/bin/ruby"
 
 echo -n "Checking whether Ruby works... "
