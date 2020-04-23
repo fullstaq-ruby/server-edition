@@ -459,6 +459,9 @@ sudo apt install gnupg apt-transport-https ca-certificates curl
 Next, add the Fullstaq Ruby repository by creating `/etc/apt/sources.list.d/fullstaq-ruby.list`. Paste **one** of the lines below depending your distro:
 
 ~~~bash
+# Ubuntu 20.04
+deb https://apt.fullstaqruby.org ubuntu-20.04 main
+
 # Ubuntu 18.04
 deb https://apt.fullstaqruby.org ubuntu-18.04 main
 
