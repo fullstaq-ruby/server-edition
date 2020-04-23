@@ -158,9 +158,9 @@ jobs:
     strategy:
       matrix:
         ruby_version: 
-          - 2.7.0
-          - 2.6.5
-          - 2.5.7
+          - 2.7.1
+          - 2.6.6
+          - 2.5.8
     steps:
       - name: Fetch cache
         id: fetch_cache
@@ -431,26 +431,26 @@ jobs:
       matrix:
         ruby_package_version: 
         - minor_version: 2.7
-          full_version: 2.7.0
-          package_revision: 0
+          full_version: 2.7.1
+          package_revision: 1
           id: 2.7
         - minor_version: 2.6
-          full_version: 2.6.5
-          package_revision: 4
+          full_version: 2.6.6
+          package_revision: 5
           id: 2.6
         - minor_version: 2.5
-          full_version: 2.5.7
-          package_revision: 3
+          full_version: 2.5.8
+          package_revision: 4
           id: 2.5
-        - full_version: 2.7.0
+        - full_version: 2.7.1
           package_revision: 0
-          id: 2.7.0
-        - full_version: 2.6.5
+          id: 2.7.1
+        - full_version: 2.6.6
           package_revision: 1
-          id: 2.6.5
-        - full_version: 2.5.7
+          id: 2.6.6
+        - full_version: 2.5.8
           package_revision: 1
-          id: 2.5.7
+          id: 2.5.8
         variant: 
         - name: normal
           package_suffix: ''
@@ -535,26 +535,26 @@ jobs:
       matrix:
         ruby_package_version: 
         - minor_version: 2.7
-          full_version: 2.7.0
-          package_revision: 0
+          full_version: 2.7.1
+          package_revision: 1
           id: 2.7
         - minor_version: 2.6
-          full_version: 2.6.5
-          package_revision: 4
+          full_version: 2.6.6
+          package_revision: 5
           id: 2.6
         - minor_version: 2.5
-          full_version: 2.5.7
-          package_revision: 3
+          full_version: 2.5.8
+          package_revision: 4
           id: 2.5
-        - full_version: 2.7.0
+        - full_version: 2.7.1
           package_revision: 0
-          id: 2.7.0
-        - full_version: 2.6.5
+          id: 2.7.1
+        - full_version: 2.6.6
           package_revision: 1
-          id: 2.6.5
-        - full_version: 2.5.7
+          id: 2.6.6
+        - full_version: 2.5.8
           package_revision: 1
-          id: 2.5.7
+          id: 2.5.8
         variant: 
         - name: normal
           package_suffix: ''
@@ -639,26 +639,26 @@ jobs:
       matrix:
         ruby_package_version: 
         - minor_version: 2.7
-          full_version: 2.7.0
-          package_revision: 0
+          full_version: 2.7.1
+          package_revision: 1
           id: 2.7
         - minor_version: 2.6
-          full_version: 2.6.5
-          package_revision: 4
+          full_version: 2.6.6
+          package_revision: 5
           id: 2.6
         - minor_version: 2.5
-          full_version: 2.5.7
-          package_revision: 3
+          full_version: 2.5.8
+          package_revision: 4
           id: 2.5
-        - full_version: 2.7.0
+        - full_version: 2.7.1
           package_revision: 0
-          id: 2.7.0
-        - full_version: 2.6.5
+          id: 2.7.1
+        - full_version: 2.6.6
           package_revision: 1
-          id: 2.6.5
-        - full_version: 2.5.7
+          id: 2.6.6
+        - full_version: 2.5.8
           package_revision: 1
-          id: 2.5.7
+          id: 2.5.8
         variant: 
         - name: normal
           package_suffix: ''
@@ -743,26 +743,26 @@ jobs:
       matrix:
         ruby_package_version: 
         - minor_version: 2.7
-          full_version: 2.7.0
-          package_revision: 0
+          full_version: 2.7.1
+          package_revision: 1
           id: 2.7
         - minor_version: 2.6
-          full_version: 2.6.5
-          package_revision: 4
+          full_version: 2.6.6
+          package_revision: 5
           id: 2.6
         - minor_version: 2.5
-          full_version: 2.5.7
-          package_revision: 3
+          full_version: 2.5.8
+          package_revision: 4
           id: 2.5
-        - full_version: 2.7.0
+        - full_version: 2.7.1
           package_revision: 0
-          id: 2.7.0
-        - full_version: 2.6.5
+          id: 2.7.1
+        - full_version: 2.6.6
           package_revision: 1
-          id: 2.6.5
-        - full_version: 2.5.7
+          id: 2.6.6
+        - full_version: 2.5.8
           package_revision: 1
-          id: 2.5.7
+          id: 2.5.8
         variant: 
         - name: normal
           package_suffix: ''
@@ -1225,255 +1225,255 @@ jobs:
           path: ruby-pkgs
 
 
-      - name: Fetch ruby-pkg_2.7.0_centos-7_normal
+      - name: Fetch ruby-pkg_2.7.1_centos-7_normal
         uses: actions/download-artifact@v1
         with:
-          name: ruby-pkg_2.7.0_centos-7_normal
+          name: ruby-pkg_2.7.1_centos-7_normal
           path: ruby-pkgs
 
 
-      - name: Fetch ruby-pkg_2.7.0_centos-7_jemalloc
+      - name: Fetch ruby-pkg_2.7.1_centos-7_jemalloc
         uses: actions/download-artifact@v1
         with:
-          name: ruby-pkg_2.7.0_centos-7_jemalloc
+          name: ruby-pkg_2.7.1_centos-7_jemalloc
           path: ruby-pkgs
 
 
-      - name: Fetch ruby-pkg_2.7.0_centos-7_malloctrim
+      - name: Fetch ruby-pkg_2.7.1_centos-7_malloctrim
         uses: actions/download-artifact@v1
         with:
-          name: ruby-pkg_2.7.0_centos-7_malloctrim
+          name: ruby-pkg_2.7.1_centos-7_malloctrim
           path: ruby-pkgs
 
 
-      - name: Fetch ruby-pkg_2.7.0_debian-10_normal
+      - name: Fetch ruby-pkg_2.7.1_debian-10_normal
         uses: actions/download-artifact@v1
         with:
-          name: ruby-pkg_2.7.0_debian-10_normal
+          name: ruby-pkg_2.7.1_debian-10_normal
           path: ruby-pkgs
 
 
-      - name: Fetch ruby-pkg_2.7.0_debian-10_jemalloc
+      - name: Fetch ruby-pkg_2.7.1_debian-10_jemalloc
         uses: actions/download-artifact@v1
         with:
-          name: ruby-pkg_2.7.0_debian-10_jemalloc
+          name: ruby-pkg_2.7.1_debian-10_jemalloc
           path: ruby-pkgs
 
 
-      - name: Fetch ruby-pkg_2.7.0_debian-10_malloctrim
+      - name: Fetch ruby-pkg_2.7.1_debian-10_malloctrim
         uses: actions/download-artifact@v1
         with:
-          name: ruby-pkg_2.7.0_debian-10_malloctrim
+          name: ruby-pkg_2.7.1_debian-10_malloctrim
           path: ruby-pkgs
 
 
-      - name: Fetch ruby-pkg_2.7.0_debian-9_normal
+      - name: Fetch ruby-pkg_2.7.1_debian-9_normal
         uses: actions/download-artifact@v1
         with:
-          name: ruby-pkg_2.7.0_debian-9_normal
+          name: ruby-pkg_2.7.1_debian-9_normal
           path: ruby-pkgs
 
 
-      - name: Fetch ruby-pkg_2.7.0_debian-9_jemalloc
+      - name: Fetch ruby-pkg_2.7.1_debian-9_jemalloc
         uses: actions/download-artifact@v1
         with:
-          name: ruby-pkg_2.7.0_debian-9_jemalloc
+          name: ruby-pkg_2.7.1_debian-9_jemalloc
           path: ruby-pkgs
 
 
-      - name: Fetch ruby-pkg_2.7.0_debian-9_malloctrim
+      - name: Fetch ruby-pkg_2.7.1_debian-9_malloctrim
         uses: actions/download-artifact@v1
         with:
-          name: ruby-pkg_2.7.0_debian-9_malloctrim
+          name: ruby-pkg_2.7.1_debian-9_malloctrim
           path: ruby-pkgs
 
 
-      - name: Fetch ruby-pkg_2.7.0_ubuntu-18.04_normal
+      - name: Fetch ruby-pkg_2.7.1_ubuntu-18.04_normal
         uses: actions/download-artifact@v1
         with:
-          name: ruby-pkg_2.7.0_ubuntu-18.04_normal
+          name: ruby-pkg_2.7.1_ubuntu-18.04_normal
           path: ruby-pkgs
 
 
-      - name: Fetch ruby-pkg_2.7.0_ubuntu-18.04_jemalloc
+      - name: Fetch ruby-pkg_2.7.1_ubuntu-18.04_jemalloc
         uses: actions/download-artifact@v1
         with:
-          name: ruby-pkg_2.7.0_ubuntu-18.04_jemalloc
+          name: ruby-pkg_2.7.1_ubuntu-18.04_jemalloc
           path: ruby-pkgs
 
 
-      - name: Fetch ruby-pkg_2.7.0_ubuntu-18.04_malloctrim
+      - name: Fetch ruby-pkg_2.7.1_ubuntu-18.04_malloctrim
         uses: actions/download-artifact@v1
         with:
-          name: ruby-pkg_2.7.0_ubuntu-18.04_malloctrim
+          name: ruby-pkg_2.7.1_ubuntu-18.04_malloctrim
           path: ruby-pkgs
 
 
-      - name: Fetch ruby-pkg_2.6.5_centos-7_normal
+      - name: Fetch ruby-pkg_2.6.6_centos-7_normal
         uses: actions/download-artifact@v1
         with:
-          name: ruby-pkg_2.6.5_centos-7_normal
+          name: ruby-pkg_2.6.6_centos-7_normal
           path: ruby-pkgs
 
 
-      - name: Fetch ruby-pkg_2.6.5_centos-7_jemalloc
+      - name: Fetch ruby-pkg_2.6.6_centos-7_jemalloc
         uses: actions/download-artifact@v1
         with:
-          name: ruby-pkg_2.6.5_centos-7_jemalloc
+          name: ruby-pkg_2.6.6_centos-7_jemalloc
           path: ruby-pkgs
 
 
-      - name: Fetch ruby-pkg_2.6.5_centos-7_malloctrim
+      - name: Fetch ruby-pkg_2.6.6_centos-7_malloctrim
         uses: actions/download-artifact@v1
         with:
-          name: ruby-pkg_2.6.5_centos-7_malloctrim
+          name: ruby-pkg_2.6.6_centos-7_malloctrim
           path: ruby-pkgs
 
 
-      - name: Fetch ruby-pkg_2.6.5_debian-10_normal
+      - name: Fetch ruby-pkg_2.6.6_debian-10_normal
         uses: actions/download-artifact@v1
         with:
-          name: ruby-pkg_2.6.5_debian-10_normal
+          name: ruby-pkg_2.6.6_debian-10_normal
           path: ruby-pkgs
 
 
-      - name: Fetch ruby-pkg_2.6.5_debian-10_jemalloc
+      - name: Fetch ruby-pkg_2.6.6_debian-10_jemalloc
         uses: actions/download-artifact@v1
         with:
-          name: ruby-pkg_2.6.5_debian-10_jemalloc
+          name: ruby-pkg_2.6.6_debian-10_jemalloc
           path: ruby-pkgs
 
 
-      - name: Fetch ruby-pkg_2.6.5_debian-10_malloctrim
+      - name: Fetch ruby-pkg_2.6.6_debian-10_malloctrim
         uses: actions/download-artifact@v1
         with:
-          name: ruby-pkg_2.6.5_debian-10_malloctrim
+          name: ruby-pkg_2.6.6_debian-10_malloctrim
           path: ruby-pkgs
 
 
-      - name: Fetch ruby-pkg_2.6.5_debian-9_normal
+      - name: Fetch ruby-pkg_2.6.6_debian-9_normal
         uses: actions/download-artifact@v1
         with:
-          name: ruby-pkg_2.6.5_debian-9_normal
+          name: ruby-pkg_2.6.6_debian-9_normal
           path: ruby-pkgs
 
 
-      - name: Fetch ruby-pkg_2.6.5_debian-9_jemalloc
+      - name: Fetch ruby-pkg_2.6.6_debian-9_jemalloc
         uses: actions/download-artifact@v1
         with:
-          name: ruby-pkg_2.6.5_debian-9_jemalloc
+          name: ruby-pkg_2.6.6_debian-9_jemalloc
           path: ruby-pkgs
 
 
-      - name: Fetch ruby-pkg_2.6.5_debian-9_malloctrim
+      - name: Fetch ruby-pkg_2.6.6_debian-9_malloctrim
         uses: actions/download-artifact@v1
         with:
-          name: ruby-pkg_2.6.5_debian-9_malloctrim
+          name: ruby-pkg_2.6.6_debian-9_malloctrim
           path: ruby-pkgs
 
 
-      - name: Fetch ruby-pkg_2.6.5_ubuntu-18.04_normal
+      - name: Fetch ruby-pkg_2.6.6_ubuntu-18.04_normal
         uses: actions/download-artifact@v1
         with:
-          name: ruby-pkg_2.6.5_ubuntu-18.04_normal
+          name: ruby-pkg_2.6.6_ubuntu-18.04_normal
           path: ruby-pkgs
 
 
-      - name: Fetch ruby-pkg_2.6.5_ubuntu-18.04_jemalloc
+      - name: Fetch ruby-pkg_2.6.6_ubuntu-18.04_jemalloc
         uses: actions/download-artifact@v1
         with:
-          name: ruby-pkg_2.6.5_ubuntu-18.04_jemalloc
+          name: ruby-pkg_2.6.6_ubuntu-18.04_jemalloc
           path: ruby-pkgs
 
 
-      - name: Fetch ruby-pkg_2.6.5_ubuntu-18.04_malloctrim
+      - name: Fetch ruby-pkg_2.6.6_ubuntu-18.04_malloctrim
         uses: actions/download-artifact@v1
         with:
-          name: ruby-pkg_2.6.5_ubuntu-18.04_malloctrim
+          name: ruby-pkg_2.6.6_ubuntu-18.04_malloctrim
           path: ruby-pkgs
 
 
-      - name: Fetch ruby-pkg_2.5.7_centos-7_normal
+      - name: Fetch ruby-pkg_2.5.8_centos-7_normal
         uses: actions/download-artifact@v1
         with:
-          name: ruby-pkg_2.5.7_centos-7_normal
+          name: ruby-pkg_2.5.8_centos-7_normal
           path: ruby-pkgs
 
 
-      - name: Fetch ruby-pkg_2.5.7_centos-7_jemalloc
+      - name: Fetch ruby-pkg_2.5.8_centos-7_jemalloc
         uses: actions/download-artifact@v1
         with:
-          name: ruby-pkg_2.5.7_centos-7_jemalloc
+          name: ruby-pkg_2.5.8_centos-7_jemalloc
           path: ruby-pkgs
 
 
-      - name: Fetch ruby-pkg_2.5.7_centos-7_malloctrim
+      - name: Fetch ruby-pkg_2.5.8_centos-7_malloctrim
         uses: actions/download-artifact@v1
         with:
-          name: ruby-pkg_2.5.7_centos-7_malloctrim
+          name: ruby-pkg_2.5.8_centos-7_malloctrim
           path: ruby-pkgs
 
 
-      - name: Fetch ruby-pkg_2.5.7_debian-10_normal
+      - name: Fetch ruby-pkg_2.5.8_debian-10_normal
         uses: actions/download-artifact@v1
         with:
-          name: ruby-pkg_2.5.7_debian-10_normal
+          name: ruby-pkg_2.5.8_debian-10_normal
           path: ruby-pkgs
 
 
-      - name: Fetch ruby-pkg_2.5.7_debian-10_jemalloc
+      - name: Fetch ruby-pkg_2.5.8_debian-10_jemalloc
         uses: actions/download-artifact@v1
         with:
-          name: ruby-pkg_2.5.7_debian-10_jemalloc
+          name: ruby-pkg_2.5.8_debian-10_jemalloc
           path: ruby-pkgs
 
 
-      - name: Fetch ruby-pkg_2.5.7_debian-10_malloctrim
+      - name: Fetch ruby-pkg_2.5.8_debian-10_malloctrim
         uses: actions/download-artifact@v1
         with:
-          name: ruby-pkg_2.5.7_debian-10_malloctrim
+          name: ruby-pkg_2.5.8_debian-10_malloctrim
           path: ruby-pkgs
 
 
-      - name: Fetch ruby-pkg_2.5.7_debian-9_normal
+      - name: Fetch ruby-pkg_2.5.8_debian-9_normal
         uses: actions/download-artifact@v1
         with:
-          name: ruby-pkg_2.5.7_debian-9_normal
+          name: ruby-pkg_2.5.8_debian-9_normal
           path: ruby-pkgs
 
 
-      - name: Fetch ruby-pkg_2.5.7_debian-9_jemalloc
+      - name: Fetch ruby-pkg_2.5.8_debian-9_jemalloc
         uses: actions/download-artifact@v1
         with:
-          name: ruby-pkg_2.5.7_debian-9_jemalloc
+          name: ruby-pkg_2.5.8_debian-9_jemalloc
           path: ruby-pkgs
 
 
-      - name: Fetch ruby-pkg_2.5.7_debian-9_malloctrim
+      - name: Fetch ruby-pkg_2.5.8_debian-9_malloctrim
         uses: actions/download-artifact@v1
         with:
-          name: ruby-pkg_2.5.7_debian-9_malloctrim
+          name: ruby-pkg_2.5.8_debian-9_malloctrim
           path: ruby-pkgs
 
 
-      - name: Fetch ruby-pkg_2.5.7_ubuntu-18.04_normal
+      - name: Fetch ruby-pkg_2.5.8_ubuntu-18.04_normal
         uses: actions/download-artifact@v1
         with:
-          name: ruby-pkg_2.5.7_ubuntu-18.04_normal
+          name: ruby-pkg_2.5.8_ubuntu-18.04_normal
           path: ruby-pkgs
 
 
-      - name: Fetch ruby-pkg_2.5.7_ubuntu-18.04_jemalloc
+      - name: Fetch ruby-pkg_2.5.8_ubuntu-18.04_jemalloc
         uses: actions/download-artifact@v1
         with:
-          name: ruby-pkg_2.5.7_ubuntu-18.04_jemalloc
+          name: ruby-pkg_2.5.8_ubuntu-18.04_jemalloc
           path: ruby-pkgs
 
 
-      - name: Fetch ruby-pkg_2.5.7_ubuntu-18.04_malloctrim
+      - name: Fetch ruby-pkg_2.5.8_ubuntu-18.04_malloctrim
         uses: actions/download-artifact@v1
         with:
-          name: ruby-pkg_2.5.7_ubuntu-18.04_malloctrim
+          name: ruby-pkg_2.5.8_ubuntu-18.04_malloctrim
           path: ruby-pkgs
 
 
@@ -1548,26 +1548,26 @@ jobs:
       matrix:
         ruby_package_version: 
         - minor_version: 2.7
-          full_version: 2.7.0
-          package_revision: 0
+          full_version: 2.7.1
+          package_revision: 1
           id: 2.7
         - minor_version: 2.6
-          full_version: 2.6.5
-          package_revision: 4
+          full_version: 2.6.6
+          package_revision: 5
           id: 2.6
         - minor_version: 2.5
-          full_version: 2.5.7
-          package_revision: 3
+          full_version: 2.5.8
+          package_revision: 4
           id: 2.5
-        - full_version: 2.7.0
+        - full_version: 2.7.1
           package_revision: 0
-          id: 2.7.0
-        - full_version: 2.6.5
+          id: 2.7.1
+        - full_version: 2.6.6
           package_revision: 1
-          id: 2.6.5
-        - full_version: 2.5.7
+          id: 2.6.6
+        - full_version: 2.5.8
           package_revision: 1
-          id: 2.5.7
+          id: 2.5.8
         variant: 
         - name: normal
           package_suffix: ''
@@ -1599,26 +1599,26 @@ jobs:
       matrix:
         ruby_package_version: 
         - minor_version: 2.7
-          full_version: 2.7.0
-          package_revision: 0
+          full_version: 2.7.1
+          package_revision: 1
           id: 2.7
         - minor_version: 2.6
-          full_version: 2.6.5
-          package_revision: 4
+          full_version: 2.6.6
+          package_revision: 5
           id: 2.6
         - minor_version: 2.5
-          full_version: 2.5.7
-          package_revision: 3
+          full_version: 2.5.8
+          package_revision: 4
           id: 2.5
-        - full_version: 2.7.0
+        - full_version: 2.7.1
           package_revision: 0
-          id: 2.7.0
-        - full_version: 2.6.5
+          id: 2.7.1
+        - full_version: 2.6.6
           package_revision: 1
-          id: 2.6.5
-        - full_version: 2.5.7
+          id: 2.6.6
+        - full_version: 2.5.8
           package_revision: 1
-          id: 2.5.7
+          id: 2.5.8
         variant: 
         - name: normal
           package_suffix: ''
@@ -1650,26 +1650,26 @@ jobs:
       matrix:
         ruby_package_version: 
         - minor_version: 2.7
-          full_version: 2.7.0
-          package_revision: 0
+          full_version: 2.7.1
+          package_revision: 1
           id: 2.7
         - minor_version: 2.6
-          full_version: 2.6.5
-          package_revision: 4
+          full_version: 2.6.6
+          package_revision: 5
           id: 2.6
         - minor_version: 2.5
-          full_version: 2.5.7
-          package_revision: 3
+          full_version: 2.5.8
+          package_revision: 4
           id: 2.5
-        - full_version: 2.7.0
+        - full_version: 2.7.1
           package_revision: 0
-          id: 2.7.0
-        - full_version: 2.6.5
+          id: 2.7.1
+        - full_version: 2.6.6
           package_revision: 1
-          id: 2.6.5
-        - full_version: 2.5.7
+          id: 2.6.6
+        - full_version: 2.5.8
           package_revision: 1
-          id: 2.5.7
+          id: 2.5.8
         variant: 
         - name: normal
           package_suffix: ''
@@ -1701,26 +1701,26 @@ jobs:
       matrix:
         ruby_package_version: 
         - minor_version: 2.7
-          full_version: 2.7.0
-          package_revision: 0
+          full_version: 2.7.1
+          package_revision: 1
           id: 2.7
         - minor_version: 2.6
-          full_version: 2.6.5
-          package_revision: 4
+          full_version: 2.6.6
+          package_revision: 5
           id: 2.6
         - minor_version: 2.5
-          full_version: 2.5.7
-          package_revision: 3
+          full_version: 2.5.8
+          package_revision: 4
           id: 2.5
-        - full_version: 2.7.0
+        - full_version: 2.7.1
           package_revision: 0
-          id: 2.7.0
-        - full_version: 2.6.5
+          id: 2.7.1
+        - full_version: 2.6.6
           package_revision: 1
-          id: 2.6.5
-        - full_version: 2.5.7
+          id: 2.6.6
+        - full_version: 2.5.8
           package_revision: 1
-          id: 2.5.7
+          id: 2.5.8
         variant: 
         - name: normal
           package_suffix: ''
@@ -2036,255 +2036,255 @@ jobs:
           path: .
 
 
-      - name: Fetch ruby-pkg_2.7.0_centos-7_normal
+      - name: Fetch ruby-pkg_2.7.1_centos-7_normal
         uses: actions/download-artifact@v1
         with:
-          name: ruby-pkg_2.7.0_centos-7_normal
+          name: ruby-pkg_2.7.1_centos-7_normal
           path: .
 
 
-      - name: Fetch ruby-pkg_2.7.0_centos-7_jemalloc
+      - name: Fetch ruby-pkg_2.7.1_centos-7_jemalloc
         uses: actions/download-artifact@v1
         with:
-          name: ruby-pkg_2.7.0_centos-7_jemalloc
+          name: ruby-pkg_2.7.1_centos-7_jemalloc
           path: .
 
 
-      - name: Fetch ruby-pkg_2.7.0_centos-7_malloctrim
+      - name: Fetch ruby-pkg_2.7.1_centos-7_malloctrim
         uses: actions/download-artifact@v1
         with:
-          name: ruby-pkg_2.7.0_centos-7_malloctrim
+          name: ruby-pkg_2.7.1_centos-7_malloctrim
           path: .
 
 
-      - name: Fetch ruby-pkg_2.7.0_debian-10_normal
+      - name: Fetch ruby-pkg_2.7.1_debian-10_normal
         uses: actions/download-artifact@v1
         with:
-          name: ruby-pkg_2.7.0_debian-10_normal
+          name: ruby-pkg_2.7.1_debian-10_normal
           path: .
 
 
-      - name: Fetch ruby-pkg_2.7.0_debian-10_jemalloc
+      - name: Fetch ruby-pkg_2.7.1_debian-10_jemalloc
         uses: actions/download-artifact@v1
         with:
-          name: ruby-pkg_2.7.0_debian-10_jemalloc
+          name: ruby-pkg_2.7.1_debian-10_jemalloc
           path: .
 
 
-      - name: Fetch ruby-pkg_2.7.0_debian-10_malloctrim
+      - name: Fetch ruby-pkg_2.7.1_debian-10_malloctrim
         uses: actions/download-artifact@v1
         with:
-          name: ruby-pkg_2.7.0_debian-10_malloctrim
+          name: ruby-pkg_2.7.1_debian-10_malloctrim
           path: .
 
 
-      - name: Fetch ruby-pkg_2.7.0_debian-9_normal
+      - name: Fetch ruby-pkg_2.7.1_debian-9_normal
         uses: actions/download-artifact@v1
         with:
-          name: ruby-pkg_2.7.0_debian-9_normal
+          name: ruby-pkg_2.7.1_debian-9_normal
           path: .
 
 
-      - name: Fetch ruby-pkg_2.7.0_debian-9_jemalloc
+      - name: Fetch ruby-pkg_2.7.1_debian-9_jemalloc
         uses: actions/download-artifact@v1
         with:
-          name: ruby-pkg_2.7.0_debian-9_jemalloc
+          name: ruby-pkg_2.7.1_debian-9_jemalloc
           path: .
 
 
-      - name: Fetch ruby-pkg_2.7.0_debian-9_malloctrim
+      - name: Fetch ruby-pkg_2.7.1_debian-9_malloctrim
         uses: actions/download-artifact@v1
         with:
-          name: ruby-pkg_2.7.0_debian-9_malloctrim
+          name: ruby-pkg_2.7.1_debian-9_malloctrim
           path: .
 
 
-      - name: Fetch ruby-pkg_2.7.0_ubuntu-18.04_normal
+      - name: Fetch ruby-pkg_2.7.1_ubuntu-18.04_normal
         uses: actions/download-artifact@v1
         with:
-          name: ruby-pkg_2.7.0_ubuntu-18.04_normal
+          name: ruby-pkg_2.7.1_ubuntu-18.04_normal
           path: .
 
 
-      - name: Fetch ruby-pkg_2.7.0_ubuntu-18.04_jemalloc
+      - name: Fetch ruby-pkg_2.7.1_ubuntu-18.04_jemalloc
         uses: actions/download-artifact@v1
         with:
-          name: ruby-pkg_2.7.0_ubuntu-18.04_jemalloc
+          name: ruby-pkg_2.7.1_ubuntu-18.04_jemalloc
           path: .
 
 
-      - name: Fetch ruby-pkg_2.7.0_ubuntu-18.04_malloctrim
+      - name: Fetch ruby-pkg_2.7.1_ubuntu-18.04_malloctrim
         uses: actions/download-artifact@v1
         with:
-          name: ruby-pkg_2.7.0_ubuntu-18.04_malloctrim
+          name: ruby-pkg_2.7.1_ubuntu-18.04_malloctrim
           path: .
 
 
-      - name: Fetch ruby-pkg_2.6.5_centos-7_normal
+      - name: Fetch ruby-pkg_2.6.6_centos-7_normal
         uses: actions/download-artifact@v1
         with:
-          name: ruby-pkg_2.6.5_centos-7_normal
+          name: ruby-pkg_2.6.6_centos-7_normal
           path: .
 
 
-      - name: Fetch ruby-pkg_2.6.5_centos-7_jemalloc
+      - name: Fetch ruby-pkg_2.6.6_centos-7_jemalloc
         uses: actions/download-artifact@v1
         with:
-          name: ruby-pkg_2.6.5_centos-7_jemalloc
+          name: ruby-pkg_2.6.6_centos-7_jemalloc
           path: .
 
 
-      - name: Fetch ruby-pkg_2.6.5_centos-7_malloctrim
+      - name: Fetch ruby-pkg_2.6.6_centos-7_malloctrim
         uses: actions/download-artifact@v1
         with:
-          name: ruby-pkg_2.6.5_centos-7_malloctrim
+          name: ruby-pkg_2.6.6_centos-7_malloctrim
           path: .
 
 
-      - name: Fetch ruby-pkg_2.6.5_debian-10_normal
+      - name: Fetch ruby-pkg_2.6.6_debian-10_normal
         uses: actions/download-artifact@v1
         with:
-          name: ruby-pkg_2.6.5_debian-10_normal
+          name: ruby-pkg_2.6.6_debian-10_normal
           path: .
 
 
-      - name: Fetch ruby-pkg_2.6.5_debian-10_jemalloc
+      - name: Fetch ruby-pkg_2.6.6_debian-10_jemalloc
         uses: actions/download-artifact@v1
         with:
-          name: ruby-pkg_2.6.5_debian-10_jemalloc
+          name: ruby-pkg_2.6.6_debian-10_jemalloc
           path: .
 
 
-      - name: Fetch ruby-pkg_2.6.5_debian-10_malloctrim
+      - name: Fetch ruby-pkg_2.6.6_debian-10_malloctrim
         uses: actions/download-artifact@v1
         with:
-          name: ruby-pkg_2.6.5_debian-10_malloctrim
+          name: ruby-pkg_2.6.6_debian-10_malloctrim
           path: .
 
 
-      - name: Fetch ruby-pkg_2.6.5_debian-9_normal
+      - name: Fetch ruby-pkg_2.6.6_debian-9_normal
         uses: actions/download-artifact@v1
         with:
-          name: ruby-pkg_2.6.5_debian-9_normal
+          name: ruby-pkg_2.6.6_debian-9_normal
           path: .
 
 
-      - name: Fetch ruby-pkg_2.6.5_debian-9_jemalloc
+      - name: Fetch ruby-pkg_2.6.6_debian-9_jemalloc
         uses: actions/download-artifact@v1
         with:
-          name: ruby-pkg_2.6.5_debian-9_jemalloc
+          name: ruby-pkg_2.6.6_debian-9_jemalloc
           path: .
 
 
-      - name: Fetch ruby-pkg_2.6.5_debian-9_malloctrim
+      - name: Fetch ruby-pkg_2.6.6_debian-9_malloctrim
         uses: actions/download-artifact@v1
         with:
-          name: ruby-pkg_2.6.5_debian-9_malloctrim
+          name: ruby-pkg_2.6.6_debian-9_malloctrim
           path: .
 
 
-      - name: Fetch ruby-pkg_2.6.5_ubuntu-18.04_normal
+      - name: Fetch ruby-pkg_2.6.6_ubuntu-18.04_normal
         uses: actions/download-artifact@v1
         with:
-          name: ruby-pkg_2.6.5_ubuntu-18.04_normal
+          name: ruby-pkg_2.6.6_ubuntu-18.04_normal
           path: .
 
 
-      - name: Fetch ruby-pkg_2.6.5_ubuntu-18.04_jemalloc
+      - name: Fetch ruby-pkg_2.6.6_ubuntu-18.04_jemalloc
         uses: actions/download-artifact@v1
         with:
-          name: ruby-pkg_2.6.5_ubuntu-18.04_jemalloc
+          name: ruby-pkg_2.6.6_ubuntu-18.04_jemalloc
           path: .
 
 
-      - name: Fetch ruby-pkg_2.6.5_ubuntu-18.04_malloctrim
+      - name: Fetch ruby-pkg_2.6.6_ubuntu-18.04_malloctrim
         uses: actions/download-artifact@v1
         with:
-          name: ruby-pkg_2.6.5_ubuntu-18.04_malloctrim
+          name: ruby-pkg_2.6.6_ubuntu-18.04_malloctrim
           path: .
 
 
-      - name: Fetch ruby-pkg_2.5.7_centos-7_normal
+      - name: Fetch ruby-pkg_2.5.8_centos-7_normal
         uses: actions/download-artifact@v1
         with:
-          name: ruby-pkg_2.5.7_centos-7_normal
+          name: ruby-pkg_2.5.8_centos-7_normal
           path: .
 
 
-      - name: Fetch ruby-pkg_2.5.7_centos-7_jemalloc
+      - name: Fetch ruby-pkg_2.5.8_centos-7_jemalloc
         uses: actions/download-artifact@v1
         with:
-          name: ruby-pkg_2.5.7_centos-7_jemalloc
+          name: ruby-pkg_2.5.8_centos-7_jemalloc
           path: .
 
 
-      - name: Fetch ruby-pkg_2.5.7_centos-7_malloctrim
+      - name: Fetch ruby-pkg_2.5.8_centos-7_malloctrim
         uses: actions/download-artifact@v1
         with:
-          name: ruby-pkg_2.5.7_centos-7_malloctrim
+          name: ruby-pkg_2.5.8_centos-7_malloctrim
           path: .
 
 
-      - name: Fetch ruby-pkg_2.5.7_debian-10_normal
+      - name: Fetch ruby-pkg_2.5.8_debian-10_normal
         uses: actions/download-artifact@v1
         with:
-          name: ruby-pkg_2.5.7_debian-10_normal
+          name: ruby-pkg_2.5.8_debian-10_normal
           path: .
 
 
-      - name: Fetch ruby-pkg_2.5.7_debian-10_jemalloc
+      - name: Fetch ruby-pkg_2.5.8_debian-10_jemalloc
         uses: actions/download-artifact@v1
         with:
-          name: ruby-pkg_2.5.7_debian-10_jemalloc
+          name: ruby-pkg_2.5.8_debian-10_jemalloc
           path: .
 
 
-      - name: Fetch ruby-pkg_2.5.7_debian-10_malloctrim
+      - name: Fetch ruby-pkg_2.5.8_debian-10_malloctrim
         uses: actions/download-artifact@v1
         with:
-          name: ruby-pkg_2.5.7_debian-10_malloctrim
+          name: ruby-pkg_2.5.8_debian-10_malloctrim
           path: .
 
 
-      - name: Fetch ruby-pkg_2.5.7_debian-9_normal
+      - name: Fetch ruby-pkg_2.5.8_debian-9_normal
         uses: actions/download-artifact@v1
         with:
-          name: ruby-pkg_2.5.7_debian-9_normal
+          name: ruby-pkg_2.5.8_debian-9_normal
           path: .
 
 
-      - name: Fetch ruby-pkg_2.5.7_debian-9_jemalloc
+      - name: Fetch ruby-pkg_2.5.8_debian-9_jemalloc
         uses: actions/download-artifact@v1
         with:
-          name: ruby-pkg_2.5.7_debian-9_jemalloc
+          name: ruby-pkg_2.5.8_debian-9_jemalloc
           path: .
 
 
-      - name: Fetch ruby-pkg_2.5.7_debian-9_malloctrim
+      - name: Fetch ruby-pkg_2.5.8_debian-9_malloctrim
         uses: actions/download-artifact@v1
         with:
-          name: ruby-pkg_2.5.7_debian-9_malloctrim
+          name: ruby-pkg_2.5.8_debian-9_malloctrim
           path: .
 
 
-      - name: Fetch ruby-pkg_2.5.7_ubuntu-18.04_normal
+      - name: Fetch ruby-pkg_2.5.8_ubuntu-18.04_normal
         uses: actions/download-artifact@v1
         with:
-          name: ruby-pkg_2.5.7_ubuntu-18.04_normal
+          name: ruby-pkg_2.5.8_ubuntu-18.04_normal
           path: .
 
 
-      - name: Fetch ruby-pkg_2.5.7_ubuntu-18.04_jemalloc
+      - name: Fetch ruby-pkg_2.5.8_ubuntu-18.04_jemalloc
         uses: actions/download-artifact@v1
         with:
-          name: ruby-pkg_2.5.7_ubuntu-18.04_jemalloc
+          name: ruby-pkg_2.5.8_ubuntu-18.04_jemalloc
           path: .
 
 
-      - name: Fetch ruby-pkg_2.5.7_ubuntu-18.04_malloctrim
+      - name: Fetch ruby-pkg_2.5.8_ubuntu-18.04_malloctrim
         uses: actions/download-artifact@v1
         with:
-          name: ruby-pkg_2.5.7_ubuntu-18.04_malloctrim
+          name: ruby-pkg_2.5.8_ubuntu-18.04_malloctrim
           path: .
 
 
@@ -2350,26 +2350,26 @@ jobs:
       matrix:
         ruby_package_version: 
         - minor_version: 2.7
-          full_version: 2.7.0
-          package_revision: 0
+          full_version: 2.7.1
+          package_revision: 1
           id: 2.7
         - minor_version: 2.6
-          full_version: 2.6.5
-          package_revision: 4
+          full_version: 2.6.6
+          package_revision: 5
           id: 2.6
         - minor_version: 2.5
-          full_version: 2.5.7
-          package_revision: 3
+          full_version: 2.5.8
+          package_revision: 4
           id: 2.5
-        - full_version: 2.7.0
+        - full_version: 2.7.1
           package_revision: 0
-          id: 2.7.0
-        - full_version: 2.6.5
+          id: 2.7.1
+        - full_version: 2.6.6
           package_revision: 1
-          id: 2.6.5
-        - full_version: 2.5.7
+          id: 2.6.6
+        - full_version: 2.5.8
           package_revision: 1
-          id: 2.5.7
+          id: 2.5.8
         variant: 
         - name: normal
           package_suffix: ''
@@ -2404,26 +2404,26 @@ jobs:
       matrix:
         ruby_package_version: 
         - minor_version: 2.7
-          full_version: 2.7.0
-          package_revision: 0
+          full_version: 2.7.1
+          package_revision: 1
           id: 2.7
         - minor_version: 2.6
-          full_version: 2.6.5
-          package_revision: 4
+          full_version: 2.6.6
+          package_revision: 5
           id: 2.6
         - minor_version: 2.5
-          full_version: 2.5.7
-          package_revision: 3
+          full_version: 2.5.8
+          package_revision: 4
           id: 2.5
-        - full_version: 2.7.0
+        - full_version: 2.7.1
           package_revision: 0
-          id: 2.7.0
-        - full_version: 2.6.5
+          id: 2.7.1
+        - full_version: 2.6.6
           package_revision: 1
-          id: 2.6.5
-        - full_version: 2.5.7
+          id: 2.6.6
+        - full_version: 2.5.8
           package_revision: 1
-          id: 2.5.7
+          id: 2.5.8
         variant: 
         - name: normal
           package_suffix: ''
@@ -2458,26 +2458,26 @@ jobs:
       matrix:
         ruby_package_version: 
         - minor_version: 2.7
-          full_version: 2.7.0
-          package_revision: 0
+          full_version: 2.7.1
+          package_revision: 1
           id: 2.7
         - minor_version: 2.6
-          full_version: 2.6.5
-          package_revision: 4
+          full_version: 2.6.6
+          package_revision: 5
           id: 2.6
         - minor_version: 2.5
-          full_version: 2.5.7
-          package_revision: 3
+          full_version: 2.5.8
+          package_revision: 4
           id: 2.5
-        - full_version: 2.7.0
+        - full_version: 2.7.1
           package_revision: 0
-          id: 2.7.0
-        - full_version: 2.6.5
+          id: 2.7.1
+        - full_version: 2.6.6
           package_revision: 1
-          id: 2.6.5
-        - full_version: 2.5.7
+          id: 2.6.6
+        - full_version: 2.5.8
           package_revision: 1
-          id: 2.5.7
+          id: 2.5.8
         variant: 
         - name: normal
           package_suffix: ''
@@ -2512,26 +2512,26 @@ jobs:
       matrix:
         ruby_package_version: 
         - minor_version: 2.7
-          full_version: 2.7.0
-          package_revision: 0
+          full_version: 2.7.1
+          package_revision: 1
           id: 2.7
         - minor_version: 2.6
-          full_version: 2.6.5
-          package_revision: 4
+          full_version: 2.6.6
+          package_revision: 5
           id: 2.6
         - minor_version: 2.5
-          full_version: 2.5.7
-          package_revision: 3
+          full_version: 2.5.8
+          package_revision: 4
           id: 2.5
-        - full_version: 2.7.0
+        - full_version: 2.7.1
           package_revision: 0
-          id: 2.7.0
-        - full_version: 2.6.5
+          id: 2.7.1
+        - full_version: 2.6.6
           package_revision: 1
-          id: 2.6.5
-        - full_version: 2.5.7
+          id: 2.6.6
+        - full_version: 2.5.8
           package_revision: 1
-          id: 2.5.7
+          id: 2.5.8
         variant: 
         - name: normal
           package_suffix: ''
