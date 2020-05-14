@@ -79,6 +79,8 @@ Distribution: $ENVIRONMENT" \
     --url "https://github.com/fullstaq-labs/fullstaq-ruby-server-edition" \
     --provides fullstaq-ruby \
     --depends "$DEPS" \
+    --rpm-tag '%define _build_id_links none' \
+    --rpm-tag '%undefine _missing_build_ids_terminate_build' \
     usr
 set +x
 run cp *.rpm "$OUTPUT_PATH"

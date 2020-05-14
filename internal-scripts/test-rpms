@@ -241,6 +241,17 @@ else
     exit 1
 fi
 
+# https://github.com/fullstaq-labs/fullstaq-ruby-server-edition/issues/44
+echo -n "Checking whether package contains no build-id files... "
+if rpm -ql "fullstaq-ruby-$RUBY_PACKAGE_VERSION" | grep -q build-id; then
+    echo error
+    echo "The following build-id files were found:"
+    rpm -ql "fullstaq-ruby-$RUBY_PACKAGE_VERSION" | grep build-id | awk '{ print " - " $0 }'
+    exit 1
+else
+    echo ok
+fi
+
 echo
 
 
