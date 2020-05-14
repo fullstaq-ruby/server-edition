@@ -188,6 +188,14 @@ if [[ "$VARIANT" = jemalloc ]]; then
         echo no
         exit 1
     fi
+
+    echo -n "Checking whether jemalloc.so is a symlink... "
+    if [[ -h "/usr/lib/rbenv/versions/$RUBY_PACKAGE_VERSION/lib/libjemalloc.so" ]]; then
+        echo yes
+    else
+        echo no
+        exit 1
+    fi
 else
     echo -n "Checking whether Jemalloc library does not exist... "
     if [[ ! -e "/usr/lib/rbenv/versions/$RUBY_PACKAGE_VERSION/lib/libjemalloc.so" ]]; then

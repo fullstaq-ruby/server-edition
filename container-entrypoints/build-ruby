@@ -118,7 +118,7 @@ ABI_VERSION=$(ls "$DESTDIR/$INSTALL_PREFIX/lib/ruby/site_ruby")
 
 if [[ "$VARIANT" = jemalloc ]]; then
     run cp -R "$JEMALLOC_DIR"/include/jemalloc "$DESTDIR/$INSTALL_PREFIX/include/ruby-$ABI_VERSION"/
-    run cp "$JEMALLOC_DIR"/lib/libjemalloc* "$DESTDIR/$INSTALL_PREFIX"/lib/
+    run cp -d "$JEMALLOC_DIR"/lib/libjemalloc* "$DESTDIR/$INSTALL_PREFIX"/lib/
 fi
 
 run rm -f "$DESTDIR/$INSTALL_PREFIX"/lib/*.a
