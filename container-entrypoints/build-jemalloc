@@ -35,6 +35,7 @@ header "Extracting Jemalloc tarball..."
 run mkdir "$SRC_CONTAINER_DIR"
 run tar -xjf "$INPUT_PATH" -C "$SRC_CONTAINER_DIR"
 
+# shellcheck disable=SC2012
 subdir="$(ls -1 "$SRC_CONTAINER_DIR" | head -n 1)"
 echo "+ cd $SRC_CONTAINER_DIR/$subdir"
 cd "$SRC_CONTAINER_DIR/$subdir"
