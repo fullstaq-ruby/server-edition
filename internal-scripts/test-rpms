@@ -218,6 +218,21 @@ else
     fi
 fi
 
+echo -n "Checking whether package contains no static libraries... "
+shopt -s nullglob
+static_libs=("/usr/lib/rbenv/versions/$RUBY_PACKAGE_VERSION/lib"/*.a)
+shopt -u nullglob
+if [[ "${#static_libs[@]}" -eq 0 ]]; then
+    echo ok
+else
+    echo error
+    echo "The following static libraries were found:"
+    for F in "${static_libs[@]}"; do
+        echo " - $F"
+    done
+    exit 1
+fi
+
 echo
 
 

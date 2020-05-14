@@ -121,6 +121,8 @@ if [[ "$VARIANT" = jemalloc ]]; then
     run cp "$JEMALLOC_DIR"/lib/libjemalloc* "$DESTDIR/$INSTALL_PREFIX"/lib/
 fi
 
+run rm -f "$DESTDIR/$INSTALL_PREFIX"/lib/*.a
+
 echo
 
 

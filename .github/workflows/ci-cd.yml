@@ -436,24 +436,24 @@ jobs:
         ruby_package_version: 
         - minor_version: 2.7
           full_version: 2.7.1
-          package_revision: 1
+          package_revision: 2
           id: 2.7
         - minor_version: 2.6
           full_version: 2.6.6
-          package_revision: 5
+          package_revision: 6
           id: 2.6
         - minor_version: 2.5
           full_version: 2.5.8
-          package_revision: 4
+          package_revision: 5
           id: 2.5
         - full_version: 2.7.1
-          package_revision: 0
+          package_revision: 1
           id: 2.7.1
         - full_version: 2.6.6
-          package_revision: 1
+          package_revision: 2
           id: 2.6.6
         - full_version: 2.5.8
-          package_revision: 1
+          package_revision: 2
           id: 2.5.8
         variant: 
         - name: normal
@@ -540,24 +540,24 @@ jobs:
         ruby_package_version: 
         - minor_version: 2.7
           full_version: 2.7.1
-          package_revision: 1
+          package_revision: 2
           id: 2.7
         - minor_version: 2.6
           full_version: 2.6.6
-          package_revision: 5
+          package_revision: 6
           id: 2.6
         - minor_version: 2.5
           full_version: 2.5.8
-          package_revision: 4
+          package_revision: 5
           id: 2.5
         - full_version: 2.7.1
-          package_revision: 0
+          package_revision: 1
           id: 2.7.1
         - full_version: 2.6.6
-          package_revision: 1
+          package_revision: 2
           id: 2.6.6
         - full_version: 2.5.8
-          package_revision: 1
+          package_revision: 2
           id: 2.5.8
         variant: 
         - name: normal
@@ -644,24 +644,24 @@ jobs:
         ruby_package_version: 
         - minor_version: 2.7
           full_version: 2.7.1
-          package_revision: 1
+          package_revision: 2
           id: 2.7
         - minor_version: 2.6
           full_version: 2.6.6
-          package_revision: 5
+          package_revision: 6
           id: 2.6
         - minor_version: 2.5
           full_version: 2.5.8
-          package_revision: 4
+          package_revision: 5
           id: 2.5
         - full_version: 2.7.1
-          package_revision: 0
+          package_revision: 1
           id: 2.7.1
         - full_version: 2.6.6
-          package_revision: 1
+          package_revision: 2
           id: 2.6.6
         - full_version: 2.5.8
-          package_revision: 1
+          package_revision: 2
           id: 2.5.8
         variant: 
         - name: normal
@@ -748,24 +748,24 @@ jobs:
         ruby_package_version: 
         - minor_version: 2.7
           full_version: 2.7.1
-          package_revision: 1
+          package_revision: 2
           id: 2.7
         - minor_version: 2.6
           full_version: 2.6.6
-          package_revision: 5
+          package_revision: 6
           id: 2.6
         - minor_version: 2.5
           full_version: 2.5.8
-          package_revision: 4
+          package_revision: 5
           id: 2.5
         - full_version: 2.7.1
-          package_revision: 0
+          package_revision: 1
           id: 2.7.1
         - full_version: 2.6.6
-          package_revision: 1
+          package_revision: 2
           id: 2.6.6
         - full_version: 2.5.8
-          package_revision: 1
+          package_revision: 2
           id: 2.5.8
         variant: 
         - name: normal
@@ -1553,24 +1553,24 @@ jobs:
         ruby_package_version: 
         - minor_version: 2.7
           full_version: 2.7.1
-          package_revision: 1
+          package_revision: 2
           id: 2.7
         - minor_version: 2.6
           full_version: 2.6.6
-          package_revision: 5
+          package_revision: 6
           id: 2.6
         - minor_version: 2.5
           full_version: 2.5.8
-          package_revision: 4
+          package_revision: 5
           id: 2.5
         - full_version: 2.7.1
-          package_revision: 0
+          package_revision: 1
           id: 2.7.1
         - full_version: 2.6.6
-          package_revision: 1
+          package_revision: 2
           id: 2.6.6
         - full_version: 2.5.8
-          package_revision: 1
+          package_revision: 2
           id: 2.5.8
         variant: 
         - name: normal
@@ -1604,24 +1604,24 @@ jobs:
         ruby_package_version: 
         - minor_version: 2.7
           full_version: 2.7.1
-          package_revision: 1
+          package_revision: 2
           id: 2.7
         - minor_version: 2.6
           full_version: 2.6.6
-          package_revision: 5
+          package_revision: 6
           id: 2.6
         - minor_version: 2.5
           full_version: 2.5.8
-          package_revision: 4
+          package_revision: 5
           id: 2.5
         - full_version: 2.7.1
-          package_revision: 0
+          package_revision: 1
           id: 2.7.1
         - full_version: 2.6.6
-          package_revision: 1
+          package_revision: 2
           id: 2.6.6
         - full_version: 2.5.8
-          package_revision: 1
+          package_revision: 2
           id: 2.5.8
         variant: 
         - name: normal
@@ -1655,24 +1655,24 @@ jobs:
         ruby_package_version: 
         - minor_version: 2.7
           full_version: 2.7.1
-          package_revision: 1
+          package_revision: 2
           id: 2.7
         - minor_version: 2.6
           full_version: 2.6.6
-          package_revision: 5
+          package_revision: 6
           id: 2.6
         - minor_version: 2.5
           full_version: 2.5.8
-          package_revision: 4
+          package_revision: 5
           id: 2.5
         - full_version: 2.7.1
-          package_revision: 0
+          package_revision: 1
           id: 2.7.1
         - full_version: 2.6.6
-          package_revision: 1
+          package_revision: 2
           id: 2.6.6
         - full_version: 2.5.8
-          package_revision: 1
+          package_revision: 2
           id: 2.5.8
         variant: 
         - name: normal
@@ -1706,24 +1706,24 @@ jobs:
         ruby_package_version: 
         - minor_version: 2.7
           full_version: 2.7.1
-          package_revision: 1
+          package_revision: 2
           id: 2.7
         - minor_version: 2.6
           full_version: 2.6.6
-          package_revision: 5
+          package_revision: 6
           id: 2.6
         - minor_version: 2.5
           full_version: 2.5.8
-          package_revision: 4
+          package_revision: 5
           id: 2.5
         - full_version: 2.7.1
-          package_revision: 0
+          package_revision: 1
           id: 2.7.1
         - full_version: 2.6.6
-          package_revision: 1
+          package_revision: 2
           id: 2.6.6
         - full_version: 2.5.8
-          package_revision: 1
+          package_revision: 2
           id: 2.5.8
         variant: 
         - name: normal
@@ -2355,24 +2355,24 @@ jobs:
         ruby_package_version: 
         - minor_version: 2.7
           full_version: 2.7.1
-          package_revision: 1
+          package_revision: 2
           id: 2.7
         - minor_version: 2.6
           full_version: 2.6.6
-          package_revision: 5
+          package_revision: 6
           id: 2.6
         - minor_version: 2.5
           full_version: 2.5.8
-          package_revision: 4
+          package_revision: 5
           id: 2.5
         - full_version: 2.7.1
-          package_revision: 0
+          package_revision: 1
           id: 2.7.1
         - full_version: 2.6.6
-          package_revision: 1
+          package_revision: 2
           id: 2.6.6
         - full_version: 2.5.8
-          package_revision: 1
+          package_revision: 2
           id: 2.5.8
         variant: 
         - name: normal
@@ -2409,24 +2409,24 @@ jobs:
         ruby_package_version: 
         - minor_version: 2.7
           full_version: 2.7.1
-          package_revision: 1
+          package_revision: 2
           id: 2.7
         - minor_version: 2.6
           full_version: 2.6.6
-          package_revision: 5
+          package_revision: 6
           id: 2.6
         - minor_version: 2.5
           full_version: 2.5.8
-          package_revision: 4
+          package_revision: 5
           id: 2.5
         - full_version: 2.7.1
-          package_revision: 0
+          package_revision: 1
           id: 2.7.1
         - full_version: 2.6.6
-          package_revision: 1
+          package_revision: 2
           id: 2.6.6
         - full_version: 2.5.8
-          package_revision: 1
+          package_revision: 2
           id: 2.5.8
         variant: 
         - name: normal
@@ -2463,24 +2463,24 @@ jobs:
         ruby_package_version: 
         - minor_version: 2.7
           full_version: 2.7.1
-          package_revision: 1
+          package_revision: 2
           id: 2.7
         - minor_version: 2.6
           full_version: 2.6.6
-          package_revision: 5
+          package_revision: 6
           id: 2.6
         - minor_version: 2.5
           full_version: 2.5.8
-          package_revision: 4
+          package_revision: 5
           id: 2.5
         - full_version: 2.7.1
-          package_revision: 0
+          package_revision: 1
           id: 2.7.1
         - full_version: 2.6.6
-          package_revision: 1
+          package_revision: 2
           id: 2.6.6
         - full_version: 2.5.8
-          package_revision: 1
+          package_revision: 2
           id: 2.5.8
         variant: 
         - name: normal
@@ -2517,24 +2517,24 @@ jobs:
         ruby_package_version: 
         - minor_version: 2.7
           full_version: 2.7.1
-          package_revision: 1
+          package_revision: 2
           id: 2.7
         - minor_version: 2.6
           full_version: 2.6.6
-          package_revision: 5
+          package_revision: 6
           id: 2.6
         - minor_version: 2.5
           full_version: 2.5.8
-          package_revision: 4
+          package_revision: 5
           id: 2.5
         - full_version: 2.7.1
-          package_revision: 0
+          package_revision: 1
           id: 2.7.1
         - full_version: 2.6.6
-          package_revision: 1
+          package_revision: 2
           id: 2.6.6
         - full_version: 2.5.8
-          package_revision: 1
+          package_revision: 2
           id: 2.5.8
         variant: 
         - name: normal
