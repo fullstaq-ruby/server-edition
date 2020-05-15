@@ -6,9 +6,11 @@ on:
   push:
     paths-ignore:
       - '*.md'
+      - '.github/**/*.md'
   pull_request:
     paths-ignore:
       - '*.md'
+      - '.github/**/*.md'
 
 env:
   BINTRAY_ORG: fullstaq
