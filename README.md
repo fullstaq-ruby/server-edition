@@ -635,7 +635,10 @@ Restart your application server after you've made a change, for example `sudo sy
 
 ### Capistrano integration
 
-If you use Capistrano to deploy your app, then you should use the [capistrano-rbenv](https://github.com/capistrano/rbenv) plugin. In your deploy/config.rb make sure you set `rbenv_ruby` to the Ruby version to you want, possibly with a [variant suffix](#about-variants). Examples:
+If you use Capistrano to deploy your app, then you should use the [capistrano-rbenv](https://github.com/capistrano/rbenv) plugin. In order to work with our slightly modified version of Rbenv, you need to make the following changes in you deploy/config.rb
+
+First, make sure you set `rbenv_ruby` to the Ruby version to you want, possibly with a [variant suffix](#about-variants). 
+You also have to tell the plugin to look for the ruby versions in a different folder and tweak a little bit the `rbenv_prefix` setting:
 
 ~~~ruby
 # Use Ruby 2.6 (latest tiny version), normal variant
@@ -646,6 +649,10 @@ set :rbenv_ruby, '2.6.3'
 
 # Use Ruby 2.6.3, jemalloc variant
 set :rbenv_ruby, '2.6.3-jemalloc'
+
+set :rbenv_ruby_dir, '/usr/lib/fullstaq-ruby/versions'
+set :rbenv_prefix, "RBENV_ROOT=#{fetch(:rbenv_path)} RBENV_VERSION=#{fetch(:rbenv_ruby)} /usr/bin/rbenv exec"
+
 ~~~
 
 ## FAQ
