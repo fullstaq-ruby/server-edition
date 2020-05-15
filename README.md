@@ -684,6 +684,8 @@ See: [About variants](#about-variants).
 
 ### Why a new distribution? Why not contribute to Ruby core?
 
+> _Main article: [What is Fullstaq Ruby's signifiance to the community, and its long-term project vision?](https://www.joyfulbikeshedding.com/blog/2020-05-15-why-fullstaq-ruby.html)_
+
 The Ruby core team is reluctant or slow to incorporate certain changes. And for a good reason: whether a change is an _improvement_ depends on the perspective. The Ruby core team has to care about a wide range of users and use cases. Incorporating Jemalloc or `malloc_trim` is not necessarily an improvement for *all* their users.
 
 While understandable, that attitude does not help users for which those changes *are* actual improvement. Fullstaq Ruby's goal is to help people who use Ruby in a server context, in production environments, on x86-64 Linux. For example we don't care about development environments like macOS, or Raspberry PIs. This allows us to make less conservative choices than the Ruby core team.
@@ -696,9 +698,13 @@ In short: Fullstaq Ruby's goal is to bring value to server-production users as s
 
 ### Will Fullstaq Ruby become paid in the future?
 
+> _Main article: [What is Fullstaq Ruby's signifiance to the community, and its long-term project vision?](https://www.joyfulbikeshedding.com/blog/2020-05-15-why-fullstaq-ruby.html)_
+
 There will be no paid version. Fullstaq Ruby is fully open source. It is also intended to be a community project where anyone can contribute. There are no monetization plans.
 
 ### I am wary of vendor lock-in or that I will become dependent on a specific party for supplying packages. What is Fullstaq Ruby's take on this?
+
+> _Main article: [What is Fullstaq Ruby's signifiance to the community, and its long-term project vision?](https://www.joyfulbikeshedding.com/blog/2020-05-15-why-fullstaq-ruby.html)_
 
 Vendor lock-in is a valid concern that many of us have. It is something we thought about from the beginning and that are *are* addressing.
 
