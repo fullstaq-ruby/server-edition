@@ -428,7 +428,7 @@ sudo yum install fullstaq-ruby-2.6.3
 **Next steps:**
 
  - [Deactivate Git-based Rbenv](#deactivate-git-based-rbenv)
- - [Activate Rbenv shell integration](#activate-rbenv-shell-integration)
+ - [Activate Rbenv shell integration (optional)](#activate-rbenv-shell-integration-optional)
  - [Usage after installation](#usage-after-installation)
 
 ### Debian/Ubuntu
@@ -511,7 +511,7 @@ sudo apt install fullstaq-ruby-2.6.3
 **Next steps:**
 
  - [Deactivate Git-based Rbenv](#deactivate-git-based-rbenv)
- - [Activate Rbenv shell integration](#activate-rbenv-shell-integration)
+ - [Activate Rbenv shell integration (optional)](#activate-rbenv-shell-integration-optional)
  - [Usage after installation](#usage-after-installation)
 
 ### Deactivate Git-based Rbenv
