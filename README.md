@@ -464,6 +464,10 @@ sudo apt-key add fullstaq-ruby.asc
 sudo apt update
 ~~~
 
+Then install `fullstaq-ruby-common`:
+
+    sudo apt install fullstaq-ruby-common
+
 Ruby packages are now available as `fullstaq-ruby-<VERSION>`:
 
     $ sudo apt search fullstaq-ruby
