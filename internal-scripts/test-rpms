@@ -36,8 +36,26 @@ enabled=1
 gpgkey=file:///system/fullstaq-ruby.asc
 sslverify=1
 EOF
+
+    # Import Fullstaq Ruby repo's GPG now so that 'yum info' doesn't
+    # ask whether we want to import it.
+    # https://unix.stackexchange.com/a/395224
+    set +e
     run yum -q makecache -y --disablerepo='*' --enablerepo=fullstaq-ruby
-    RPM_INFO=$(yum info "fullstaq-ruby-$RUBY_PACKAGE_VERSION")
+    CODE=$?
+    set -e
+
+    # Check whether 'yum makecache' succeeded.
+    # But we don't do this on RHEL/CentOS 8 because of a weird bug:
+    # When sudo is installed and no TTY is available, 'yum makecache'
+    # exits with an error code and no error message, despite suceeding
+    # in importing the GPG key. We ignore this situation.
+    # https://github.com/fullstaq-labs/fullstaq-ruby-server-edition/pull/48#issuecomment-635285292
+    if [[ ! -e /usr/bin/dnf && $CODE -ne 0 ]]; then
+        exit $CODE
+    fi
+
+    RPM_INFO=$(yum info -y "fullstaq-ruby-$RUBY_PACKAGE_VERSION")
     RUBY_PACKAGE_VERSION_WITHOUT_VARIANT_SUFFIX=$(grep 'Package version without variant suffix:' <<<"$RPM_INFO" | perl -pe 's/ *:.*?: *//')
     VARIANT=$(grep 'Variant:' <<<"$RPM_INFO" | perl -pe 's/ *:.*?: *//')
 fi
