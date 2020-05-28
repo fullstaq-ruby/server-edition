@@ -99,6 +99,9 @@ jobs:
           - name: fullstaq/ruby-build-env-centos-7
             id: centos-7
             tag: '3'
+          - name: fullstaq/ruby-build-env-centos-8
+            id: centos-8
+            tag: '1'
           - name: fullstaq/ruby-build-env-debian-10
             id: debian-10
             tag: '1'
@@ -230,6 +233,8 @@ jobs:
       matrix:
         distribution: 
           - name: centos-7
+            package_format: RPM
+          - name: centos-8
             package_format: RPM
           - name: debian-10
             package_format: DEB
@@ -527,6 +532,110 @@ jobs:
         uses: actions/upload-artifact@v1
         with:
           name: ruby-pkg_${{ matrix.ruby_package_version.id }}_centos-7_${{ matrix.variant.name }}
+          path: output
+
+
+  build_ruby_packages_centos_8:
+    name: Build Ruby packages [centos-8]
+    needs:
+      - download_ruby_sources
+      - build_jemalloc_binaries
+      - build_docker_images
+    runs-on: ubuntu-18.04
+    strategy:
+      matrix:
+        ruby_package_version: 
+        - minor_version: 2.7
+          full_version: 2.7.1
+          package_revision: 2
+          id: 2.7
+        - minor_version: 2.6
+          full_version: 2.6.6
+          package_revision: 6
+          id: 2.6
+        - minor_version: 2.5
+          full_version: 2.5.8
+          package_revision: 5
+          id: 2.5
+        - full_version: 2.7.1
+          package_revision: 1
+          id: 2.7.1
+        - full_version: 2.6.6
+          package_revision: 2
+          id: 2.6.6
+        - full_version: 2.5.8
+          package_revision: 2
+          id: 2.5.8
+        variant: 
+        - name: normal
+          package_suffix: ''
+        - name: jemalloc
+          package_suffix: "-jemalloc"
+        - name: malloctrim
+          package_suffix: "-malloctrim"
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Fetch Ruby source
+        uses: actions/download-artifact@v1
+        with:
+          name: ruby-src-${{ matrix.ruby_package_version.full_version }}
+          path: .
+      - name: Fetch Jemalloc binary
+        uses: actions/download-artifact@v1
+        with:
+          name: jemalloc-bin-centos-8
+          path: .
+        if: matrix.variant.name == 'jemalloc'
+      - name: Fetch cache
+        uses: actions/cache@v1
+        with:
+          path: cache
+          key: ruby-bin-${{ matrix.ruby_package_version.id }}-centos-8-${{ matrix.variant.name }}
+      - name: Create cache dir
+        run: mkdir -p cache
+
+      - name: Determine which Docker image to use for building
+        uses: actions/download-artifact@v1
+        with:
+          name: docker-image-info-centos-8
+          path: .
+      - name: Load build image info
+        id: load_build_image_info
+        run: ./internal-scripts/ci-cd/load-docker-image-info.sh
+      - name: Build binaries
+        run: ./internal-scripts/ci-cd/build-ruby-packages/build-binaries.sh
+        env:
+          BUILD_IMAGE_NAME: ${{ steps.load_build_image_info.outputs.image-name }}
+          BUILD_IMAGE_TAG: ${{ steps.load_build_image_info.outputs.image-tag }}
+          ENVIRONMENT_NAME: "centos-8"
+          VARIANT_NAME: ${{ matrix.variant.name }}
+          RUBY_PACKAGE_VERSION_ID: ${{ matrix.ruby_package_version.id }}
+
+      - name: Determine which Docker image to use for packaging
+        uses: actions/download-artifact@v1
+        with:
+          name: docker-image-info-utility
+          path: .
+      - name: Load utility image info
+        id: load_utility_image_info
+        run: ./internal-scripts/ci-cd/load-docker-image-info.sh
+      - name: Build package
+        run: ./internal-scripts/ci-cd/build-ruby-packages/build-package.sh
+        env:
+          UTILITY_IMAGE_NAME: ${{ steps.load_utility_image_info.outputs.image-name }}
+          UTILITY_IMAGE_TAG: ${{ steps.load_utility_image_info.outputs.image-tag }}
+          DISTRIBUTION_NAME: "centos-8"
+          VARIANT_NAME: ${{ matrix.variant.name }}
+          VARIANT_PACKAGE_SUFFIX: ${{ matrix.variant.package_suffix }}
+          PACKAGE_FORMAT: "RPM"
+          RUBY_PACKAGE_VERSION_ID: ${{ matrix.ruby_package_version.id }}
+          RUBY_PACKAGE_REVISION: ${{ matrix.ruby_package_version.package_revision }}
+
+      - name: Archive package artifact
+        uses: actions/upload-artifact@v1
+        with:
+          name: ruby-pkg_${{ matrix.ruby_package_version.id }}_centos-8_${{ matrix.variant.name }}
           path: output
 
 
@@ -872,6 +981,8 @@ jobs:
 
       - build_ruby_packages_centos_7
 
+      - build_ruby_packages_centos_8
+
     runs-on: ubuntu-18.04
     steps:
       - uses: actions/checkout@v2
@@ -1000,6 +1111,27 @@ jobs:
           path: ruby-pkgs
 
 
+      - name: Fetch ruby-pkg_2.7_centos-8_normal
+        uses: actions/download-artifact@v1
+        with:
+          name: ruby-pkg_2.7_centos-8_normal
+          path: ruby-pkgs
+
+
+      - name: Fetch ruby-pkg_2.7_centos-8_jemalloc
+        uses: actions/download-artifact@v1
+        with:
+          name: ruby-pkg_2.7_centos-8_jemalloc
+          path: ruby-pkgs
+
+
+      - name: Fetch ruby-pkg_2.7_centos-8_malloctrim
+        uses: actions/download-artifact@v1
+        with:
+          name: ruby-pkg_2.7_centos-8_malloctrim
+          path: ruby-pkgs
+
+
       - name: Fetch ruby-pkg_2.7_debian-10_normal
         uses: actions/download-artifact@v1
         with:
@@ -1081,6 +1213,27 @@ jobs:
         uses: actions/download-artifact@v1
         with:
           name: ruby-pkg_2.6_centos-7_malloctrim
+          path: ruby-pkgs
+
+
+      - name: Fetch ruby-pkg_2.6_centos-8_normal
+        uses: actions/download-artifact@v1
+        with:
+          name: ruby-pkg_2.6_centos-8_normal
+          path: ruby-pkgs
+
+
+      - name: Fetch ruby-pkg_2.6_centos-8_jemalloc
+        uses: actions/download-artifact@v1
+        with:
+          name: ruby-pkg_2.6_centos-8_jemalloc
+          path: ruby-pkgs
+
+
+      - name: Fetch ruby-pkg_2.6_centos-8_malloctrim
+        uses: actions/download-artifact@v1
+        with:
+          name: ruby-pkg_2.6_centos-8_malloctrim
           path: ruby-pkgs
 
 
@@ -1168,6 +1321,27 @@ jobs:
           path: ruby-pkgs
 
 
+      - name: Fetch ruby-pkg_2.5_centos-8_normal
+        uses: actions/download-artifact@v1
+        with:
+          name: ruby-pkg_2.5_centos-8_normal
+          path: ruby-pkgs
+
+
+      - name: Fetch ruby-pkg_2.5_centos-8_jemalloc
+        uses: actions/download-artifact@v1
+        with:
+          name: ruby-pkg_2.5_centos-8_jemalloc
+          path: ruby-pkgs
+
+
+      - name: Fetch ruby-pkg_2.5_centos-8_malloctrim
+        uses: actions/download-artifact@v1
+        with:
+          name: ruby-pkg_2.5_centos-8_malloctrim
+          path: ruby-pkgs
+
+
       - name: Fetch ruby-pkg_2.5_debian-10_normal
         uses: actions/download-artifact@v1
         with:
@@ -1249,6 +1423,27 @@ jobs:
         uses: actions/download-artifact@v1
         with:
           name: ruby-pkg_2.7.1_centos-7_malloctrim
+          path: ruby-pkgs
+
+
+      - name: Fetch ruby-pkg_2.7.1_centos-8_normal
+        uses: actions/download-artifact@v1
+        with:
+          name: ruby-pkg_2.7.1_centos-8_normal
+          path: ruby-pkgs
+
+
+      - name: Fetch ruby-pkg_2.7.1_centos-8_jemalloc
+        uses: actions/download-artifact@v1
+        with:
+          name: ruby-pkg_2.7.1_centos-8_jemalloc
+          path: ruby-pkgs
+
+
+      - name: Fetch ruby-pkg_2.7.1_centos-8_malloctrim
+        uses: actions/download-artifact@v1
+        with:
+          name: ruby-pkg_2.7.1_centos-8_malloctrim
           path: ruby-pkgs
 
 
@@ -1336,6 +1531,27 @@ jobs:
           path: ruby-pkgs
 
 
+      - name: Fetch ruby-pkg_2.6.6_centos-8_normal
+        uses: actions/download-artifact@v1
+        with:
+          name: ruby-pkg_2.6.6_centos-8_normal
+          path: ruby-pkgs
+
+
+      - name: Fetch ruby-pkg_2.6.6_centos-8_jemalloc
+        uses: actions/download-artifact@v1
+        with:
+          name: ruby-pkg_2.6.6_centos-8_jemalloc
+          path: ruby-pkgs
+
+
+      - name: Fetch ruby-pkg_2.6.6_centos-8_malloctrim
+        uses: actions/download-artifact@v1
+        with:
+          name: ruby-pkg_2.6.6_centos-8_malloctrim
+          path: ruby-pkgs
+
+
       - name: Fetch ruby-pkg_2.6.6_debian-10_normal
         uses: actions/download-artifact@v1
         with:
@@ -1417,6 +1633,27 @@ jobs:
         uses: actions/download-artifact@v1
         with:
           name: ruby-pkg_2.5.8_centos-7_malloctrim
+          path: ruby-pkgs
+
+
+      - name: Fetch ruby-pkg_2.5.8_centos-8_normal
+        uses: actions/download-artifact@v1
+        with:
+          name: ruby-pkg_2.5.8_centos-8_normal
+          path: ruby-pkgs
+
+
+      - name: Fetch ruby-pkg_2.5.8_centos-8_jemalloc
+        uses: actions/download-artifact@v1
+        with:
+          name: ruby-pkg_2.5.8_centos-8_jemalloc
+          path: ruby-pkgs
+
+
+      - name: Fetch ruby-pkg_2.5.8_centos-8_malloctrim
+        uses: actions/download-artifact@v1
+        with:
+          name: ruby-pkg_2.5.8_centos-8_malloctrim
           path: ruby-pkgs
 
 
@@ -1596,6 +1833,57 @@ jobs:
           YUM_REPO_URL: https://dl.bintray.com/fullstaq/fullstaq-ruby-yum-ci-${{ github.run_number }}
 
 
+  test_packages_against_test_centos_8:
+    name: Test Ruby packages against test repos [centos-8]
+    needs: commit_published_packages_test
+    runs-on: ubuntu-18.04
+    strategy:
+      max-parallel: 4 # avoid overloading Bintray
+      matrix:
+        ruby_package_version: 
+        - minor_version: 2.7
+          full_version: 2.7.1
+          package_revision: 2
+          id: 2.7
+        - minor_version: 2.6
+          full_version: 2.6.6
+          package_revision: 6
+          id: 2.6
+        - minor_version: 2.5
+          full_version: 2.5.8
+          package_revision: 5
+          id: 2.5
+        - full_version: 2.7.1
+          package_revision: 1
+          id: 2.7.1
+        - full_version: 2.6.6
+          package_revision: 2
+          id: 2.6.6
+        - full_version: 2.5.8
+          package_revision: 2
+          id: 2.5.8
+        variant: 
+        - name: normal
+          package_suffix: ''
+        - name: jemalloc
+          package_suffix: "-jemalloc"
+        - name: malloctrim
+          package_suffix: "-malloctrim"
+    steps:
+      - uses: actions/checkout@v2
+      - name: Run tests
+        run: ./internal-scripts/ci-cd/test-packages/run-tests.sh
+        env:
+          DISTRIBUTION_NAME: "centos-8"
+          RUBY_PACKAGE_ID: ${{ matrix.ruby_package_version.id }}
+          PACKAGE_FORMAT: "RPM"
+          VARIANT_NAME: ${{ matrix.variant.name }}
+          VARIANT_PACKAGE_SUFFIX: ${{ matrix.variant.package_suffix }}
+          TEST_IMAGE_NAME: "centos:8"
+          APT_REPO_URL: https://dl.bintray.com/fullstaq/fullstaq-ruby-apt-ci-${{ github.run_number }}
+          YUM_REPO_URL: https://dl.bintray.com/fullstaq/fullstaq-ruby-yum-ci-${{ github.run_number }}
+
+
   test_packages_against_test_debian_10:
     name: Test Ruby packages against test repos [debian-10]
     needs: commit_published_packages_test
@@ -1757,6 +2045,8 @@ jobs:
 
       - test_packages_against_test_centos_7
 
+      - test_packages_against_test_centos_8
+
       - test_packages_against_test_debian_10
 
       - test_packages_against_test_debian_9
@@ -1808,6 +2098,27 @@ jobs:
         uses: actions/download-artifact@v1
         with:
           name: ruby-pkg_2.7_centos-7_malloctrim
+          path: .
+
+
+      - name: Fetch ruby-pkg_2.7_centos-8_normal
+        uses: actions/download-artifact@v1
+        with:
+          name: ruby-pkg_2.7_centos-8_normal
+          path: .
+
+
+      - name: Fetch ruby-pkg_2.7_centos-8_jemalloc
+        uses: actions/download-artifact@v1
+        with:
+          name: ruby-pkg_2.7_centos-8_jemalloc
+          path: .
+
+
+      - name: Fetch ruby-pkg_2.7_centos-8_malloctrim
+        uses: actions/download-artifact@v1
+        with:
+          name: ruby-pkg_2.7_centos-8_malloctrim
           path: .
 
 
@@ -1895,6 +2206,27 @@ jobs:
           path: .
 
 
+      - name: Fetch ruby-pkg_2.6_centos-8_normal
+        uses: actions/download-artifact@v1
+        with:
+          name: ruby-pkg_2.6_centos-8_normal
+          path: .
+
+
+      - name: Fetch ruby-pkg_2.6_centos-8_jemalloc
+        uses: actions/download-artifact@v1
+        with:
+          name: ruby-pkg_2.6_centos-8_jemalloc
+          path: .
+
+
+      - name: Fetch ruby-pkg_2.6_centos-8_malloctrim
+        uses: actions/download-artifact@v1
+        with:
+          name: ruby-pkg_2.6_centos-8_malloctrim
+          path: .
+
+
       - name: Fetch ruby-pkg_2.6_debian-10_normal
         uses: actions/download-artifact@v1
         with:
@@ -1976,6 +2308,27 @@ jobs:
         uses: actions/download-artifact@v1
         with:
           name: ruby-pkg_2.5_centos-7_malloctrim
+          path: .
+
+
+      - name: Fetch ruby-pkg_2.5_centos-8_normal
+        uses: actions/download-artifact@v1
+        with:
+          name: ruby-pkg_2.5_centos-8_normal
+          path: .
+
+
+      - name: Fetch ruby-pkg_2.5_centos-8_jemalloc
+        uses: actions/download-artifact@v1
+        with:
+          name: ruby-pkg_2.5_centos-8_jemalloc
+          path: .
+
+
+      - name: Fetch ruby-pkg_2.5_centos-8_malloctrim
+        uses: actions/download-artifact@v1
+        with:
+          name: ruby-pkg_2.5_centos-8_malloctrim
           path: .
 
 
@@ -2063,6 +2416,27 @@ jobs:
           path: .
 
 
+      - name: Fetch ruby-pkg_2.7.1_centos-8_normal
+        uses: actions/download-artifact@v1
+        with:
+          name: ruby-pkg_2.7.1_centos-8_normal
+          path: .
+
+
+      - name: Fetch ruby-pkg_2.7.1_centos-8_jemalloc
+        uses: actions/download-artifact@v1
+        with:
+          name: ruby-pkg_2.7.1_centos-8_jemalloc
+          path: .
+
+
+      - name: Fetch ruby-pkg_2.7.1_centos-8_malloctrim
+        uses: actions/download-artifact@v1
+        with:
+          name: ruby-pkg_2.7.1_centos-8_malloctrim
+          path: .
+
+
       - name: Fetch ruby-pkg_2.7.1_debian-10_normal
         uses: actions/download-artifact@v1
         with:
@@ -2147,6 +2521,27 @@ jobs:
           path: .
 
 
+      - name: Fetch ruby-pkg_2.6.6_centos-8_normal
+        uses: actions/download-artifact@v1
+        with:
+          name: ruby-pkg_2.6.6_centos-8_normal
+          path: .
+
+
+      - name: Fetch ruby-pkg_2.6.6_centos-8_jemalloc
+        uses: actions/download-artifact@v1
+        with:
+          name: ruby-pkg_2.6.6_centos-8_jemalloc
+          path: .
+
+
+      - name: Fetch ruby-pkg_2.6.6_centos-8_malloctrim
+        uses: actions/download-artifact@v1
+        with:
+          name: ruby-pkg_2.6.6_centos-8_malloctrim
+          path: .
+
+
       - name: Fetch ruby-pkg_2.6.6_debian-10_normal
         uses: actions/download-artifact@v1
         with:
@@ -2228,6 +2623,27 @@ jobs:
         uses: actions/download-artifact@v1
         with:
           name: ruby-pkg_2.5.8_centos-7_malloctrim
+          path: .
+
+
+      - name: Fetch ruby-pkg_2.5.8_centos-8_normal
+        uses: actions/download-artifact@v1
+        with:
+          name: ruby-pkg_2.5.8_centos-8_normal
+          path: .
+
+
+      - name: Fetch ruby-pkg_2.5.8_centos-8_jemalloc
+        uses: actions/download-artifact@v1
+        with:
+          name: ruby-pkg_2.5.8_centos-8_jemalloc
+          path: .
+
+
+      - name: Fetch ruby-pkg_2.5.8_centos-8_malloctrim
+        uses: actions/download-artifact@v1
+        with:
+          name: ruby-pkg_2.5.8_centos-8_malloctrim
           path: .
 
 
@@ -2397,6 +2813,60 @@ jobs:
           VARIANT_NAME: ${{ matrix.variant.name }}
           VARIANT_PACKAGE_SUFFIX: ${{ matrix.variant.package_suffix }}
           TEST_IMAGE_NAME: "centos:7"
+          APT_REPO_URL: https://apt.fullstaqruby.org
+          YUM_REPO_URL: https://yum.fullstaqruby.org
+
+
+  test_packages_against_production_centos_8:
+    name: Test Ruby packages against production repos [centos-8]
+    needs: publish_packages_production
+    runs-on: ubuntu-18.04
+    strategy:
+      max-parallel: 4 # avoid overloading Bintray
+      matrix:
+        ruby_package_version: 
+        - minor_version: 2.7
+          full_version: 2.7.1
+          package_revision: 2
+          id: 2.7
+        - minor_version: 2.6
+          full_version: 2.6.6
+          package_revision: 6
+          id: 2.6
+        - minor_version: 2.5
+          full_version: 2.5.8
+          package_revision: 5
+          id: 2.5
+        - full_version: 2.7.1
+          package_revision: 1
+          id: 2.7.1
+        - full_version: 2.6.6
+          package_revision: 2
+          id: 2.6.6
+        - full_version: 2.5.8
+          package_revision: 2
+          id: 2.5.8
+        variant: 
+        - name: normal
+          package_suffix: ''
+        - name: jemalloc
+          package_suffix: "-jemalloc"
+        - name: malloctrim
+          package_suffix: "-malloctrim"
+    steps:
+      - uses: actions/checkout@v2
+      - name: Run tests
+        run: ./internal-scripts/ci-cd/test-packages/run-tests.sh
+        # The 'if' here is on the step level instead of job level.
+        # Otherwise, the 'create_git_tag' job won't always be triggered.
+        if: github.ref == 'refs/heads/master'
+        env:
+          DISTRIBUTION_NAME: "centos-8"
+          RUBY_PACKAGE_ID: ${{ matrix.ruby_package_version.id }}
+          PACKAGE_FORMAT: "RPM"
+          VARIANT_NAME: ${{ matrix.variant.name }}
+          VARIANT_PACKAGE_SUFFIX: ${{ matrix.variant.package_suffix }}
+          TEST_IMAGE_NAME: "centos:8"
           APT_REPO_URL: https://apt.fullstaqruby.org
           YUM_REPO_URL: https://yum.fullstaqruby.org
 
@@ -2571,6 +3041,8 @@ jobs:
     needs:
 
       - test_packages_against_production_centos_7
+
+      - test_packages_against_production_centos_8
 
       - test_packages_against_production_debian_10
 

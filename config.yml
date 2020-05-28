@@ -113,6 +113,7 @@ distributions: all
 ## directory in this project.
 # distributions:
 #   - centos-7
+#   - centos-8
 #   - debian-9
 #   - debian-10
 #   - ubuntu-18.04
