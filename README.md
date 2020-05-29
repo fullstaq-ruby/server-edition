@@ -374,9 +374,10 @@ Fullstaq Ruby, ensures that the right version of Jemalloc is used. We are a bunc
  * Supported RHEL/CentOS versions: 7, 8
  * Supported architectures: x86-64
 
-Add the Fullstaq Ruby repository by creating `/etc/yum.repos.d/fullstaq-ruby.repo`:
+Add the Fullstaq Ruby repository by creating `/etc/yum.repos.d/fullstaq-ruby.repo`. Pick one of the following:
 
-    # CentOS 7
+CentOS 7:
+
     [fullstaq-ruby]
     name=fullstaq-ruby
     baseurl=https://yum.fullstaqruby.org/centos-7/$basearch
@@ -386,7 +387,8 @@ Add the Fullstaq Ruby repository by creating `/etc/yum.repos.d/fullstaq-ruby.rep
     gpgkey=https://raw.githubusercontent.com/fullstaq-labs/fullstaq-ruby-server-edition/master/fullstaq-ruby.asc
     sslverify=1
 
-    # CentOS 8
+CentOS 8:
+
     [fullstaq-ruby]
     name=fullstaq-ruby
     baseurl=https://yum.fullstaqruby.org/centos-8/$basearch
