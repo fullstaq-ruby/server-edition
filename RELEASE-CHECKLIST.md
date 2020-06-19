@@ -4,7 +4,7 @@
 
 Find out what the previous release's Git tag is (e.g. `epic-1`) and set an environment variable:
 
-    MERGE_BASE=$(git merge-base origin/master HEAD)
+    MERGE_BASE=$(git merge-base origin/main HEAD)
     PREV_RELEASE_TAG=$(git describe $MERGE_BASE --tags --abbrev=0)
 
 ## Step 1: check whether the Rbenv package revision needs to be changed

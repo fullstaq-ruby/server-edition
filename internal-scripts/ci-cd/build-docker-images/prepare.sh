@@ -11,7 +11,7 @@
 # image, with the given name and tag.
 #
 # If the image+tag already exists on the Docker Hub, or if the CI is running
-# on the master branch, then the 'image-name' and 'image-tag' outputs are set to
+# on the main branch, then the 'image-name' and 'image-tag' outputs are set to
 # the original image name and tag.
 #
 # Otherwise, they are set to a new name+tag.
@@ -50,8 +50,8 @@ fi
 
 echo "Docker image $IMAGE_NAME:$IMAGE_TAG does not exist in the Docker Hub."
 
-if [[ "$CI_REF" = refs/heads/master ]]; then
-    echo "CI system is running on master branch."
+if [[ "$CI_REF" = refs/heads/main ]]; then
+    echo "CI system is running on main branch."
     echo "Will build a Docker image using this name and tag: $IMAGE_NAME:$IMAGE_TAG"
     echo "::set-output name=needs-building::true"
     echo "::set-output name=image-name::$IMAGE_NAME"

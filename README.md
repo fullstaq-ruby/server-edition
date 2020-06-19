@@ -384,7 +384,7 @@ CentOS 7:
     gpgcheck=0
     repo_gpgcheck=1
     enabled=1
-    gpgkey=https://raw.githubusercontent.com/fullstaq-labs/fullstaq-ruby-server-edition/master/fullstaq-ruby.asc
+    gpgkey=https://raw.githubusercontent.com/fullstaq-labs/fullstaq-ruby-server-edition/main/fullstaq-ruby.asc
     sslverify=1
 
 CentOS 8:
@@ -395,7 +395,7 @@ CentOS 8:
     gpgcheck=0
     repo_gpgcheck=1
     enabled=1
-    gpgkey=https://raw.githubusercontent.com/fullstaq-labs/fullstaq-ruby-server-edition/master/fullstaq-ruby.asc
+    gpgkey=https://raw.githubusercontent.com/fullstaq-labs/fullstaq-ruby-server-edition/main/fullstaq-ruby.asc
     sslverify=1
 
 Then install `fullstaq-ruby-common`:
@@ -472,7 +472,7 @@ deb https://apt.fullstaqruby.org debian-10 main
 Then run:
 
 ~~~bash
-curl -SLfO https://raw.githubusercontent.com/fullstaq-labs/fullstaq-ruby-server-edition/master/fullstaq-ruby.asc
+curl -SLfO https://raw.githubusercontent.com/fullstaq-labs/fullstaq-ruby-server-edition/main/fullstaq-ruby.asc
 sudo apt-key add fullstaq-ruby.asc
 sudo apt update
 ~~~

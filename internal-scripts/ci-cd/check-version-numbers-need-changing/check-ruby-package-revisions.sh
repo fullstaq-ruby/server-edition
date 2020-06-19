@@ -93,7 +93,7 @@ if [[ "$MOCK_APPROVAL_STATUS" = true ]]; then
 elif [[ "$MOCK_APPROVAL_STATUS" = false ]]; then
     echo -n > approvals.txt
 else
-    curl -fsSLO https://raw.githubusercontent.com/fullstaq-labs/fullstaq-ruby-ci-approvals/master/approvals.txt
+    curl -fsSLO https://raw.githubusercontent.com/fullstaq-labs/fullstaq-ruby-ci-approvals/main/approvals.txt
 fi
 
 if grep -q "^${APPROVAL_CHECKSUM}$" approvals.txt; then
@@ -131,7 +131,7 @@ else
     echo "   ...to github.com/fullstaq-labs/fullstaq-ruby-ci-approvals,"
     echo "   file approvals.txt:"
     echo
-    echo "     https://github.com/fullstaq-labs/fullstaq-ruby-ci-approvals/edit/master/approvals.txt"
+    echo "     https://github.com/fullstaq-labs/fullstaq-ruby-ci-approvals/edit/main/approvals.txt"
     echo
     echo "   You can also use this command:"
     echo

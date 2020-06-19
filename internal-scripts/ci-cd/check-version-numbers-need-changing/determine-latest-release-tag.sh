@@ -11,7 +11,7 @@ run git fetch
 
 echo "+ Calculating..."
 
-MERGE_BASE=$(git merge-base origin/master HEAD)
+MERGE_BASE=$(git merge-base origin/main HEAD)
 LATEST_RELEASE_TAG=$(git describe "$MERGE_BASE" --tags --abbrev=0 --match='epic-*')
 
 echo "::set-env name=LATEST_RELEASE_TAG::$LATEST_RELEASE_TAG"
