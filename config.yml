@@ -57,7 +57,7 @@ rbenv:
   ## changed since the last fullstaq-rbenv package release, then be sure to
   ## bump `package_revision`!
   repo: https://github.com/fullstaq-labs/fullstaq-rbenv.git
-  ref: 67b668a36e1651
+  ref: 5ed2027da3d9b7
 
   ## Or package Rbenv from the following local directory.
   ## Be sure to comment out 'repo' and 'ref' if you use this.
@@ -71,11 +71,11 @@ rbenv:
   ##
   ## NOTE: if you change `version`, be sure to reset
   ## `package_revision` to 0.
-  version: 1.1.2-7
+  version: 1.1.2-15
 
   ## (Required)
   ## Package revision number.
-  package_revision: 1
+  package_revision: 2
 
 ## (Required)
 ## fullstaq-ruby-common package parameters.

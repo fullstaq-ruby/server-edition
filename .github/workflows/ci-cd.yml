@@ -376,8 +376,8 @@ jobs:
         env:
           UTILITY_IMAGE_NAME: ${{ steps.load_utility_image_info.outputs.image-name }}
           UTILITY_IMAGE_TAG: ${{ steps.load_utility_image_info.outputs.image-tag }}
-          PACKAGE_BASENAME: "fullstaq-rbenv_1.1.2-7-1_all.deb"
-          REVISION: "1"
+          PACKAGE_BASENAME: "fullstaq-rbenv_1.1.2-15-2_all.deb"
+          REVISION: "2"
 
       - name: Archive artifact
         uses: actions/upload-artifact@v1
@@ -414,8 +414,8 @@ jobs:
         env:
           UTILITY_IMAGE_NAME: ${{ steps.load_utility_image_info.outputs.image-name }}
           UTILITY_IMAGE_TAG: ${{ steps.load_utility_image_info.outputs.image-tag }}
-          PACKAGE_BASENAME: "fullstaq-rbenv-1.1.2-7-1.noarch.rpm"
-          REVISION: "1"
+          PACKAGE_BASENAME: "fullstaq-rbenv-1.1.2-15-2.noarch.rpm"
+          REVISION: "2"
 
       - name: Archive artifact
         uses: actions/upload-artifact@v1
