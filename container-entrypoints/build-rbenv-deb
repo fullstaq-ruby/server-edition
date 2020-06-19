@@ -24,8 +24,9 @@ echo "+ cd $WORK_DIR"
 cd "$WORK_DIR"
 run cp -dpR "$INPUT_PATH"/{bin,completions,libexec,rbenv.d} ./
 VERSION=$(./bin/rbenv --version | awk '{ print $2 }')
-run rm bin/rbenv
-run ln -s /usr/lib/rbenv/libexec/rbenv bin/rbenv
+run mkdir system
+run mkdir system/bin
+run ln -s /usr/lib/rbenv/libexec/rbenv system/bin/rbenv
 echo
 
 header "Building package..."
@@ -46,7 +47,8 @@ bundle exec fpm -s dir -t deb -f --log info \
     --description "Fullstaq Rbenv $VERSION" \
     --url "https://github.com/fullstaq-labs/fullstaq-rbenv" \
     --provides rbenv \
-    bin=/usr/ \
+    system/bin=/usr/ \
+    bin=/usr/lib/rbenv/ \
     libexec=/usr/lib/rbenv/ \
     rbenv.d=/usr/lib/rbenv/ \
     completions=/usr/lib/rbenv/
