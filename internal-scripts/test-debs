@@ -26,7 +26,7 @@ if [[ "$SERVER" = "" ]]; then
     echo "+ Detected package version (without variant suffix): $RUBY_PACKAGE_VERSION_WITHOUT_VARIANT_SUFFIX"
     echo "+ Detected variant: $VARIANT"
 
-    run apt install -y --allow-unauthenticated "fullstaq-ruby-$RUBY_PACKAGE_VERSION"
+    run apt install -y --allow-unauthenticated "fullstaq-ruby-$RUBY_PACKAGE_VERSION" fullstaq-ruby-common
 else
     run apt update
     run apt install -y "${ESSENTIAL_PACKAGES[@]}" gnupg apt-transport-https ca-certificates
@@ -45,7 +45,7 @@ else
     echo "+ Detected variant: $VARIANT"
 
     # Bintray could sometimes be flaky, so we retry on failure.
-    run_with_retries apt install -y fullstaq-ruby-"$RUBY_PACKAGE_VERSION"
+    run_with_retries apt install -y fullstaq-ruby-"$RUBY_PACKAGE_VERSION" fullstaq-ruby-common
 fi
 
 echo
