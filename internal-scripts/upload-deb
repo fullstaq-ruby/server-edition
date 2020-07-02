@@ -93,7 +93,9 @@ fi
 IFS=,
 ARCHS_STRING="${ARCHS[*]}"
 DISTROS_STRING="${DISTROS[*]}"
-if $REPUBLISH; then
+if $REPUBLISH || [[ "${#DISTROS[@]}" -gt 1 ]]; then
+    # When we add an existing package to a new distribution,
+    # we need to set override=1 in order to make it work.
     OVERRIDE=1
 else
     OVERRIDE=0
