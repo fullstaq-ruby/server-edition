@@ -6,11 +6,12 @@ ROOTDIR=$(cd "$SELFDIR/../../.." && pwd)
 # shellcheck source=../../../lib/library.sh
 source "$ROOTDIR/lib/library.sh"
 
-require_envvar UTILITY_IMAGE_NAME
-require_envvar UTILITY_IMAGE_TAG
 require_envvar PACKAGE_BASENAME
 require_envvar REVISION
 
+
+UTILITY_IMAGE_NAME=fullstaq/ruby-build-env-utility
+UTILITY_IMAGE_TAG=$(read_single_value_file "$ROOTDIR/environments/utility/image_tag")
 
 mkdir rbenv
 tar -C rbenv -xzf rbenv-src.tar.gz

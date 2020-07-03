@@ -6,14 +6,15 @@ ROOTDIR=$(cd "$SELFDIR/../../.." && pwd)
 # shellcheck source=../../../lib/library.sh
 source "$ROOTDIR/lib/library.sh"
 
-require_envvar UTILITY_IMAGE_NAME
-require_envvar UTILITY_IMAGE_TAG
 require_envvar BINTRAY_API_USERNAME
 require_envvar BINTRAY_API_KEY
 require_envvar REPO_NAME
 require_envvar DRY_RUN
 require_envvar IGNORE_EXISTING
 
+
+UTILITY_IMAGE_NAME=fullstaq/ruby-build-env-utility
+UTILITY_IMAGE_TAG=$(read_single_value_file "$ROOTDIR/environments/utility/image_tag")
 
 echo "$BINTRAY_API_KEY" > bintray-api-key.txt
 

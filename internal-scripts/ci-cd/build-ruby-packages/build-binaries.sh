@@ -6,12 +6,13 @@ ROOTDIR=$(cd "$SELFDIR/../../.." && pwd)
 # shellcheck source=../../../lib/library.sh
 source "$ROOTDIR/lib/library.sh"
 
-require_envvar BUILD_IMAGE_NAME
-require_envvar BUILD_IMAGE_TAG
 require_envvar ENVIRONMENT_NAME
 require_envvar VARIANT_NAME
 require_envvar RUBY_PACKAGE_VERSION_ID
 
+
+BUILD_IMAGE_NAME="fullstaq/ruby-build-env-$ENVIRONMENT_NAME"
+BUILD_IMAGE_TAG=$(read_single_value_file "$ROOTDIR/environments/$ENVIRONMENT_NAME/image_tag")
 
 if [[ "$VARIANT_NAME" = jemalloc ]]; then
     MOUNT_ARGS=(-v "$(pwd)/jemalloc-bin.tar.gz:/input/jemalloc-bin.tar.gz:ro")

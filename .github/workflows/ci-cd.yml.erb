@@ -78,57 +78,71 @@ jobs:
         if: '!cancelled()'
 
 
-  ### Docker images ###
-
-  build_docker_images:
-    name: Build Docker images
-    runs-on: ubuntu-18.04
-    strategy:
-      matrix:
-        image: <%=indentyaml docker_images %>
+  # Determines which jobs should be run, or (in case this is a re-run)
+  # which jobs can be skipped this time because the last run succeeded.
+  # We determine this by checking whether the artifacts produced by jobs
+  # exist in this run.
+  determine_necessary_jobs:
+    name: Determine necessary jobs
+    runs-on: ubuntu-20.04
+    outputs:
+      <%- docker_images.each do |image| %>
+      <%- unindent(2) do -%>
+        'image-<%= slug(image[:id]) %>-needs-building': '${{ steps.prepare_image_<%= slug(image[:id]) %>.outputs.needs-building }}'
+      <%- end -%>
+      <%- end %>
     steps:
       - uses: actions/checkout@v2
 
-      - name: Determine whether image needs to be built
-        id: prepare
-        run: ./internal-scripts/ci-cd/build-docker-images/prepare.sh
-        env:
-          IMAGE_NAME: ${{ matrix.image.name }}
-          IMAGE_TAG: ${{ matrix.image.tag }}
-          IMAGE_ID: ${{ matrix.image.id }}
-          CI_REF: ${{ github.ref }}
-          CI_RUN_NUMBER: ${{ github.run_number }}
+      <%- docker_images.each do |image| %>
+      <%- unindent(2) do -%>
+        - name: Determine whether Docker image for <%= image[:id] %> needs to be built
+          id: 'prepare_image_<%= slug(image[:id]) %>'
+          run: ./internal-scripts/ci-cd/build-docker-images/prepare.sh
+          env:
+            IMAGE_NAME: '<%= image[:name] %>'
+            IMAGE_TAG: '<%= image[:tag] %>'
+      <%- end -%>
+      <%- end %>
 
-      - name: Login to Google Container Registry
-        id: gcloud_login
-        if: steps.prepare.outputs.needs-building == 'true'
-        run: ./internal-scripts/ci-cd/build-docker-images/login-gcr.sh
-        env:
-          SERVICE_ACCOUNT_KEY_JSON: ${{ secrets.GCLOUD_KEY }}
-      - name: Build
-        if: steps.prepare.outputs.needs-building == 'true'
-        run: ./internal-scripts/ci-cd/build-docker-images/build.sh
-        env:
-          IMAGE_NAME: ${{ steps.prepare.outputs.image-name }}
-          IMAGE_TAG: ${{ steps.prepare.outputs.image-tag }}
-          SOURCE_DIR: environments/${{ matrix.image.id }}
-      - name: Publish
-        if: steps.prepare.outputs.needs-building == 'true'
-        run: ./internal-scripts/ci-cd/build-docker-images/publish.sh
-        env:
-          IMAGE_NAME: ${{ steps.prepare.outputs.image-name }}
-          IMAGE_TAG: ${{ steps.prepare.outputs.image-tag }}
 
-      - name: Create artifact
-        run: ./internal-scripts/ci-cd/build-docker-images/create-artifact.sh
-        env:
-          IMAGE_NAME: ${{ steps.prepare.outputs.image-name }}
-          IMAGE_TAG: ${{ steps.prepare.outputs.image-tag }}
-      - name: Archive artifact
-        uses: actions/upload-artifact@v1
-        with:
-          name: docker-image-info-${{ matrix.image.id }}
-          path: output
+  ### Docker images ###
+
+  <%- docker_images.each do |image| %>
+  <%- unindent(2) do -%>
+    build_docker_image_<%= slug(image[:id]) %>:
+      name: 'Build Docker image [<%= image[:id] %>]'
+      runs-on: ubuntu-18.04
+      needs: determine_necessary_jobs
+      if: needs.determine_necessary_jobs.outputs.image-<%= slug(image[:id]) %>-needs-building == 'true'
+      steps:
+        - uses: actions/checkout@v2
+
+        - name: Prepare
+          run: ./internal-scripts/ci-cd/build-docker-images/prepare.sh
+          env:
+            IMAGE_NAME: '<%= image[:name] %>'
+            IMAGE_TAG: '<%= image[:tag] %>'
+
+        - name: Build
+          run: ./internal-scripts/ci-cd/build-docker-images/build.sh
+          env:
+            IMAGE_NAME: '<%= image[:name] %>'
+            IMAGE_TAG: '<%= image[:tag] %>'
+            SOURCE_DIR: 'environments/<%= image[:id] %>'
+
+        - name: Dump image
+          run: ./internal-scripts/ci-cd/build-docker-images/dump-image.sh
+          env:
+            IMAGE_NAME: '<%= image[:name] %>'
+            IMAGE_TAG: '<%= image[:tag] %>'
+        - name: Archive artifact
+          uses: actions/upload-artifact@v1
+          with:
+            name: 'docker-image-<%= image[:id] %>'
+            path: output
+  <%- end %>
+  <%- end %>
 
 
   ### Sources ###
@@ -194,74 +208,85 @@ jobs:
 
   ### Jemalloc ###
 
-  build_jemalloc_binaries:
-    name: Build Jemalloc binaries
-    needs: build_docker_images
-    runs-on: ubuntu-18.04
-    strategy:
-      matrix:
-        distribution: <%=indentyaml distributions %>
-    steps:
-      - uses: actions/checkout@v2
-      - name: Fetch cache
-        uses: actions/cache@v1
-        with:
-          path: cache
-          key: jemalloc-bin-${{ matrix.distribution.name }}-<%= jemalloc_version %>
-      - name: Create cache dir
-        run: mkdir -p cache
+  <%- distributions.each do |distribution| %>
+  <%- unindent(2) do -%>
+    build_jemalloc_binary_<%= slug(distribution[:name]) %>:
+      name: 'Build Jemalloc binary [<%= distribution[:name] %>]'
+      needs:
+        - 'determine_necessary_jobs'
+        - 'build_docker_image_<%= slug(distribution[:name]) %>'
+      runs-on: ubuntu-18.04
+      # Run even if a dependent job has been skipped
+      if: '!failure() && !cancelled()'
+      steps:
+        - uses: actions/checkout@v2
+        - name: Fetch cache
+          uses: actions/cache@v1
+          with:
+            path: cache
+            key: 'jemalloc-bin-<%= distribution[:name] %>-<%= jemalloc_version %>'
+        - name: Create cache dir
+          run: mkdir -p cache
 
-      - name: Determine which Docker image to use for building
-        uses: actions/download-artifact@v1
-        with:
-          name: docker-image-info-${{ matrix.distribution.name }}
-          path: .
-      - name: Load build image info
-        id: load_build_image_info
-        run: ./internal-scripts/ci-cd/load-docker-image-info.sh
+        - name: Download Docker image necessary for building
+          uses: actions/download-artifact@v1
+          if: "needs.determine_necessary_jobs.outputs.image-<%= slug(distribution[:name]) %>-needs-building == 'true'"
+          with:
+            name: 'docker-image-<%= distribution[:name] %>'
+            path: .
+        - name: Load Docker image necessary for building
+          run: ./internal-scripts/ci-cd/load-docker-image.sh
+          if: "needs.determine_necessary_jobs.outputs.image-<%= slug(distribution[:name]) %>-needs-building == 'true'"
+          env:
+            TARBALL: image.tar.zst
 
-      - name: Download source
-        run: ./internal-scripts/ci-cd/build-jemalloc-binaries/download-source.sh
-        env:
-          JEMALLOC_VERSION: "<%= jemalloc_version %>"
+        - name: Download source
+          run: ./internal-scripts/ci-cd/build-jemalloc-binaries/download-source.sh
+          env:
+            JEMALLOC_VERSION: "<%= jemalloc_version %>"
 
-      - name: Build
-        run: ./internal-scripts/ci-cd/build-jemalloc-binaries/build.sh
-        env:
-          BUILD_IMAGE_NAME: ${{ steps.load_build_image_info.outputs.image-name }}
-          BUILD_IMAGE_TAG: ${{ steps.load_build_image_info.outputs.image-tag }}
-          ENVIRONMENT_NAME: ${{ matrix.distribution.name }}
+        - name: Build
+          run: ./internal-scripts/ci-cd/build-jemalloc-binaries/build.sh
+          env:
+            ENVIRONMENT_NAME: '<%= distribution[:name] %>'
 
-      - name: Archive artifact
-        uses: actions/upload-artifact@v1
-        with:
-          name: jemalloc-bin-${{ matrix.distribution.name }}
-          path: output
+        - name: Archive artifact
+          uses: actions/upload-artifact@v1
+          with:
+            name: 'jemalloc-bin-<%= distribution[:name] %>'
+            path: output
+  <%- end -%>
+  <%- end %>
 
 
   ### fullstaq-ruby-common ###
 
   build_common_deb:
     name: Build common DEB
-    needs: build_docker_images
+    needs:
+      - determine_necessary_jobs
+      - build_docker_image_utility
     runs-on: ubuntu-18.04
+    # Run even if a dependent job has been skipped
+    if: '!failure() && !cancelled()'
     steps:
       - uses: actions/checkout@v2
 
-      - name: Determine which Docker image to use for building
+      - name: Download utility Docker image
         uses: actions/download-artifact@v1
+        if: "needs.determine_necessary_jobs.outputs.image-utility-needs-building == 'true'"
         with:
-          name: docker-image-info-utility
+          name: docker-image-utility
           path: .
-      - name: Load utility image info
-        id: load_utility_image_info
-        run: ./internal-scripts/ci-cd/load-docker-image-info.sh
+      - name: Load utility Docker image
+        run: ./internal-scripts/ci-cd/load-docker-image.sh
+        if: "needs.determine_necessary_jobs.outputs.image-utility-needs-building == 'true'"
+        env:
+          TARBALL: image.tar.zst
 
       - name: Build package
         run: ./internal-scripts/ci-cd/build-common-deb/build-package.sh
         env:
-          UTILITY_IMAGE_NAME: ${{ steps.load_utility_image_info.outputs.image-name }}
-          UTILITY_IMAGE_TAG: ${{ steps.load_utility_image_info.outputs.image-tag }}
           PACKAGE_BASENAME: "<%= common_package_basename(:DEB) %>"
           VERSION: "<%= common_deb_version %>"
           REVISION: "<%= common_deb_package_revision %>"
@@ -275,25 +300,30 @@ jobs:
 
   build_common_rpm:
     name: Build common RPM
-    needs: build_docker_images
+    needs:
+      - determine_necessary_jobs
+      - build_docker_image_utility
     runs-on: ubuntu-18.04
+    # Run even if a dependent job has been skipped
+    if: '!failure() && !cancelled()'
     steps:
       - uses: actions/checkout@v2
 
-      - name: Determine which Docker image to use for building
+      - name: Download utility Docker image
         uses: actions/download-artifact@v1
+        if: "needs.determine_necessary_jobs.outputs.image-utility-needs-building == 'true'"
         with:
-          name: docker-image-info-utility
+          name: docker-image-utility
           path: .
-      - name: Load utility image info
-        id: load_utility_image_info
-        run: ./internal-scripts/ci-cd/load-docker-image-info.sh
+      - name: Load utility Docker image
+        run: ./internal-scripts/ci-cd/load-docker-image.sh
+        if: "needs.determine_necessary_jobs.outputs.image-utility-needs-building == 'true'"
+        env:
+          TARBALL: image.tar.zst
 
       - name: Build package
         run: ./internal-scripts/ci-cd/build-common-rpm/build-package.sh
         env:
-          UTILITY_IMAGE_NAME: ${{ steps.load_utility_image_info.outputs.image-name }}
-          UTILITY_IMAGE_TAG: ${{ steps.load_utility_image_info.outputs.image-tag }}
           PACKAGE_BASENAME: "<%= common_package_basename(:RPM) %>"
           VERSION: "<%= common_rpm_version %>"
           REVISION: "<%= common_rpm_package_revision %>"
@@ -310,9 +340,12 @@ jobs:
   build_rbenv_deb:
     name: Build Rbenv DEB
     needs:
+      - determine_necessary_jobs
       - download_rbenv_source
-      - build_docker_images
+      - build_docker_image_utility
     runs-on: ubuntu-18.04
+    # Run even if a dependent job has been skipped
+    if: '!failure() && !cancelled()'
     steps:
       - uses: actions/checkout@v2
       - name: Fetch Rbenv source
@@ -321,20 +354,21 @@ jobs:
           name: rbenv-src
           path: .
 
-      - name: Determine which Docker image to use for building
+      - name: Download utility Docker image
         uses: actions/download-artifact@v1
+        if: "needs.determine_necessary_jobs.outputs.image-utility-needs-building == 'true'"
         with:
-          name: docker-image-info-utility
+          name: docker-image-utility
           path: .
-      - name: Load utility image info
-        id: load_utility_image_info
-        run: ./internal-scripts/ci-cd/load-docker-image-info.sh
+      - name: Load utility Docker image
+        run: ./internal-scripts/ci-cd/load-docker-image.sh
+        if: "needs.determine_necessary_jobs.outputs.image-utility-needs-building == 'true'"
+        env:
+          TARBALL: image.tar.zst
 
       - name: Build package
         run: ./internal-scripts/ci-cd/build-rbenv-deb/build-package.sh
         env:
-          UTILITY_IMAGE_NAME: ${{ steps.load_utility_image_info.outputs.image-name }}
-          UTILITY_IMAGE_TAG: ${{ steps.load_utility_image_info.outputs.image-tag }}
           PACKAGE_BASENAME: "<%= rbenv_package_basename(:DEB) %>"
           REVISION: "<%= rbenv_package_revision %>"
 
@@ -348,9 +382,12 @@ jobs:
   build_rbenv_rpm:
     name: Build Rbenv RPM
     needs:
+      - determine_necessary_jobs
       - download_rbenv_source
-      - build_docker_images
+      - build_docker_image_utility
     runs-on: ubuntu-18.04
+    # Run even if a dependent job has been skipped
+    if: '!failure() && !cancelled()'
     steps:
       - uses: actions/checkout@v2
       - name: Fetch Rbenv source
@@ -359,20 +396,21 @@ jobs:
           name: rbenv-src
           path: .
 
-      - name: Determine which Docker image to use for building
+      - name: Download utility Docker image
         uses: actions/download-artifact@v1
+        if: "needs.determine_necessary_jobs.outputs.image-utility-needs-building == 'true'"
         with:
-          name: docker-image-info-utility
+          name: docker-image-utility
           path: .
-      - name: Load utility image info
-        id: load_utility_image_info
-        run: ./internal-scripts/ci-cd/load-docker-image-info.sh
+      - name: Load utility Docker image
+        run: ./internal-scripts/ci-cd/load-docker-image.sh
+        if: "needs.determine_necessary_jobs.outputs.image-utility-needs-building == 'true'"
+        env:
+          TARBALL: image.tar.zst
 
       - name: Build package
         run: ./internal-scripts/ci-cd/build-rbenv-rpm/build-package.sh
         env:
-          UTILITY_IMAGE_NAME: ${{ steps.load_utility_image_info.outputs.image-name }}
-          UTILITY_IMAGE_TAG: ${{ steps.load_utility_image_info.outputs.image-tag }}
           PACKAGE_BASENAME: "<%= rbenv_package_basename(:RPM) %>"
           REVISION: "<%= rbenv_package_revision %>"
 
@@ -385,18 +423,19 @@ jobs:
 
   ### Ruby ###
 
-  # The Github Actions matrix is limited to producing 256 jobs. Given the
-  # combinatorial explosion, it's very easy to reach that limit, so we
-  # preprocess distribution information using ERB templating instead.
   <%- distributions.each do |distribution| %>
   <%- unindent(2) do %>
     build_ruby_packages_<%= slug(distribution[:name]) %>:
-      name: Build Ruby packages [<%= distribution[:name] %>]
+      name: 'Build Ruby packages [<%= distribution[:name] %>]'
       needs:
-        - download_ruby_sources
-        - build_jemalloc_binaries
-        - build_docker_images
+        - 'determine_necessary_jobs'
+        - 'download_ruby_sources'
+        - 'build_jemalloc_binary_<%= slug(distribution[:name]) %>'
+        - 'build_docker_image_<%= slug(distribution[:name]) %>'
+        - 'build_docker_image_utility'
       runs-on: ubuntu-18.04
+      # Run even if a dependent job has been skipped
+      if: '!failure() && !cancelled()'
       strategy:
         matrix:
           ruby_package_version: <%=indentyaml ruby_package_versions %>
@@ -423,36 +462,38 @@ jobs:
         - name: Create cache dir
           run: mkdir -p cache
 
-        - name: Determine which Docker image to use for building
+        - name: Download Docker image necessary for building
           uses: actions/download-artifact@v1
+          if: "needs.determine_necessary_jobs.outputs.image-<%= slug(distribution[:name]) %>-needs-building == 'true'"
           with:
-            name: docker-image-info-<%= distribution[:name] %>
+            name: 'docker-image-<%= distribution[:name] %>'
             path: .
-        - name: Load build image info
-          id: load_build_image_info
-          run: ./internal-scripts/ci-cd/load-docker-image-info.sh
+        - name: Load Docker image necessary for building
+          run: ./internal-scripts/ci-cd/load-docker-image.sh
+          if: "needs.determine_necessary_jobs.outputs.image-<%= slug(distribution[:name]) %>-needs-building == 'true'"
+          env:
+            TARBALL: image.tar.zst
         - name: Build binaries
           run: ./internal-scripts/ci-cd/build-ruby-packages/build-binaries.sh
           env:
-            BUILD_IMAGE_NAME: ${{ steps.load_build_image_info.outputs.image-name }}
-            BUILD_IMAGE_TAG: ${{ steps.load_build_image_info.outputs.image-tag }}
             ENVIRONMENT_NAME: "<%= distribution[:name] %>"
             VARIANT_NAME: ${{ matrix.variant.name }}
             RUBY_PACKAGE_VERSION_ID: ${{ matrix.ruby_package_version.id }}
 
-        - name: Determine which Docker image to use for packaging
+        - name: Download Docker image necessary for packaging
           uses: actions/download-artifact@v1
+          if: "needs.determine_necessary_jobs.outputs.image-utility-needs-building == 'true'"
           with:
-            name: docker-image-info-utility
+            name: 'docker-image-<%= distribution[:name] %>'
             path: .
-        - name: Load utility image info
-          id: load_utility_image_info
-          run: ./internal-scripts/ci-cd/load-docker-image-info.sh
+        - name: Load Docker image necessary for packaging
+          run: ./internal-scripts/ci-cd/load-docker-image.sh
+          if: "needs.determine_necessary_jobs.outputs.image-utility-needs-building == 'true'"
+          env:
+            TARBALL: image.tar.zst
         - name: Build package
           run: ./internal-scripts/ci-cd/build-ruby-packages/build-package.sh
           env:
-            UTILITY_IMAGE_NAME: ${{ steps.load_utility_image_info.outputs.image-name }}
-            UTILITY_IMAGE_TAG: ${{ steps.load_utility_image_info.outputs.image-tag }}
             DISTRIBUTION_NAME: "<%= distribution[:name] %>"
             VARIANT_NAME: ${{ matrix.variant.name }}
             VARIANT_PACKAGE_SUFFIX: ${{ matrix.variant.package_suffix }}
@@ -475,9 +516,8 @@ jobs:
     name: Create test APT repo
     runs-on: ubuntu-18.04
     needs:
-      <%- distributions.find_all{ |d| d[:package_format] == :DEB }.each do |distribution| %>
-      - build_ruby_packages_<%= slug(distribution[:name]) %>
-      <%- end %>
+      - check_workflow_uptodate
+      - check_version_numbers_need_bumping
     steps:
       - uses: actions/checkout@v2
       - name: Recreate repo
@@ -491,9 +531,8 @@ jobs:
   create_test_yum_repo:
     name: Create test YUM repo
     needs:
-      <%- distributions.find_all{ |d| d[:package_format] == :RPM }.each do |distribution| %>
-      - build_ruby_packages_<%= slug(distribution[:name]) %>
-      <%- end %>
+      - check_workflow_uptodate
+      - check_version_numbers_need_bumping
     runs-on: ubuntu-18.04
     steps:
       - uses: actions/checkout@v2
@@ -510,9 +549,14 @@ jobs:
   publish_common_and_rbenv_debs_test:
     name: Publish common and Rbenv DEBs to test repo
     needs:
-      - build_docker_images
+      - determine_necessary_jobs
+      - build_docker_image_utility
       - create_test_apt_repo
+      - build_common_deb
+      - build_rbenv_deb
     runs-on: ubuntu-18.04
+    # Run even if a dependent job has been skipped
+    if: '!failure() && !cancelled()'
     steps:
       - uses: actions/checkout@v2
       - name: Download artifact
@@ -526,20 +570,21 @@ jobs:
           name: rbenv-deb
           path: .
 
-      - name: Determine which Docker image to use for publishing
+      - name: Download utility Docker image
         uses: actions/download-artifact@v1
+        if: "needs.determine_necessary_jobs.outputs.image-utility-needs-building == 'true'"
         with:
-          name: docker-image-info-utility
+          name: docker-image-utility
           path: .
-      - name: Load utility image info
-        id: load_utility_image_info
-        run: ./internal-scripts/ci-cd/load-docker-image-info.sh
+      - name: Load utility Docker image
+        run: ./internal-scripts/ci-cd/load-docker-image.sh
+        if: "needs.determine_necessary_jobs.outputs.image-utility-needs-building == 'true'"
+        env:
+          TARBALL: image.tar.zst
 
       - name: Upload to repo
         run: ./internal-scripts/ci-cd/publish/publish-debs.sh *.deb
         env:
-          UTILITY_IMAGE_NAME: ${{ steps.load_utility_image_info.outputs.image-name }}
-          UTILITY_IMAGE_TAG: ${{ steps.load_utility_image_info.outputs.image-tag }}
           BINTRAY_API_USERNAME: ${{ secrets.BINTRAY_API_USERNAME }}
           BINTRAY_API_KEY: ${{ secrets.BINTRAY_API_KEY }}
           REPO_NAME: fullstaq-ruby-apt-ci-${{ github.run_number }}
@@ -550,9 +595,14 @@ jobs:
   publish_common_and_rbenv_rpms_test:
     name: Publish common and Rbenv RPMs to test repo
     needs:
-      - build_docker_images
+      - determine_necessary_jobs
+      - build_docker_image_utility
       - create_test_yum_repo
+      - build_common_rpm
+      - build_rbenv_rpm
     runs-on: ubuntu-18.04
+    # Run even if a dependent job has been skipped
+    if: '!failure() && !cancelled()'
     steps:
       - uses: actions/checkout@v2
       - name: Download artifact
@@ -566,20 +616,21 @@ jobs:
           name: rbenv-rpm
           path: .
 
-      - name: Determine which Docker image to use for publishing
+      - name: Download utility Docker image
         uses: actions/download-artifact@v1
+        if: "needs.determine_necessary_jobs.outputs.image-utility-needs-building == 'true'"
         with:
-          name: docker-image-info-utility
+          name: docker-image-utility
           path: .
-      - name: Load utility image info
-        id: load_utility_image_info
-        run: ./internal-scripts/ci-cd/load-docker-image-info.sh
+      - name: Load utility Docker image
+        run: ./internal-scripts/ci-cd/load-docker-image.sh
+        if: "needs.determine_necessary_jobs.outputs.image-utility-needs-building == 'true'"
+        env:
+          TARBALL: image.tar.zst
 
       - name: Upload to repo
         run: ./internal-scripts/ci-cd/publish/publish-rpms.sh *.rpm
         env:
-          UTILITY_IMAGE_NAME: ${{ steps.load_utility_image_info.outputs.image-name }}
-          UTILITY_IMAGE_TAG: ${{ steps.load_utility_image_info.outputs.image-tag }}
           BINTRAY_API_USERNAME: ${{ secrets.BINTRAY_API_USERNAME }}
           BINTRAY_API_KEY: ${{ secrets.BINTRAY_API_KEY }}
           REPO_NAME: fullstaq-ruby-yum-ci-${{ github.run_number }}
@@ -592,37 +643,48 @@ jobs:
   publish_ruby_packages_test:
     name: Publish Ruby packages to test repo
     needs:
-      - build_docker_images
+      - determine_necessary_jobs
+      - build_docker_image_utility
       - create_test_apt_repo
       - create_test_yum_repo
+      - build_common_deb
+      - build_rbenv_deb
+      - build_common_rpm
+      - build_rbenv_rpm
+      <%- distributions.each do |distribution| -%>
+      - build_ruby_packages_<%= slug(distribution[:name]) %>
+      <%- end -%>
     runs-on: ubuntu-18.04
+    # Run even if a dependent job has been skipped
+    if: '!failure() && !cancelled()'
     steps:
       - uses: actions/checkout@v2
 
       <%- ruby_package_artifact_names.each do |artifact_name| %>
-      <%- unindent(2) do %>
+      <%- unindent(2) do -%>
         - name: Fetch <%= artifact_name %>
           uses: actions/download-artifact@v1
           with:
             name: <%= artifact_name %>
             path: ruby-pkgs
-      <%- end %>
+      <%- end -%>
       <%- end %>
 
-      - name: Determine which Docker image to use for publishing
+      - name: Download Docker image necessary for testing
         uses: actions/download-artifact@v1
+        if: "needs.determine_necessary_jobs.outputs.image-utility-needs-building == 'true'"
         with:
-          name: docker-image-info-utility
+          name: docker-image-utility
           path: .
-      - name: Load utility image info
-        id: load_utility_image_info
-        run: ./internal-scripts/ci-cd/load-docker-image-info.sh
+      - name: Load Docker image necessary for testing
+        run: ./internal-scripts/ci-cd/load-docker-image.sh
+        if: "needs.determine_necessary_jobs.outputs.image-utility-needs-building == 'true'"
+        env:
+          TARBALL: image.tar.zst
 
       - name: Upload DEBs to repo
         run: ./internal-scripts/ci-cd/publish/publish-debs.sh ruby-pkgs/*.deb
         env:
-          UTILITY_IMAGE_NAME: ${{ steps.load_utility_image_info.outputs.image-name }}
-          UTILITY_IMAGE_TAG: ${{ steps.load_utility_image_info.outputs.image-tag }}
           BINTRAY_API_USERNAME: ${{ secrets.BINTRAY_API_USERNAME }}
           BINTRAY_API_KEY: ${{ secrets.BINTRAY_API_KEY }}
           REPO_NAME: fullstaq-ruby-apt-ci-${{ github.run_number }}
@@ -631,8 +693,6 @@ jobs:
       - name: Upload RPMs to repo
         run: ./internal-scripts/ci-cd/publish/publish-rpms.sh ruby-pkgs/*.rpm
         env:
-          UTILITY_IMAGE_NAME: ${{ steps.load_utility_image_info.outputs.image-name }}
-          UTILITY_IMAGE_TAG: ${{ steps.load_utility_image_info.outputs.image-tag }}
           BINTRAY_API_USERNAME: ${{ secrets.BINTRAY_API_USERNAME }}
           BINTRAY_API_KEY: ${{ secrets.BINTRAY_API_KEY }}
           REPO_NAME: fullstaq-ruby-yum-ci-${{ github.run_number }}
@@ -672,7 +732,7 @@ jobs:
   <%- distributions_with_test_image_info.each do |distribution| %>
   <%- unindent(2) do %>
     test_packages_against_test_<%= slug(distribution[:name]) %>:
-      name: Test Ruby packages against test repos [<%= distribution[:name] %>]
+      name: 'Test Ruby packages against test repos [<%= distribution[:name] %>]'
       needs: commit_published_packages_test
       runs-on: ubuntu-18.04
       strategy:
@@ -701,9 +761,10 @@ jobs:
   publish_packages_production:
     name: Publish packages to production repos
     needs:
-      <%- distributions.each do |distribution| %>
-      - test_packages_against_test_<%= slug(distribution[:name]) %>
-      <%- end %>
+      - determine_necessary_jobs
+      <%- distributions.each do |distribution| -%>
+      - 'test_packages_against_test_<%= slug(distribution[:name]) %>'
+      <%- end -%>
     runs-on: ubuntu-18.04
     steps:
       - uses: actions/checkout@v2
@@ -730,29 +791,30 @@ jobs:
           path: .
 
       <%- ruby_package_artifact_names.each do |artifact_name| %>
-      <%- unindent(2) do %>
+      <%- unindent(2) do -%>
         - name: Fetch <%= artifact_name %>
           uses: actions/download-artifact@v1
           with:
             name: <%= artifact_name %>
             path: .
-      <%- end %>
+      <%- end -%>
       <%- end %>
 
-      - name: Determine which Docker image to use for publishing
+      - name: Download Docker image necessary for publishing
         uses: actions/download-artifact@v1
+        if: "needs.determine_necessary_jobs.outputs.image-utility-needs-building == 'true'"
         with:
-          name: docker-image-info-utility
+          name: docker-image-utility
           path: .
-      - name: Load utility image info
-        id: load_utility_image_info
-        run: ./internal-scripts/ci-cd/load-docker-image-info.sh
+      - name: Load Docker image necessary for publishing
+        run: ./internal-scripts/ci-cd/load-docker-image.sh
+        if: "needs.determine_necessary_jobs.outputs.image-utility-needs-building == 'true'"
+        env:
+          TARBALL: image.tar.zst
 
       - name: Upload DEBs to repo
         run: ./internal-scripts/ci-cd/publish/publish-debs.sh *.deb
         env:
-          UTILITY_IMAGE_NAME: ${{ steps.load_utility_image_info.outputs.image-name }}
-          UTILITY_IMAGE_TAG: ${{ steps.load_utility_image_info.outputs.image-tag }}
           BINTRAY_API_USERNAME: ${{ secrets.BINTRAY_API_USERNAME }}
           BINTRAY_API_KEY: ${{ secrets.BINTRAY_API_KEY }}
           REPO_NAME: fullstaq-ruby-apt
@@ -769,8 +831,6 @@ jobs:
       - name: Upload RPMs to repo
         run: ./internal-scripts/ci-cd/publish/publish-rpms.sh *.rpm
         env:
-          UTILITY_IMAGE_NAME: ${{ steps.load_utility_image_info.outputs.image-name }}
-          UTILITY_IMAGE_TAG: ${{ steps.load_utility_image_info.outputs.image-tag }}
           BINTRAY_API_USERNAME: ${{ secrets.BINTRAY_API_USERNAME }}
           BINTRAY_API_KEY: ${{ secrets.BINTRAY_API_KEY }}
           REPO_NAME: fullstaq-ruby-yum
@@ -791,9 +851,9 @@ jobs:
   # combinatorial explosion, it's very easy to reach that limit, so we
   # preprocess distribution information using ERB templating instead.
   <%- distributions_with_test_image_info.each do |distribution| %>
-  <%- unindent(2) do %>
+  <%- unindent(2) do -%>
     test_packages_against_production_<%= slug(distribution[:name]) %>:
-      name: Test Ruby packages against production repos [<%= distribution[:name] %>]
+      name: 'Test Ruby packages against production repos [<%= distribution[:name] %>]'
       needs: publish_packages_production
       runs-on: ubuntu-18.04
       strategy:
@@ -826,9 +886,9 @@ jobs:
   create_git_tag:
     name: Create Git tag
     needs:
-      <%- distributions.each do |distribution| %>
-      - test_packages_against_production_<%= slug(distribution[:name]) %>
-      <%- end %>
+      <%- distributions.each do |distribution| -%>
+      - 'test_packages_against_production_<%= slug(distribution[:name]) %>'
+      <%- end -%>
     runs-on: ubuntu-18.04
     steps:
       - uses: actions/checkout@v2

@@ -88,78 +88,297 @@ jobs:
         if: '!cancelled()'
 
 
-  ### Docker images ###
+  # Determines which jobs should be run, or (in case this is a re-run)
+  # which jobs can be skipped this time because the last run succeeded.
+  # We determine this by checking whether the artifacts produced by jobs
+  # exist in this run.
+  determine_necessary_jobs:
+    name: Determine necessary jobs
+    runs-on: ubuntu-20.04
+    outputs:
 
-  build_docker_images:
-    name: Build Docker images
-    runs-on: ubuntu-18.04
-    strategy:
-      matrix:
-        image: 
-          - name: fullstaq/ruby-build-env-centos-7
-            id: centos-7
-            tag: '3'
-          - name: fullstaq/ruby-build-env-centos-8
-            id: centos-8
-            tag: '1'
-          - name: fullstaq/ruby-build-env-debian-10
-            id: debian-10
-            tag: '1'
-          - name: fullstaq/ruby-build-env-debian-9
-            id: debian-9
-            tag: '2'
-          - name: fullstaq/ruby-build-env-ubuntu-18.04
-            id: ubuntu-18.04
-            tag: '2'
-          - name: fullstaq/ruby-build-env-ubuntu-20.04
-            id: ubuntu-20.04
-            tag: '1'
-          - name: fullstaq/ruby-build-env-utility
-            id: utility
-            tag: '3'
+      'image-centos_7-needs-building': '${{ steps.prepare_image_centos_7.outputs.needs-building }}'
+      'image-centos_8-needs-building': '${{ steps.prepare_image_centos_8.outputs.needs-building }}'
+      'image-debian_10-needs-building': '${{ steps.prepare_image_debian_10.outputs.needs-building }}'
+      'image-debian_9-needs-building': '${{ steps.prepare_image_debian_9.outputs.needs-building }}'
+      'image-ubuntu_18_04-needs-building': '${{ steps.prepare_image_ubuntu_18_04.outputs.needs-building }}'
+      'image-ubuntu_20_04-needs-building': '${{ steps.prepare_image_ubuntu_20_04.outputs.needs-building }}'
+      'image-utility-needs-building': '${{ steps.prepare_image_utility.outputs.needs-building }}'
     steps:
       - uses: actions/checkout@v2
 
-      - name: Determine whether image needs to be built
-        id: prepare
+
+      - name: Determine whether Docker image for centos-7 needs to be built
+        id: 'prepare_image_centos_7'
         run: ./internal-scripts/ci-cd/build-docker-images/prepare.sh
         env:
-          IMAGE_NAME: ${{ matrix.image.name }}
-          IMAGE_TAG: ${{ matrix.image.tag }}
-          IMAGE_ID: ${{ matrix.image.id }}
-          CI_REF: ${{ github.ref }}
-          CI_RUN_NUMBER: ${{ github.run_number }}
-
-      - name: Login to Google Container Registry
-        id: gcloud_login
-        if: steps.prepare.outputs.needs-building == 'true'
-        run: ./internal-scripts/ci-cd/build-docker-images/login-gcr.sh
+          IMAGE_NAME: 'fullstaq/ruby-build-env-centos-7'
+          IMAGE_TAG: '3'
+      - name: Determine whether Docker image for centos-8 needs to be built
+        id: 'prepare_image_centos_8'
+        run: ./internal-scripts/ci-cd/build-docker-images/prepare.sh
         env:
-          SERVICE_ACCOUNT_KEY_JSON: ${{ secrets.GCLOUD_KEY }}
+          IMAGE_NAME: 'fullstaq/ruby-build-env-centos-8'
+          IMAGE_TAG: '1'
+      - name: Determine whether Docker image for debian-10 needs to be built
+        id: 'prepare_image_debian_10'
+        run: ./internal-scripts/ci-cd/build-docker-images/prepare.sh
+        env:
+          IMAGE_NAME: 'fullstaq/ruby-build-env-debian-10'
+          IMAGE_TAG: '1'
+      - name: Determine whether Docker image for debian-9 needs to be built
+        id: 'prepare_image_debian_9'
+        run: ./internal-scripts/ci-cd/build-docker-images/prepare.sh
+        env:
+          IMAGE_NAME: 'fullstaq/ruby-build-env-debian-9'
+          IMAGE_TAG: '2'
+      - name: Determine whether Docker image for ubuntu-18.04 needs to be built
+        id: 'prepare_image_ubuntu_18_04'
+        run: ./internal-scripts/ci-cd/build-docker-images/prepare.sh
+        env:
+          IMAGE_NAME: 'fullstaq/ruby-build-env-ubuntu-18.04'
+          IMAGE_TAG: '2'
+      - name: Determine whether Docker image for ubuntu-20.04 needs to be built
+        id: 'prepare_image_ubuntu_20_04'
+        run: ./internal-scripts/ci-cd/build-docker-images/prepare.sh
+        env:
+          IMAGE_NAME: 'fullstaq/ruby-build-env-ubuntu-20.04'
+          IMAGE_TAG: '1'
+      - name: Determine whether Docker image for utility needs to be built
+        id: 'prepare_image_utility'
+        run: ./internal-scripts/ci-cd/build-docker-images/prepare.sh
+        env:
+          IMAGE_NAME: 'fullstaq/ruby-build-env-utility'
+          IMAGE_TAG: '3'
+
+
+  ### Docker images ###
+
+
+  build_docker_image_centos_7:
+    name: 'Build Docker image [centos-7]'
+    runs-on: ubuntu-18.04
+    needs: determine_necessary_jobs
+    if: needs.determine_necessary_jobs.outputs.image-centos_7-needs-building == 'true'
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Prepare
+        run: ./internal-scripts/ci-cd/build-docker-images/prepare.sh
+        env:
+          IMAGE_NAME: 'fullstaq/ruby-build-env-centos-7'
+          IMAGE_TAG: '3'
+
       - name: Build
-        if: steps.prepare.outputs.needs-building == 'true'
         run: ./internal-scripts/ci-cd/build-docker-images/build.sh
         env:
-          IMAGE_NAME: ${{ steps.prepare.outputs.image-name }}
-          IMAGE_TAG: ${{ steps.prepare.outputs.image-tag }}
-          SOURCE_DIR: environments/${{ matrix.image.id }}
-      - name: Publish
-        if: steps.prepare.outputs.needs-building == 'true'
-        run: ./internal-scripts/ci-cd/build-docker-images/publish.sh
-        env:
-          IMAGE_NAME: ${{ steps.prepare.outputs.image-name }}
-          IMAGE_TAG: ${{ steps.prepare.outputs.image-tag }}
+          IMAGE_NAME: 'fullstaq/ruby-build-env-centos-7'
+          IMAGE_TAG: '3'
+          SOURCE_DIR: 'environments/centos-7'
 
-      - name: Create artifact
-        run: ./internal-scripts/ci-cd/build-docker-images/create-artifact.sh
+      - name: Dump image
+        run: ./internal-scripts/ci-cd/build-docker-images/dump-image.sh
         env:
-          IMAGE_NAME: ${{ steps.prepare.outputs.image-name }}
-          IMAGE_TAG: ${{ steps.prepare.outputs.image-tag }}
+          IMAGE_NAME: 'fullstaq/ruby-build-env-centos-7'
+          IMAGE_TAG: '3'
       - name: Archive artifact
         uses: actions/upload-artifact@v1
         with:
-          name: docker-image-info-${{ matrix.image.id }}
+          name: 'docker-image-centos-7'
           path: output
+
+  build_docker_image_centos_8:
+    name: 'Build Docker image [centos-8]'
+    runs-on: ubuntu-18.04
+    needs: determine_necessary_jobs
+    if: needs.determine_necessary_jobs.outputs.image-centos_8-needs-building == 'true'
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Prepare
+        run: ./internal-scripts/ci-cd/build-docker-images/prepare.sh
+        env:
+          IMAGE_NAME: 'fullstaq/ruby-build-env-centos-8'
+          IMAGE_TAG: '1'
+
+      - name: Build
+        run: ./internal-scripts/ci-cd/build-docker-images/build.sh
+        env:
+          IMAGE_NAME: 'fullstaq/ruby-build-env-centos-8'
+          IMAGE_TAG: '1'
+          SOURCE_DIR: 'environments/centos-8'
+
+      - name: Dump image
+        run: ./internal-scripts/ci-cd/build-docker-images/dump-image.sh
+        env:
+          IMAGE_NAME: 'fullstaq/ruby-build-env-centos-8'
+          IMAGE_TAG: '1'
+      - name: Archive artifact
+        uses: actions/upload-artifact@v1
+        with:
+          name: 'docker-image-centos-8'
+          path: output
+
+  build_docker_image_debian_10:
+    name: 'Build Docker image [debian-10]'
+    runs-on: ubuntu-18.04
+    needs: determine_necessary_jobs
+    if: needs.determine_necessary_jobs.outputs.image-debian_10-needs-building == 'true'
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Prepare
+        run: ./internal-scripts/ci-cd/build-docker-images/prepare.sh
+        env:
+          IMAGE_NAME: 'fullstaq/ruby-build-env-debian-10'
+          IMAGE_TAG: '1'
+
+      - name: Build
+        run: ./internal-scripts/ci-cd/build-docker-images/build.sh
+        env:
+          IMAGE_NAME: 'fullstaq/ruby-build-env-debian-10'
+          IMAGE_TAG: '1'
+          SOURCE_DIR: 'environments/debian-10'
+
+      - name: Dump image
+        run: ./internal-scripts/ci-cd/build-docker-images/dump-image.sh
+        env:
+          IMAGE_NAME: 'fullstaq/ruby-build-env-debian-10'
+          IMAGE_TAG: '1'
+      - name: Archive artifact
+        uses: actions/upload-artifact@v1
+        with:
+          name: 'docker-image-debian-10'
+          path: output
+
+  build_docker_image_debian_9:
+    name: 'Build Docker image [debian-9]'
+    runs-on: ubuntu-18.04
+    needs: determine_necessary_jobs
+    if: needs.determine_necessary_jobs.outputs.image-debian_9-needs-building == 'true'
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Prepare
+        run: ./internal-scripts/ci-cd/build-docker-images/prepare.sh
+        env:
+          IMAGE_NAME: 'fullstaq/ruby-build-env-debian-9'
+          IMAGE_TAG: '2'
+
+      - name: Build
+        run: ./internal-scripts/ci-cd/build-docker-images/build.sh
+        env:
+          IMAGE_NAME: 'fullstaq/ruby-build-env-debian-9'
+          IMAGE_TAG: '2'
+          SOURCE_DIR: 'environments/debian-9'
+
+      - name: Dump image
+        run: ./internal-scripts/ci-cd/build-docker-images/dump-image.sh
+        env:
+          IMAGE_NAME: 'fullstaq/ruby-build-env-debian-9'
+          IMAGE_TAG: '2'
+      - name: Archive artifact
+        uses: actions/upload-artifact@v1
+        with:
+          name: 'docker-image-debian-9'
+          path: output
+
+  build_docker_image_ubuntu_18_04:
+    name: 'Build Docker image [ubuntu-18.04]'
+    runs-on: ubuntu-18.04
+    needs: determine_necessary_jobs
+    if: needs.determine_necessary_jobs.outputs.image-ubuntu_18_04-needs-building == 'true'
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Prepare
+        run: ./internal-scripts/ci-cd/build-docker-images/prepare.sh
+        env:
+          IMAGE_NAME: 'fullstaq/ruby-build-env-ubuntu-18.04'
+          IMAGE_TAG: '2'
+
+      - name: Build
+        run: ./internal-scripts/ci-cd/build-docker-images/build.sh
+        env:
+          IMAGE_NAME: 'fullstaq/ruby-build-env-ubuntu-18.04'
+          IMAGE_TAG: '2'
+          SOURCE_DIR: 'environments/ubuntu-18.04'
+
+      - name: Dump image
+        run: ./internal-scripts/ci-cd/build-docker-images/dump-image.sh
+        env:
+          IMAGE_NAME: 'fullstaq/ruby-build-env-ubuntu-18.04'
+          IMAGE_TAG: '2'
+      - name: Archive artifact
+        uses: actions/upload-artifact@v1
+        with:
+          name: 'docker-image-ubuntu-18.04'
+          path: output
+
+  build_docker_image_ubuntu_20_04:
+    name: 'Build Docker image [ubuntu-20.04]'
+    runs-on: ubuntu-18.04
+    needs: determine_necessary_jobs
+    if: needs.determine_necessary_jobs.outputs.image-ubuntu_20_04-needs-building == 'true'
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Prepare
+        run: ./internal-scripts/ci-cd/build-docker-images/prepare.sh
+        env:
+          IMAGE_NAME: 'fullstaq/ruby-build-env-ubuntu-20.04'
+          IMAGE_TAG: '1'
+
+      - name: Build
+        run: ./internal-scripts/ci-cd/build-docker-images/build.sh
+        env:
+          IMAGE_NAME: 'fullstaq/ruby-build-env-ubuntu-20.04'
+          IMAGE_TAG: '1'
+          SOURCE_DIR: 'environments/ubuntu-20.04'
+
+      - name: Dump image
+        run: ./internal-scripts/ci-cd/build-docker-images/dump-image.sh
+        env:
+          IMAGE_NAME: 'fullstaq/ruby-build-env-ubuntu-20.04'
+          IMAGE_TAG: '1'
+      - name: Archive artifact
+        uses: actions/upload-artifact@v1
+        with:
+          name: 'docker-image-ubuntu-20.04'
+          path: output
+
+  build_docker_image_utility:
+    name: 'Build Docker image [utility]'
+    runs-on: ubuntu-18.04
+    needs: determine_necessary_jobs
+    if: needs.determine_necessary_jobs.outputs.image-utility-needs-building == 'true'
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Prepare
+        run: ./internal-scripts/ci-cd/build-docker-images/prepare.sh
+        env:
+          IMAGE_NAME: 'fullstaq/ruby-build-env-utility'
+          IMAGE_TAG: '3'
+
+      - name: Build
+        run: ./internal-scripts/ci-cd/build-docker-images/build.sh
+        env:
+          IMAGE_NAME: 'fullstaq/ruby-build-env-utility'
+          IMAGE_TAG: '3'
+          SOURCE_DIR: 'environments/utility'
+
+      - name: Dump image
+        run: ./internal-scripts/ci-cd/build-docker-images/dump-image.sh
+        env:
+          IMAGE_NAME: 'fullstaq/ruby-build-env-utility'
+          IMAGE_TAG: '3'
+      - name: Archive artifact
+        uses: actions/upload-artifact@v1
+        with:
+          name: 'docker-image-utility'
+          path: output
+
 
 
   ### Sources ###
@@ -228,43 +447,36 @@ jobs:
 
   ### Jemalloc ###
 
-  build_jemalloc_binaries:
-    name: Build Jemalloc binaries
-    needs: build_docker_images
+
+  build_jemalloc_binary_centos_7:
+    name: 'Build Jemalloc binary [centos-7]'
+    needs:
+      - 'determine_necessary_jobs'
+      - 'build_docker_image_centos_7'
     runs-on: ubuntu-18.04
-    strategy:
-      matrix:
-        distribution: 
-          - name: centos-7
-            package_format: RPM
-          - name: centos-8
-            package_format: RPM
-          - name: debian-10
-            package_format: DEB
-          - name: debian-9
-            package_format: DEB
-          - name: ubuntu-18.04
-            package_format: DEB
-          - name: ubuntu-20.04
-            package_format: DEB
+    # Run even if a dependent job has been skipped
+    if: '!failure() && !cancelled()'
     steps:
       - uses: actions/checkout@v2
       - name: Fetch cache
         uses: actions/cache@v1
         with:
           path: cache
-          key: jemalloc-bin-${{ matrix.distribution.name }}-3.6.0
+          key: 'jemalloc-bin-centos-7-3.6.0'
       - name: Create cache dir
         run: mkdir -p cache
 
-      - name: Determine which Docker image to use for building
+      - name: Download Docker image necessary for building
         uses: actions/download-artifact@v1
+        if: "needs.determine_necessary_jobs.outputs.image-centos_7-needs-building == 'true'"
         with:
-          name: docker-image-info-${{ matrix.distribution.name }}
+          name: 'docker-image-centos-7'
           path: .
-      - name: Load build image info
-        id: load_build_image_info
-        run: ./internal-scripts/ci-cd/load-docker-image-info.sh
+      - name: Load Docker image necessary for building
+        run: ./internal-scripts/ci-cd/load-docker-image.sh
+        if: "needs.determine_necessary_jobs.outputs.image-centos_7-needs-building == 'true'"
+        env:
+          TARBALL: image.tar.zst
 
       - name: Download source
         run: ./internal-scripts/ci-cd/build-jemalloc-binaries/download-source.sh
@@ -274,14 +486,237 @@ jobs:
       - name: Build
         run: ./internal-scripts/ci-cd/build-jemalloc-binaries/build.sh
         env:
-          BUILD_IMAGE_NAME: ${{ steps.load_build_image_info.outputs.image-name }}
-          BUILD_IMAGE_TAG: ${{ steps.load_build_image_info.outputs.image-tag }}
-          ENVIRONMENT_NAME: ${{ matrix.distribution.name }}
+          ENVIRONMENT_NAME: 'centos-7'
 
       - name: Archive artifact
         uses: actions/upload-artifact@v1
         with:
-          name: jemalloc-bin-${{ matrix.distribution.name }}
+          name: 'jemalloc-bin-centos-7'
+          path: output
+  build_jemalloc_binary_centos_8:
+    name: 'Build Jemalloc binary [centos-8]'
+    needs:
+      - 'determine_necessary_jobs'
+      - 'build_docker_image_centos_8'
+    runs-on: ubuntu-18.04
+    # Run even if a dependent job has been skipped
+    if: '!failure() && !cancelled()'
+    steps:
+      - uses: actions/checkout@v2
+      - name: Fetch cache
+        uses: actions/cache@v1
+        with:
+          path: cache
+          key: 'jemalloc-bin-centos-8-3.6.0'
+      - name: Create cache dir
+        run: mkdir -p cache
+
+      - name: Download Docker image necessary for building
+        uses: actions/download-artifact@v1
+        if: "needs.determine_necessary_jobs.outputs.image-centos_8-needs-building == 'true'"
+        with:
+          name: 'docker-image-centos-8'
+          path: .
+      - name: Load Docker image necessary for building
+        run: ./internal-scripts/ci-cd/load-docker-image.sh
+        if: "needs.determine_necessary_jobs.outputs.image-centos_8-needs-building == 'true'"
+        env:
+          TARBALL: image.tar.zst
+
+      - name: Download source
+        run: ./internal-scripts/ci-cd/build-jemalloc-binaries/download-source.sh
+        env:
+          JEMALLOC_VERSION: "3.6.0"
+
+      - name: Build
+        run: ./internal-scripts/ci-cd/build-jemalloc-binaries/build.sh
+        env:
+          ENVIRONMENT_NAME: 'centos-8'
+
+      - name: Archive artifact
+        uses: actions/upload-artifact@v1
+        with:
+          name: 'jemalloc-bin-centos-8'
+          path: output
+  build_jemalloc_binary_debian_10:
+    name: 'Build Jemalloc binary [debian-10]'
+    needs:
+      - 'determine_necessary_jobs'
+      - 'build_docker_image_debian_10'
+    runs-on: ubuntu-18.04
+    # Run even if a dependent job has been skipped
+    if: '!failure() && !cancelled()'
+    steps:
+      - uses: actions/checkout@v2
+      - name: Fetch cache
+        uses: actions/cache@v1
+        with:
+          path: cache
+          key: 'jemalloc-bin-debian-10-3.6.0'
+      - name: Create cache dir
+        run: mkdir -p cache
+
+      - name: Download Docker image necessary for building
+        uses: actions/download-artifact@v1
+        if: "needs.determine_necessary_jobs.outputs.image-debian_10-needs-building == 'true'"
+        with:
+          name: 'docker-image-debian-10'
+          path: .
+      - name: Load Docker image necessary for building
+        run: ./internal-scripts/ci-cd/load-docker-image.sh
+        if: "needs.determine_necessary_jobs.outputs.image-debian_10-needs-building == 'true'"
+        env:
+          TARBALL: image.tar.zst
+
+      - name: Download source
+        run: ./internal-scripts/ci-cd/build-jemalloc-binaries/download-source.sh
+        env:
+          JEMALLOC_VERSION: "3.6.0"
+
+      - name: Build
+        run: ./internal-scripts/ci-cd/build-jemalloc-binaries/build.sh
+        env:
+          ENVIRONMENT_NAME: 'debian-10'
+
+      - name: Archive artifact
+        uses: actions/upload-artifact@v1
+        with:
+          name: 'jemalloc-bin-debian-10'
+          path: output
+  build_jemalloc_binary_debian_9:
+    name: 'Build Jemalloc binary [debian-9]'
+    needs:
+      - 'determine_necessary_jobs'
+      - 'build_docker_image_debian_9'
+    runs-on: ubuntu-18.04
+    # Run even if a dependent job has been skipped
+    if: '!failure() && !cancelled()'
+    steps:
+      - uses: actions/checkout@v2
+      - name: Fetch cache
+        uses: actions/cache@v1
+        with:
+          path: cache
+          key: 'jemalloc-bin-debian-9-3.6.0'
+      - name: Create cache dir
+        run: mkdir -p cache
+
+      - name: Download Docker image necessary for building
+        uses: actions/download-artifact@v1
+        if: "needs.determine_necessary_jobs.outputs.image-debian_9-needs-building == 'true'"
+        with:
+          name: 'docker-image-debian-9'
+          path: .
+      - name: Load Docker image necessary for building
+        run: ./internal-scripts/ci-cd/load-docker-image.sh
+        if: "needs.determine_necessary_jobs.outputs.image-debian_9-needs-building == 'true'"
+        env:
+          TARBALL: image.tar.zst
+
+      - name: Download source
+        run: ./internal-scripts/ci-cd/build-jemalloc-binaries/download-source.sh
+        env:
+          JEMALLOC_VERSION: "3.6.0"
+
+      - name: Build
+        run: ./internal-scripts/ci-cd/build-jemalloc-binaries/build.sh
+        env:
+          ENVIRONMENT_NAME: 'debian-9'
+
+      - name: Archive artifact
+        uses: actions/upload-artifact@v1
+        with:
+          name: 'jemalloc-bin-debian-9'
+          path: output
+  build_jemalloc_binary_ubuntu_18_04:
+    name: 'Build Jemalloc binary [ubuntu-18.04]'
+    needs:
+      - 'determine_necessary_jobs'
+      - 'build_docker_image_ubuntu_18_04'
+    runs-on: ubuntu-18.04
+    # Run even if a dependent job has been skipped
+    if: '!failure() && !cancelled()'
+    steps:
+      - uses: actions/checkout@v2
+      - name: Fetch cache
+        uses: actions/cache@v1
+        with:
+          path: cache
+          key: 'jemalloc-bin-ubuntu-18.04-3.6.0'
+      - name: Create cache dir
+        run: mkdir -p cache
+
+      - name: Download Docker image necessary for building
+        uses: actions/download-artifact@v1
+        if: "needs.determine_necessary_jobs.outputs.image-ubuntu_18_04-needs-building == 'true'"
+        with:
+          name: 'docker-image-ubuntu-18.04'
+          path: .
+      - name: Load Docker image necessary for building
+        run: ./internal-scripts/ci-cd/load-docker-image.sh
+        if: "needs.determine_necessary_jobs.outputs.image-ubuntu_18_04-needs-building == 'true'"
+        env:
+          TARBALL: image.tar.zst
+
+      - name: Download source
+        run: ./internal-scripts/ci-cd/build-jemalloc-binaries/download-source.sh
+        env:
+          JEMALLOC_VERSION: "3.6.0"
+
+      - name: Build
+        run: ./internal-scripts/ci-cd/build-jemalloc-binaries/build.sh
+        env:
+          ENVIRONMENT_NAME: 'ubuntu-18.04'
+
+      - name: Archive artifact
+        uses: actions/upload-artifact@v1
+        with:
+          name: 'jemalloc-bin-ubuntu-18.04'
+          path: output
+  build_jemalloc_binary_ubuntu_20_04:
+    name: 'Build Jemalloc binary [ubuntu-20.04]'
+    needs:
+      - 'determine_necessary_jobs'
+      - 'build_docker_image_ubuntu_20_04'
+    runs-on: ubuntu-18.04
+    # Run even if a dependent job has been skipped
+    if: '!failure() && !cancelled()'
+    steps:
+      - uses: actions/checkout@v2
+      - name: Fetch cache
+        uses: actions/cache@v1
+        with:
+          path: cache
+          key: 'jemalloc-bin-ubuntu-20.04-3.6.0'
+      - name: Create cache dir
+        run: mkdir -p cache
+
+      - name: Download Docker image necessary for building
+        uses: actions/download-artifact@v1
+        if: "needs.determine_necessary_jobs.outputs.image-ubuntu_20_04-needs-building == 'true'"
+        with:
+          name: 'docker-image-ubuntu-20.04'
+          path: .
+      - name: Load Docker image necessary for building
+        run: ./internal-scripts/ci-cd/load-docker-image.sh
+        if: "needs.determine_necessary_jobs.outputs.image-ubuntu_20_04-needs-building == 'true'"
+        env:
+          TARBALL: image.tar.zst
+
+      - name: Download source
+        run: ./internal-scripts/ci-cd/build-jemalloc-binaries/download-source.sh
+        env:
+          JEMALLOC_VERSION: "3.6.0"
+
+      - name: Build
+        run: ./internal-scripts/ci-cd/build-jemalloc-binaries/build.sh
+        env:
+          ENVIRONMENT_NAME: 'ubuntu-20.04'
+
+      - name: Archive artifact
+        uses: actions/upload-artifact@v1
+        with:
+          name: 'jemalloc-bin-ubuntu-20.04'
           path: output
 
 
@@ -289,25 +724,30 @@ jobs:
 
   build_common_deb:
     name: Build common DEB
-    needs: build_docker_images
+    needs:
+      - determine_necessary_jobs
+      - build_docker_image_utility
     runs-on: ubuntu-18.04
+    # Run even if a dependent job has been skipped
+    if: '!failure() && !cancelled()'
     steps:
       - uses: actions/checkout@v2
 
-      - name: Determine which Docker image to use for building
+      - name: Download utility Docker image
         uses: actions/download-artifact@v1
+        if: "needs.determine_necessary_jobs.outputs.image-utility-needs-building == 'true'"
         with:
-          name: docker-image-info-utility
+          name: docker-image-utility
           path: .
-      - name: Load utility image info
-        id: load_utility_image_info
-        run: ./internal-scripts/ci-cd/load-docker-image-info.sh
+      - name: Load utility Docker image
+        run: ./internal-scripts/ci-cd/load-docker-image.sh
+        if: "needs.determine_necessary_jobs.outputs.image-utility-needs-building == 'true'"
+        env:
+          TARBALL: image.tar.zst
 
       - name: Build package
         run: ./internal-scripts/ci-cd/build-common-deb/build-package.sh
         env:
-          UTILITY_IMAGE_NAME: ${{ steps.load_utility_image_info.outputs.image-name }}
-          UTILITY_IMAGE_TAG: ${{ steps.load_utility_image_info.outputs.image-tag }}
           PACKAGE_BASENAME: "fullstaq-ruby-common_1.0-0_all.deb"
           VERSION: "1.0"
           REVISION: "0"
@@ -321,25 +761,30 @@ jobs:
 
   build_common_rpm:
     name: Build common RPM
-    needs: build_docker_images
+    needs:
+      - determine_necessary_jobs
+      - build_docker_image_utility
     runs-on: ubuntu-18.04
+    # Run even if a dependent job has been skipped
+    if: '!failure() && !cancelled()'
     steps:
       - uses: actions/checkout@v2
 
-      - name: Determine which Docker image to use for building
+      - name: Download utility Docker image
         uses: actions/download-artifact@v1
+        if: "needs.determine_necessary_jobs.outputs.image-utility-needs-building == 'true'"
         with:
-          name: docker-image-info-utility
+          name: docker-image-utility
           path: .
-      - name: Load utility image info
-        id: load_utility_image_info
-        run: ./internal-scripts/ci-cd/load-docker-image-info.sh
+      - name: Load utility Docker image
+        run: ./internal-scripts/ci-cd/load-docker-image.sh
+        if: "needs.determine_necessary_jobs.outputs.image-utility-needs-building == 'true'"
+        env:
+          TARBALL: image.tar.zst
 
       - name: Build package
         run: ./internal-scripts/ci-cd/build-common-rpm/build-package.sh
         env:
-          UTILITY_IMAGE_NAME: ${{ steps.load_utility_image_info.outputs.image-name }}
-          UTILITY_IMAGE_TAG: ${{ steps.load_utility_image_info.outputs.image-tag }}
           PACKAGE_BASENAME: "fullstaq-ruby-common-1.0-0.noarch.rpm"
           VERSION: "1.0"
           REVISION: "0"
@@ -356,9 +801,12 @@ jobs:
   build_rbenv_deb:
     name: Build Rbenv DEB
     needs:
+      - determine_necessary_jobs
       - download_rbenv_source
-      - build_docker_images
+      - build_docker_image_utility
     runs-on: ubuntu-18.04
+    # Run even if a dependent job has been skipped
+    if: '!failure() && !cancelled()'
     steps:
       - uses: actions/checkout@v2
       - name: Fetch Rbenv source
@@ -367,20 +815,21 @@ jobs:
           name: rbenv-src
           path: .
 
-      - name: Determine which Docker image to use for building
+      - name: Download utility Docker image
         uses: actions/download-artifact@v1
+        if: "needs.determine_necessary_jobs.outputs.image-utility-needs-building == 'true'"
         with:
-          name: docker-image-info-utility
+          name: docker-image-utility
           path: .
-      - name: Load utility image info
-        id: load_utility_image_info
-        run: ./internal-scripts/ci-cd/load-docker-image-info.sh
+      - name: Load utility Docker image
+        run: ./internal-scripts/ci-cd/load-docker-image.sh
+        if: "needs.determine_necessary_jobs.outputs.image-utility-needs-building == 'true'"
+        env:
+          TARBALL: image.tar.zst
 
       - name: Build package
         run: ./internal-scripts/ci-cd/build-rbenv-deb/build-package.sh
         env:
-          UTILITY_IMAGE_NAME: ${{ steps.load_utility_image_info.outputs.image-name }}
-          UTILITY_IMAGE_TAG: ${{ steps.load_utility_image_info.outputs.image-tag }}
           PACKAGE_BASENAME: "fullstaq-rbenv_1.1.2-15-2_all.deb"
           REVISION: "2"
 
@@ -394,9 +843,12 @@ jobs:
   build_rbenv_rpm:
     name: Build Rbenv RPM
     needs:
+      - determine_necessary_jobs
       - download_rbenv_source
-      - build_docker_images
+      - build_docker_image_utility
     runs-on: ubuntu-18.04
+    # Run even if a dependent job has been skipped
+    if: '!failure() && !cancelled()'
     steps:
       - uses: actions/checkout@v2
       - name: Fetch Rbenv source
@@ -405,20 +857,21 @@ jobs:
           name: rbenv-src
           path: .
 
-      - name: Determine which Docker image to use for building
+      - name: Download utility Docker image
         uses: actions/download-artifact@v1
+        if: "needs.determine_necessary_jobs.outputs.image-utility-needs-building == 'true'"
         with:
-          name: docker-image-info-utility
+          name: docker-image-utility
           path: .
-      - name: Load utility image info
-        id: load_utility_image_info
-        run: ./internal-scripts/ci-cd/load-docker-image-info.sh
+      - name: Load utility Docker image
+        run: ./internal-scripts/ci-cd/load-docker-image.sh
+        if: "needs.determine_necessary_jobs.outputs.image-utility-needs-building == 'true'"
+        env:
+          TARBALL: image.tar.zst
 
       - name: Build package
         run: ./internal-scripts/ci-cd/build-rbenv-rpm/build-package.sh
         env:
-          UTILITY_IMAGE_NAME: ${{ steps.load_utility_image_info.outputs.image-name }}
-          UTILITY_IMAGE_TAG: ${{ steps.load_utility_image_info.outputs.image-tag }}
           PACKAGE_BASENAME: "fullstaq-rbenv-1.1.2-15-2.noarch.rpm"
           REVISION: "2"
 
@@ -431,18 +884,19 @@ jobs:
 
   ### Ruby ###
 
-  # The Github Actions matrix is limited to producing 256 jobs. Given the
-  # combinatorial explosion, it's very easy to reach that limit, so we
-  # preprocess distribution information using ERB templating instead.
 
 
   build_ruby_packages_centos_7:
-    name: Build Ruby packages [centos-7]
+    name: 'Build Ruby packages [centos-7]'
     needs:
-      - download_ruby_sources
-      - build_jemalloc_binaries
-      - build_docker_images
+      - 'determine_necessary_jobs'
+      - 'download_ruby_sources'
+      - 'build_jemalloc_binary_centos_7'
+      - 'build_docker_image_centos_7'
+      - 'build_docker_image_utility'
     runs-on: ubuntu-18.04
+    # Run even if a dependent job has been skipped
+    if: '!failure() && !cancelled()'
     strategy:
       matrix:
         ruby_package_version: 
@@ -496,36 +950,38 @@ jobs:
       - name: Create cache dir
         run: mkdir -p cache
 
-      - name: Determine which Docker image to use for building
+      - name: Download Docker image necessary for building
         uses: actions/download-artifact@v1
+        if: "needs.determine_necessary_jobs.outputs.image-centos_7-needs-building == 'true'"
         with:
-          name: docker-image-info-centos-7
+          name: 'docker-image-centos-7'
           path: .
-      - name: Load build image info
-        id: load_build_image_info
-        run: ./internal-scripts/ci-cd/load-docker-image-info.sh
+      - name: Load Docker image necessary for building
+        run: ./internal-scripts/ci-cd/load-docker-image.sh
+        if: "needs.determine_necessary_jobs.outputs.image-centos_7-needs-building == 'true'"
+        env:
+          TARBALL: image.tar.zst
       - name: Build binaries
         run: ./internal-scripts/ci-cd/build-ruby-packages/build-binaries.sh
         env:
-          BUILD_IMAGE_NAME: ${{ steps.load_build_image_info.outputs.image-name }}
-          BUILD_IMAGE_TAG: ${{ steps.load_build_image_info.outputs.image-tag }}
           ENVIRONMENT_NAME: "centos-7"
           VARIANT_NAME: ${{ matrix.variant.name }}
           RUBY_PACKAGE_VERSION_ID: ${{ matrix.ruby_package_version.id }}
 
-      - name: Determine which Docker image to use for packaging
+      - name: Download Docker image necessary for packaging
         uses: actions/download-artifact@v1
+        if: "needs.determine_necessary_jobs.outputs.image-utility-needs-building == 'true'"
         with:
-          name: docker-image-info-utility
+          name: 'docker-image-centos-7'
           path: .
-      - name: Load utility image info
-        id: load_utility_image_info
-        run: ./internal-scripts/ci-cd/load-docker-image-info.sh
+      - name: Load Docker image necessary for packaging
+        run: ./internal-scripts/ci-cd/load-docker-image.sh
+        if: "needs.determine_necessary_jobs.outputs.image-utility-needs-building == 'true'"
+        env:
+          TARBALL: image.tar.zst
       - name: Build package
         run: ./internal-scripts/ci-cd/build-ruby-packages/build-package.sh
         env:
-          UTILITY_IMAGE_NAME: ${{ steps.load_utility_image_info.outputs.image-name }}
-          UTILITY_IMAGE_TAG: ${{ steps.load_utility_image_info.outputs.image-tag }}
           DISTRIBUTION_NAME: "centos-7"
           VARIANT_NAME: ${{ matrix.variant.name }}
           VARIANT_PACKAGE_SUFFIX: ${{ matrix.variant.package_suffix }}
@@ -541,12 +997,16 @@ jobs:
 
 
   build_ruby_packages_centos_8:
-    name: Build Ruby packages [centos-8]
+    name: 'Build Ruby packages [centos-8]'
     needs:
-      - download_ruby_sources
-      - build_jemalloc_binaries
-      - build_docker_images
+      - 'determine_necessary_jobs'
+      - 'download_ruby_sources'
+      - 'build_jemalloc_binary_centos_8'
+      - 'build_docker_image_centos_8'
+      - 'build_docker_image_utility'
     runs-on: ubuntu-18.04
+    # Run even if a dependent job has been skipped
+    if: '!failure() && !cancelled()'
     strategy:
       matrix:
         ruby_package_version: 
@@ -600,36 +1060,38 @@ jobs:
       - name: Create cache dir
         run: mkdir -p cache
 
-      - name: Determine which Docker image to use for building
+      - name: Download Docker image necessary for building
         uses: actions/download-artifact@v1
+        if: "needs.determine_necessary_jobs.outputs.image-centos_8-needs-building == 'true'"
         with:
-          name: docker-image-info-centos-8
+          name: 'docker-image-centos-8'
           path: .
-      - name: Load build image info
-        id: load_build_image_info
-        run: ./internal-scripts/ci-cd/load-docker-image-info.sh
+      - name: Load Docker image necessary for building
+        run: ./internal-scripts/ci-cd/load-docker-image.sh
+        if: "needs.determine_necessary_jobs.outputs.image-centos_8-needs-building == 'true'"
+        env:
+          TARBALL: image.tar.zst
       - name: Build binaries
         run: ./internal-scripts/ci-cd/build-ruby-packages/build-binaries.sh
         env:
-          BUILD_IMAGE_NAME: ${{ steps.load_build_image_info.outputs.image-name }}
-          BUILD_IMAGE_TAG: ${{ steps.load_build_image_info.outputs.image-tag }}
           ENVIRONMENT_NAME: "centos-8"
           VARIANT_NAME: ${{ matrix.variant.name }}
           RUBY_PACKAGE_VERSION_ID: ${{ matrix.ruby_package_version.id }}
 
-      - name: Determine which Docker image to use for packaging
+      - name: Download Docker image necessary for packaging
         uses: actions/download-artifact@v1
+        if: "needs.determine_necessary_jobs.outputs.image-utility-needs-building == 'true'"
         with:
-          name: docker-image-info-utility
+          name: 'docker-image-centos-8'
           path: .
-      - name: Load utility image info
-        id: load_utility_image_info
-        run: ./internal-scripts/ci-cd/load-docker-image-info.sh
+      - name: Load Docker image necessary for packaging
+        run: ./internal-scripts/ci-cd/load-docker-image.sh
+        if: "needs.determine_necessary_jobs.outputs.image-utility-needs-building == 'true'"
+        env:
+          TARBALL: image.tar.zst
       - name: Build package
         run: ./internal-scripts/ci-cd/build-ruby-packages/build-package.sh
         env:
-          UTILITY_IMAGE_NAME: ${{ steps.load_utility_image_info.outputs.image-name }}
-          UTILITY_IMAGE_TAG: ${{ steps.load_utility_image_info.outputs.image-tag }}
           DISTRIBUTION_NAME: "centos-8"
           VARIANT_NAME: ${{ matrix.variant.name }}
           VARIANT_PACKAGE_SUFFIX: ${{ matrix.variant.package_suffix }}
@@ -645,12 +1107,16 @@ jobs:
 
 
   build_ruby_packages_debian_10:
-    name: Build Ruby packages [debian-10]
+    name: 'Build Ruby packages [debian-10]'
     needs:
-      - download_ruby_sources
-      - build_jemalloc_binaries
-      - build_docker_images
+      - 'determine_necessary_jobs'
+      - 'download_ruby_sources'
+      - 'build_jemalloc_binary_debian_10'
+      - 'build_docker_image_debian_10'
+      - 'build_docker_image_utility'
     runs-on: ubuntu-18.04
+    # Run even if a dependent job has been skipped
+    if: '!failure() && !cancelled()'
     strategy:
       matrix:
         ruby_package_version: 
@@ -704,36 +1170,38 @@ jobs:
       - name: Create cache dir
         run: mkdir -p cache
 
-      - name: Determine which Docker image to use for building
+      - name: Download Docker image necessary for building
         uses: actions/download-artifact@v1
+        if: "needs.determine_necessary_jobs.outputs.image-debian_10-needs-building == 'true'"
         with:
-          name: docker-image-info-debian-10
+          name: 'docker-image-debian-10'
           path: .
-      - name: Load build image info
-        id: load_build_image_info
-        run: ./internal-scripts/ci-cd/load-docker-image-info.sh
+      - name: Load Docker image necessary for building
+        run: ./internal-scripts/ci-cd/load-docker-image.sh
+        if: "needs.determine_necessary_jobs.outputs.image-debian_10-needs-building == 'true'"
+        env:
+          TARBALL: image.tar.zst
       - name: Build binaries
         run: ./internal-scripts/ci-cd/build-ruby-packages/build-binaries.sh
         env:
-          BUILD_IMAGE_NAME: ${{ steps.load_build_image_info.outputs.image-name }}
-          BUILD_IMAGE_TAG: ${{ steps.load_build_image_info.outputs.image-tag }}
           ENVIRONMENT_NAME: "debian-10"
           VARIANT_NAME: ${{ matrix.variant.name }}
           RUBY_PACKAGE_VERSION_ID: ${{ matrix.ruby_package_version.id }}
 
-      - name: Determine which Docker image to use for packaging
+      - name: Download Docker image necessary for packaging
         uses: actions/download-artifact@v1
+        if: "needs.determine_necessary_jobs.outputs.image-utility-needs-building == 'true'"
         with:
-          name: docker-image-info-utility
+          name: 'docker-image-debian-10'
           path: .
-      - name: Load utility image info
-        id: load_utility_image_info
-        run: ./internal-scripts/ci-cd/load-docker-image-info.sh
+      - name: Load Docker image necessary for packaging
+        run: ./internal-scripts/ci-cd/load-docker-image.sh
+        if: "needs.determine_necessary_jobs.outputs.image-utility-needs-building == 'true'"
+        env:
+          TARBALL: image.tar.zst
       - name: Build package
         run: ./internal-scripts/ci-cd/build-ruby-packages/build-package.sh
         env:
-          UTILITY_IMAGE_NAME: ${{ steps.load_utility_image_info.outputs.image-name }}
-          UTILITY_IMAGE_TAG: ${{ steps.load_utility_image_info.outputs.image-tag }}
           DISTRIBUTION_NAME: "debian-10"
           VARIANT_NAME: ${{ matrix.variant.name }}
           VARIANT_PACKAGE_SUFFIX: ${{ matrix.variant.package_suffix }}
@@ -749,12 +1217,16 @@ jobs:
 
 
   build_ruby_packages_debian_9:
-    name: Build Ruby packages [debian-9]
+    name: 'Build Ruby packages [debian-9]'
     needs:
-      - download_ruby_sources
-      - build_jemalloc_binaries
-      - build_docker_images
+      - 'determine_necessary_jobs'
+      - 'download_ruby_sources'
+      - 'build_jemalloc_binary_debian_9'
+      - 'build_docker_image_debian_9'
+      - 'build_docker_image_utility'
     runs-on: ubuntu-18.04
+    # Run even if a dependent job has been skipped
+    if: '!failure() && !cancelled()'
     strategy:
       matrix:
         ruby_package_version: 
@@ -808,36 +1280,38 @@ jobs:
       - name: Create cache dir
         run: mkdir -p cache
 
-      - name: Determine which Docker image to use for building
+      - name: Download Docker image necessary for building
         uses: actions/download-artifact@v1
+        if: "needs.determine_necessary_jobs.outputs.image-debian_9-needs-building == 'true'"
         with:
-          name: docker-image-info-debian-9
+          name: 'docker-image-debian-9'
           path: .
-      - name: Load build image info
-        id: load_build_image_info
-        run: ./internal-scripts/ci-cd/load-docker-image-info.sh
+      - name: Load Docker image necessary for building
+        run: ./internal-scripts/ci-cd/load-docker-image.sh
+        if: "needs.determine_necessary_jobs.outputs.image-debian_9-needs-building == 'true'"
+        env:
+          TARBALL: image.tar.zst
       - name: Build binaries
         run: ./internal-scripts/ci-cd/build-ruby-packages/build-binaries.sh
         env:
-          BUILD_IMAGE_NAME: ${{ steps.load_build_image_info.outputs.image-name }}
-          BUILD_IMAGE_TAG: ${{ steps.load_build_image_info.outputs.image-tag }}
           ENVIRONMENT_NAME: "debian-9"
           VARIANT_NAME: ${{ matrix.variant.name }}
           RUBY_PACKAGE_VERSION_ID: ${{ matrix.ruby_package_version.id }}
 
-      - name: Determine which Docker image to use for packaging
+      - name: Download Docker image necessary for packaging
         uses: actions/download-artifact@v1
+        if: "needs.determine_necessary_jobs.outputs.image-utility-needs-building == 'true'"
         with:
-          name: docker-image-info-utility
+          name: 'docker-image-debian-9'
           path: .
-      - name: Load utility image info
-        id: load_utility_image_info
-        run: ./internal-scripts/ci-cd/load-docker-image-info.sh
+      - name: Load Docker image necessary for packaging
+        run: ./internal-scripts/ci-cd/load-docker-image.sh
+        if: "needs.determine_necessary_jobs.outputs.image-utility-needs-building == 'true'"
+        env:
+          TARBALL: image.tar.zst
       - name: Build package
         run: ./internal-scripts/ci-cd/build-ruby-packages/build-package.sh
         env:
-          UTILITY_IMAGE_NAME: ${{ steps.load_utility_image_info.outputs.image-name }}
-          UTILITY_IMAGE_TAG: ${{ steps.load_utility_image_info.outputs.image-tag }}
           DISTRIBUTION_NAME: "debian-9"
           VARIANT_NAME: ${{ matrix.variant.name }}
           VARIANT_PACKAGE_SUFFIX: ${{ matrix.variant.package_suffix }}
@@ -853,12 +1327,16 @@ jobs:
 
 
   build_ruby_packages_ubuntu_18_04:
-    name: Build Ruby packages [ubuntu-18.04]
+    name: 'Build Ruby packages [ubuntu-18.04]'
     needs:
-      - download_ruby_sources
-      - build_jemalloc_binaries
-      - build_docker_images
+      - 'determine_necessary_jobs'
+      - 'download_ruby_sources'
+      - 'build_jemalloc_binary_ubuntu_18_04'
+      - 'build_docker_image_ubuntu_18_04'
+      - 'build_docker_image_utility'
     runs-on: ubuntu-18.04
+    # Run even if a dependent job has been skipped
+    if: '!failure() && !cancelled()'
     strategy:
       matrix:
         ruby_package_version: 
@@ -912,36 +1390,38 @@ jobs:
       - name: Create cache dir
         run: mkdir -p cache
 
-      - name: Determine which Docker image to use for building
+      - name: Download Docker image necessary for building
         uses: actions/download-artifact@v1
+        if: "needs.determine_necessary_jobs.outputs.image-ubuntu_18_04-needs-building == 'true'"
         with:
-          name: docker-image-info-ubuntu-18.04
+          name: 'docker-image-ubuntu-18.04'
           path: .
-      - name: Load build image info
-        id: load_build_image_info
-        run: ./internal-scripts/ci-cd/load-docker-image-info.sh
+      - name: Load Docker image necessary for building
+        run: ./internal-scripts/ci-cd/load-docker-image.sh
+        if: "needs.determine_necessary_jobs.outputs.image-ubuntu_18_04-needs-building == 'true'"
+        env:
+          TARBALL: image.tar.zst
       - name: Build binaries
         run: ./internal-scripts/ci-cd/build-ruby-packages/build-binaries.sh
         env:
-          BUILD_IMAGE_NAME: ${{ steps.load_build_image_info.outputs.image-name }}
-          BUILD_IMAGE_TAG: ${{ steps.load_build_image_info.outputs.image-tag }}
           ENVIRONMENT_NAME: "ubuntu-18.04"
           VARIANT_NAME: ${{ matrix.variant.name }}
           RUBY_PACKAGE_VERSION_ID: ${{ matrix.ruby_package_version.id }}
 
-      - name: Determine which Docker image to use for packaging
+      - name: Download Docker image necessary for packaging
         uses: actions/download-artifact@v1
+        if: "needs.determine_necessary_jobs.outputs.image-utility-needs-building == 'true'"
         with:
-          name: docker-image-info-utility
+          name: 'docker-image-ubuntu-18.04'
           path: .
-      - name: Load utility image info
-        id: load_utility_image_info
-        run: ./internal-scripts/ci-cd/load-docker-image-info.sh
+      - name: Load Docker image necessary for packaging
+        run: ./internal-scripts/ci-cd/load-docker-image.sh
+        if: "needs.determine_necessary_jobs.outputs.image-utility-needs-building == 'true'"
+        env:
+          TARBALL: image.tar.zst
       - name: Build package
         run: ./internal-scripts/ci-cd/build-ruby-packages/build-package.sh
         env:
-          UTILITY_IMAGE_NAME: ${{ steps.load_utility_image_info.outputs.image-name }}
-          UTILITY_IMAGE_TAG: ${{ steps.load_utility_image_info.outputs.image-tag }}
           DISTRIBUTION_NAME: "ubuntu-18.04"
           VARIANT_NAME: ${{ matrix.variant.name }}
           VARIANT_PACKAGE_SUFFIX: ${{ matrix.variant.package_suffix }}
@@ -957,12 +1437,16 @@ jobs:
 
 
   build_ruby_packages_ubuntu_20_04:
-    name: Build Ruby packages [ubuntu-20.04]
+    name: 'Build Ruby packages [ubuntu-20.04]'
     needs:
-      - download_ruby_sources
-      - build_jemalloc_binaries
-      - build_docker_images
+      - 'determine_necessary_jobs'
+      - 'download_ruby_sources'
+      - 'build_jemalloc_binary_ubuntu_20_04'
+      - 'build_docker_image_ubuntu_20_04'
+      - 'build_docker_image_utility'
     runs-on: ubuntu-18.04
+    # Run even if a dependent job has been skipped
+    if: '!failure() && !cancelled()'
     strategy:
       matrix:
         ruby_package_version: 
@@ -1016,36 +1500,38 @@ jobs:
       - name: Create cache dir
         run: mkdir -p cache
 
-      - name: Determine which Docker image to use for building
+      - name: Download Docker image necessary for building
         uses: actions/download-artifact@v1
+        if: "needs.determine_necessary_jobs.outputs.image-ubuntu_20_04-needs-building == 'true'"
         with:
-          name: docker-image-info-ubuntu-20.04
+          name: 'docker-image-ubuntu-20.04'
           path: .
-      - name: Load build image info
-        id: load_build_image_info
-        run: ./internal-scripts/ci-cd/load-docker-image-info.sh
+      - name: Load Docker image necessary for building
+        run: ./internal-scripts/ci-cd/load-docker-image.sh
+        if: "needs.determine_necessary_jobs.outputs.image-ubuntu_20_04-needs-building == 'true'"
+        env:
+          TARBALL: image.tar.zst
       - name: Build binaries
         run: ./internal-scripts/ci-cd/build-ruby-packages/build-binaries.sh
         env:
-          BUILD_IMAGE_NAME: ${{ steps.load_build_image_info.outputs.image-name }}
-          BUILD_IMAGE_TAG: ${{ steps.load_build_image_info.outputs.image-tag }}
           ENVIRONMENT_NAME: "ubuntu-20.04"
           VARIANT_NAME: ${{ matrix.variant.name }}
           RUBY_PACKAGE_VERSION_ID: ${{ matrix.ruby_package_version.id }}
 
-      - name: Determine which Docker image to use for packaging
+      - name: Download Docker image necessary for packaging
         uses: actions/download-artifact@v1
+        if: "needs.determine_necessary_jobs.outputs.image-utility-needs-building == 'true'"
         with:
-          name: docker-image-info-utility
+          name: 'docker-image-ubuntu-20.04'
           path: .
-      - name: Load utility image info
-        id: load_utility_image_info
-        run: ./internal-scripts/ci-cd/load-docker-image-info.sh
+      - name: Load Docker image necessary for packaging
+        run: ./internal-scripts/ci-cd/load-docker-image.sh
+        if: "needs.determine_necessary_jobs.outputs.image-utility-needs-building == 'true'"
+        env:
+          TARBALL: image.tar.zst
       - name: Build package
         run: ./internal-scripts/ci-cd/build-ruby-packages/build-package.sh
         env:
-          UTILITY_IMAGE_NAME: ${{ steps.load_utility_image_info.outputs.image-name }}
-          UTILITY_IMAGE_TAG: ${{ steps.load_utility_image_info.outputs.image-tag }}
           DISTRIBUTION_NAME: "ubuntu-20.04"
           VARIANT_NAME: ${{ matrix.variant.name }}
           VARIANT_PACKAGE_SUFFIX: ${{ matrix.variant.package_suffix }}
@@ -1067,15 +1553,8 @@ jobs:
     name: Create test APT repo
     runs-on: ubuntu-18.04
     needs:
-
-      - build_ruby_packages_debian_10
-
-      - build_ruby_packages_debian_9
-
-      - build_ruby_packages_ubuntu_18_04
-
-      - build_ruby_packages_ubuntu_20_04
-
+      - check_workflow_uptodate
+      - check_version_numbers_need_bumping
     steps:
       - uses: actions/checkout@v2
       - name: Recreate repo
@@ -1089,11 +1568,8 @@ jobs:
   create_test_yum_repo:
     name: Create test YUM repo
     needs:
-
-      - build_ruby_packages_centos_7
-
-      - build_ruby_packages_centos_8
-
+      - check_workflow_uptodate
+      - check_version_numbers_need_bumping
     runs-on: ubuntu-18.04
     steps:
       - uses: actions/checkout@v2
@@ -1110,9 +1586,14 @@ jobs:
   publish_common_and_rbenv_debs_test:
     name: Publish common and Rbenv DEBs to test repo
     needs:
-      - build_docker_images
+      - determine_necessary_jobs
+      - build_docker_image_utility
       - create_test_apt_repo
+      - build_common_deb
+      - build_rbenv_deb
     runs-on: ubuntu-18.04
+    # Run even if a dependent job has been skipped
+    if: '!failure() && !cancelled()'
     steps:
       - uses: actions/checkout@v2
       - name: Download artifact
@@ -1126,20 +1607,21 @@ jobs:
           name: rbenv-deb
           path: .
 
-      - name: Determine which Docker image to use for publishing
+      - name: Download utility Docker image
         uses: actions/download-artifact@v1
+        if: "needs.determine_necessary_jobs.outputs.image-utility-needs-building == 'true'"
         with:
-          name: docker-image-info-utility
+          name: docker-image-utility
           path: .
-      - name: Load utility image info
-        id: load_utility_image_info
-        run: ./internal-scripts/ci-cd/load-docker-image-info.sh
+      - name: Load utility Docker image
+        run: ./internal-scripts/ci-cd/load-docker-image.sh
+        if: "needs.determine_necessary_jobs.outputs.image-utility-needs-building == 'true'"
+        env:
+          TARBALL: image.tar.zst
 
       - name: Upload to repo
         run: ./internal-scripts/ci-cd/publish/publish-debs.sh *.deb
         env:
-          UTILITY_IMAGE_NAME: ${{ steps.load_utility_image_info.outputs.image-name }}
-          UTILITY_IMAGE_TAG: ${{ steps.load_utility_image_info.outputs.image-tag }}
           BINTRAY_API_USERNAME: ${{ secrets.BINTRAY_API_USERNAME }}
           BINTRAY_API_KEY: ${{ secrets.BINTRAY_API_KEY }}
           REPO_NAME: fullstaq-ruby-apt-ci-${{ github.run_number }}
@@ -1150,9 +1632,14 @@ jobs:
   publish_common_and_rbenv_rpms_test:
     name: Publish common and Rbenv RPMs to test repo
     needs:
-      - build_docker_images
+      - determine_necessary_jobs
+      - build_docker_image_utility
       - create_test_yum_repo
+      - build_common_rpm
+      - build_rbenv_rpm
     runs-on: ubuntu-18.04
+    # Run even if a dependent job has been skipped
+    if: '!failure() && !cancelled()'
     steps:
       - uses: actions/checkout@v2
       - name: Download artifact
@@ -1166,20 +1653,21 @@ jobs:
           name: rbenv-rpm
           path: .
 
-      - name: Determine which Docker image to use for publishing
+      - name: Download utility Docker image
         uses: actions/download-artifact@v1
+        if: "needs.determine_necessary_jobs.outputs.image-utility-needs-building == 'true'"
         with:
-          name: docker-image-info-utility
+          name: docker-image-utility
           path: .
-      - name: Load utility image info
-        id: load_utility_image_info
-        run: ./internal-scripts/ci-cd/load-docker-image-info.sh
+      - name: Load utility Docker image
+        run: ./internal-scripts/ci-cd/load-docker-image.sh
+        if: "needs.determine_necessary_jobs.outputs.image-utility-needs-building == 'true'"
+        env:
+          TARBALL: image.tar.zst
 
       - name: Upload to repo
         run: ./internal-scripts/ci-cd/publish/publish-rpms.sh *.rpm
         env:
-          UTILITY_IMAGE_NAME: ${{ steps.load_utility_image_info.outputs.image-name }}
-          UTILITY_IMAGE_TAG: ${{ steps.load_utility_image_info.outputs.image-tag }}
           BINTRAY_API_USERNAME: ${{ secrets.BINTRAY_API_USERNAME }}
           BINTRAY_API_KEY: ${{ secrets.BINTRAY_API_KEY }}
           REPO_NAME: fullstaq-ruby-yum-ci-${{ github.run_number }}
@@ -1192,13 +1680,25 @@ jobs:
   publish_ruby_packages_test:
     name: Publish Ruby packages to test repo
     needs:
-      - build_docker_images
+      - determine_necessary_jobs
+      - build_docker_image_utility
       - create_test_apt_repo
       - create_test_yum_repo
+      - build_common_deb
+      - build_rbenv_deb
+      - build_common_rpm
+      - build_rbenv_rpm
+      - build_ruby_packages_centos_7
+      - build_ruby_packages_centos_8
+      - build_ruby_packages_debian_10
+      - build_ruby_packages_debian_9
+      - build_ruby_packages_ubuntu_18_04
+      - build_ruby_packages_ubuntu_20_04
     runs-on: ubuntu-18.04
+    # Run even if a dependent job has been skipped
+    if: '!failure() && !cancelled()'
     steps:
       - uses: actions/checkout@v2
-
 
 
       - name: Fetch ruby-pkg_2.7_centos-7_normal
@@ -1206,771 +1706,557 @@ jobs:
         with:
           name: ruby-pkg_2.7_centos-7_normal
           path: ruby-pkgs
-
-
       - name: Fetch ruby-pkg_2.7_centos-7_jemalloc
         uses: actions/download-artifact@v1
         with:
           name: ruby-pkg_2.7_centos-7_jemalloc
           path: ruby-pkgs
-
-
       - name: Fetch ruby-pkg_2.7_centos-7_malloctrim
         uses: actions/download-artifact@v1
         with:
           name: ruby-pkg_2.7_centos-7_malloctrim
           path: ruby-pkgs
-
-
       - name: Fetch ruby-pkg_2.7_centos-8_normal
         uses: actions/download-artifact@v1
         with:
           name: ruby-pkg_2.7_centos-8_normal
           path: ruby-pkgs
-
-
       - name: Fetch ruby-pkg_2.7_centos-8_jemalloc
         uses: actions/download-artifact@v1
         with:
           name: ruby-pkg_2.7_centos-8_jemalloc
           path: ruby-pkgs
-
-
       - name: Fetch ruby-pkg_2.7_centos-8_malloctrim
         uses: actions/download-artifact@v1
         with:
           name: ruby-pkg_2.7_centos-8_malloctrim
           path: ruby-pkgs
-
-
       - name: Fetch ruby-pkg_2.7_debian-10_normal
         uses: actions/download-artifact@v1
         with:
           name: ruby-pkg_2.7_debian-10_normal
           path: ruby-pkgs
-
-
       - name: Fetch ruby-pkg_2.7_debian-10_jemalloc
         uses: actions/download-artifact@v1
         with:
           name: ruby-pkg_2.7_debian-10_jemalloc
           path: ruby-pkgs
-
-
       - name: Fetch ruby-pkg_2.7_debian-10_malloctrim
         uses: actions/download-artifact@v1
         with:
           name: ruby-pkg_2.7_debian-10_malloctrim
           path: ruby-pkgs
-
-
       - name: Fetch ruby-pkg_2.7_debian-9_normal
         uses: actions/download-artifact@v1
         with:
           name: ruby-pkg_2.7_debian-9_normal
           path: ruby-pkgs
-
-
       - name: Fetch ruby-pkg_2.7_debian-9_jemalloc
         uses: actions/download-artifact@v1
         with:
           name: ruby-pkg_2.7_debian-9_jemalloc
           path: ruby-pkgs
-
-
       - name: Fetch ruby-pkg_2.7_debian-9_malloctrim
         uses: actions/download-artifact@v1
         with:
           name: ruby-pkg_2.7_debian-9_malloctrim
           path: ruby-pkgs
-
-
       - name: Fetch ruby-pkg_2.7_ubuntu-18.04_normal
         uses: actions/download-artifact@v1
         with:
           name: ruby-pkg_2.7_ubuntu-18.04_normal
           path: ruby-pkgs
-
-
       - name: Fetch ruby-pkg_2.7_ubuntu-18.04_jemalloc
         uses: actions/download-artifact@v1
         with:
           name: ruby-pkg_2.7_ubuntu-18.04_jemalloc
           path: ruby-pkgs
-
-
       - name: Fetch ruby-pkg_2.7_ubuntu-18.04_malloctrim
         uses: actions/download-artifact@v1
         with:
           name: ruby-pkg_2.7_ubuntu-18.04_malloctrim
           path: ruby-pkgs
-
-
       - name: Fetch ruby-pkg_2.7_ubuntu-20.04_normal
         uses: actions/download-artifact@v1
         with:
           name: ruby-pkg_2.7_ubuntu-20.04_normal
           path: ruby-pkgs
-
-
       - name: Fetch ruby-pkg_2.7_ubuntu-20.04_jemalloc
         uses: actions/download-artifact@v1
         with:
           name: ruby-pkg_2.7_ubuntu-20.04_jemalloc
           path: ruby-pkgs
-
-
       - name: Fetch ruby-pkg_2.7_ubuntu-20.04_malloctrim
         uses: actions/download-artifact@v1
         with:
           name: ruby-pkg_2.7_ubuntu-20.04_malloctrim
           path: ruby-pkgs
-
-
       - name: Fetch ruby-pkg_2.6_centos-7_normal
         uses: actions/download-artifact@v1
         with:
           name: ruby-pkg_2.6_centos-7_normal
           path: ruby-pkgs
-
-
       - name: Fetch ruby-pkg_2.6_centos-7_jemalloc
         uses: actions/download-artifact@v1
         with:
           name: ruby-pkg_2.6_centos-7_jemalloc
           path: ruby-pkgs
-
-
       - name: Fetch ruby-pkg_2.6_centos-7_malloctrim
         uses: actions/download-artifact@v1
         with:
           name: ruby-pkg_2.6_centos-7_malloctrim
           path: ruby-pkgs
-
-
       - name: Fetch ruby-pkg_2.6_centos-8_normal
         uses: actions/download-artifact@v1
         with:
           name: ruby-pkg_2.6_centos-8_normal
           path: ruby-pkgs
-
-
       - name: Fetch ruby-pkg_2.6_centos-8_jemalloc
         uses: actions/download-artifact@v1
         with:
           name: ruby-pkg_2.6_centos-8_jemalloc
           path: ruby-pkgs
-
-
       - name: Fetch ruby-pkg_2.6_centos-8_malloctrim
         uses: actions/download-artifact@v1
         with:
           name: ruby-pkg_2.6_centos-8_malloctrim
           path: ruby-pkgs
-
-
       - name: Fetch ruby-pkg_2.6_debian-10_normal
         uses: actions/download-artifact@v1
         with:
           name: ruby-pkg_2.6_debian-10_normal
           path: ruby-pkgs
-
-
       - name: Fetch ruby-pkg_2.6_debian-10_jemalloc
         uses: actions/download-artifact@v1
         with:
           name: ruby-pkg_2.6_debian-10_jemalloc
           path: ruby-pkgs
-
-
       - name: Fetch ruby-pkg_2.6_debian-10_malloctrim
         uses: actions/download-artifact@v1
         with:
           name: ruby-pkg_2.6_debian-10_malloctrim
           path: ruby-pkgs
-
-
       - name: Fetch ruby-pkg_2.6_debian-9_normal
         uses: actions/download-artifact@v1
         with:
           name: ruby-pkg_2.6_debian-9_normal
           path: ruby-pkgs
-
-
       - name: Fetch ruby-pkg_2.6_debian-9_jemalloc
         uses: actions/download-artifact@v1
         with:
           name: ruby-pkg_2.6_debian-9_jemalloc
           path: ruby-pkgs
-
-
       - name: Fetch ruby-pkg_2.6_debian-9_malloctrim
         uses: actions/download-artifact@v1
         with:
           name: ruby-pkg_2.6_debian-9_malloctrim
           path: ruby-pkgs
-
-
       - name: Fetch ruby-pkg_2.6_ubuntu-18.04_normal
         uses: actions/download-artifact@v1
         with:
           name: ruby-pkg_2.6_ubuntu-18.04_normal
           path: ruby-pkgs
-
-
       - name: Fetch ruby-pkg_2.6_ubuntu-18.04_jemalloc
         uses: actions/download-artifact@v1
         with:
           name: ruby-pkg_2.6_ubuntu-18.04_jemalloc
           path: ruby-pkgs
-
-
       - name: Fetch ruby-pkg_2.6_ubuntu-18.04_malloctrim
         uses: actions/download-artifact@v1
         with:
           name: ruby-pkg_2.6_ubuntu-18.04_malloctrim
           path: ruby-pkgs
-
-
       - name: Fetch ruby-pkg_2.6_ubuntu-20.04_normal
         uses: actions/download-artifact@v1
         with:
           name: ruby-pkg_2.6_ubuntu-20.04_normal
           path: ruby-pkgs
-
-
       - name: Fetch ruby-pkg_2.6_ubuntu-20.04_jemalloc
         uses: actions/download-artifact@v1
         with:
           name: ruby-pkg_2.6_ubuntu-20.04_jemalloc
           path: ruby-pkgs
-
-
       - name: Fetch ruby-pkg_2.6_ubuntu-20.04_malloctrim
         uses: actions/download-artifact@v1
         with:
           name: ruby-pkg_2.6_ubuntu-20.04_malloctrim
           path: ruby-pkgs
-
-
       - name: Fetch ruby-pkg_2.5_centos-7_normal
         uses: actions/download-artifact@v1
         with:
           name: ruby-pkg_2.5_centos-7_normal
           path: ruby-pkgs
-
-
       - name: Fetch ruby-pkg_2.5_centos-7_jemalloc
         uses: actions/download-artifact@v1
         with:
           name: ruby-pkg_2.5_centos-7_jemalloc
           path: ruby-pkgs
-
-
       - name: Fetch ruby-pkg_2.5_centos-7_malloctrim
         uses: actions/download-artifact@v1
         with:
           name: ruby-pkg_2.5_centos-7_malloctrim
           path: ruby-pkgs
-
-
       - name: Fetch ruby-pkg_2.5_centos-8_normal
         uses: actions/download-artifact@v1
         with:
           name: ruby-pkg_2.5_centos-8_normal
           path: ruby-pkgs
-
-
       - name: Fetch ruby-pkg_2.5_centos-8_jemalloc
         uses: actions/download-artifact@v1
         with:
           name: ruby-pkg_2.5_centos-8_jemalloc
           path: ruby-pkgs
-
-
       - name: Fetch ruby-pkg_2.5_centos-8_malloctrim
         uses: actions/download-artifact@v1
         with:
           name: ruby-pkg_2.5_centos-8_malloctrim
           path: ruby-pkgs
-
-
       - name: Fetch ruby-pkg_2.5_debian-10_normal
         uses: actions/download-artifact@v1
         with:
           name: ruby-pkg_2.5_debian-10_normal
           path: ruby-pkgs
-
-
       - name: Fetch ruby-pkg_2.5_debian-10_jemalloc
         uses: actions/download-artifact@v1
         with:
           name: ruby-pkg_2.5_debian-10_jemalloc
           path: ruby-pkgs
-
-
       - name: Fetch ruby-pkg_2.5_debian-10_malloctrim
         uses: actions/download-artifact@v1
         with:
           name: ruby-pkg_2.5_debian-10_malloctrim
           path: ruby-pkgs
-
-
       - name: Fetch ruby-pkg_2.5_debian-9_normal
         uses: actions/download-artifact@v1
         with:
           name: ruby-pkg_2.5_debian-9_normal
           path: ruby-pkgs
-
-
       - name: Fetch ruby-pkg_2.5_debian-9_jemalloc
         uses: actions/download-artifact@v1
         with:
           name: ruby-pkg_2.5_debian-9_jemalloc
           path: ruby-pkgs
-
-
       - name: Fetch ruby-pkg_2.5_debian-9_malloctrim
         uses: actions/download-artifact@v1
         with:
           name: ruby-pkg_2.5_debian-9_malloctrim
           path: ruby-pkgs
-
-
       - name: Fetch ruby-pkg_2.5_ubuntu-18.04_normal
         uses: actions/download-artifact@v1
         with:
           name: ruby-pkg_2.5_ubuntu-18.04_normal
           path: ruby-pkgs
-
-
       - name: Fetch ruby-pkg_2.5_ubuntu-18.04_jemalloc
         uses: actions/download-artifact@v1
         with:
           name: ruby-pkg_2.5_ubuntu-18.04_jemalloc
           path: ruby-pkgs
-
-
       - name: Fetch ruby-pkg_2.5_ubuntu-18.04_malloctrim
         uses: actions/download-artifact@v1
         with:
           name: ruby-pkg_2.5_ubuntu-18.04_malloctrim
           path: ruby-pkgs
-
-
       - name: Fetch ruby-pkg_2.5_ubuntu-20.04_normal
         uses: actions/download-artifact@v1
         with:
           name: ruby-pkg_2.5_ubuntu-20.04_normal
           path: ruby-pkgs
-
-
       - name: Fetch ruby-pkg_2.5_ubuntu-20.04_jemalloc
         uses: actions/download-artifact@v1
         with:
           name: ruby-pkg_2.5_ubuntu-20.04_jemalloc
           path: ruby-pkgs
-
-
       - name: Fetch ruby-pkg_2.5_ubuntu-20.04_malloctrim
         uses: actions/download-artifact@v1
         with:
           name: ruby-pkg_2.5_ubuntu-20.04_malloctrim
           path: ruby-pkgs
-
-
       - name: Fetch ruby-pkg_2.7.1_centos-7_normal
         uses: actions/download-artifact@v1
         with:
           name: ruby-pkg_2.7.1_centos-7_normal
           path: ruby-pkgs
-
-
       - name: Fetch ruby-pkg_2.7.1_centos-7_jemalloc
         uses: actions/download-artifact@v1
         with:
           name: ruby-pkg_2.7.1_centos-7_jemalloc
           path: ruby-pkgs
-
-
       - name: Fetch ruby-pkg_2.7.1_centos-7_malloctrim
         uses: actions/download-artifact@v1
         with:
           name: ruby-pkg_2.7.1_centos-7_malloctrim
           path: ruby-pkgs
-
-
       - name: Fetch ruby-pkg_2.7.1_centos-8_normal
         uses: actions/download-artifact@v1
         with:
           name: ruby-pkg_2.7.1_centos-8_normal
           path: ruby-pkgs
-
-
       - name: Fetch ruby-pkg_2.7.1_centos-8_jemalloc
         uses: actions/download-artifact@v1
         with:
           name: ruby-pkg_2.7.1_centos-8_jemalloc
           path: ruby-pkgs
-
-
       - name: Fetch ruby-pkg_2.7.1_centos-8_malloctrim
         uses: actions/download-artifact@v1
         with:
           name: ruby-pkg_2.7.1_centos-8_malloctrim
           path: ruby-pkgs
-
-
       - name: Fetch ruby-pkg_2.7.1_debian-10_normal
         uses: actions/download-artifact@v1
         with:
           name: ruby-pkg_2.7.1_debian-10_normal
           path: ruby-pkgs
-
-
       - name: Fetch ruby-pkg_2.7.1_debian-10_jemalloc
         uses: actions/download-artifact@v1
         with:
           name: ruby-pkg_2.7.1_debian-10_jemalloc
           path: ruby-pkgs
-
-
       - name: Fetch ruby-pkg_2.7.1_debian-10_malloctrim
         uses: actions/download-artifact@v1
         with:
           name: ruby-pkg_2.7.1_debian-10_malloctrim
           path: ruby-pkgs
-
-
       - name: Fetch ruby-pkg_2.7.1_debian-9_normal
         uses: actions/download-artifact@v1
         with:
           name: ruby-pkg_2.7.1_debian-9_normal
           path: ruby-pkgs
-
-
       - name: Fetch ruby-pkg_2.7.1_debian-9_jemalloc
         uses: actions/download-artifact@v1
         with:
           name: ruby-pkg_2.7.1_debian-9_jemalloc
           path: ruby-pkgs
-
-
       - name: Fetch ruby-pkg_2.7.1_debian-9_malloctrim
         uses: actions/download-artifact@v1
         with:
           name: ruby-pkg_2.7.1_debian-9_malloctrim
           path: ruby-pkgs
-
-
       - name: Fetch ruby-pkg_2.7.1_ubuntu-18.04_normal
         uses: actions/download-artifact@v1
         with:
           name: ruby-pkg_2.7.1_ubuntu-18.04_normal
           path: ruby-pkgs
-
-
       - name: Fetch ruby-pkg_2.7.1_ubuntu-18.04_jemalloc
         uses: actions/download-artifact@v1
         with:
           name: ruby-pkg_2.7.1_ubuntu-18.04_jemalloc
           path: ruby-pkgs
-
-
       - name: Fetch ruby-pkg_2.7.1_ubuntu-18.04_malloctrim
         uses: actions/download-artifact@v1
         with:
           name: ruby-pkg_2.7.1_ubuntu-18.04_malloctrim
           path: ruby-pkgs
-
-
       - name: Fetch ruby-pkg_2.7.1_ubuntu-20.04_normal
         uses: actions/download-artifact@v1
         with:
           name: ruby-pkg_2.7.1_ubuntu-20.04_normal
           path: ruby-pkgs
-
-
       - name: Fetch ruby-pkg_2.7.1_ubuntu-20.04_jemalloc
         uses: actions/download-artifact@v1
         with:
           name: ruby-pkg_2.7.1_ubuntu-20.04_jemalloc
           path: ruby-pkgs
-
-
       - name: Fetch ruby-pkg_2.7.1_ubuntu-20.04_malloctrim
         uses: actions/download-artifact@v1
         with:
           name: ruby-pkg_2.7.1_ubuntu-20.04_malloctrim
           path: ruby-pkgs
-
-
       - name: Fetch ruby-pkg_2.6.6_centos-7_normal
         uses: actions/download-artifact@v1
         with:
           name: ruby-pkg_2.6.6_centos-7_normal
           path: ruby-pkgs
-
-
       - name: Fetch ruby-pkg_2.6.6_centos-7_jemalloc
         uses: actions/download-artifact@v1
         with:
           name: ruby-pkg_2.6.6_centos-7_jemalloc
           path: ruby-pkgs
-
-
       - name: Fetch ruby-pkg_2.6.6_centos-7_malloctrim
         uses: actions/download-artifact@v1
         with:
           name: ruby-pkg_2.6.6_centos-7_malloctrim
           path: ruby-pkgs
-
-
       - name: Fetch ruby-pkg_2.6.6_centos-8_normal
         uses: actions/download-artifact@v1
         with:
           name: ruby-pkg_2.6.6_centos-8_normal
           path: ruby-pkgs
-
-
       - name: Fetch ruby-pkg_2.6.6_centos-8_jemalloc
         uses: actions/download-artifact@v1
         with:
           name: ruby-pkg_2.6.6_centos-8_jemalloc
           path: ruby-pkgs
-
-
       - name: Fetch ruby-pkg_2.6.6_centos-8_malloctrim
         uses: actions/download-artifact@v1
         with:
           name: ruby-pkg_2.6.6_centos-8_malloctrim
           path: ruby-pkgs
-
-
       - name: Fetch ruby-pkg_2.6.6_debian-10_normal
         uses: actions/download-artifact@v1
         with:
           name: ruby-pkg_2.6.6_debian-10_normal
           path: ruby-pkgs
-
-
       - name: Fetch ruby-pkg_2.6.6_debian-10_jemalloc
         uses: actions/download-artifact@v1
         with:
           name: ruby-pkg_2.6.6_debian-10_jemalloc
           path: ruby-pkgs
-
-
       - name: Fetch ruby-pkg_2.6.6_debian-10_malloctrim
         uses: actions/download-artifact@v1
         with:
           name: ruby-pkg_2.6.6_debian-10_malloctrim
           path: ruby-pkgs
-
-
       - name: Fetch ruby-pkg_2.6.6_debian-9_normal
         uses: actions/download-artifact@v1
         with:
           name: ruby-pkg_2.6.6_debian-9_normal
           path: ruby-pkgs
-
-
       - name: Fetch ruby-pkg_2.6.6_debian-9_jemalloc
         uses: actions/download-artifact@v1
         with:
           name: ruby-pkg_2.6.6_debian-9_jemalloc
           path: ruby-pkgs
-
-
       - name: Fetch ruby-pkg_2.6.6_debian-9_malloctrim
         uses: actions/download-artifact@v1
         with:
           name: ruby-pkg_2.6.6_debian-9_malloctrim
           path: ruby-pkgs
-
-
       - name: Fetch ruby-pkg_2.6.6_ubuntu-18.04_normal
         uses: actions/download-artifact@v1
         with:
           name: ruby-pkg_2.6.6_ubuntu-18.04_normal
           path: ruby-pkgs
-
-
       - name: Fetch ruby-pkg_2.6.6_ubuntu-18.04_jemalloc
         uses: actions/download-artifact@v1
         with:
           name: ruby-pkg_2.6.6_ubuntu-18.04_jemalloc
           path: ruby-pkgs
-
-
       - name: Fetch ruby-pkg_2.6.6_ubuntu-18.04_malloctrim
         uses: actions/download-artifact@v1
         with:
           name: ruby-pkg_2.6.6_ubuntu-18.04_malloctrim
           path: ruby-pkgs
-
-
       - name: Fetch ruby-pkg_2.6.6_ubuntu-20.04_normal
         uses: actions/download-artifact@v1
         with:
           name: ruby-pkg_2.6.6_ubuntu-20.04_normal
           path: ruby-pkgs
-
-
       - name: Fetch ruby-pkg_2.6.6_ubuntu-20.04_jemalloc
         uses: actions/download-artifact@v1
         with:
           name: ruby-pkg_2.6.6_ubuntu-20.04_jemalloc
           path: ruby-pkgs
-
-
       - name: Fetch ruby-pkg_2.6.6_ubuntu-20.04_malloctrim
         uses: actions/download-artifact@v1
         with:
           name: ruby-pkg_2.6.6_ubuntu-20.04_malloctrim
           path: ruby-pkgs
-
-
       - name: Fetch ruby-pkg_2.5.8_centos-7_normal
         uses: actions/download-artifact@v1
         with:
           name: ruby-pkg_2.5.8_centos-7_normal
           path: ruby-pkgs
-
-
       - name: Fetch ruby-pkg_2.5.8_centos-7_jemalloc
         uses: actions/download-artifact@v1
         with:
           name: ruby-pkg_2.5.8_centos-7_jemalloc
           path: ruby-pkgs
-
-
       - name: Fetch ruby-pkg_2.5.8_centos-7_malloctrim
         uses: actions/download-artifact@v1
         with:
           name: ruby-pkg_2.5.8_centos-7_malloctrim
           path: ruby-pkgs
-
-
       - name: Fetch ruby-pkg_2.5.8_centos-8_normal
         uses: actions/download-artifact@v1
         with:
           name: ruby-pkg_2.5.8_centos-8_normal
           path: ruby-pkgs
-
-
       - name: Fetch ruby-pkg_2.5.8_centos-8_jemalloc
         uses: actions/download-artifact@v1
         with:
           name: ruby-pkg_2.5.8_centos-8_jemalloc
           path: ruby-pkgs
-
-
       - name: Fetch ruby-pkg_2.5.8_centos-8_malloctrim
         uses: actions/download-artifact@v1
         with:
           name: ruby-pkg_2.5.8_centos-8_malloctrim
           path: ruby-pkgs
-
-
       - name: Fetch ruby-pkg_2.5.8_debian-10_normal
         uses: actions/download-artifact@v1
         with:
           name: ruby-pkg_2.5.8_debian-10_normal
           path: ruby-pkgs
-
-
       - name: Fetch ruby-pkg_2.5.8_debian-10_jemalloc
         uses: actions/download-artifact@v1
         with:
           name: ruby-pkg_2.5.8_debian-10_jemalloc
           path: ruby-pkgs
-
-
       - name: Fetch ruby-pkg_2.5.8_debian-10_malloctrim
         uses: actions/download-artifact@v1
         with:
           name: ruby-pkg_2.5.8_debian-10_malloctrim
           path: ruby-pkgs
-
-
       - name: Fetch ruby-pkg_2.5.8_debian-9_normal
         uses: actions/download-artifact@v1
         with:
           name: ruby-pkg_2.5.8_debian-9_normal
           path: ruby-pkgs
-
-
       - name: Fetch ruby-pkg_2.5.8_debian-9_jemalloc
         uses: actions/download-artifact@v1
         with:
           name: ruby-pkg_2.5.8_debian-9_jemalloc
           path: ruby-pkgs
-
-
       - name: Fetch ruby-pkg_2.5.8_debian-9_malloctrim
         uses: actions/download-artifact@v1
         with:
           name: ruby-pkg_2.5.8_debian-9_malloctrim
           path: ruby-pkgs
-
-
       - name: Fetch ruby-pkg_2.5.8_ubuntu-18.04_normal
         uses: actions/download-artifact@v1
         with:
           name: ruby-pkg_2.5.8_ubuntu-18.04_normal
           path: ruby-pkgs
-
-
       - name: Fetch ruby-pkg_2.5.8_ubuntu-18.04_jemalloc
         uses: actions/download-artifact@v1
         with:
           name: ruby-pkg_2.5.8_ubuntu-18.04_jemalloc
           path: ruby-pkgs
-
-
       - name: Fetch ruby-pkg_2.5.8_ubuntu-18.04_malloctrim
         uses: actions/download-artifact@v1
         with:
           name: ruby-pkg_2.5.8_ubuntu-18.04_malloctrim
           path: ruby-pkgs
-
-
       - name: Fetch ruby-pkg_2.5.8_ubuntu-20.04_normal
         uses: actions/download-artifact@v1
         with:
           name: ruby-pkg_2.5.8_ubuntu-20.04_normal
           path: ruby-pkgs
-
-
       - name: Fetch ruby-pkg_2.5.8_ubuntu-20.04_jemalloc
         uses: actions/download-artifact@v1
         with:
           name: ruby-pkg_2.5.8_ubuntu-20.04_jemalloc
           path: ruby-pkgs
-
-
       - name: Fetch ruby-pkg_2.5.8_ubuntu-20.04_malloctrim
         uses: actions/download-artifact@v1
         with:
           name: ruby-pkg_2.5.8_ubuntu-20.04_malloctrim
           path: ruby-pkgs
 
-
-      - name: Determine which Docker image to use for publishing
+      - name: Download Docker image necessary for testing
         uses: actions/download-artifact@v1
+        if: "needs.determine_necessary_jobs.outputs.image-utility-needs-building == 'true'"
         with:
-          name: docker-image-info-utility
+          name: docker-image-utility
           path: .
-      - name: Load utility image info
-        id: load_utility_image_info
-        run: ./internal-scripts/ci-cd/load-docker-image-info.sh
+      - name: Load Docker image necessary for testing
+        run: ./internal-scripts/ci-cd/load-docker-image.sh
+        if: "needs.determine_necessary_jobs.outputs.image-utility-needs-building == 'true'"
+        env:
+          TARBALL: image.tar.zst
 
       - name: Upload DEBs to repo
         run: ./internal-scripts/ci-cd/publish/publish-debs.sh ruby-pkgs/*.deb
         env:
-          UTILITY_IMAGE_NAME: ${{ steps.load_utility_image_info.outputs.image-name }}
-          UTILITY_IMAGE_TAG: ${{ steps.load_utility_image_info.outputs.image-tag }}
           BINTRAY_API_USERNAME: ${{ secrets.BINTRAY_API_USERNAME }}
           BINTRAY_API_KEY: ${{ secrets.BINTRAY_API_KEY }}
           REPO_NAME: fullstaq-ruby-apt-ci-${{ github.run_number }}
@@ -1979,8 +2265,6 @@ jobs:
       - name: Upload RPMs to repo
         run: ./internal-scripts/ci-cd/publish/publish-rpms.sh ruby-pkgs/*.rpm
         env:
-          UTILITY_IMAGE_NAME: ${{ steps.load_utility_image_info.outputs.image-name }}
-          UTILITY_IMAGE_TAG: ${{ steps.load_utility_image_info.outputs.image-tag }}
           BINTRAY_API_USERNAME: ${{ secrets.BINTRAY_API_USERNAME }}
           BINTRAY_API_KEY: ${{ secrets.BINTRAY_API_KEY }}
           REPO_NAME: fullstaq-ruby-yum-ci-${{ github.run_number }}
@@ -2020,7 +2304,7 @@ jobs:
 
 
   test_packages_against_test_centos_7:
-    name: Test Ruby packages against test repos [centos-7]
+    name: 'Test Ruby packages against test repos [centos-7]'
     needs: commit_published_packages_test
     runs-on: ubuntu-18.04
     strategy:
@@ -2071,7 +2355,7 @@ jobs:
 
 
   test_packages_against_test_centos_8:
-    name: Test Ruby packages against test repos [centos-8]
+    name: 'Test Ruby packages against test repos [centos-8]'
     needs: commit_published_packages_test
     runs-on: ubuntu-18.04
     strategy:
@@ -2122,7 +2406,7 @@ jobs:
 
 
   test_packages_against_test_debian_10:
-    name: Test Ruby packages against test repos [debian-10]
+    name: 'Test Ruby packages against test repos [debian-10]'
     needs: commit_published_packages_test
     runs-on: ubuntu-18.04
     strategy:
@@ -2173,7 +2457,7 @@ jobs:
 
 
   test_packages_against_test_debian_9:
-    name: Test Ruby packages against test repos [debian-9]
+    name: 'Test Ruby packages against test repos [debian-9]'
     needs: commit_published_packages_test
     runs-on: ubuntu-18.04
     strategy:
@@ -2224,7 +2508,7 @@ jobs:
 
 
   test_packages_against_test_ubuntu_18_04:
-    name: Test Ruby packages against test repos [ubuntu-18.04]
+    name: 'Test Ruby packages against test repos [ubuntu-18.04]'
     needs: commit_published_packages_test
     runs-on: ubuntu-18.04
     strategy:
@@ -2275,7 +2559,7 @@ jobs:
 
 
   test_packages_against_test_ubuntu_20_04:
-    name: Test Ruby packages against test repos [ubuntu-20.04]
+    name: 'Test Ruby packages against test repos [ubuntu-20.04]'
     needs: commit_published_packages_test
     runs-on: ubuntu-18.04
     strategy:
@@ -2330,19 +2614,13 @@ jobs:
   publish_packages_production:
     name: Publish packages to production repos
     needs:
-
-      - test_packages_against_test_centos_7
-
-      - test_packages_against_test_centos_8
-
-      - test_packages_against_test_debian_10
-
-      - test_packages_against_test_debian_9
-
-      - test_packages_against_test_ubuntu_18_04
-
-      - test_packages_against_test_ubuntu_20_04
-
+      - determine_necessary_jobs
+      - 'test_packages_against_test_centos_7'
+      - 'test_packages_against_test_centos_8'
+      - 'test_packages_against_test_debian_10'
+      - 'test_packages_against_test_debian_9'
+      - 'test_packages_against_test_ubuntu_18_04'
+      - 'test_packages_against_test_ubuntu_20_04'
     runs-on: ubuntu-18.04
     steps:
       - uses: actions/checkout@v2
@@ -2369,777 +2647,562 @@ jobs:
           path: .
 
 
-
       - name: Fetch ruby-pkg_2.7_centos-7_normal
         uses: actions/download-artifact@v1
         with:
           name: ruby-pkg_2.7_centos-7_normal
           path: .
-
-
       - name: Fetch ruby-pkg_2.7_centos-7_jemalloc
         uses: actions/download-artifact@v1
         with:
           name: ruby-pkg_2.7_centos-7_jemalloc
           path: .
-
-
       - name: Fetch ruby-pkg_2.7_centos-7_malloctrim
         uses: actions/download-artifact@v1
         with:
           name: ruby-pkg_2.7_centos-7_malloctrim
           path: .
-
-
       - name: Fetch ruby-pkg_2.7_centos-8_normal
         uses: actions/download-artifact@v1
         with:
           name: ruby-pkg_2.7_centos-8_normal
           path: .
-
-
       - name: Fetch ruby-pkg_2.7_centos-8_jemalloc
         uses: actions/download-artifact@v1
         with:
           name: ruby-pkg_2.7_centos-8_jemalloc
           path: .
-
-
       - name: Fetch ruby-pkg_2.7_centos-8_malloctrim
         uses: actions/download-artifact@v1
         with:
           name: ruby-pkg_2.7_centos-8_malloctrim
           path: .
-
-
       - name: Fetch ruby-pkg_2.7_debian-10_normal
         uses: actions/download-artifact@v1
         with:
           name: ruby-pkg_2.7_debian-10_normal
           path: .
-
-
       - name: Fetch ruby-pkg_2.7_debian-10_jemalloc
         uses: actions/download-artifact@v1
         with:
           name: ruby-pkg_2.7_debian-10_jemalloc
           path: .
-
-
       - name: Fetch ruby-pkg_2.7_debian-10_malloctrim
         uses: actions/download-artifact@v1
         with:
           name: ruby-pkg_2.7_debian-10_malloctrim
           path: .
-
-
       - name: Fetch ruby-pkg_2.7_debian-9_normal
         uses: actions/download-artifact@v1
         with:
           name: ruby-pkg_2.7_debian-9_normal
           path: .
-
-
       - name: Fetch ruby-pkg_2.7_debian-9_jemalloc
         uses: actions/download-artifact@v1
         with:
           name: ruby-pkg_2.7_debian-9_jemalloc
           path: .
-
-
       - name: Fetch ruby-pkg_2.7_debian-9_malloctrim
         uses: actions/download-artifact@v1
         with:
           name: ruby-pkg_2.7_debian-9_malloctrim
           path: .
-
-
       - name: Fetch ruby-pkg_2.7_ubuntu-18.04_normal
         uses: actions/download-artifact@v1
         with:
           name: ruby-pkg_2.7_ubuntu-18.04_normal
           path: .
-
-
       - name: Fetch ruby-pkg_2.7_ubuntu-18.04_jemalloc
         uses: actions/download-artifact@v1
         with:
           name: ruby-pkg_2.7_ubuntu-18.04_jemalloc
           path: .
-
-
       - name: Fetch ruby-pkg_2.7_ubuntu-18.04_malloctrim
         uses: actions/download-artifact@v1
         with:
           name: ruby-pkg_2.7_ubuntu-18.04_malloctrim
           path: .
-
-
       - name: Fetch ruby-pkg_2.7_ubuntu-20.04_normal
         uses: actions/download-artifact@v1
         with:
           name: ruby-pkg_2.7_ubuntu-20.04_normal
           path: .
-
-
       - name: Fetch ruby-pkg_2.7_ubuntu-20.04_jemalloc
         uses: actions/download-artifact@v1
         with:
           name: ruby-pkg_2.7_ubuntu-20.04_jemalloc
           path: .
-
-
       - name: Fetch ruby-pkg_2.7_ubuntu-20.04_malloctrim
         uses: actions/download-artifact@v1
         with:
           name: ruby-pkg_2.7_ubuntu-20.04_malloctrim
           path: .
-
-
       - name: Fetch ruby-pkg_2.6_centos-7_normal
         uses: actions/download-artifact@v1
         with:
           name: ruby-pkg_2.6_centos-7_normal
           path: .
-
-
       - name: Fetch ruby-pkg_2.6_centos-7_jemalloc
         uses: actions/download-artifact@v1
         with:
           name: ruby-pkg_2.6_centos-7_jemalloc
           path: .
-
-
       - name: Fetch ruby-pkg_2.6_centos-7_malloctrim
         uses: actions/download-artifact@v1
         with:
           name: ruby-pkg_2.6_centos-7_malloctrim
           path: .
-
-
       - name: Fetch ruby-pkg_2.6_centos-8_normal
         uses: actions/download-artifact@v1
         with:
           name: ruby-pkg_2.6_centos-8_normal
           path: .
-
-
       - name: Fetch ruby-pkg_2.6_centos-8_jemalloc
         uses: actions/download-artifact@v1
         with:
           name: ruby-pkg_2.6_centos-8_jemalloc
           path: .
-
-
       - name: Fetch ruby-pkg_2.6_centos-8_malloctrim
         uses: actions/download-artifact@v1
         with:
           name: ruby-pkg_2.6_centos-8_malloctrim
           path: .
-
-
       - name: Fetch ruby-pkg_2.6_debian-10_normal
         uses: actions/download-artifact@v1
         with:
           name: ruby-pkg_2.6_debian-10_normal
           path: .
-
-
       - name: Fetch ruby-pkg_2.6_debian-10_jemalloc
         uses: actions/download-artifact@v1
         with:
           name: ruby-pkg_2.6_debian-10_jemalloc
           path: .
-
-
       - name: Fetch ruby-pkg_2.6_debian-10_malloctrim
         uses: actions/download-artifact@v1
         with:
           name: ruby-pkg_2.6_debian-10_malloctrim
           path: .
-
-
       - name: Fetch ruby-pkg_2.6_debian-9_normal
         uses: actions/download-artifact@v1
         with:
           name: ruby-pkg_2.6_debian-9_normal
           path: .
-
-
       - name: Fetch ruby-pkg_2.6_debian-9_jemalloc
         uses: actions/download-artifact@v1
         with:
           name: ruby-pkg_2.6_debian-9_jemalloc
           path: .
-
-
       - name: Fetch ruby-pkg_2.6_debian-9_malloctrim
         uses: actions/download-artifact@v1
         with:
           name: ruby-pkg_2.6_debian-9_malloctrim
           path: .
-
-
       - name: Fetch ruby-pkg_2.6_ubuntu-18.04_normal
         uses: actions/download-artifact@v1
         with:
           name: ruby-pkg_2.6_ubuntu-18.04_normal
           path: .
-
-
       - name: Fetch ruby-pkg_2.6_ubuntu-18.04_jemalloc
         uses: actions/download-artifact@v1
         with:
           name: ruby-pkg_2.6_ubuntu-18.04_jemalloc
           path: .
-
-
       - name: Fetch ruby-pkg_2.6_ubuntu-18.04_malloctrim
         uses: actions/download-artifact@v1
         with:
           name: ruby-pkg_2.6_ubuntu-18.04_malloctrim
           path: .
-
-
       - name: Fetch ruby-pkg_2.6_ubuntu-20.04_normal
         uses: actions/download-artifact@v1
         with:
           name: ruby-pkg_2.6_ubuntu-20.04_normal
           path: .
-
-
       - name: Fetch ruby-pkg_2.6_ubuntu-20.04_jemalloc
         uses: actions/download-artifact@v1
         with:
           name: ruby-pkg_2.6_ubuntu-20.04_jemalloc
           path: .
-
-
       - name: Fetch ruby-pkg_2.6_ubuntu-20.04_malloctrim
         uses: actions/download-artifact@v1
         with:
           name: ruby-pkg_2.6_ubuntu-20.04_malloctrim
           path: .
-
-
       - name: Fetch ruby-pkg_2.5_centos-7_normal
         uses: actions/download-artifact@v1
         with:
           name: ruby-pkg_2.5_centos-7_normal
           path: .
-
-
       - name: Fetch ruby-pkg_2.5_centos-7_jemalloc
         uses: actions/download-artifact@v1
         with:
           name: ruby-pkg_2.5_centos-7_jemalloc
           path: .
-
-
       - name: Fetch ruby-pkg_2.5_centos-7_malloctrim
         uses: actions/download-artifact@v1
         with:
           name: ruby-pkg_2.5_centos-7_malloctrim
           path: .
-
-
       - name: Fetch ruby-pkg_2.5_centos-8_normal
         uses: actions/download-artifact@v1
         with:
           name: ruby-pkg_2.5_centos-8_normal
           path: .
-
-
       - name: Fetch ruby-pkg_2.5_centos-8_jemalloc
         uses: actions/download-artifact@v1
         with:
           name: ruby-pkg_2.5_centos-8_jemalloc
           path: .
-
-
       - name: Fetch ruby-pkg_2.5_centos-8_malloctrim
         uses: actions/download-artifact@v1
         with:
           name: ruby-pkg_2.5_centos-8_malloctrim
           path: .
-
-
       - name: Fetch ruby-pkg_2.5_debian-10_normal
         uses: actions/download-artifact@v1
         with:
           name: ruby-pkg_2.5_debian-10_normal
           path: .
-
-
       - name: Fetch ruby-pkg_2.5_debian-10_jemalloc
         uses: actions/download-artifact@v1
         with:
           name: ruby-pkg_2.5_debian-10_jemalloc
           path: .
-
-
       - name: Fetch ruby-pkg_2.5_debian-10_malloctrim
         uses: actions/download-artifact@v1
         with:
           name: ruby-pkg_2.5_debian-10_malloctrim
           path: .
-
-
       - name: Fetch ruby-pkg_2.5_debian-9_normal
         uses: actions/download-artifact@v1
         with:
           name: ruby-pkg_2.5_debian-9_normal
           path: .
-
-
       - name: Fetch ruby-pkg_2.5_debian-9_jemalloc
         uses: actions/download-artifact@v1
         with:
           name: ruby-pkg_2.5_debian-9_jemalloc
           path: .
-
-
       - name: Fetch ruby-pkg_2.5_debian-9_malloctrim
         uses: actions/download-artifact@v1
         with:
           name: ruby-pkg_2.5_debian-9_malloctrim
           path: .
-
-
       - name: Fetch ruby-pkg_2.5_ubuntu-18.04_normal
         uses: actions/download-artifact@v1
         with:
           name: ruby-pkg_2.5_ubuntu-18.04_normal
           path: .
-
-
       - name: Fetch ruby-pkg_2.5_ubuntu-18.04_jemalloc
         uses: actions/download-artifact@v1
         with:
           name: ruby-pkg_2.5_ubuntu-18.04_jemalloc
           path: .
-
-
       - name: Fetch ruby-pkg_2.5_ubuntu-18.04_malloctrim
         uses: actions/download-artifact@v1
         with:
           name: ruby-pkg_2.5_ubuntu-18.04_malloctrim
           path: .
-
-
       - name: Fetch ruby-pkg_2.5_ubuntu-20.04_normal
         uses: actions/download-artifact@v1
         with:
           name: ruby-pkg_2.5_ubuntu-20.04_normal
           path: .
-
-
       - name: Fetch ruby-pkg_2.5_ubuntu-20.04_jemalloc
         uses: actions/download-artifact@v1
         with:
           name: ruby-pkg_2.5_ubuntu-20.04_jemalloc
           path: .
-
-
       - name: Fetch ruby-pkg_2.5_ubuntu-20.04_malloctrim
         uses: actions/download-artifact@v1
         with:
           name: ruby-pkg_2.5_ubuntu-20.04_malloctrim
           path: .
-
-
       - name: Fetch ruby-pkg_2.7.1_centos-7_normal
         uses: actions/download-artifact@v1
         with:
           name: ruby-pkg_2.7.1_centos-7_normal
           path: .
-
-
       - name: Fetch ruby-pkg_2.7.1_centos-7_jemalloc
         uses: actions/download-artifact@v1
         with:
           name: ruby-pkg_2.7.1_centos-7_jemalloc
           path: .
-
-
       - name: Fetch ruby-pkg_2.7.1_centos-7_malloctrim
         uses: actions/download-artifact@v1
         with:
           name: ruby-pkg_2.7.1_centos-7_malloctrim
           path: .
-
-
       - name: Fetch ruby-pkg_2.7.1_centos-8_normal
         uses: actions/download-artifact@v1
         with:
           name: ruby-pkg_2.7.1_centos-8_normal
           path: .
-
-
       - name: Fetch ruby-pkg_2.7.1_centos-8_jemalloc
         uses: actions/download-artifact@v1
         with:
           name: ruby-pkg_2.7.1_centos-8_jemalloc
           path: .
-
-
       - name: Fetch ruby-pkg_2.7.1_centos-8_malloctrim
         uses: actions/download-artifact@v1
         with:
           name: ruby-pkg_2.7.1_centos-8_malloctrim
           path: .
-
-
       - name: Fetch ruby-pkg_2.7.1_debian-10_normal
         uses: actions/download-artifact@v1
         with:
           name: ruby-pkg_2.7.1_debian-10_normal
           path: .
-
-
       - name: Fetch ruby-pkg_2.7.1_debian-10_jemalloc
         uses: actions/download-artifact@v1
         with:
           name: ruby-pkg_2.7.1_debian-10_jemalloc
           path: .
-
-
       - name: Fetch ruby-pkg_2.7.1_debian-10_malloctrim
         uses: actions/download-artifact@v1
         with:
           name: ruby-pkg_2.7.1_debian-10_malloctrim
           path: .
-
-
       - name: Fetch ruby-pkg_2.7.1_debian-9_normal
         uses: actions/download-artifact@v1
         with:
           name: ruby-pkg_2.7.1_debian-9_normal
           path: .
-
-
       - name: Fetch ruby-pkg_2.7.1_debian-9_jemalloc
         uses: actions/download-artifact@v1
         with:
           name: ruby-pkg_2.7.1_debian-9_jemalloc
           path: .
-
-
       - name: Fetch ruby-pkg_2.7.1_debian-9_malloctrim
         uses: actions/download-artifact@v1
         with:
           name: ruby-pkg_2.7.1_debian-9_malloctrim
           path: .
-
-
       - name: Fetch ruby-pkg_2.7.1_ubuntu-18.04_normal
         uses: actions/download-artifact@v1
         with:
           name: ruby-pkg_2.7.1_ubuntu-18.04_normal
           path: .
-
-
       - name: Fetch ruby-pkg_2.7.1_ubuntu-18.04_jemalloc
         uses: actions/download-artifact@v1
         with:
           name: ruby-pkg_2.7.1_ubuntu-18.04_jemalloc
           path: .
-
-
       - name: Fetch ruby-pkg_2.7.1_ubuntu-18.04_malloctrim
         uses: actions/download-artifact@v1
         with:
           name: ruby-pkg_2.7.1_ubuntu-18.04_malloctrim
           path: .
-
-
       - name: Fetch ruby-pkg_2.7.1_ubuntu-20.04_normal
         uses: actions/download-artifact@v1
         with:
           name: ruby-pkg_2.7.1_ubuntu-20.04_normal
           path: .
-
-
       - name: Fetch ruby-pkg_2.7.1_ubuntu-20.04_jemalloc
         uses: actions/download-artifact@v1
         with:
           name: ruby-pkg_2.7.1_ubuntu-20.04_jemalloc
           path: .
-
-
       - name: Fetch ruby-pkg_2.7.1_ubuntu-20.04_malloctrim
         uses: actions/download-artifact@v1
         with:
           name: ruby-pkg_2.7.1_ubuntu-20.04_malloctrim
           path: .
-
-
       - name: Fetch ruby-pkg_2.6.6_centos-7_normal
         uses: actions/download-artifact@v1
         with:
           name: ruby-pkg_2.6.6_centos-7_normal
           path: .
-
-
       - name: Fetch ruby-pkg_2.6.6_centos-7_jemalloc
         uses: actions/download-artifact@v1
         with:
           name: ruby-pkg_2.6.6_centos-7_jemalloc
           path: .
-
-
       - name: Fetch ruby-pkg_2.6.6_centos-7_malloctrim
         uses: actions/download-artifact@v1
         with:
           name: ruby-pkg_2.6.6_centos-7_malloctrim
           path: .
-
-
       - name: Fetch ruby-pkg_2.6.6_centos-8_normal
         uses: actions/download-artifact@v1
         with:
           name: ruby-pkg_2.6.6_centos-8_normal
           path: .
-
-
       - name: Fetch ruby-pkg_2.6.6_centos-8_jemalloc
         uses: actions/download-artifact@v1
         with:
           name: ruby-pkg_2.6.6_centos-8_jemalloc
           path: .
-
-
       - name: Fetch ruby-pkg_2.6.6_centos-8_malloctrim
         uses: actions/download-artifact@v1
         with:
           name: ruby-pkg_2.6.6_centos-8_malloctrim
           path: .
-
-
       - name: Fetch ruby-pkg_2.6.6_debian-10_normal
         uses: actions/download-artifact@v1
         with:
           name: ruby-pkg_2.6.6_debian-10_normal
           path: .
-
-
       - name: Fetch ruby-pkg_2.6.6_debian-10_jemalloc
         uses: actions/download-artifact@v1
         with:
           name: ruby-pkg_2.6.6_debian-10_jemalloc
           path: .
-
-
       - name: Fetch ruby-pkg_2.6.6_debian-10_malloctrim
         uses: actions/download-artifact@v1
         with:
           name: ruby-pkg_2.6.6_debian-10_malloctrim
           path: .
-
-
       - name: Fetch ruby-pkg_2.6.6_debian-9_normal
         uses: actions/download-artifact@v1
         with:
           name: ruby-pkg_2.6.6_debian-9_normal
           path: .
-
-
       - name: Fetch ruby-pkg_2.6.6_debian-9_jemalloc
         uses: actions/download-artifact@v1
         with:
           name: ruby-pkg_2.6.6_debian-9_jemalloc
           path: .
-
-
       - name: Fetch ruby-pkg_2.6.6_debian-9_malloctrim
         uses: actions/download-artifact@v1
         with:
           name: ruby-pkg_2.6.6_debian-9_malloctrim
           path: .
-
-
       - name: Fetch ruby-pkg_2.6.6_ubuntu-18.04_normal
         uses: actions/download-artifact@v1
         with:
           name: ruby-pkg_2.6.6_ubuntu-18.04_normal
           path: .
-
-
       - name: Fetch ruby-pkg_2.6.6_ubuntu-18.04_jemalloc
         uses: actions/download-artifact@v1
         with:
           name: ruby-pkg_2.6.6_ubuntu-18.04_jemalloc
           path: .
-
-
       - name: Fetch ruby-pkg_2.6.6_ubuntu-18.04_malloctrim
         uses: actions/download-artifact@v1
         with:
           name: ruby-pkg_2.6.6_ubuntu-18.04_malloctrim
           path: .
-
-
       - name: Fetch ruby-pkg_2.6.6_ubuntu-20.04_normal
         uses: actions/download-artifact@v1
         with:
           name: ruby-pkg_2.6.6_ubuntu-20.04_normal
           path: .
-
-
       - name: Fetch ruby-pkg_2.6.6_ubuntu-20.04_jemalloc
         uses: actions/download-artifact@v1
         with:
           name: ruby-pkg_2.6.6_ubuntu-20.04_jemalloc
           path: .
-
-
       - name: Fetch ruby-pkg_2.6.6_ubuntu-20.04_malloctrim
         uses: actions/download-artifact@v1
         with:
           name: ruby-pkg_2.6.6_ubuntu-20.04_malloctrim
           path: .
-
-
       - name: Fetch ruby-pkg_2.5.8_centos-7_normal
         uses: actions/download-artifact@v1
         with:
           name: ruby-pkg_2.5.8_centos-7_normal
           path: .
-
-
       - name: Fetch ruby-pkg_2.5.8_centos-7_jemalloc
         uses: actions/download-artifact@v1
         with:
           name: ruby-pkg_2.5.8_centos-7_jemalloc
           path: .
-
-
       - name: Fetch ruby-pkg_2.5.8_centos-7_malloctrim
         uses: actions/download-artifact@v1
         with:
           name: ruby-pkg_2.5.8_centos-7_malloctrim
           path: .
-
-
       - name: Fetch ruby-pkg_2.5.8_centos-8_normal
         uses: actions/download-artifact@v1
         with:
           name: ruby-pkg_2.5.8_centos-8_normal
           path: .
-
-
       - name: Fetch ruby-pkg_2.5.8_centos-8_jemalloc
         uses: actions/download-artifact@v1
         with:
           name: ruby-pkg_2.5.8_centos-8_jemalloc
           path: .
-
-
       - name: Fetch ruby-pkg_2.5.8_centos-8_malloctrim
         uses: actions/download-artifact@v1
         with:
           name: ruby-pkg_2.5.8_centos-8_malloctrim
           path: .
-
-
       - name: Fetch ruby-pkg_2.5.8_debian-10_normal
         uses: actions/download-artifact@v1
         with:
           name: ruby-pkg_2.5.8_debian-10_normal
           path: .
-
-
       - name: Fetch ruby-pkg_2.5.8_debian-10_jemalloc
         uses: actions/download-artifact@v1
         with:
           name: ruby-pkg_2.5.8_debian-10_jemalloc
           path: .
-
-
       - name: Fetch ruby-pkg_2.5.8_debian-10_malloctrim
         uses: actions/download-artifact@v1
         with:
           name: ruby-pkg_2.5.8_debian-10_malloctrim
           path: .
-
-
       - name: Fetch ruby-pkg_2.5.8_debian-9_normal
         uses: actions/download-artifact@v1
         with:
           name: ruby-pkg_2.5.8_debian-9_normal
           path: .
-
-
       - name: Fetch ruby-pkg_2.5.8_debian-9_jemalloc
         uses: actions/download-artifact@v1
         with:
           name: ruby-pkg_2.5.8_debian-9_jemalloc
           path: .
-
-
       - name: Fetch ruby-pkg_2.5.8_debian-9_malloctrim
         uses: actions/download-artifact@v1
         with:
           name: ruby-pkg_2.5.8_debian-9_malloctrim
           path: .
-
-
       - name: Fetch ruby-pkg_2.5.8_ubuntu-18.04_normal
         uses: actions/download-artifact@v1
         with:
           name: ruby-pkg_2.5.8_ubuntu-18.04_normal
           path: .
-
-
       - name: Fetch ruby-pkg_2.5.8_ubuntu-18.04_jemalloc
         uses: actions/download-artifact@v1
         with:
           name: ruby-pkg_2.5.8_ubuntu-18.04_jemalloc
           path: .
-
-
       - name: Fetch ruby-pkg_2.5.8_ubuntu-18.04_malloctrim
         uses: actions/download-artifact@v1
         with:
           name: ruby-pkg_2.5.8_ubuntu-18.04_malloctrim
           path: .
-
-
       - name: Fetch ruby-pkg_2.5.8_ubuntu-20.04_normal
         uses: actions/download-artifact@v1
         with:
           name: ruby-pkg_2.5.8_ubuntu-20.04_normal
           path: .
-
-
       - name: Fetch ruby-pkg_2.5.8_ubuntu-20.04_jemalloc
         uses: actions/download-artifact@v1
         with:
           name: ruby-pkg_2.5.8_ubuntu-20.04_jemalloc
           path: .
-
-
       - name: Fetch ruby-pkg_2.5.8_ubuntu-20.04_malloctrim
         uses: actions/download-artifact@v1
         with:
           name: ruby-pkg_2.5.8_ubuntu-20.04_malloctrim
           path: .
 
-
-      - name: Determine which Docker image to use for publishing
+      - name: Download Docker image necessary for publishing
         uses: actions/download-artifact@v1
+        if: "needs.determine_necessary_jobs.outputs.image-utility-needs-building == 'true'"
         with:
-          name: docker-image-info-utility
+          name: docker-image-utility
           path: .
-      - name: Load utility image info
-        id: load_utility_image_info
-        run: ./internal-scripts/ci-cd/load-docker-image-info.sh
+      - name: Load Docker image necessary for publishing
+        run: ./internal-scripts/ci-cd/load-docker-image.sh
+        if: "needs.determine_necessary_jobs.outputs.image-utility-needs-building == 'true'"
+        env:
+          TARBALL: image.tar.zst
 
       - name: Upload DEBs to repo
         run: ./internal-scripts/ci-cd/publish/publish-debs.sh *.deb
         env:
-          UTILITY_IMAGE_NAME: ${{ steps.load_utility_image_info.outputs.image-name }}
-          UTILITY_IMAGE_TAG: ${{ steps.load_utility_image_info.outputs.image-tag }}
           BINTRAY_API_USERNAME: ${{ secrets.BINTRAY_API_USERNAME }}
           BINTRAY_API_KEY: ${{ secrets.BINTRAY_API_KEY }}
           REPO_NAME: fullstaq-ruby-apt
@@ -3156,8 +3219,6 @@ jobs:
       - name: Upload RPMs to repo
         run: ./internal-scripts/ci-cd/publish/publish-rpms.sh *.rpm
         env:
-          UTILITY_IMAGE_NAME: ${{ steps.load_utility_image_info.outputs.image-name }}
-          UTILITY_IMAGE_TAG: ${{ steps.load_utility_image_info.outputs.image-tag }}
           BINTRAY_API_USERNAME: ${{ secrets.BINTRAY_API_USERNAME }}
           BINTRAY_API_KEY: ${{ secrets.BINTRAY_API_KEY }}
           REPO_NAME: fullstaq-ruby-yum
@@ -3178,9 +3239,8 @@ jobs:
   # combinatorial explosion, it's very easy to reach that limit, so we
   # preprocess distribution information using ERB templating instead.
 
-
   test_packages_against_production_centos_7:
-    name: Test Ruby packages against production repos [centos-7]
+    name: 'Test Ruby packages against production repos [centos-7]'
     needs: publish_packages_production
     runs-on: ubuntu-18.04
     strategy:
@@ -3232,9 +3292,8 @@ jobs:
           APT_REPO_URL: https://apt.fullstaqruby.org
           YUM_REPO_URL: https://yum.fullstaqruby.org
 
-
   test_packages_against_production_centos_8:
-    name: Test Ruby packages against production repos [centos-8]
+    name: 'Test Ruby packages against production repos [centos-8]'
     needs: publish_packages_production
     runs-on: ubuntu-18.04
     strategy:
@@ -3286,9 +3345,8 @@ jobs:
           APT_REPO_URL: https://apt.fullstaqruby.org
           YUM_REPO_URL: https://yum.fullstaqruby.org
 
-
   test_packages_against_production_debian_10:
-    name: Test Ruby packages against production repos [debian-10]
+    name: 'Test Ruby packages against production repos [debian-10]'
     needs: publish_packages_production
     runs-on: ubuntu-18.04
     strategy:
@@ -3340,9 +3398,8 @@ jobs:
           APT_REPO_URL: https://apt.fullstaqruby.org
           YUM_REPO_URL: https://yum.fullstaqruby.org
 
-
   test_packages_against_production_debian_9:
-    name: Test Ruby packages against production repos [debian-9]
+    name: 'Test Ruby packages against production repos [debian-9]'
     needs: publish_packages_production
     runs-on: ubuntu-18.04
     strategy:
@@ -3394,9 +3451,8 @@ jobs:
           APT_REPO_URL: https://apt.fullstaqruby.org
           YUM_REPO_URL: https://yum.fullstaqruby.org
 
-
   test_packages_against_production_ubuntu_18_04:
-    name: Test Ruby packages against production repos [ubuntu-18.04]
+    name: 'Test Ruby packages against production repos [ubuntu-18.04]'
     needs: publish_packages_production
     runs-on: ubuntu-18.04
     strategy:
@@ -3448,9 +3504,8 @@ jobs:
           APT_REPO_URL: https://apt.fullstaqruby.org
           YUM_REPO_URL: https://yum.fullstaqruby.org
 
-
   test_packages_against_production_ubuntu_20_04:
-    name: Test Ruby packages against production repos [ubuntu-20.04]
+    name: 'Test Ruby packages against production repos [ubuntu-20.04]'
     needs: publish_packages_production
     runs-on: ubuntu-18.04
     strategy:
@@ -3509,19 +3564,12 @@ jobs:
   create_git_tag:
     name: Create Git tag
     needs:
-
-      - test_packages_against_production_centos_7
-
-      - test_packages_against_production_centos_8
-
-      - test_packages_against_production_debian_10
-
-      - test_packages_against_production_debian_9
-
-      - test_packages_against_production_ubuntu_18_04
-
-      - test_packages_against_production_ubuntu_20_04
-
+      - 'test_packages_against_production_centos_7'
+      - 'test_packages_against_production_centos_8'
+      - 'test_packages_against_production_debian_10'
+      - 'test_packages_against_production_debian_9'
+      - 'test_packages_against_production_ubuntu_18_04'
+      - 'test_packages_against_production_ubuntu_20_04'
     runs-on: ubuntu-18.04
     steps:
       - uses: actions/checkout@v2

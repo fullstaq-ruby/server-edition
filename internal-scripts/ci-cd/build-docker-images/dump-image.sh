@@ -1,5 +1,6 @@
 #!/bin/bash
 set -e
+set -o pipefail
 
 SELFDIR=$(dirname "$0")
 ROOTDIR=$(cd "$SELFDIR/../../.." && pwd)
@@ -11,4 +12,6 @@ require_envvar IMAGE_NAME
 require_envvar IMAGE_TAG
 
 set -x
-exec docker push "$IMAGE_NAME:$IMAGE_TAG"
+mkdir output
+docker save "$IMAGE_NAME:$IMAGE_TAG" | zstd -o output/image.tar.zst
+set +x

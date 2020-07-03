@@ -6,8 +6,6 @@ ROOTDIR=$(cd "$SELFDIR/../../.." && pwd)
 # shellcheck source=../../../lib/library.sh
 source "$ROOTDIR/lib/library.sh"
 
-require_envvar UTILITY_IMAGE_NAME
-require_envvar UTILITY_IMAGE_TAG
 require_envvar DISTRIBUTION_NAME
 require_envvar VARIANT_NAME
 require_envvar PACKAGE_FORMAT
@@ -15,6 +13,9 @@ require_envvar RUBY_PACKAGE_VERSION_ID
 require_envvar RUBY_PACKAGE_REVISION
 # Optional envvar: VARIANT_PACKAGE_SUFFIX
 
+
+UTILITY_IMAGE_NAME=fullstaq/ruby-build-env-utility
+UTILITY_IMAGE_TAG=$(read_single_value_file "$ROOTDIR/environments/utility/image_tag")
 
 mkdir output
 

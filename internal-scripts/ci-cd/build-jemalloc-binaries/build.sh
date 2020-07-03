@@ -6,10 +6,11 @@ ROOTDIR=$(cd "$SELFDIR/../../.." && pwd)
 # shellcheck source=../../../lib/library.sh
 source "$ROOTDIR/lib/library.sh"
 
-require_envvar BUILD_IMAGE_NAME
-require_envvar BUILD_IMAGE_TAG
 require_envvar ENVIRONMENT_NAME
 
+
+BUILD_IMAGE_NAME="fullstaq/ruby-build-env-$ENVIRONMENT_NAME"
+BUILD_IMAGE_TAG=$(read_single_value_file "$ROOTDIR/environments/$ENVIRONMENT_NAME/image_tag")
 
 mkdir output
 touch output/jemalloc-bin.tar.gz
