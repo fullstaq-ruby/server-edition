@@ -855,6 +855,7 @@ jobs:
     test_packages_against_production_<%= slug(distribution[:name]) %>:
       name: 'Test Ruby packages against production repos [<%= distribution[:name] %>]'
       needs: publish_packages_production
+      if: github.ref == 'refs/heads/main'
       runs-on: ubuntu-18.04
       strategy:
         max-parallel: 4 # avoid overloading Bintray
@@ -865,9 +866,6 @@ jobs:
         - uses: actions/checkout@v2
         - name: Run tests
           run: ./internal-scripts/ci-cd/test-packages/run-tests.sh
-          # The 'if' here is on the step level instead of job level.
-          # Otherwise, the 'create_git_tag' job won't always be triggered.
-          if: github.ref == 'refs/heads/main'
           env:
             DISTRIBUTION_NAME: "<%= distribution[:name] %>"
             RUBY_PACKAGE_ID: ${{ matrix.ruby_package_version.id }}
@@ -889,6 +887,8 @@ jobs:
       <%- distributions.each do |distribution| -%>
       - 'test_packages_against_production_<%= slug(distribution[:name]) %>'
       <%- end -%>
+    # Run even if a dependent job has been skipped
+    if: '!failure() && !cancelled()'
     runs-on: ubuntu-18.04
     steps:
       - uses: actions/checkout@v2
