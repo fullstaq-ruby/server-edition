@@ -830,8 +830,8 @@ jobs:
       - name: Build package
         run: ./internal-scripts/ci-cd/build-rbenv-deb/build-package.sh
         env:
-          PACKAGE_BASENAME: "fullstaq-rbenv_1.1.2-15-2_all.deb"
-          REVISION: "2"
+          PACKAGE_BASENAME: "fullstaq-rbenv_1.1.2-16-0_all.deb"
+          REVISION: "0"
 
       - name: Archive artifact
         uses: actions/upload-artifact@v1
@@ -872,8 +872,8 @@ jobs:
       - name: Build package
         run: ./internal-scripts/ci-cd/build-rbenv-rpm/build-package.sh
         env:
-          PACKAGE_BASENAME: "fullstaq-rbenv-1.1.2-15-2.noarch.rpm"
-          REVISION: "2"
+          PACKAGE_BASENAME: "fullstaq-rbenv-1.1.2-16-0.noarch.rpm"
+          REVISION: "0"
 
       - name: Archive artifact
         uses: actions/upload-artifact@v1
