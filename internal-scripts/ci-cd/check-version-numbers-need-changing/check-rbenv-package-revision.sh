@@ -138,7 +138,7 @@ else
 
     CURRENT_RBENV_VERSION=$(ruby -ryaml -e 'puts YAML.load_file("config.yml")["rbenv"]["version"]')
     CURRENT_RBENV_PACKAGE_REVISION=$(ruby -ryaml -e 'puts YAML.load_file("config.yml")["rbenv"]["package_revision"]')
-    LATEST_RELEASE_RBENV_VERSION=$(ruby -ryaml -e 'puts YAML.load_file("config.yml")["rbenv"]["version"]')
+    LATEST_RELEASE_RBENV_VERSION=$(git archive "$LATEST_RELEASE_TAG" config.yml | tar -xO | ruby -ryaml -e 'puts YAML.load(STDIN)["rbenv"]["version"]')
     LATEST_RELEASE_RBENV_PACKAGE_REVISION=$(git archive "$LATEST_RELEASE_TAG" config.yml | tar -xO | ruby -ryaml -e 'puts YAML.load(STDIN)["rbenv"]["package_revision"]')
 
     if [[ "$CURRENT_RBENV_VERSION" = "$LATEST_RELEASE_RBENV_VERSION" ]]; then
