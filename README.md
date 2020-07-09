@@ -37,6 +37,9 @@ You can think of Fullstaq Ruby as a competitor of `apt/yum install ruby`, `rbenv
  * [Usage after installation](#usage-after-installation)
    - [Using a specific Ruby version](#using-a-specific-ruby-version)
    - [Usage with Rbenv](#usage-with-rbenv)
+   - [Installing gems and root privileges](#installing-gems-and-root-privileges)
+     + [Installing gems system-wide with sudo](#installing-gems-system-wide-with-sudo)
+     + [Installing gems without root privileges](#installing-gems-without-root-privileges)
    - [Passenger for Nginx/Apache integration](#passenger-for-nginxapache-integration)
    - [Puma, Unicorn or Passenger Standalone integration](#puma-unicorn-or-passenger-standalone-integration)
    - [Capistrano integration](#capistrano-integration)
@@ -605,6 +608,51 @@ Or, if you've activated the Rbenv shell integration, just running `ruby`, `gem` 
     ruby 2.6.3
     $ gem env
     ...
+
+### Installing gems and root privileges
+
+By default, gems are installed into a system location (`/usr/lib/fullstaq-ruby/versions/XXX/lib/ruby/gems/XXX`). This means:
+
+ * Gems installed to the system locations are available to all users.
+ * When running `gem install` or `bundle install`, root privileges are required.
+
+You can also choose to install gems into a user's home directory, or some other directory that does not require root privileges.
+
+#### Installing gems system-wide with sudo
+
+Be sure to run `gem install` with `sudo`:
+
+~~~bash
+# When not using Rbenv
+sudo /usr/lib/fullstaq-ruby/versions/XXX/bin/gem install GEM_NAME_HERE
+
+# When using Rbenv
+sudo env RBENV_VERSION=XXX rbenv exec gem install GEM_NAME_HERE
+~~~
+
+(replace `XXX` with the desired Ruby version and variant for which you want to install the gem)
+
+**When using Bundler, do not prepend sudo**. Bundler will run sudo for you automatically.
+
+#### Installing gems without root privileges
+
+Be sure to run `gem install` with `--user-install`, which will install gems to the user's home directory:
+
+~~~bash
+# When not using Rbenv
+/usr/lib/fullstaq-ruby/versions/XXX/bin/gem install GEM_NAME_HERE --user-install
+
+# When using Rbenv (assuming you have the shell integration enabled)
+gem install GEM_NAME_HERE --user-install
+~~~
+
+(replace `XXX` with the desired Ruby version and variant for which you want to install the gem)
+
+When using Bundler, pass `--path` and point it to a user-writable location:
+
+~~~bash
+bundle install --path vendor/bundle
+~~~
 
 ### Passenger for Nginx/Apache integration
 
