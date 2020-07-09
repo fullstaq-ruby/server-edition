@@ -450,7 +450,7 @@ sudo yum install fullstaq-ruby-2.6.3
 ### Debian/Ubuntu
 
  * Supported Debian versions: 9 *(stretch)*, 10 *(buster)*
- * Supported Ubuntu versions: 18.04
+ * Supported Ubuntu versions: 18.04, 20.04
  * Supported architectures: x86-64
 
 First, make sure your package manager supports HTTPS and that the necessary crypto tools are installed:
