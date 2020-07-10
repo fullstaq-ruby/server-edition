@@ -703,9 +703,17 @@ Restart your application server after you've made a change, for example `sudo sy
 
 ### Capistrano integration
 
-If you use Capistrano to deploy your app, then you should use the [capistrano-rbenv](https://github.com/capistrano/rbenv) plugin. In your deploy/config.rb make sure you set `rbenv_ruby` to the Ruby version to you want, possibly with a [variant suffix](#about-variants). Examples:
+If you use Capistrano to deploy your app, then you should use the [capistrano-rbenv](https://github.com/capistrano/rbenv) plugin. Requirements:
+
+ * capistrano-rbenv 2.1.7 or later (due to [pull request 92](https://github.com/capistrano/rbenv/pull/92))
+ * Fullstaq Ruby epic 3.3 or later (more info: [issue #47](https://github.com/fullstaq-labs/fullstaq-ruby-server-edition/pull/47#issuecomment-634063302))
+
+In your deploy/config.rb make sure you set `rbenv_type` to `:fullstaq`, and `rbenv_ruby` to the Ruby version to you want, possibly with a [variant suffix](#about-variants). Examples:
 
 ~~~ruby
+set :rbenv_type, :fullstaq
+
+
 # Use Ruby 2.6 (latest tiny version), normal variant
 set :rbenv_ruby, '2.6'
 
