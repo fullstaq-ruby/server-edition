@@ -705,7 +705,7 @@ Restart your application server after you've made a change, for example `sudo sy
 
 If you use Capistrano to deploy your app, then you should use the [capistrano-rbenv](https://github.com/capistrano/rbenv) plugin. Requirements:
 
- * capistrano-rbenv 2.1.7 or later (due to [pull request 92](https://github.com/capistrano/rbenv/pull/92))
+ * capistrano-rbenv 2.1.7 or later (due to [pull request #92](https://github.com/capistrano/rbenv/pull/92))
  * Fullstaq Ruby epic 3.3 or later (more info: [issue #47](https://github.com/fullstaq-labs/fullstaq-ruby-server-edition/pull/47#issuecomment-634063302))
 
 In your deploy/config.rb make sure you set `rbenv_type` to `:fullstaq`, and `rbenv_ruby` to the Ruby version to you want, possibly with a [variant suffix](#about-variants). Examples:
@@ -782,7 +782,7 @@ There will be no paid version. Fullstaq Ruby is fully open source. It is also in
 
 > _Main article: [What is Fullstaq Ruby's signifiance to the community, and its long-term project vision?](https://www.joyfulbikeshedding.com/blog/2020-05-15-why-fullstaq-ruby.html)_
 
-Vendor lock-in is a valid concern that many of us have. It is something we thought about from the beginning and that are *are* addressing.
+Vendor lock-in is a valid concern that many of us have. It is something we thought about from the beginning and that we *are* addressing.
 
 We have architected our systems in such a way that anyone will be able to build packages themselves. If we ever become slow or defunct, then anyone can easily take matters into own hands. Building Fullstaq Ruby packages from your own systems is so simple that nearly anyone can do it: just install Docker, edit a config file and run a command.
 
