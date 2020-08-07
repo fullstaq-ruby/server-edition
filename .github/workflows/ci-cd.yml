@@ -13,14 +13,17 @@
 name: CI/CD
 
 on:
+  workflow_dispatch: {}
   push:
     paths-ignore:
       - '*.md'
       - '.github/**/*.md'
+      - 'dev-handbook/**'
   pull_request:
     paths-ignore:
       - '*.md'
       - '.github/**/*.md'
+      - 'dev-handbook/**'
 
 env:
   BINTRAY_ORG: fullstaq
