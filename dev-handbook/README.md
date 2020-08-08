@@ -11,9 +11,18 @@
 
 ## Tutorials & tasks
 
+### General
+
  * [Development environment set up](dev-environment-setup.md)
  * [Building packages locally](building-packages-locally.md)
- * [Testing packages locally](testing-packages-locally.md) (coming soon)
+
+### Testing
+
+ * [Testing packages locally](testing-packages-locally.md)
+ * [Adding, modifying & debugging tests](#modifying-and-debugging-tests.md)
+
+### Regular maintenance
+
  * [Adding support for a new distribution](add-new-distro.md) (coming soon)
  * [Adding support for a new Ruby version](add-new-ruby-version.md) (coming soon)
 
