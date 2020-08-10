@@ -23,8 +23,8 @@
 
 ### Regular maintenance
 
- * [Adding support for a new distribution](add-new-distro.md) (coming soon)
- * [Adding support for a new Ruby version](add-new-ruby-version.md) (coming soon)
+ * [Adding support for a new distribution](add-new-distro.md)
+ * [Adding support for a new Ruby version](add-new-ruby-version.md)
 
 ## References & recommended reading
 

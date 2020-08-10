@@ -22,7 +22,7 @@ None of the build environment images contain scripts. They only contain dependen
 
 ## Mounts
 
-Scripts always run build environment containers in such a way, that insider the container, `/system` is mounted read-only to the source root.
+Scripts always run build environment containers in such a way, that inside the container, `/system` is mounted read-only to the source root.
 
 ## Versioning
 
