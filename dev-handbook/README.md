@@ -15,13 +15,14 @@
 
  * [Development environment set up](dev-environment-setup.md)
  * [Building packages locally](building-packages-locally.md)
+ * [Fixing bugs](fixing-bugs.md)
 
 ### Testing
 
  * [Testing packages locally](testing-packages-locally.md)
  * [Adding, modifying & debugging tests](#modifying-and-debugging-tests.md)
 
-### Regular maintenance
+### Routine maintenance
 
  * [Adding support for a new distribution](add-new-distro.md)
  * [Adding support for a new Ruby version](add-new-ruby-version.md)
@@ -30,3 +31,4 @@
 
  * [How Debian packaging works](https://www.joyfulbikeshedding.com/blog/2020-08-03-how-debian-packaging-works.html)
  * [FPM manual](http://fpm.readthedocs.io/en/latest/)
+ * [Advanced Bash-Scripting Guide](https://tldp.org/LDP/abs/html/)

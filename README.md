@@ -53,6 +53,7 @@ You can think of Fullstaq Ruby as a competitor of `apt/yum install ruby`, `rbenv
    - [Why a new distribution? Why not contribute to Ruby core?](#why-a-new-distribution-why-not-contribute-to-ruby-core)
    - [Will Fullstaq Ruby become paid in the future?](#will-fullstaq-ruby-become-paid-in-the-future)
    - [I am wary of vendor lock-in or that I will become dependent on a specific party for supplying packages. What is Fullstaq Ruby's take on this?](#i-am-wary-of-vendor-lock-in-or-that-i-will-become-dependent-on-a-specific-party-for-supplying-packages-what-is-fullstaq-rubys-take-on-this)
+ * [Contributing](#contributing)
 
 
 ---
@@ -789,3 +790,7 @@ We have architected our systems in such a way that anyone will be able to build 
 This is achieved by automating the entire build process, and by releasing the making the build tooling as open source. There are almost no manual processes. Please take a look at this repository's source code.
 
 Because Fullstaq Ruby is still a work-in-progress, we don't have documentation yet on how to build packages yourself. Such documentation is [planned](https://github.com/fullstaq-labs/fullstaq-ruby-server-edition/issues/1) for [epic 5 of the roadmap](https://github.com/fullstaq-labs/fullstaq-ruby-umbrella/projects).
+
+## Contributing
+
+If you're interested in contributing to Fullstaq Ruby, please check out our [contribution guide](CONTRIBUTING.md) to get started.
