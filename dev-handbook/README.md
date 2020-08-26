@@ -41,5 +41,6 @@
 ## References & recommended reading
 
  * [How Debian packaging works](https://www.joyfulbikeshedding.com/blog/2020-08-03-how-debian-packaging-works.html)
+ * [Inspecting & extracting RPM packages](https://blog.packagecloud.io/eng/2015/10/13/inspect-extract-contents-rpm-packages/)
  * [FPM manual](http://fpm.readthedocs.io/en/latest/)
  * [Advanced Bash-Scripting Guide](https://tldp.org/LDP/abs/html/)
