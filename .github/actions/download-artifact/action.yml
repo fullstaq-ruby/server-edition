@@ -1,0 +1,19 @@
+name: Download artifact
+description: Download artifact from Google Cloud Storage
+inputs:
+  name:
+    description: Artifact name
+    required: true
+  path:
+    description: Directory to extract artifact to
+    required: true
+runs:
+  using: composite
+  steps:
+    - run: |
+        set -o pipefail
+        URL="gs://${{ env.CI_ARTIFACTS_BUCKET }}/${{ github.run_number }}/${{ inputs.name }}.tar.zst"
+        echo "--> Will download from $URL"
+        mkdir -p "${{ inputs.path }}"
+        gsutil cp "$URL" - | zstd -d | tar -C '${{ inputs.path }}' -xf -
+      shell: bash

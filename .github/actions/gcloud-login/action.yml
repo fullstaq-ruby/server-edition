@@ -1,0 +1,11 @@
+name: Login to Google Cloud
+description: Activate a service account
+inputs:
+  private_key:
+    description: The service account private key, in JSON format, base64-encoded
+    required: true
+runs:
+  using: composite
+  steps:
+    - run: gcloud auth activate-service-account --key-file <(base64 -d <<< "${{ inputs.private_key }}")
+      shell: bash

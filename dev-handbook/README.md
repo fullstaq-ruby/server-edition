@@ -1,6 +1,8 @@
 # Development handbook
 
-## Core concepts
+## Concepts
+
+### Core concepts
 
  * [The "minimal dependencies" principle & the use of Docker](minimal-dependencies-principle.md) — on the fact that we don't require many dependencies to be installed on the local machine, and that instead we use dependencies through Docker.
  * [Package organization](package-organization.md) — which package types exist, what they are for, and how they relate to each other.
@@ -8,6 +10,10 @@
  * [Build workflow management](build-workflow-management.md) — how we manage the fact that we have to build packages for multiple distributions, variants and Ruby versions.
  * [Build environments](build-environments.md) — how we utilize Docker images to build packages for different distributions and for running tasks.
  * [Source organization](source-organization.md) — how the Git repository is organized, and which files serve what purpose.
+
+### Advanced concepts
+
+ * [CI/CD system resumption support](ci-cd-resumption.md)
 
 ## Tutorials & tasks
 
@@ -21,6 +27,10 @@
 
  * [Testing packages locally](testing-packages-locally.md)
  * [Adding, modifying & debugging tests](#modifying-and-debugging-tests.md)
+
+### CI/CD
+
+ * [Troubleshooting corrupt CI/CD artifacts](troubleshooting-corrupt-ci-cd-artifacts.md)
 
 ### Routine maintenance
 

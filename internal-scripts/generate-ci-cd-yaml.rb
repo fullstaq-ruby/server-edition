@@ -51,12 +51,40 @@ Support.class_eval do
     end
   end
 
+  def self.ruby_source_artifact_name(ruby_version)
+    "ruby-src-#{ruby_version}"
+  end
+
+  def self.rbenv_source_artifact_name
+    'rbenv-src'
+  end
+
+  def self.common_deb_artifact_name
+    'common-deb'
+  end
+
+  def self.common_rpm_artifact_name
+    'common-rpm'
+  end
+
+  def self.rbenv_deb_artifact_name
+    'rbenv-deb'
+  end
+
+  def self.rbenv_rpm_artifact_name
+    'rbenv-rpm'
+  end
+
+  def self.ruby_package_artifact_name(ruby_package_version, distribution, variant)
+    "ruby-pkg_#{ruby_package_version[:id]}_#{distribution[:name]}_#{variant[:name]}"
+  end
+
   def self.ruby_package_artifact_names
     result = []
     ruby_package_versions.each do |ruby_package_version|
       distributions.each do |distribution|
         variants.each do |variant|
-          result << "ruby-pkg_#{ruby_package_version[:id]}_#{distribution[:name]}_#{variant[:name]}"
+          result << ruby_package_artifact_name(ruby_package_version, distribution, variant)
         end
       end
     end
@@ -77,7 +105,7 @@ Support.class_eval do
   end
 
   def self.slug(str)
-    str.scan(/[a-z0-9]+/).join('_')
+    str.to_s.scan(/[a-z0-9]+/).join('_')
   end
 
   # A single-value file is a file such as environments/ubuntu-18.04/image_tag.
