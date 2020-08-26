@@ -6,13 +6,11 @@ on:
   workflow_dispatch: {}
   push:
     paths-ignore:
-      - '*.md'
-      - '.github/**/*.md'
+      - '**.md'
       - 'dev-handbook/**'
   pull_request:
     paths-ignore:
-      - '*.md'
-      - '.github/**/*.md'
+      - '**.md'
       - 'dev-handbook/**'
 
 env:
