@@ -6,6 +6,10 @@ SELFDIR=$(cd "$SELFDIR" && pwd)
 # shellcheck source=../lib/library.sh
 source "$SELFDIR/../lib/library.sh"
 
+require_envvar BINTRAY_ORG
+require_envvar REPO_PACKAGE_VERSION
+
+
 function list_deb_environments()
 {
     grep -l 'apt install' /system/environments/*/Dockerfile |
@@ -26,7 +30,7 @@ function upload()
         curl -sSL --netrc-file /tmp/curl-creds
         -w '%{http_code}' -o "/tmp/body-$PID.txt"
         -X PUT -T "$FILE"
-        "https://api.bintray.com/api/v1/content/fullstaq/$REPO_NAME/fullstaq-ruby/all/$BASENAME;deb_distribution=$REPO_DISTROS;deb_component=main;deb_architecture=$REPO_ARCHS;override=$REPO_OVERRIDE"
+        "https://bintray.com/api/v1/content/$BINTRAY_ORG/$REPO_NAME/fullstaq-ruby/$REPO_PACKAGE_VERSION/$BASENAME;deb_distribution=$REPO_DISTROS;deb_component=main;deb_architecture=$REPO_ARCHS;override=$REPO_OVERRIDE"
     )
 
     if $DRY_RUN; then

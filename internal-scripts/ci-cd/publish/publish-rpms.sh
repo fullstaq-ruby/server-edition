@@ -8,32 +8,29 @@ source "$ROOTDIR/lib/library.sh"
 
 require_envvar BINTRAY_API_USERNAME
 require_envvar BINTRAY_API_KEY
+require_envvar BINTRAY_ORG
 require_envvar REPO_NAME
+require_envvar REPO_PACKAGE_VERSION
 require_envvar DRY_RUN
 require_envvar IGNORE_EXISTING
 
 
-UTILITY_IMAGE_NAME=fullstaq/ruby-build-env-utility
-UTILITY_IMAGE_TAG=$(read_single_value_file "$ROOTDIR/environments/utility/image_tag")
-
 echo "$BINTRAY_API_KEY" > bintray-api-key.txt
 
-MOUNT_ARGS=()
-for F in "$@"; do
-    ABS_PATH=$(absolute_path "$F")
-    MOUNT_ARGS+=(-v "$ABS_PATH:/input/$ABS_PATH:ro")
-done
+ARGS=()
+if $DRY_RUN; then
+    ARGS+=(-R)
+fi
+if $IGNORE_EXISTING; then
+    ARGS+=(-i)
+fi
 
-exec docker run --rm --init \
-    -v "$ROOTDIR:/system:ro" \
-    -v "$(pwd)/bintray-api-key.txt:/bintray_api_key.txt:ro" \
-    "${MOUNT_ARGS[@]}" \
-    -e "API_USERNAME=$BINTRAY_API_USERNAME" \
-    -e "CONCURRENCY=16" \
-    -e "DRY_RUN=$DRY_RUN" \
-    -e "REPO_NAME=$REPO_NAME" \
-    -e "REPUBLISH=false" \
-    -e "IGNORE_EXISTING=$IGNORE_EXISTING" \
-    --user "$(id -u):$(id -g)" \
-    "$UTILITY_IMAGE_NAME:$UTILITY_IMAGE_TAG" \
-    /system/container-entrypoints/upload-rpms
+set +x
+exec ./upload-rpms \
+    -u "$BINTRAY_API_USERNAME" \
+    -k bintray-api-key.txt \
+    -j 16 \
+    -O "$BINTRAY_ORG" \
+    -n "$REPO_NAME" \
+    -v "$REPO_PACKAGE_VERSION" \
+    "${ARGS[@]}" "$@"

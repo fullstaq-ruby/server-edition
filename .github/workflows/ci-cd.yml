@@ -1599,6 +1599,8 @@ jobs:
     if: '!failure() && !cancelled()'
     steps:
       - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
       - name: Download artifact
         uses: actions/download-artifact@v1
         with:
@@ -1621,6 +1623,13 @@ jobs:
         if: "needs.determine_necessary_jobs.outputs.image-utility-needs-building == 'true'"
         env:
           TARBALL: image.tar.zst
+
+      - name: Determine latest release tag
+        # Sets environment variable $LATEST_RELEASE_TAG
+        run: ./internal-scripts/ci-cd/check-version-numbers-need-changing/determine-latest-release-tag.sh
+      - name: Determine Bintray repository package version
+        # Sets environment variable $REPO_PACKAGE_VERSION
+        run: ./internal-scripts/ci-cd/publish/determine-repo-package-version.sh
 
       - name: Upload to repo
         run: ./internal-scripts/ci-cd/publish/publish-debs.sh *.deb
@@ -1645,6 +1654,9 @@ jobs:
     if: '!failure() && !cancelled()'
     steps:
       - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+
       - name: Download artifact
         uses: actions/download-artifact@v1
         with:
@@ -1667,6 +1679,13 @@ jobs:
         if: "needs.determine_necessary_jobs.outputs.image-utility-needs-building == 'true'"
         env:
           TARBALL: image.tar.zst
+
+      - name: Determine latest release tag
+        # Sets environment variable $LATEST_RELEASE_TAG
+        run: ./internal-scripts/ci-cd/check-version-numbers-need-changing/determine-latest-release-tag.sh
+      - name: Determine Bintray repository package version
+        # Sets environment variable $REPO_PACKAGE_VERSION
+        run: ./internal-scripts/ci-cd/publish/determine-repo-package-version.sh
 
       - name: Upload to repo
         run: ./internal-scripts/ci-cd/publish/publish-rpms.sh *.rpm
@@ -1702,6 +1721,8 @@ jobs:
     if: '!failure() && !cancelled()'
     steps:
       - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
 
 
       - name: Fetch ruby-pkg_2.7_centos-7_normal
@@ -2257,6 +2278,13 @@ jobs:
         env:
           TARBALL: image.tar.zst
 
+      - name: Determine latest release tag
+        # Sets environment variable $LATEST_RELEASE_TAG
+        run: ./internal-scripts/ci-cd/check-version-numbers-need-changing/determine-latest-release-tag.sh
+      - name: Determine Bintray repository package version
+        # Sets environment variable $REPO_PACKAGE_VERSION
+        run: ./internal-scripts/ci-cd/publish/determine-repo-package-version.sh
+
       - name: Upload DEBs to repo
         run: ./internal-scripts/ci-cd/publish/publish-debs.sh ruby-pkgs/*.deb
         env:
@@ -2283,6 +2311,15 @@ jobs:
     runs-on: ubuntu-18.04
     steps:
       - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+
+      - name: Determine latest release tag
+        # Sets environment variable $LATEST_RELEASE_TAG
+        run: ./internal-scripts/ci-cd/check-version-numbers-need-changing/determine-latest-release-tag.sh
+      - name: Determine Bintray repository package version
+        # Sets environment variable $REPO_PACKAGE_VERSION
+        run: ./internal-scripts/ci-cd/publish/determine-repo-package-version.sh
 
       - name: Commit files published to APT repo
         run: ./internal-scripts/ci-cd/publish/commit-published-packages.sh
@@ -2627,6 +2664,8 @@ jobs:
     runs-on: ubuntu-18.04
     steps:
       - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
 
       - name: Download fullstaq-common DEB
         uses: actions/download-artifact@v1
@@ -3203,6 +3242,13 @@ jobs:
         env:
           TARBALL: image.tar.zst
 
+      - name: Determine latest release tag
+        # Sets environment variable $LATEST_RELEASE_TAG
+        run: ./internal-scripts/ci-cd/check-version-numbers-need-changing/determine-latest-release-tag.sh
+      - name: Determine Bintray repository package version
+        # Sets environment variable $REPO_PACKAGE_VERSION
+        run: ./internal-scripts/ci-cd/publish/determine-repo-package-version.sh
+
       - name: Upload DEBs to repo
         run: ./internal-scripts/ci-cd/publish/publish-debs.sh *.deb
         env:
@@ -3214,6 +3260,7 @@ jobs:
 
       - name: Commit files published to APT repo
         run: ./internal-scripts/ci-cd/publish/commit-published-packages.sh
+        if: github.ref == 'refs/heads/main'
         env:
           BINTRAY_API_USERNAME: ${{ secrets.BINTRAY_API_USERNAME }}
           BINTRAY_API_KEY: ${{ secrets.BINTRAY_API_KEY }}
@@ -3230,6 +3277,7 @@ jobs:
 
       - name: Commit files published to YUM repo
         run: ./internal-scripts/ci-cd/publish/commit-published-packages.sh
+        if: github.ref == 'refs/heads/main'
         env:
           BINTRAY_API_USERNAME: ${{ secrets.BINTRAY_API_USERNAME }}
           BINTRAY_API_KEY: ${{ secrets.BINTRAY_API_KEY }}

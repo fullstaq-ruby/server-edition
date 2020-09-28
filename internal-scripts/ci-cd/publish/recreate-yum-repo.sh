@@ -5,8 +5,8 @@ SELFDIR=$(dirname "$0")
 ROOTDIR=$(cd "$SELFDIR/../../.." && pwd)
 # shellcheck source=../../../lib/library.sh
 source "$ROOTDIR/lib/library.sh"
-# shellcheck source=create-repo-package-and-version.sh
-source "$SELFDIR/create-repo-package-and-version.sh"
+# shellcheck source=create-repo-package.sh
+source "$SELFDIR/create-repo-package.sh"
 
 require_envvar BINTRAY_ORG
 require_envvar BINTRAY_API_USERNAME
@@ -57,4 +57,3 @@ echo
 
 
 create_package
-create_version

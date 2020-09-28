@@ -11,18 +11,45 @@ require_container_mount /bintray_api_key.txt
 require_container_envvar API_USERNAME
 require_container_envvar CONCURRENCY
 require_container_envvar DRY_RUN
+require_container_envvar BINTRAY_ORG
+require_container_envvar REPO_NAME
+require_container_envvar REPO_PACKAGE_VERSION
 require_container_envvar REPUBLISH
 require_container_envvar IGNORE_EXISTING
-
-export REPO_NAME="${REPO_NAME:-fullstaq-ruby-apt}"
 
 set -o pipefail
 cd /input
 
-echo "machine api.bintray.com login $API_USERNAME password $(cat /bintray_api_key.txt)" > /tmp/curl-creds
+
+header "Preparing"
+
+echo "+ Creating credentials file"
+echo "machine bintray.com login $API_USERNAME password $(cat /bintray_api_key.txt)" > /tmp/curl-creds
 chmod 600 /tmp/curl-creds
+
+echo "+ Listing package files"
 find . -type f -name '*.deb' > /tmp/deb-files.txt
 
+echo "+ Creating Bintray package version"
+CODE=$(curl -sSL -w '%{http_code}' -o /dev/null --netrc-file /tmp/curl-creds \
+    -X POST \
+    -H 'Content-Type: application/json' \
+    -d '{ "name": "'"$REPO_PACKAGE_VERSION"'" }' \
+    "https://bintray.com/api/v1/packages/$BINTRAY_ORG/$REPO_NAME/fullstaq-ruby/versions")
+if [[ "$CODE" =~ ^2 ]] || [[ "$CODE" = 409 ]]; then
+    echo "Success: HTTP code $CODE"
+else
+    echo "ERROR: server returned HTTP code $CODE"
+    # Print body.txt while ensuring that a trailing newline is also
+    # printed.
+    # shellcheck disable=SC2005
+    echo "$(cat body.txt)"
+    exit 1
+fi
+echo
+
+
+header "Uploading packages"
 exec parallel --will-cite \
     --linebuffer \
     "-j$CONCURRENCY" \

@@ -10,8 +10,11 @@ API_USERNAME=
 API_KEY_PATH=
 CONCURRENCY=4
 DRY_RUN=false
+BINTRAY_ORG=fullstaq
 REPO_NAME=fullstaq-ruby-apt
+REPO_PACKAGE_VERSION=$(date +%Y-%m-%d)
 REPUBLISH=false
+IGNORE_EXISTING=false
 FILES=()
 
 function usage()
@@ -26,8 +29,11 @@ function usage()
     echo "Optional options:"
     echo "  -j NUM      Upload concurrency (default: $CONCURRENCY)"
     echo "  -R          Dry run: don't actually upload"
-    echo "  -n          Repository name to upload to (default: fullstaq-ruby-apt)"
-    echo "  -f          Re-publish already published package"
+    echo "  -O          Bintray organization name (default: $BINTRAY_ORG)"
+    echo "  -n          Repository name to upload to (default: $REPO_NAME)"
+    echo "  -v          Bintray package version number (default: $REPO_PACKAGE_VERSION)"
+    echo "  -f          Force overwrite already published package"
+    echo "  -i          Don't error when package with existing name already exists"
     echo "  -h          Show usage"
 }
 
@@ -36,7 +42,7 @@ function parse_options()
     local OPTIND=1
     local ORIG_ARGV
     local opt
-    while getopts "u:k:j:Rn:fh" opt; do
+    while getopts "u:k:j:RO:n:v:fih" opt; do
         case "$opt" in
         u)
             API_USERNAME="$OPTARG"
@@ -50,11 +56,20 @@ function parse_options()
         R)
             DRY_RUN=true
             ;;
+        O)
+            BINTRAY_ORG="$OPTARG"
+            ;;
         n)
             REPO_NAME="$OPTARG"
             ;;
+        v)
+            REPO_PACKAGE_VERSION="$OPTARG"
+            ;;
         f)
             REPUBLISH=true
+            ;;
+        i)
+            IGNORE_EXISTING=true
             ;;
         h)
             usage
@@ -109,9 +124,11 @@ verbose_run docker run --rm --init "${TTY_ARGS[@]}" \
     -e "API_USERNAME=$API_USERNAME" \
     -e "CONCURRENCY=$CONCURRENCY" \
     -e "DRY_RUN=$DRY_RUN" \
+    -e "BINTRAY_ORG=$BINTRAY_ORG" \
     -e "REPO_NAME=$REPO_NAME" \
+    -e "REPO_PACKAGE_VERSION=$REPO_PACKAGE_VERSION" \
     -e "REPUBLISH=$REPUBLISH" \
-    -e "IGNORE_EXISTING=false" \
+    -e "IGNORE_EXISTING=$IGNORE_EXISTING" \
     --user "$(id -u):$(id -g)" \
     "fullstaq/ruby-build-env-utility:$UTILITY_IMAGE_VERSION" \
     /system/container-entrypoints/upload-debs

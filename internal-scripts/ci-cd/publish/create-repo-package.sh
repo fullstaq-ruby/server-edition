@@ -18,14 +18,3 @@ function create_package()
     verify_http_code_ok
     echo
 }
-
-function create_version()
-{
-    header "Creating version"
-    run_curl -u "$BINTRAY_API_USERNAME:$BINTRAY_API_KEY" -X POST \
-        -H 'Content-Type: application/json' \
-        -d '{ "name": "all" }' \
-        "https://bintray.com/api/v1/packages/$BINTRAY_ORG/$REPO_NAME/fullstaq-ruby/versions"
-    verify_http_code_ok
-    echo
-}
