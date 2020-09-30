@@ -12323,7 +12323,6 @@ jobs:
 
       - name: Commit files published to APT repo
         run: ./internal-scripts/ci-cd/publish/commit-published-packages.sh
-        if: github.ref == 'refs/heads/main'
         env:
           BINTRAY_API_USERNAME: ${{ secrets.BINTRAY_API_USERNAME }}
           BINTRAY_API_KEY: ${{ secrets.BINTRAY_API_KEY }}
@@ -12340,7 +12339,6 @@ jobs:
 
       - name: Commit files published to YUM repo
         run: ./internal-scripts/ci-cd/publish/commit-published-packages.sh
-        if: github.ref == 'refs/heads/main'
         env:
           BINTRAY_API_USERNAME: ${{ secrets.BINTRAY_API_USERNAME }}
           BINTRAY_API_KEY: ${{ secrets.BINTRAY_API_KEY }}

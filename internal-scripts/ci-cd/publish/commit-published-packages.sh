@@ -31,8 +31,21 @@ function run_curl()
 function verify_http_code_ok()
 {
     if ! [[ "$HTTP_CODE" =~ ^2 ]]; then
-        echo "*** ERROR: Bintray API returned non-successful HTTP code"
-        exit 1
+        if [[ "$HTTP_CODE" = 408 ]]; then
+            # The Bintray 'publish' API endpoint times out when no packages
+            # have been uploaded to the release. We want to ignore that
+            # harmless error.
+            #
+            # However, it could also be a true timeout. In that case,
+            # ignoring that error could result in the
+            # "Test Ruby packages against XXX repos" jobs to fail.
+            # This is an acceptable risk, because we can just re-run
+            # the CI run.
+            echo "::warning ::Bintray API call timed out (HTTP response code 408)"
+        else
+            echo "*** ERROR: Bintray API returned non-successful HTTP code"
+            exit 1
+        fi
     fi
 }
 
