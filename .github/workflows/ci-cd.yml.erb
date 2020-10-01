@@ -128,6 +128,26 @@ jobs:
         <%- end -%>
       <%- end -%>
       <%- end %>
+
+      <%- distributions.each do |distribution| -%>
+      <%- ruby_package_versions.each do |ruby_package_version| -%>
+      <%- variants.each do |variant| -%>
+      <%- unindent(2) do %>
+        'test-against-test-<%= slug(distribution[:name]) %>-<%= slug(ruby_package_version[:id]) %>-<%= slug(variant[:name]) %>-needed': '${{ steps.check_test_against_test-<%= slug(distribution[:name]) %>-<%= slug(ruby_package_version[:id]) %>-<%= slug(variant[:name]) %>.outputs.absent }}'
+      <%- end %>
+      <%- end -%>
+      <%- end -%>
+      <%- end -%>
+
+      <%- distributions.each do |distribution| -%>
+      <%- ruby_package_versions.each do |ruby_package_version| -%>
+      <%- variants.each do |variant| -%>
+      <%- unindent(2) do %>
+        'test-against-production-<%= slug(distribution[:name]) %>-<%= slug(ruby_package_version[:id]) %>-<%= slug(variant[:name]) %>-needed': '${{ steps.check_test_against_production-<%= slug(distribution[:name]) %>-<%= slug(ruby_package_version[:id]) %>-<%= slug(variant[:name]) %>.outputs.absent }}'
+      <%- end %>
+      <%- end -%>
+      <%- end -%>
+      <%- end -%>
     steps:
       - uses: actions/checkout@v2
       - name: Login to Google Cloud
@@ -209,6 +229,34 @@ jobs:
         <%- end -%>
       <%- end -%>
       <%- end %>
+
+      <%- distributions.each do |distribution| -%>
+      <%- ruby_package_versions.each do |ruby_package_version| -%>
+      <%- variants.each do |variant| -%>
+      <%- unindent(2) do %>
+        - name: Determine whether to test against test repo [<%= distribution[:name] %>/<%= ruby_package_version[:id] %>/<%= variant[:name] %>]
+          id: 'check_test_against_test-<%= slug(distribution[:name]) %>-<%= slug(ruby_package_version[:id]) %>-<%= slug(variant[:name]) %>'
+          run: ./internal-scripts/ci-cd/determine-necessary-jobs/check-artifact-exists.rb
+          env:
+            NAME: tested-against-test-<%= distribution[:name] %>_<%= ruby_package_version[:id] %>_<%= variant[:name] %>
+      <%- end %>
+      <%- end -%>
+      <%- end -%>
+      <%- end -%>
+
+      <%- distributions.each do |distribution| -%>
+      <%- ruby_package_versions.each do |ruby_package_version| -%>
+      <%- variants.each do |variant| -%>
+      <%- unindent(2) do %>
+        - name: Determine whether to test against production repo [<%= distribution[:name] %>/<%= ruby_package_version[:id] %>/<%= variant[:name] %>]
+          id: 'check_test_against_production-<%= slug(distribution[:name]) %>-<%= slug(ruby_package_version[:id]) %>-<%= slug(variant[:name]) %>'
+          run: ./internal-scripts/ci-cd/determine-necessary-jobs/check-artifact-exists.rb
+          env:
+            NAME: tested-against-production-<%= distribution[:name] %>_<%= ruby_package_version[:id] %>_<%= variant[:name] %>
+      <%- end %>
+      <%- end -%>
+      <%- end -%>
+      <%- end -%>
 
   # Uncomment the following to debug the output of the
   # 'determine_necessary_jobs' job.
@@ -1145,34 +1193,48 @@ jobs:
 
   ### Test packages against test repos ###
 
-  # The Github Actions matrix is limited to producing 256 jobs. Given the
-  # combinatorial explosion, it's very easy to reach that limit, so we
-  # preprocess distribution information using ERB templating instead.
   <%- distributions_with_test_image_info.each do |distribution| %>
+  <%- ruby_package_versions.each do |ruby_package_version| -%>
+  <%- variants.each do |variant| -%>
   <%- unindent(2) do %>
-    test_packages_against_test_<%= slug(distribution[:name]) %>:
-      name: 'Test Ruby packages against test repos [<%= distribution[:name] %>]'
-      needs: commit_published_packages_test
+    test_packages_against_test_<%= slug(distribution[:name]) %>_<%= slug(ruby_package_version[:id]) %>_<%= slug(variant[:name]) %>:
+      name: 'Test Ruby packages against test repos [<%= distribution[:name] %>/<%= ruby_package_version[:id] %>/<%= variant[:name] %>]'
+      needs:
+        - determine_necessary_jobs
+        - commit_published_packages_test
       runs-on: ubuntu-18.04
-      strategy:
-        max-parallel: 4 # avoid overloading Bintray
-        matrix:
-          ruby_package_version: <%=indentyaml ruby_package_versions %>
-          variant: <%=indentyaml variants %>
+      # Run even if a dependent job has been skipped
+      if: |
+        !failure() && !cancelled()
+        && needs.determine_necessary_jobs.outputs.test-against-test-<%= slug(distribution[:name]) %>-<%= slug(ruby_package_version[:id]) %>-<%= slug(variant[:name]) %>-needed == 'true'
       steps:
         - uses: actions/checkout@v2
         - name: Run tests
           run: ./internal-scripts/ci-cd/test-packages/run-tests.sh
           env:
             DISTRIBUTION_NAME: "<%= distribution[:name] %>"
-            RUBY_PACKAGE_ID: ${{ matrix.ruby_package_version.id }}
+            RUBY_PACKAGE_ID: "<%= ruby_package_version[:id] %>"
             PACKAGE_FORMAT: "<%= distribution[:package_format] %>"
-            VARIANT_NAME: ${{ matrix.variant.name }}
-            VARIANT_PACKAGE_SUFFIX: ${{ matrix.variant.package_suffix }}
+            VARIANT_NAME: "<%= variant[:name] %>"
+            VARIANT_PACKAGE_SUFFIX: "<%= variant[:package_suffix] %>"
             TEST_IMAGE_NAME: "<%= distribution[:test_image] %>"
             APT_REPO_URL: https://dl.bintray.com/fullstaq/fullstaq-ruby-apt-ci-${{ env.CI_ARTIFACTS_RUN_NUMBER }}
             YUM_REPO_URL: https://dl.bintray.com/fullstaq/fullstaq-ruby-yum-ci-${{ env.CI_ARTIFACTS_RUN_NUMBER }}
+
+        - name: Login to Google Cloud
+          uses: ./.github/actions/gcloud-login
+          with:
+            private_key: ${{ secrets.GCLOUD_KEY }}
+        - name: Create mark file
+          run: mkdir mark && touch mark/done.txt
+        - name: Mark job as done
+          uses: ./.github/actions/upload-artifact
+          with:
+            name: tested-against-test-<%= distribution[:name] %>_<%= ruby_package_version[:id] %>_<%= variant[:name] %>
+            path: mark
   <%- end %>
+  <%- end -%>
+  <%- end -%>
   <%- end %>
 
 
@@ -1183,9 +1245,15 @@ jobs:
     needs:
       - determine_necessary_jobs
       <%- distributions.each do |distribution| -%>
-      - 'test_packages_against_test_<%= slug(distribution[:name]) %>'
+      <%- ruby_package_versions.each do |ruby_package_version| -%>
+      <%- variants.each do |variant| -%>
+      - 'test_packages_against_test_<%= slug(distribution[:name]) %>_<%= slug(ruby_package_version[:id]) %>_<%= slug(variant[:name]) %>'
+      <%- end -%>
+      <%- end -%>
       <%- end -%>
     runs-on: ubuntu-18.04
+    # Run even if a dependent job has been skipped
+    if: '!failure() && !cancelled()'
     steps:
       - uses: actions/checkout@v2
         with:
@@ -1281,35 +1349,49 @@ jobs:
 
   ### Test packages against production repos ###
 
-  # The Github Actions matrix is limited to producing 256 jobs. Given the
-  # combinatorial explosion, it's very easy to reach that limit, so we
-  # preprocess distribution information using ERB templating instead.
   <%- distributions_with_test_image_info.each do |distribution| %>
-  <%- unindent(2) do -%>
-    test_packages_against_production_<%= slug(distribution[:name]) %>:
-      name: 'Test Ruby packages against production repos [<%= distribution[:name] %>]'
-      needs: publish_packages_production
-      if: github.ref == 'refs/heads/main'
+  <%- ruby_package_versions.each do |ruby_package_version| -%>
+  <%- variants.each do |variant| -%>
+  <%- unindent(2) do %>
+    test_packages_against_production_<%= slug(distribution[:name]) %>_<%= slug(ruby_package_version[:id]) %>_<%= slug(variant[:name]) %>:
+      name: 'Test Ruby packages against production repos [<%= distribution[:name] %>/<%= ruby_package_version[:id] %>/<%= variant[:name] %>]'
+      needs:
+        - determine_necessary_jobs
+        - publish_packages_production
+      # Run even if a dependent job has been skipped
+      if: |
+        !failure() && !cancelled()
+        && github.ref == 'refs/heads/main'
+        && needs.determine_necessary_jobs.outputs.test-against-production-<%= slug(distribution[:name]) %>-<%= slug(ruby_package_version[:id]) %>-<%= slug(variant[:name]) %>-needed == 'true'
       runs-on: ubuntu-18.04
-      strategy:
-        max-parallel: 4 # avoid overloading Bintray
-        matrix:
-          ruby_package_version: <%=indentyaml ruby_package_versions %>
-          variant: <%=indentyaml variants %>
       steps:
         - uses: actions/checkout@v2
         - name: Run tests
           run: ./internal-scripts/ci-cd/test-packages/run-tests.sh
           env:
             DISTRIBUTION_NAME: "<%= distribution[:name] %>"
-            RUBY_PACKAGE_ID: ${{ matrix.ruby_package_version.id }}
+            RUBY_PACKAGE_ID: "<%= ruby_package_version[:id] %>"
             PACKAGE_FORMAT: "<%= distribution[:package_format] %>"
-            VARIANT_NAME: ${{ matrix.variant.name }}
-            VARIANT_PACKAGE_SUFFIX: ${{ matrix.variant.package_suffix }}
+            VARIANT_NAME: "<%= variant[:name] %>"
+            VARIANT_PACKAGE_SUFFIX: "<%= variant[:package_suffix] %>"
             TEST_IMAGE_NAME: "<%= distribution[:test_image] %>"
             APT_REPO_URL: https://apt.fullstaqruby.org
             YUM_REPO_URL: https://yum.fullstaqruby.org
+
+        - name: Login to Google Cloud
+          uses: ./.github/actions/gcloud-login
+          with:
+            private_key: ${{ secrets.GCLOUD_KEY }}
+        - name: Create mark file
+          run: mkdir mark && touch mark/done.txt
+        - name: Mark job as done
+          uses: ./.github/actions/upload-artifact
+          with:
+            name: tested-against-production-<%= distribution[:name] %>_<%= ruby_package_version[:id] %>_<%= variant[:name] %>
+            path: mark
   <%- end %>
+  <%- end -%>
+  <%- end -%>
   <%- end %>
 
 
@@ -1319,7 +1401,11 @@ jobs:
     name: Create Git tag
     needs:
       <%- distributions.each do |distribution| -%>
-      - 'test_packages_against_production_<%= slug(distribution[:name]) %>'
+      <%- ruby_package_versions.each do |ruby_package_version| -%>
+      <%- variants.each do |variant| -%>
+      - 'test_packages_against_production_<%= slug(distribution[:name]) %>_<%= slug(ruby_package_version[:id]) %>_<%= slug(variant[:name]) %>'
+      <%- end -%>
+      <%- end -%>
       <%- end -%>
     # Run even if a dependent job has been skipped
     if: '!failure() && !cancelled()'
