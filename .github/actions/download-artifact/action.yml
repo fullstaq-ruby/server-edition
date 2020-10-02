@@ -7,6 +7,9 @@ inputs:
   path:
     description: Directory to extract artifact to
     required: true
+  clear:
+    description: Clear destination directory
+    required: false
 runs:
   using: composite
   steps:
@@ -14,6 +17,10 @@ runs:
         set -o pipefail
         CI_ARTIFACTS_RUN_NUMBER=${CI_ARTIFACTS_RUN_NUMBER:-${{ github.run_number }}}
         URL="gs://${{ env.CI_ARTIFACTS_BUCKET }}/$CI_ARTIFACTS_RUN_NUMBER/${{ inputs.name }}.tar.zst"
+        if ${{ inputs.clear == 'true' }}; then
+          echo "--> Clearing destination directory"
+          rm -rf "${{ inputs.path }}"
+        fi
         echo "--> Will download from $URL"
         mkdir -p "${{ inputs.path }}"
         gsutil cp "$URL" - | zstd -d | tar -C '${{ inputs.path }}' -xf -

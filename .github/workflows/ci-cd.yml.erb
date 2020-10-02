@@ -22,7 +22,7 @@ env:
 jobs:
   check_workflow_uptodate:
     name: Check whether workflow is up-to-date
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-20.04
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-ruby@v1
@@ -40,7 +40,7 @@ jobs:
     name: Check whether any version numbers need to be changed
     needs:
       - download_rbenv_source
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-20.04
     # Run even if a dependent job has been skipped
     if: '!failure() && !cancelled()'
     steps:
@@ -97,57 +97,7 @@ jobs:
     name: Determine necessary jobs
     runs-on: ubuntu-20.04
     outputs:
-      common-deb-needs-building: ${{ steps.check_common_deb.outputs.absent }}
-      common-rpm-needs-building: ${{ steps.check_common_rpm.outputs.absent }}
-      rbenv-deb-needs-building: ${{ steps.check_rbenv_deb.outputs.absent }}
-      rbenv-rpm-needs-building: ${{ steps.check_rbenv_rpm.outputs.absent }}
-      rbenv-src-needs-downloading: ${{ steps.check_rbenv_source.outputs.absent }}
-
-      <%- ruby_source_versions.each do |ruby_version| %>
-      <%- unindent(2) do -%>
-        'ruby-src-<%= slug(ruby_version) %>-needs-downloading': '${{ steps.check_ruby_source_<%= slug(ruby_version) %>.outputs.absent }}'
-      <%- end -%>
-      <%- end %>
-
-      <%- docker_images.each do |image| %>
-      <%- unindent(2) do -%>
-        'image-<%= slug(image[:id]) %>-needs-building': '${{ steps.prepare_image_<%= slug(image[:id]) %>.outputs.needs-building }}'
-      <%- end -%>
-      <%- end %>
-
-      <%- distributions.each do |distribution| %>
-      <%- unindent(2) do -%>
-        'jemalloc-<%= slug(distribution[:name]) %>-needs-building': '${{ steps.check_jemalloc_<%= slug(distribution[:name]) %>.outputs.absent }}'
-
-        <%- ruby_package_versions.each do |ruby_package_version| -%>
-        <%- variants.each do |variant| -%>
-        <%- unindent(2) do %>
-          'ruby-<%= slug(distribution[:name]) %>-<%= slug(ruby_package_version[:id]) %>-<%= slug(variant[:name]) %>-needs-building': '${{ steps.check_ruby-<%= slug(distribution[:name]) %>-<%= slug(ruby_package_version[:id]) %>-<%= slug(variant[:name]) %>.outputs.absent }}'
-        <%- end %>
-        <%- end -%>
-        <%- end -%>
-      <%- end -%>
-      <%- end %>
-
-      <%- distributions.each do |distribution| -%>
-      <%- ruby_package_versions.each do |ruby_package_version| -%>
-      <%- variants.each do |variant| -%>
-      <%- unindent(2) do %>
-        'test-against-test-<%= slug(distribution[:name]) %>-<%= slug(ruby_package_version[:id]) %>-<%= slug(variant[:name]) %>-needed': '${{ steps.check_test_against_test-<%= slug(distribution[:name]) %>-<%= slug(ruby_package_version[:id]) %>-<%= slug(variant[:name]) %>.outputs.absent }}'
-      <%- end %>
-      <%- end -%>
-      <%- end -%>
-      <%- end -%>
-
-      <%- distributions.each do |distribution| -%>
-      <%- ruby_package_versions.each do |ruby_package_version| -%>
-      <%- variants.each do |variant| -%>
-      <%- unindent(2) do %>
-        'test-against-production-<%= slug(distribution[:name]) %>-<%= slug(ruby_package_version[:id]) %>-<%= slug(variant[:name]) %>-needed': '${{ steps.check_test_against_production-<%= slug(distribution[:name]) %>-<%= slug(ruby_package_version[:id]) %>-<%= slug(variant[:name]) %>.outputs.absent }}'
-      <%- end %>
-      <%- end -%>
-      <%- end -%>
-      <%- end -%>
+      necessary_jobs: ${{ steps.check.outputs.necessary_jobs }}
     steps:
       - uses: actions/checkout@v2
       - name: Login to Google Cloud
@@ -160,115 +110,9 @@ jobs:
         env:
           CI_RUN_NUMBER: ${{ env.CI_ARTIFACTS_RUN_NUMBER || github.run_number }}
 
-      - name: Determine whether common DEB needs to be built
-        id: check_common_deb
-        run: ./internal-scripts/ci-cd/determine-necessary-jobs/check-artifact-exists.rb
-        env:
-          NAME: <%= common_deb_artifact_name %>
-      - name: Determine whether common RPM needs to be built
-        id: check_common_rpm
-        run: ./internal-scripts/ci-cd/determine-necessary-jobs/check-artifact-exists.rb
-        env:
-          NAME: <%= common_rpm_artifact_name %>
-      - name: Determine whether Rbenv DEB needs to be built
-        id: check_rbenv_deb
-        run: ./internal-scripts/ci-cd/determine-necessary-jobs/check-artifact-exists.rb
-        env:
-          NAME: <%= rbenv_deb_artifact_name %>
-      - name: Determine whether Rbenv RPM needs to be built
-        id: check_rbenv_rpm
-        run: ./internal-scripts/ci-cd/determine-necessary-jobs/check-artifact-exists.rb
-        env:
-          NAME: <%= rbenv_rpm_artifact_name %>
-
-      - name: Determine whether Rbenv source needs to be downloaded
-        id: check_rbenv_source
-        run: ./internal-scripts/ci-cd/determine-necessary-jobs/check-artifact-exists.rb
-        env:
-          NAME: <%= rbenv_source_artifact_name %>
-
-      <%- ruby_source_versions.each do |ruby_version| %>
-      <%- unindent(2) do -%>
-        - name: Determine whether Ruby source <%= ruby_version %> needs to be downloaded
-          id: check_ruby_source_<%= slug(ruby_version) %>
-          run: ./internal-scripts/ci-cd/determine-necessary-jobs/check-artifact-exists.rb
-          env:
-            NAME: <%= ruby_source_artifact_name(ruby_version) %>
-      <%- end -%>
-      <%- end %>
-
-      <%- docker_images.each do |image| %>
-      <%- unindent(2) do -%>
-        - name: Determine whether Docker image for <%= image[:id] %> needs to be built
-          id: 'prepare_image_<%= slug(image[:id]) %>'
-          run: ./internal-scripts/ci-cd/build-docker-images/prepare.sh
-          env:
-            IMAGE_NAME: '<%= image[:name] %>'
-            IMAGE_TAG: '<%= image[:tag] %>'
-      <%- end -%>
-      <%- end %>
-
-      <%- distributions.each do |distribution| %>
-      <%- unindent(2) do -%>
-        - name: Determine whether Jemalloc [<%= distribution[:name] %>] needs to be built
-          id: 'check_jemalloc_<%= slug(distribution[:name]) %>'
-          run: ./internal-scripts/ci-cd/determine-necessary-jobs/check-artifact-exists.rb
-          env:
-            NAME: jemalloc-bin-<%= distribution[:name] %>
-
-        <%- ruby_package_versions.each do |ruby_package_version| -%>
-        <%- variants.each do |variant| -%>
-        <%- unindent(2) do %>
-          - name: Determine whether Ruby [<%= distribution[:name] %>/<%= ruby_package_version[:id] %>/<%= variant[:name] %>] needs to be built
-            id: 'check_ruby-<%= slug(distribution[:name]) %>-<%= slug(ruby_package_version[:id]) %>-<%= slug(variant[:name]) %>'
-            run: ./internal-scripts/ci-cd/determine-necessary-jobs/check-artifact-exists.rb
-            env:
-              NAME: <%= ruby_package_artifact_name(ruby_package_version, distribution, variant) %>
-        <%- end %>
-        <%- end -%>
-        <%- end -%>
-      <%- end -%>
-      <%- end %>
-
-      <%- distributions.each do |distribution| -%>
-      <%- ruby_package_versions.each do |ruby_package_version| -%>
-      <%- variants.each do |variant| -%>
-      <%- unindent(2) do %>
-        - name: Determine whether to test against test repo [<%= distribution[:name] %>/<%= ruby_package_version[:id] %>/<%= variant[:name] %>]
-          id: 'check_test_against_test-<%= slug(distribution[:name]) %>-<%= slug(ruby_package_version[:id]) %>-<%= slug(variant[:name]) %>'
-          run: ./internal-scripts/ci-cd/determine-necessary-jobs/check-artifact-exists.rb
-          env:
-            NAME: tested-against-test-<%= distribution[:name] %>_<%= ruby_package_version[:id] %>_<%= variant[:name] %>
-      <%- end %>
-      <%- end -%>
-      <%- end -%>
-      <%- end -%>
-
-      <%- distributions.each do |distribution| -%>
-      <%- ruby_package_versions.each do |ruby_package_version| -%>
-      <%- variants.each do |variant| -%>
-      <%- unindent(2) do %>
-        - name: Determine whether to test against production repo [<%= distribution[:name] %>/<%= ruby_package_version[:id] %>/<%= variant[:name] %>]
-          id: 'check_test_against_production-<%= slug(distribution[:name]) %>-<%= slug(ruby_package_version[:id]) %>-<%= slug(variant[:name]) %>'
-          run: ./internal-scripts/ci-cd/determine-necessary-jobs/check-artifact-exists.rb
-          env:
-            NAME: tested-against-production-<%= distribution[:name] %>_<%= ruby_package_version[:id] %>_<%= variant[:name] %>
-      <%- end %>
-      <%- end -%>
-      <%- end -%>
-      <%- end -%>
-
-  # Uncomment the following to debug the output of the
-  # 'determine_necessary_jobs' job.
-
-  # debug_determine_necessary_jobs:
-  #   name: 'Debug "Determine necessary jobs" output'
-  #   runs-on: ubuntu-20.04
-  #   needs: determine_necessary_jobs
-  #   steps:
-  #     - run: echo "$JSON"
-  #       env:
-  #         JSON: ${{ toJSON(needs.determine_necessary_jobs.outputs) }}
+      - name: Determine necessary jobs
+        id: check
+        run: ./internal-scripts/ci-cd/determine-necessary-jobs/determine-necessary-jobs.rb
 
 
   ### Docker images ###
@@ -278,20 +122,15 @@ jobs:
     build_docker_image_<%= slug(image[:id]) %>:
       name: 'Build Docker image [<%= image[:id] %>]'
       runs-on: ubuntu-18.04
-      needs: determine_necessary_jobs
-      if: needs.determine_necessary_jobs.outputs.image-<%= slug(image[:id]) %>-needs-building == 'true'
+      needs:
+        - determine_necessary_jobs
+      if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Docker image <%= image[:id] %>;')
       steps:
         - uses: actions/checkout@v2
         - name: Login to Google Cloud
           uses: ./.github/actions/gcloud-login
           with:
             private_key: ${{ secrets.GCLOUD_KEY }}
-
-        - name: Prepare
-          run: ./internal-scripts/ci-cd/build-docker-images/prepare.sh
-          env:
-            IMAGE_NAME: '<%= image[:name] %>'
-            IMAGE_TAG: '<%= image[:tag] %>'
 
         - name: Build
           run: ./internal-scripts/ci-cd/build-docker-images/build.sh
@@ -320,10 +159,10 @@ jobs:
   <%- unindent(2) do -%>
     download_ruby_source_<%= slug(ruby_version) %>:
       name: Download Ruby source [<%= ruby_version %>]
+      runs-on: ubuntu-20.04
       needs:
         - determine_necessary_jobs
-      runs-on: ubuntu-18.04
-      if: needs.determine_necessary_jobs.outputs.ruby-src-<%= slug(ruby_version) %>-needs-downloading == 'true'
+      if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Download Ruby source <%= ruby_version %>;')
       steps:
         - uses: actions/checkout@v2
         - name: Login to Google Cloud
@@ -355,15 +194,12 @@ jobs:
 
   download_rbenv_source:
     name: Download Rbenv source
+    runs-on: ubuntu-20.04
     needs:
       - determine_necessary_jobs
-    runs-on: ubuntu-18.04
-    if: needs.determine_necessary_jobs.outputs.rbenv-src-needs-downloading == 'true'
+    if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Download Rbenv source;')
     steps:
       - uses: actions/checkout@v2
-      - uses: actions/setup-ruby@v1
-        with:
-          ruby-version: '2.6'
       - name: Login to Google Cloud
         uses: ./.github/actions/gcloud-login
         with:
@@ -396,13 +232,13 @@ jobs:
   <%- unindent(2) do -%>
     build_jemalloc_binary_<%= slug(distribution[:name]) %>:
       name: 'Build Jemalloc binary [<%= distribution[:name] %>]'
+      runs-on: ubuntu-20.04
       needs:
         - 'determine_necessary_jobs'
         - 'build_docker_image_<%= slug(distribution[:name]) %>'
-      runs-on: ubuntu-18.04
       # Run even if a dependent job has been skipped
       if: |
-        needs.determine_necessary_jobs.outputs.jemalloc-<%= slug(distribution[:name]) %>-needs-building == 'true'
+        contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Jemalloc [<%= distribution[:name] %>];')
         && !failure() && !cancelled()
       steps:
         - uses: actions/checkout@v2
@@ -420,13 +256,13 @@ jobs:
 
         - name: Download Docker image necessary for building
           uses: ./.github/actions/download-artifact
-          if: "needs.determine_necessary_jobs.outputs.image-<%= slug(distribution[:name]) %>-needs-building == 'true'"
+          if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Docker image <%= distribution[:name] %>;')
           with:
             name: 'docker-image-<%= distribution[:name] %>'
             path: .
         - name: Load Docker image necessary for building
           run: ./internal-scripts/ci-cd/load-docker-image.sh
-          if: "needs.determine_necessary_jobs.outputs.image-<%= slug(distribution[:name]) %>-needs-building == 'true'"
+          if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Docker image <%= distribution[:name] %>;')
           env:
             TARBALL: image.tar.zst
 
@@ -453,13 +289,13 @@ jobs:
 
   build_common_deb:
     name: Build common DEB
+    runs-on: ubuntu-20.04
     needs:
       - determine_necessary_jobs
       - build_docker_image_utility
-    runs-on: ubuntu-18.04
     # Run even if a dependent job has been skipped
     if: |
-      needs.determine_necessary_jobs.outputs.common-deb-needs-building == 'true'
+      contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build common DEB;')
       && !failure() && !cancelled()
     steps:
       - uses: actions/checkout@v2
@@ -470,13 +306,13 @@ jobs:
 
       - name: Download utility Docker image
         uses: ./.github/actions/download-artifact
-        if: "needs.determine_necessary_jobs.outputs.image-utility-needs-building == 'true'"
+        if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Docker image utility;')
         with:
           name: docker-image-utility
           path: .
       - name: Load utility Docker image
         run: ./internal-scripts/ci-cd/load-docker-image.sh
-        if: "needs.determine_necessary_jobs.outputs.image-utility-needs-building == 'true'"
+        if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Docker image utility;')
         env:
           TARBALL: image.tar.zst
 
@@ -496,13 +332,13 @@ jobs:
 
   build_common_rpm:
     name: Build common RPM
+    runs-on: ubuntu-20.04
     needs:
       - determine_necessary_jobs
       - build_docker_image_utility
-    runs-on: ubuntu-18.04
     # Run even if a dependent job has been skipped
     if: |
-      needs.determine_necessary_jobs.outputs.common-rpm-needs-building == 'true'
+      contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build common RPM;')
       && !failure() && !cancelled()
     steps:
       - uses: actions/checkout@v2
@@ -513,13 +349,13 @@ jobs:
 
       - name: Download utility Docker image
         uses: ./.github/actions/download-artifact
-        if: "needs.determine_necessary_jobs.outputs.image-utility-needs-building == 'true'"
+        if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Docker image utility;')
         with:
           name: docker-image-utility
           path: .
       - name: Load utility Docker image
         run: ./internal-scripts/ci-cd/load-docker-image.sh
-        if: "needs.determine_necessary_jobs.outputs.image-utility-needs-building == 'true'"
+        if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Docker image utility;')
         env:
           TARBALL: image.tar.zst
 
@@ -541,14 +377,14 @@ jobs:
 
   build_rbenv_deb:
     name: Build Rbenv DEB
+    runs-on: ubuntu-20.04
     needs:
       - determine_necessary_jobs
       - download_rbenv_source
       - build_docker_image_utility
-    runs-on: ubuntu-18.04
     # Run even if a dependent job has been skipped
     if: |
-      needs.determine_necessary_jobs.outputs.rbenv-deb-needs-building == 'true'
+      contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Rbenv DEB;')
       && !failure() && !cancelled()
     steps:
       - uses: actions/checkout@v2
@@ -565,13 +401,13 @@ jobs:
 
       - name: Download utility Docker image
         uses: ./.github/actions/download-artifact
-        if: "needs.determine_necessary_jobs.outputs.image-utility-needs-building == 'true'"
+        if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Docker image utility;')
         with:
           name: docker-image-utility
           path: .
       - name: Load utility Docker image
         run: ./internal-scripts/ci-cd/load-docker-image.sh
-        if: "needs.determine_necessary_jobs.outputs.image-utility-needs-building == 'true'"
+        if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Docker image utility;')
         env:
           TARBALL: image.tar.zst
 
@@ -590,14 +426,14 @@ jobs:
 
   build_rbenv_rpm:
     name: Build Rbenv RPM
+    runs-on: ubuntu-20.04
     needs:
       - determine_necessary_jobs
       - download_rbenv_source
       - build_docker_image_utility
-    runs-on: ubuntu-18.04
     # Run even if a dependent job has been skipped
     if: |
-      needs.determine_necessary_jobs.outputs.rbenv-rpm-needs-building == 'true'
+      contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Rbenv RPM;')
       && !failure() && !cancelled()
     steps:
       - uses: actions/checkout@v2
@@ -614,13 +450,13 @@ jobs:
 
       - name: Download utility Docker image
         uses: ./.github/actions/download-artifact
-        if: "needs.determine_necessary_jobs.outputs.image-utility-needs-building == 'true'"
+        if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Docker image utility;')
         with:
           name: docker-image-utility
           path: .
       - name: Load utility Docker image
         run: ./internal-scripts/ci-cd/load-docker-image.sh
-        if: "needs.determine_necessary_jobs.outputs.image-utility-needs-building == 'true'"
+        if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Docker image utility;')
         env:
           TARBALL: image.tar.zst
 
@@ -642,8 +478,9 @@ jobs:
   <%- distributions.each do |distribution| %>
   <%- ruby_package_versions.each do |ruby_package_version| -%>
   <%- unindent(2) do %>
-    build_ruby_packages_<%= slug(distribution[:name]) %>-<%= slug(ruby_package_version[:id]) %>:
-      name: 'Build Ruby packages [<%= distribution[:name] %>/<%= ruby_package_version[:id] %>]'
+    build_ruby_<%= slug(distribution[:name]) %>-<%= slug(ruby_package_version[:id]) %>:
+      name: 'Build Ruby [<%= distribution[:name] %>/<%= ruby_package_version[:id] %>]'
+      runs-on: ubuntu-20.04
       needs:
         - 'determine_necessary_jobs'
         - 'build_jemalloc_binary_<%= slug(distribution[:name]) %>'
@@ -652,12 +489,11 @@ jobs:
         <%- ruby_source_versions.each do |ruby_version| %>
         - 'download_ruby_source_<%= slug(ruby_version) %>'
         <%- end %>
-      runs-on: ubuntu-18.04
       # Run even if a dependent job has been skipped
       if: |
         (
           <%- variants.each_with_index do |variant, i| %>
-          <%= "|| " if i > 0 %>needs.determine_necessary_jobs.outputs.ruby-<%= slug(distribution[:name]) %>-<%= slug(ruby_package_version[:id]) %>-<%= slug(variant[:name]) %>-needs-building == 'true'
+          <%= "|| " if i > 0 %>contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Ruby [<%= distribution[:name] %>/<%= ruby_package_version[:id] %>/<%= variant[:name] %>];')
           <%- end %>
         )
         && !failure() && !cancelled()
@@ -675,25 +511,25 @@ jobs:
 
         - name: Download Docker image necessary for building
           uses: ./.github/actions/download-artifact
-          if: "needs.determine_necessary_jobs.outputs.image-<%= slug(distribution[:name]) %>-needs-building == 'true'"
+          if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Docker image <%= distribution[:name] %>;')
           with:
             name: 'docker-image-<%= distribution[:name] %>'
             path: .
         - name: Load Docker image necessary for building
           run: ./internal-scripts/ci-cd/load-docker-image.sh
-          if: "needs.determine_necessary_jobs.outputs.image-<%= slug(distribution[:name]) %>-needs-building == 'true'"
+          if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Docker image <%= distribution[:name] %>;')
           env:
             TARBALL: image.tar.zst
 
         - name: Download Docker image necessary for packaging
           uses: ./.github/actions/download-artifact
-          if: "needs.determine_necessary_jobs.outputs.image-utility-needs-building == 'true'"
+          if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Docker image utility;')
           with:
             name: 'docker-image-<%= distribution[:name] %>'
             path: .
         - name: Load Docker image necessary for packaging
           run: ./internal-scripts/ci-cd/load-docker-image.sh
-          if: "needs.determine_necessary_jobs.outputs.image-utility-needs-building == 'true'"
+          if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Docker image utility;')
           env:
             TARBALL: image.tar.zst
 
@@ -702,7 +538,7 @@ jobs:
           <% if variant[:name] == 'jemalloc' %>
           <%- unindent(2) do -%>
             - name: Fetch Jemalloc binary
-              if: "needs.determine_necessary_jobs.outputs.ruby-<%= slug(distribution[:name]) %>-<%= slug(ruby_package_version[:id]) %>-<%= slug(variant[:name]) %>-needs-building == 'true'"
+              if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Ruby [<%= distribution[:name] %>/<%= ruby_package_version[:id] %>/<%= variant[:name] %>];')
               uses: ./.github/actions/download-artifact
               with:
                 name: jemalloc-bin-<%= distribution[:name] %>
@@ -711,19 +547,17 @@ jobs:
           <% end %>
 
           - name: "[<%= variant[:name] %>] Reset & prepare workspace"
-            if: "needs.determine_necessary_jobs.outputs.ruby-<%= slug(distribution[:name]) %>-<%= slug(ruby_package_version[:id]) %>-<%= slug(variant[:name]) %>-needs-building == 'true'"
-            run: |
-              rm -rf cache output ruby-bin.tar.gz
-              mkdir -p cache
+            if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Ruby [<%= distribution[:name] %>/<%= ruby_package_version[:id] %>/<%= variant[:name] %>];')
+            run: mkdir cache-<%= variant[:name] %>
           - name: "[<%= variant[:name] %>] Fetch cache"
-            if: "needs.determine_necessary_jobs.outputs.ruby-<%= slug(distribution[:name]) %>-<%= slug(ruby_package_version[:id]) %>-<%= slug(variant[:name]) %>-needs-building == 'true'"
-            uses: actions/cache@v1
+            if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Ruby [<%= distribution[:name] %>/<%= ruby_package_version[:id] %>/<%= variant[:name] %>];')
+            uses: actions/cache@v2
             with:
-              path: cache
-              key: ruby-bin-<%= ruby_package_version[:id] %>-<%= distribution[:name] %>-<%= variant[:name] %>
+              path: cache-<%= variant[:name] %>
+              key: v2-ruby-bin-<%= ruby_package_version[:id] %>-<%= distribution[:name] %>-<%= variant[:name] %>
 
           - name: "[<%= variant[:name] %>] Build binaries"
-            if: "needs.determine_necessary_jobs.outputs.ruby-<%= slug(distribution[:name]) %>-<%= slug(ruby_package_version[:id]) %>-<%= slug(variant[:name]) %>-needs-building == 'true'"
+            if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Ruby [<%= distribution[:name] %>/<%= ruby_package_version[:id] %>/<%= variant[:name] %>];')
             run: ./internal-scripts/ci-cd/build-ruby-packages/build-binaries.sh
             env:
               ENVIRONMENT_NAME: "<%= distribution[:name] %>"
@@ -731,7 +565,7 @@ jobs:
               RUBY_PACKAGE_VERSION_ID: "<%= ruby_package_version[:id] %>"
 
           - name: "[<%= variant[:name] %>] Build package"
-            if: "needs.determine_necessary_jobs.outputs.ruby-<%= slug(distribution[:name]) %>-<%= slug(ruby_package_version[:id]) %>-<%= slug(variant[:name]) %>-needs-building == 'true'"
+            if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Ruby [<%= distribution[:name] %>/<%= ruby_package_version[:id] %>/<%= variant[:name] %>];')
             run: ./internal-scripts/ci-cd/build-ruby-packages/build-package.sh
             env:
               DISTRIBUTION_NAME: "<%= distribution[:name] %>"
@@ -742,11 +576,11 @@ jobs:
               RUBY_PACKAGE_REVISION: "<%= ruby_package_version[:package_revision] %>"
 
           - name: "[<%= variant[:name] %>] Archive package artifact to Google Cloud"
-            if: "needs.determine_necessary_jobs.outputs.ruby-<%= slug(distribution[:name]) %>-<%= slug(ruby_package_version[:id]) %>-<%= slug(variant[:name]) %>-needs-building == 'true'"
+            if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Ruby [<%= distribution[:name] %>/<%= ruby_package_version[:id] %>/<%= variant[:name] %>];')
             uses: ./.github/actions/upload-artifact
             with:
               name: "<%= ruby_package_artifact_name(ruby_package_version, distribution, variant) %>"
-              path: output
+              path: output-<%= variant[:name] %>
         <%- end -%>
         <%- end %>
   <%- end %>
@@ -772,7 +606,7 @@ jobs:
       <%- unindent(2) do %>
         - build_jemalloc_binary_<%= slug(distribution[:name]) %>
         <%- ruby_package_versions.each do |ruby_package_version| %>
-        - build_ruby_packages_<%= slug(distribution[:name]) %>-<%= slug(ruby_package_version[:id]) %>
+        - build_ruby_<%= slug(distribution[:name]) %>-<%= slug(ruby_package_version[:id]) %>
         <%- end %>
       <%- end %>
       <%- end -%>
@@ -791,83 +625,76 @@ jobs:
         with:
           name: <%= rbenv_source_artifact_name %>
           path: artifacts
+          clear: true
       - name: Archive Rbenv source artifact to Github
         uses: actions/upload-artifact@v2
         with:
           name: <%= rbenv_source_artifact_name %>
           path: artifacts
-      - name: Clear artifacts directory
-        run: rm -rf artifacts
 
       - name: Download common DEB artifact from Google Cloud
         uses: ./.github/actions/download-artifact
         with:
           name: <%= common_deb_artifact_name %>
           path: artifacts
+          clear: true
       - name: Archive common DEB artifact to Github
         uses: actions/upload-artifact@v2
         with:
           name: <%= common_deb_artifact_name %>
           path: artifacts
-      - name: Clear artifacts directory
-        run: rm -rf artifacts
 
       - name: Download common RPM artifact from Google Cloud
         uses: ./.github/actions/download-artifact
         with:
           name: <%= common_rpm_artifact_name %>
           path: artifacts
+          clear: true
       - name: Archive common RPM artifact to Github
         uses: actions/upload-artifact@v2
         with:
           name: <%= common_rpm_artifact_name %>
           path: artifacts
-      - name: Clear artifacts directory
-        run: rm -rf artifacts
 
       - name: Download Rbenv DEB artifact from Google Cloud
         uses: ./.github/actions/download-artifact
         with:
           name: <%= rbenv_deb_artifact_name %>
           path: artifacts
+          clear: true
       - name: Archive Rbenv DEB artifact to Github
         uses: actions/upload-artifact@v2
         with:
           name: <%= rbenv_deb_artifact_name %>
           path: artifacts
-      - name: Clear artifacts directory
-        run: rm -rf artifacts
 
       - name: Download Rbenv RPM artifact from Google Cloud
         uses: ./.github/actions/download-artifact
         with:
           name: <%= rbenv_rpm_artifact_name %>
           path: artifacts
+          clear: true
       - name: Archive Rbenv RPM artifact to Github
         uses: actions/upload-artifact@v2
         with:
           name: <%= rbenv_rpm_artifact_name %>
           path: artifacts
-      - name: Clear artifacts directory
-        run: rm -rf artifacts
 
       <%- docker_images.each do |image| %>
       <%- unindent(2) do -%>
         - name: Download Docker image artifact [<%= image[:id] %>] from Google Cloud
           uses: ./.github/actions/download-artifact
-          if: needs.determine_necessary_jobs.outputs.image-<%= slug(image[:id]) %>-needs-building == 'true'
+          if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Docker image <%= image[:id] %>;')
           with:
             name: 'docker-image-<%= image[:id] %>'
             path: artifacts
+            clear: true
         - name: Archive Docker image artifact [<%= image[:id] %>] to Github
           uses: actions/upload-artifact@v2
-          if: needs.determine_necessary_jobs.outputs.image-<%= slug(image[:id]) %>-needs-building == 'true'
+          if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Docker image <%= image[:id] %>;')
           with:
             name: 'docker-image-<%= image[:id] %>'
             path: artifacts
-        - name: Clear artifacts directory
-          if: needs.determine_necessary_jobs.outputs.image-<%= slug(image[:id]) %>-needs-building == 'true'
-          run: rm -rf artifacts
       <%- end -%>
       <%- end %>
 
@@ -878,13 +705,12 @@ jobs:
           with:
             name: <%= ruby_source_artifact_name(ruby_version) %>
             path: artifacts
+            clear: true
         - name: Archive Ruby source artifact [<%= ruby_version %>] to Github
           uses: actions/upload-artifact@v2
           with:
             name: <%= ruby_source_artifact_name(ruby_version) %>
             path: artifacts
-        - name: Clear artifacts directory
-          run: rm -rf artifacts
       <%- end -%>
       <%- end %>
 
@@ -895,13 +721,12 @@ jobs:
           with:
             name: 'jemalloc-bin-<%= distribution[:name] %>'
             path: artifacts
+            clear: true
         - name: Archive Jemalloc binary artifact [<%= distribution[:name] %>] to Github
           uses: actions/upload-artifact@v2
           with:
             name: 'jemalloc-bin-<%= distribution[:name] %>'
             path: artifacts
-        - name: Clear artifacts directory
-          run: rm -rf artifacts
       <%- end -%>
       <%- end %>
 
@@ -912,13 +737,12 @@ jobs:
           with:
             name: <%= artifact_name %>
             path: artifacts
+            clear: true
         - name: Archive Ruby package artifact [<%= artifact_name %>] to Github
           uses: actions/upload-artifact@v2
           with:
             name: <%= artifact_name %>
             path: artifacts
-        - name: Clear artifacts directory
-          run: rm -rf artifacts
       <%- end -%>
       <%- end %>
 
@@ -927,7 +751,7 @@ jobs:
 
   create_test_apt_repo:
     name: Create test APT repo
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-20.04
     needs:
       - check_workflow_uptodate
       - check_version_numbers_need_bumping
@@ -943,10 +767,10 @@ jobs:
 
   create_test_yum_repo:
     name: Create test YUM repo
+    runs-on: ubuntu-20.04
     needs:
       - check_workflow_uptodate
       - check_version_numbers_need_bumping
-    runs-on: ubuntu-18.04
     steps:
       - uses: actions/checkout@v2
       - name: Recreate repo
@@ -961,13 +785,13 @@ jobs:
 
   publish_common_and_rbenv_debs_test:
     name: Publish common and Rbenv DEBs to test repo
+    runs-on: ubuntu-20.04
     needs:
       - determine_necessary_jobs
       - build_docker_image_utility
       - create_test_apt_repo
       - build_common_deb
       - build_rbenv_deb
-    runs-on: ubuntu-18.04
     # Run even if a dependent job has been skipped
     if: '!failure() && !cancelled()'
     steps:
@@ -992,13 +816,13 @@ jobs:
 
       - name: Download utility Docker image
         uses: ./.github/actions/download-artifact
-        if: "needs.determine_necessary_jobs.outputs.image-utility-needs-building == 'true'"
+        if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Docker image utility;')
         with:
           name: docker-image-utility
           path: .
       - name: Load utility Docker image
         run: ./internal-scripts/ci-cd/load-docker-image.sh
-        if: "needs.determine_necessary_jobs.outputs.image-utility-needs-building == 'true'"
+        if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Docker image utility;')
         env:
           TARBALL: image.tar.zst
 
@@ -1021,13 +845,13 @@ jobs:
 
   publish_common_and_rbenv_rpms_test:
     name: Publish common and Rbenv RPMs to test repo
+    runs-on: ubuntu-20.04
     needs:
       - determine_necessary_jobs
       - build_docker_image_utility
       - create_test_yum_repo
       - build_common_rpm
       - build_rbenv_rpm
-    runs-on: ubuntu-18.04
     # Run even if a dependent job has been skipped
     if: '!failure() && !cancelled()'
     steps:
@@ -1053,13 +877,13 @@ jobs:
 
       - name: Download utility Docker image
         uses: ./.github/actions/download-artifact
-        if: "needs.determine_necessary_jobs.outputs.image-utility-needs-building == 'true'"
+        if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Docker image utility;')
         with:
           name: docker-image-utility
           path: .
       - name: Load utility Docker image
         run: ./internal-scripts/ci-cd/load-docker-image.sh
-        if: "needs.determine_necessary_jobs.outputs.image-utility-needs-building == 'true'"
+        if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Docker image utility;')
         env:
           TARBALL: image.tar.zst
 
@@ -1084,6 +908,7 @@ jobs:
 
   publish_ruby_packages_test:
     name: Publish Ruby packages to test repo
+    runs-on: ubuntu-20.04
     needs:
       - determine_necessary_jobs
       - build_docker_image_utility
@@ -1095,10 +920,9 @@ jobs:
       - build_rbenv_rpm
       <%- distributions.each do |distribution| -%>
       <%- ruby_package_versions.each do |ruby_package_version| %>
-      - build_ruby_packages_<%= slug(distribution[:name]) %>-<%= slug(ruby_package_version[:id]) %>
+      - build_ruby_<%= slug(distribution[:name]) %>-<%= slug(ruby_package_version[:id]) %>
       <%- end %>
       <%- end -%>
-    runs-on: ubuntu-18.04
     # Run even if a dependent job has been skipped
     if: '!failure() && !cancelled()'
     steps:
@@ -1123,13 +947,13 @@ jobs:
 
       - name: Download Docker image necessary for testing
         uses: ./.github/actions/download-artifact
-        if: "needs.determine_necessary_jobs.outputs.image-utility-needs-building == 'true'"
+        if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Docker image utility;')
         with:
           name: docker-image-utility
           path: .
       - name: Load Docker image necessary for testing
         run: ./internal-scripts/ci-cd/load-docker-image.sh
-        if: "needs.determine_necessary_jobs.outputs.image-utility-needs-building == 'true'"
+        if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Docker image utility;')
         env:
           TARBALL: image.tar.zst
 
@@ -1159,11 +983,11 @@ jobs:
 
   commit_published_packages_test:
     name: Commit packages published to test repo
+    runs-on: ubuntu-20.04
     needs:
       - publish_common_and_rbenv_debs_test
       - publish_common_and_rbenv_rpms_test
       - publish_ruby_packages_test
-    runs-on: ubuntu-18.04
     steps:
       - uses: actions/checkout@v2
         with:
@@ -1199,14 +1023,14 @@ jobs:
   <%- unindent(2) do %>
     test_packages_against_test_<%= slug(distribution[:name]) %>_<%= slug(ruby_package_version[:id]) %>_<%= slug(variant[:name]) %>:
       name: 'Test Ruby packages against test repos [<%= distribution[:name] %>/<%= ruby_package_version[:id] %>/<%= variant[:name] %>]'
+      runs-on: ubuntu-20.04
       needs:
         - determine_necessary_jobs
         - commit_published_packages_test
-      runs-on: ubuntu-18.04
       # Run even if a dependent job has been skipped
       if: |
-        !failure() && !cancelled()
-        && needs.determine_necessary_jobs.outputs.test-against-test-<%= slug(distribution[:name]) %>-<%= slug(ruby_package_version[:id]) %>-<%= slug(variant[:name]) %>-needed == 'true'
+        contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against test repo [<%= distribution[:name] %>/<%= ruby_package_version[:id] %>/<%= variant[:name] %>];')
+        && !failure() && !cancelled()
       steps:
         - uses: actions/checkout@v2
         - name: Run tests
@@ -1242,6 +1066,7 @@ jobs:
 
   publish_packages_production:
     name: Publish packages to production repos
+    runs-on: ubuntu-20.04
     needs:
       - determine_necessary_jobs
       <%- distributions.each do |distribution| -%>
@@ -1251,7 +1076,6 @@ jobs:
       <%- end -%>
       <%- end -%>
       <%- end -%>
-    runs-on: ubuntu-18.04
     # Run even if a dependent job has been skipped
     if: '!failure() && !cancelled()'
     steps:
@@ -1297,13 +1121,13 @@ jobs:
 
       - name: Download Docker image necessary for publishing
         uses: ./.github/actions/download-artifact
-        if: "needs.determine_necessary_jobs.outputs.image-utility-needs-building == 'true'"
+        if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Docker image utility;')
         with:
           name: docker-image-utility
           path: .
       - name: Load Docker image necessary for publishing
         run: ./internal-scripts/ci-cd/load-docker-image.sh
-        if: "needs.determine_necessary_jobs.outputs.image-utility-needs-building == 'true'"
+        if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Docker image utility;')
         env:
           TARBALL: image.tar.zst
 
@@ -1355,15 +1179,15 @@ jobs:
   <%- unindent(2) do %>
     test_packages_against_production_<%= slug(distribution[:name]) %>_<%= slug(ruby_package_version[:id]) %>_<%= slug(variant[:name]) %>:
       name: 'Test Ruby packages against production repos [<%= distribution[:name] %>/<%= ruby_package_version[:id] %>/<%= variant[:name] %>]'
+      runs-on: ubuntu-20.04
       needs:
         - determine_necessary_jobs
         - publish_packages_production
       # Run even if a dependent job has been skipped
       if: |
-        !failure() && !cancelled()
-        && github.ref == 'refs/heads/main'
-        && needs.determine_necessary_jobs.outputs.test-against-production-<%= slug(distribution[:name]) %>-<%= slug(ruby_package_version[:id]) %>-<%= slug(variant[:name]) %>-needed == 'true'
-      runs-on: ubuntu-18.04
+        github.ref == 'refs/heads/main'
+        && contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [<%= distribution[:name] %>/<%= ruby_package_version[:id] %>/<%= variant[:name] %>];')
+        && !failure() && !cancelled()
       steps:
         - uses: actions/checkout@v2
         - name: Run tests
@@ -1399,6 +1223,7 @@ jobs:
 
   create_git_tag:
     name: Create Git tag
+    runs-on: ubuntu-20.04
     needs:
       <%- distributions.each do |distribution| -%>
       <%- ruby_package_versions.each do |ruby_package_version| -%>
@@ -1409,14 +1234,10 @@ jobs:
       <%- end -%>
     # Run even if a dependent job has been skipped
     if: '!failure() && !cancelled()'
-    runs-on: ubuntu-18.04
     steps:
       - uses: actions/checkout@v2
         with:
           fetch-depth: 0
-      - uses: actions/setup-ruby@v1
-        with:
-          ruby-version: '2.6'
 
       - name: Determine latest release version
         # Sets environment variable $LATEST_RELEASE_TAG

@@ -27,33 +27,30 @@ At the beginning of a CI run, a job named `determine_necessary_jobs` checks whic
     Artifact exists
 ~~~
 
-The `determine_necessary_jobs` job [outputs variables](https://docs.github.com/en/actions/reference/workflow-syntax-for-github-actions#jobsjobs_idoutputs) that indicate which other jobs should be run:
+The `determine_necessary_jobs` job [outputs a variable](https://docs.github.com/en/actions/reference/workflow-syntax-for-github-actions#jobsjobs_idoutputs) that indicate which other jobs should be run:
 
 ~~~yaml
 determine_necessary_jobs:
   name: Determine necessary jobs
   runs-on: ubuntu-20.04
   outputs:
-    common-deb-needs-building: "true" or "false"
-    common-rpm-needs-building: "true" or "false"
-    rbenv-deb-needs-building: "true" or "false"
-    rbenv-rpm-needs-building: "true" or "false"
-    rbenv-src-needs-downloading: "true" or "false"
+    necessary_jobs: ${{ steps.check.outputs.necessary_jobs }}
     ...
 ~~~
 
-Other jobs specify an `if` condition to check whether that job should be run. For example:
+The value of this variable is set by `internal-scripts/ci-cd/determine-necessary-jobs/determine-necessary-jobs.rb`. This script sets the variable to a string in the following format:
+
+~~~
+;Download Ruby source 2.7.1;Download Rbenv source;...;<MORE JOB NAMES>;...;
+~~~
+
+Then, other jobs use an `if` statement which performs a substring match, in order to check whether that particular job should be run:
 
 ~~~yaml
-build_common_deb:
-  name: Build common DEB
+download_ruby_source_<%= slug(ruby_version) %>:
+  name: Download Ruby source [<%= ruby_version %>]
+  runs-on: ubuntu-20.04
   needs:
     - determine_necessary_jobs
-    - build_docker_image_utility
-  runs-on: ubuntu-18.04
-  # Run even if a dependent job has been skipped
-  if: |
-    needs.determine_necessary_jobs.outputs.common-deb-needs-building == 'true'
-    && !failure() && !cancelled()
-  ...
+  if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Download Ruby source <%= ruby_version %>;')
 ~~~

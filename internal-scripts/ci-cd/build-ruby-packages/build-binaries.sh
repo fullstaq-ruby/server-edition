@@ -20,13 +20,13 @@ else
     MOUNT_ARGS=()
 fi
 
-touch ruby-bin.tar.gz
+touch "ruby-bin-$VARIANT_NAME.tar.gz"
 
 exec docker run --rm --init \
     -v "$ROOTDIR:/system:ro" \
     -v "$(pwd)/ruby-src.tar.gz:/input/ruby-src.tar.gz:ro" \
-    -v "$(pwd)/ruby-bin.tar.gz:/output/ruby-bin.tar.gz" \
-    -v "$(pwd)/cache:/cache:delegated" \
+    -v "$(pwd)/ruby-bin-$VARIANT_NAME.tar.gz:/output/ruby-bin.tar.gz" \
+    -v "$(pwd)/cache-$VARIANT_NAME:/cache:delegated" \
     "${MOUNT_ARGS[@]}" \
     -e "VARIANT=$VARIANT_NAME" \
     -e "BUILD_CONCURRENCY=2" \
