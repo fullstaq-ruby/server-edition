@@ -12,7 +12,8 @@ runs:
   steps:
     - run: |
         set -o pipefail
-        URL="gs://${{ env.CI_ARTIFACTS_BUCKET }}/${{ github.run_number }}/${{ inputs.name }}.tar.zst"
+        CI_ARTIFACTS_RUN_NUMBER=${CI_ARTIFACTS_RUN_NUMBER:-${{ github.run_number }}}
+        URL="gs://${{ env.CI_ARTIFACTS_BUCKET }}/$CI_ARTIFACTS_RUN_NUMBER/${{ inputs.name }}.tar.zst"
         echo "--> Will download from $URL"
         mkdir -p "${{ inputs.path }}"
         gsutil cp "$URL" - | zstd -d | tar -C '${{ inputs.path }}' -xf -

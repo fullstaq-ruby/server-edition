@@ -12,6 +12,12 @@ on:
 env:
   BINTRAY_ORG: fullstaq
   CI_ARTIFACTS_BUCKET: fullstaq-ruby-server-edition-ci-artifacts
+  ## Set the following variable to a specific number to make the
+  ## Google Cloud artifact upload/download actions treat as
+  ## if we're running the given CI run number. Useful for
+  ## speeding up development of the CI itself, in order to
+  ## avoid rebuilding.
+  CI_ARTIFACTS_RUN_NUMBER: ${{ github.run_number }}
 
 jobs:
   check_workflow_uptodate:
@@ -132,7 +138,7 @@ jobs:
       - name: List artifacts built in previous try of same CI run
         run: ./internal-scripts/ci-cd/determine-necessary-jobs/list-artifacts.sh
         env:
-          CI_RUN_NUMBER: ${{ github.run_number }}
+          CI_RUN_NUMBER: ${{ env.CI_ARTIFACTS_RUN_NUMBER || github.run_number }}
 
       - name: Determine whether common DEB needs to be built
         id: check_common_deb
@@ -884,7 +890,7 @@ jobs:
         env:
           BINTRAY_API_USERNAME: ${{ secrets.BINTRAY_API_USERNAME }}
           BINTRAY_API_KEY: ${{ secrets.BINTRAY_API_KEY }}
-          REPO_NAME: fullstaq-ruby-apt-ci-${{ github.run_number }}
+          REPO_NAME: fullstaq-ruby-apt-ci-${{ env.CI_ARTIFACTS_RUN_NUMBER }}
 
 
   create_test_yum_repo:
@@ -900,7 +906,7 @@ jobs:
         env:
           BINTRAY_API_USERNAME: ${{ secrets.BINTRAY_API_USERNAME }}
           BINTRAY_API_KEY: ${{ secrets.BINTRAY_API_KEY }}
-          REPO_NAME: fullstaq-ruby-yum-ci-${{ github.run_number }}
+          REPO_NAME: fullstaq-ruby-yum-ci-${{ env.CI_ARTIFACTS_RUN_NUMBER }}
 
 
   ### Publish common and fullstaq-rbenv packages to test repos
@@ -960,7 +966,7 @@ jobs:
         env:
           BINTRAY_API_USERNAME: ${{ secrets.BINTRAY_API_USERNAME }}
           BINTRAY_API_KEY: ${{ secrets.BINTRAY_API_KEY }}
-          REPO_NAME: fullstaq-ruby-apt-ci-${{ github.run_number }}
+          REPO_NAME: fullstaq-ruby-apt-ci-${{ env.CI_ARTIFACTS_RUN_NUMBER }}
           DRY_RUN: false
           IGNORE_EXISTING: false
 
@@ -1021,7 +1027,7 @@ jobs:
         env:
           BINTRAY_API_USERNAME: ${{ secrets.BINTRAY_API_USERNAME }}
           BINTRAY_API_KEY: ${{ secrets.BINTRAY_API_KEY }}
-          REPO_NAME: fullstaq-ruby-yum-ci-${{ github.run_number }}
+          REPO_NAME: fullstaq-ruby-yum-ci-${{ env.CI_ARTIFACTS_RUN_NUMBER }}
           DRY_RUN: false
           IGNORE_EXISTING: false
 
@@ -1091,7 +1097,7 @@ jobs:
         env:
           BINTRAY_API_USERNAME: ${{ secrets.BINTRAY_API_USERNAME }}
           BINTRAY_API_KEY: ${{ secrets.BINTRAY_API_KEY }}
-          REPO_NAME: fullstaq-ruby-apt-ci-${{ github.run_number }}
+          REPO_NAME: fullstaq-ruby-apt-ci-${{ env.CI_ARTIFACTS_RUN_NUMBER }}
           DRY_RUN: false
           IGNORE_EXISTING: false
       - name: Upload RPMs to repo
@@ -1099,7 +1105,7 @@ jobs:
         env:
           BINTRAY_API_USERNAME: ${{ secrets.BINTRAY_API_USERNAME }}
           BINTRAY_API_KEY: ${{ secrets.BINTRAY_API_KEY }}
-          REPO_NAME: fullstaq-ruby-yum-ci-${{ github.run_number }}
+          REPO_NAME: fullstaq-ruby-yum-ci-${{ env.CI_ARTIFACTS_RUN_NUMBER }}
           DRY_RUN: false
           IGNORE_EXISTING: false
 
@@ -1127,14 +1133,14 @@ jobs:
         env:
           BINTRAY_API_USERNAME: ${{ secrets.BINTRAY_API_USERNAME }}
           BINTRAY_API_KEY: ${{ secrets.BINTRAY_API_KEY }}
-          REPO_NAME: fullstaq-ruby-apt-ci-${{ github.run_number }}
+          REPO_NAME: fullstaq-ruby-apt-ci-${{ env.CI_ARTIFACTS_RUN_NUMBER }}
 
       - name: Commit files published to YUM repo
         run: ./internal-scripts/ci-cd/publish/commit-published-packages.sh
         env:
           BINTRAY_API_USERNAME: ${{ secrets.BINTRAY_API_USERNAME }}
           BINTRAY_API_KEY: ${{ secrets.BINTRAY_API_KEY }}
-          REPO_NAME: fullstaq-ruby-yum-ci-${{ github.run_number }}
+          REPO_NAME: fullstaq-ruby-yum-ci-${{ env.CI_ARTIFACTS_RUN_NUMBER }}
 
 
   ### Test packages against test repos ###
@@ -1164,8 +1170,8 @@ jobs:
             VARIANT_NAME: ${{ matrix.variant.name }}
             VARIANT_PACKAGE_SUFFIX: ${{ matrix.variant.package_suffix }}
             TEST_IMAGE_NAME: "<%= distribution[:test_image] %>"
-            APT_REPO_URL: https://dl.bintray.com/fullstaq/fullstaq-ruby-apt-ci-${{ github.run_number }}
-            YUM_REPO_URL: https://dl.bintray.com/fullstaq/fullstaq-ruby-yum-ci-${{ github.run_number }}
+            APT_REPO_URL: https://dl.bintray.com/fullstaq/fullstaq-ruby-apt-ci-${{ env.CI_ARTIFACTS_RUN_NUMBER }}
+            YUM_REPO_URL: https://dl.bintray.com/fullstaq/fullstaq-ruby-yum-ci-${{ env.CI_ARTIFACTS_RUN_NUMBER }}
   <%- end %>
   <%- end %>
 

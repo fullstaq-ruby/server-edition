@@ -31,6 +31,7 @@
 ### CI/CD
 
  * [Troubleshooting corrupt CI/CD artifacts](troubleshooting-corrupt-ci-cd-artifacts.md)
+ * [Speeding up CI feedback](speeding-up-ci-feedback.md)
 
 ### Routine maintenance
 

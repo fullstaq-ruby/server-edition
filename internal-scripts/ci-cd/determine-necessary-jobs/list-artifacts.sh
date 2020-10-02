@@ -9,9 +9,9 @@ source "$ROOTDIR/lib/library.sh"
 
 
 require_envvar CI_ARTIFACTS_BUCKET
-require_envvar CI_RUN_NUMBER
+require_envvar CI_ARTIFACTS_RUN_NUMBER
 
-URL_PREFIX="gs://$CI_ARTIFACTS_BUCKET/$CI_RUN_NUMBER"
+URL_PREFIX="gs://$CI_ARTIFACTS_BUCKET/$CI_ARTIFACTS_RUN_NUMBER"
 echo "--> Checking $URL_PREFIX/*.tar.zst"
 
 if ENTRIES=$(gsutil ls "$URL_PREFIX/*.tar.zst" 2>stderr.txt); then
