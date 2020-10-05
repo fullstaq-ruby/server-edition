@@ -1,0 +1,607 @@
+<%= editing_warning_comment %>
+
+name: 'CI/CD: build packages'
+
+on:
+  workflow_dispatch:
+    inputs:
+      ci_artifacts_run_number:
+        required: false
+      check_id:
+        required: false
+
+env:
+  BINTRAY_ORG: fullstaq
+  CI_ARTIFACTS_BUCKET: fullstaq-ruby-server-edition-ci-artifacts
+  CI_ARTIFACTS_RUN_NUMBER: ${{ github.event.inputs.ci_artifacts_run_number || github.run_number }}
+
+jobs:
+  # Determines which jobs should be run, or (in case this is a re-run)
+  # which jobs can be skipped this time because the last run succeeded.
+  # We determine this by checking whether the artifacts produced by jobs
+  # exist in this run.
+  determine_necessary_jobs:
+    name: Determine necessary jobs
+    runs-on: ubuntu-20.04
+    outputs:
+      necessary_jobs: ${{ steps.check.outputs.necessary_jobs }}
+    steps:
+      - name: Dump inputs
+        run: echo "$INPUTS"
+        env:
+          INPUTS: ${{ toJSON(github.event.inputs) }}
+
+      - name: Mark check as 'in progress'
+        uses: LouisBrunner/checks-action@v1.1.0
+        if: github.event.inputs.check_id
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          check_id: ${{ github.event.inputs.check_id }}
+          status: in_progress
+          details_url: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
+          output: |
+            {
+              "summary": "Packages are built in another workflow.\n[**➜ See workflow run #${{ github.run_id }} for logs**](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})"
+            }
+
+      - uses: actions/checkout@v2
+      - name: Login to Google Cloud
+        uses: ./.github/actions/gcloud-login
+        with:
+          private_key: ${{ secrets.GCLOUD_KEY }}
+
+      - name: List artifacts built in previous try of same CI run
+        run: ./internal-scripts/ci-cd/determine-necessary-jobs/list-artifacts.sh
+
+      - name: Determine necessary jobs
+        id: check
+        run: ./internal-scripts/ci-cd/determine-necessary-jobs/determine-necessary-jobs.rb
+
+
+  ### Jemalloc ###
+
+  <%- distributions.each do |distribution| %>
+  <%- unindent(2) do -%>
+    build_jemalloc_<%= slug(distribution[:name]) %>:
+      name: 'Build Jemalloc [<%= distribution[:name] %>]'
+      runs-on: ubuntu-20.04
+      needs:
+        - determine_necessary_jobs
+      if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Jemalloc [<%= distribution[:name] %>];')
+      steps:
+        - uses: actions/checkout@v2
+        - name: Login to Google Cloud
+          uses: ./.github/actions/gcloud-login
+          with:
+            private_key: ${{ secrets.GCLOUD_KEY }}
+        - name: Fetch cache
+          uses: actions/cache@v1
+          with:
+            path: cache
+            key: 'jemalloc-bin-<%= distribution[:name] %>-<%= jemalloc_version %>'
+        - name: Create cache dir
+          run: mkdir -p cache
+
+        - name: Download Docker image necessary for building
+          run: ./internal-scripts/ci-cd/download-artifact.sh
+          if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Docker image <%= distribution[:name] %>;')
+          env:
+            ARTIFACT_NAME: 'docker-image-<%= distribution[:name] %>'
+            ARTIFACT_PATH: .
+        - name: Load Docker image necessary for building
+          run: ./internal-scripts/ci-cd/load-docker-image.sh
+          if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Docker image <%= distribution[:name] %>;')
+          env:
+            TARBALL: image.tar.zst
+
+        - name: Download source
+          run: ./internal-scripts/ci-cd/build-jemalloc-binaries/download-source.sh
+          env:
+            JEMALLOC_VERSION: "<%= jemalloc_version %>"
+
+        - name: Build
+          run: ./internal-scripts/ci-cd/build-jemalloc-binaries/build.sh
+          env:
+            ENVIRONMENT_NAME: '<%= distribution[:name] %>'
+
+        - name: Archive artifact
+          run: ./internal-scripts/ci-cd/upload-artifact.sh
+          env:
+            ARTIFACT_NAME: 'jemalloc-bin-<%= distribution[:name] %>'
+            ARTIFACT_PATH: output
+  <%- end -%>
+  <%- end %>
+
+
+  ### fullstaq-ruby-common ###
+
+  build_common_deb:
+    name: Build common DEB
+    runs-on: ubuntu-20.04
+    needs:
+      - determine_necessary_jobs
+    if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build common DEB;')
+    steps:
+      - uses: actions/checkout@v2
+      - name: Login to Google Cloud
+        uses: ./.github/actions/gcloud-login
+        with:
+          private_key: ${{ secrets.GCLOUD_KEY }}
+
+      - name: Download utility Docker image
+        run: ./internal-scripts/ci-cd/download-artifact.sh
+        if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Docker image utility;')
+        env:
+          ARTIFACT_NAME: docker-image-utility
+          ARTIFACT_PATH: .
+      - name: Load utility Docker image
+        run: ./internal-scripts/ci-cd/load-docker-image.sh
+        if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Docker image utility;')
+        env:
+          TARBALL: image.tar.zst
+
+      - name: Build package
+        run: ./internal-scripts/ci-cd/build-common-deb/build-package.sh
+        env:
+          PACKAGE_BASENAME: "<%= common_package_basename(:DEB) %>"
+          VERSION: "<%= common_deb_version %>"
+          REVISION: "<%= common_deb_package_revision %>"
+
+      - name: Archive artifact
+        run: ./internal-scripts/ci-cd/upload-artifact.sh
+        env:
+          ARTIFACT_NAME: <%= common_deb_artifact_name %>
+          ARTIFACT_PATH: output
+
+
+  build_common_rpm:
+    name: Build common RPM
+    runs-on: ubuntu-20.04
+    needs:
+      - determine_necessary_jobs
+    if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build common RPM;')
+    steps:
+      - uses: actions/checkout@v2
+      - name: Login to Google Cloud
+        uses: ./.github/actions/gcloud-login
+        with:
+          private_key: ${{ secrets.GCLOUD_KEY }}
+
+      - name: Download utility Docker image
+        run: ./internal-scripts/ci-cd/download-artifact.sh
+        if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Docker image utility;')
+        env:
+          ARTIFACT_NAME: docker-image-utility
+          ARTIFACT_PATH: .
+      - name: Load utility Docker image
+        run: ./internal-scripts/ci-cd/load-docker-image.sh
+        if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Docker image utility;')
+        env:
+          TARBALL: image.tar.zst
+
+      - name: Build package
+        run: ./internal-scripts/ci-cd/build-common-rpm/build-package.sh
+        env:
+          PACKAGE_BASENAME: "<%= common_package_basename(:RPM) %>"
+          VERSION: "<%= common_rpm_version %>"
+          REVISION: "<%= common_rpm_package_revision %>"
+
+      - name: Archive artifact
+        run: ./internal-scripts/ci-cd/upload-artifact.sh
+        env:
+          ARTIFACT_NAME: <%= common_rpm_artifact_name %>
+          ARTIFACT_PATH: output
+
+
+  ### Rbenv ###
+
+  build_rbenv_deb:
+    name: Build Rbenv DEB
+    runs-on: ubuntu-20.04
+    needs:
+      - determine_necessary_jobs
+    # Run even if a dependent job has been skipped
+    if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Rbenv DEB;')
+    steps:
+      - uses: actions/checkout@v2
+      - name: Login to Google Cloud
+        uses: ./.github/actions/gcloud-login
+        with:
+          private_key: ${{ secrets.GCLOUD_KEY }}
+
+      - name: Fetch Rbenv source
+        run: ./internal-scripts/ci-cd/download-artifact.sh
+        env:
+          ARTIFACT_NAME: <%= rbenv_source_artifact_name %>
+          ARTIFACT_PATH: .
+
+      - name: Download utility Docker image
+        run: ./internal-scripts/ci-cd/download-artifact.sh
+        if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Docker image utility;')
+        env:
+          ARTIFACT_NAME: docker-image-utility
+          ARTIFACT_PATH: .
+      - name: Load utility Docker image
+        run: ./internal-scripts/ci-cd/load-docker-image.sh
+        if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Docker image utility;')
+        env:
+          TARBALL: image.tar.zst
+
+      - name: Build package
+        run: ./internal-scripts/ci-cd/build-rbenv-deb/build-package.sh
+        env:
+          PACKAGE_BASENAME: "<%= rbenv_package_basename(:DEB) %>"
+          REVISION: "<%= rbenv_package_revision %>"
+
+      - name: Archive artifact
+        run: ./internal-scripts/ci-cd/upload-artifact.sh
+        env:
+          ARTIFACT_NAME: <%= rbenv_deb_artifact_name %>
+          ARTIFACT_PATH: output
+
+
+  build_rbenv_rpm:
+    name: Build Rbenv RPM
+    runs-on: ubuntu-20.04
+    needs:
+      - determine_necessary_jobs
+    # Run even if a dependent job has been skipped
+    if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Rbenv RPM;')
+    steps:
+      - uses: actions/checkout@v2
+      - name: Login to Google Cloud
+        uses: ./.github/actions/gcloud-login
+        with:
+          private_key: ${{ secrets.GCLOUD_KEY }}
+
+      - name: Fetch Rbenv source
+        run: ./internal-scripts/ci-cd/download-artifact.sh
+        env:
+          ARTIFACT_NAME: <%= rbenv_source_artifact_name %>
+          ARTIFACT_PATH: .
+
+      - name: Download utility Docker image
+        run: ./internal-scripts/ci-cd/download-artifact.sh
+        if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Docker image utility;')
+        env:
+          ARTIFACT_NAME: docker-image-utility
+          ARTIFACT_PATH: .
+      - name: Load utility Docker image
+        run: ./internal-scripts/ci-cd/load-docker-image.sh
+        if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Docker image utility;')
+        env:
+          TARBALL: image.tar.zst
+
+      - name: Build package
+        run: ./internal-scripts/ci-cd/build-rbenv-rpm/build-package.sh
+        env:
+          PACKAGE_BASENAME: "<%= rbenv_package_basename(:RPM) %>"
+          REVISION: "<%= rbenv_package_revision %>"
+
+      - name: Archive artifact
+        run: ./internal-scripts/ci-cd/upload-artifact.sh
+        env:
+          ARTIFACT_NAME: <%= rbenv_rpm_artifact_name %>
+          ARTIFACT_PATH: output
+
+
+  ### Ruby ###
+
+  <%- distributions.each do |distribution| %>
+  <%- ruby_package_versions.each do |ruby_package_version| -%>
+  <%- variants.each do |variant| -%>
+  <%- unindent(2) do %>
+    build_ruby_<%= slug(distribution[:name]) %>-<%= slug(ruby_package_version[:id]) %>-<%= slug(variant[:name]) %>:
+      name: 'Build Ruby [<%= distribution[:name] %>/<%= ruby_package_version[:id] %>/<%= variant[:name] %>]'
+      runs-on: ubuntu-20.04
+      needs:
+        - determine_necessary_jobs
+        - build_jemalloc_<%= slug(distribution[:name]) %>
+      # Run even if a dependent job has been skipped
+      if: |
+        contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Ruby [<%= distribution[:name] %>/<%= ruby_package_version[:id] %>/<%= variant[:name] %>];')
+        && !failure() && !cancelled()
+      steps:
+        - name: Check whether 'Build Jemalloc [<%= distribution[:name] %>]' did not fail
+          run: 'false'
+          if: |
+            needs.build_jemalloc_<%= slug(distribution[:name]) %>.result == 'skipped'
+            && contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Jemalloc [<%= distribution[:name] %>];')
+
+        - uses: actions/checkout@v2
+        - name: Login to Google Cloud
+          uses: ./.github/actions/gcloud-login
+          with:
+            private_key: ${{ secrets.GCLOUD_KEY }}
+        - name: Fetch Ruby source
+          run: ./internal-scripts/ci-cd/download-artifact.sh
+          env:
+            ARTIFACT_NAME: <%= ruby_source_artifact_name(ruby_package_version[:full_version]) %>
+            ARTIFACT_PATH: .
+
+        - name: Download Docker image necessary for building
+          run: ./internal-scripts/ci-cd/download-artifact.sh
+          if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Docker image <%= distribution[:name] %>;')
+          env:
+            ARTIFACT_NAME: 'docker-image-<%= distribution[:name] %>'
+            ARTIFACT_PATH: .
+        - name: Load Docker image necessary for building
+          run: ./internal-scripts/ci-cd/load-docker-image.sh
+          if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Docker image <%= distribution[:name] %>;')
+          env:
+            TARBALL: image.tar.zst
+
+        - name: Download Docker image necessary for packaging
+          run: ./internal-scripts/ci-cd/download-artifact.sh
+          if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Docker image utility;')
+          env:
+            ARTIFACT_NAME: 'docker-image-<%= distribution[:name] %>'
+            ARTIFACT_PATH: .
+        - name: Load Docker image necessary for packaging
+          run: ./internal-scripts/ci-cd/load-docker-image.sh
+          if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Docker image utility;')
+          env:
+            TARBALL: image.tar.zst
+
+        <% if variant[:name] == 'jemalloc' %>
+        <%- unindent(2) do -%>
+          - name: Fetch Jemalloc binary
+            run: ./internal-scripts/ci-cd/download-artifact.sh
+            env:
+              ARTIFACT_NAME: jemalloc-bin-<%= distribution[:name] %>
+              ARTIFACT_PATH: .
+        <%- end -%>
+        <% end %>
+
+        - name: Reset & prepare workspace
+          run: mkdir cache-<%= variant[:name] %>
+        - name: "[<%= variant[:name] %>] Fetch cache"
+          uses: actions/cache@v2
+          with:
+            path: cache-<%= variant[:name] %>
+            key: v2-ruby-bin-<%= ruby_package_version[:id] %>-<%= distribution[:name] %>-<%= variant[:name] %>
+
+        - name: Build binaries
+          run: ./internal-scripts/ci-cd/build-ruby-packages/build-binaries.sh
+          env:
+            ENVIRONMENT_NAME: "<%= distribution[:name] %>"
+            VARIANT_NAME: "<%= variant[:name] %>"
+            RUBY_PACKAGE_VERSION_ID: "<%= ruby_package_version[:id] %>"
+
+        - name: Build package
+          run: ./internal-scripts/ci-cd/build-ruby-packages/build-package.sh
+          env:
+            DISTRIBUTION_NAME: "<%= distribution[:name] %>"
+            VARIANT_NAME: "<%= variant[:name] %>"
+            VARIANT_PACKAGE_SUFFIX: "<%= variant[:package_suffix] %>"
+            PACKAGE_FORMAT: "<%= distribution[:package_format] %>"
+            RUBY_PACKAGE_VERSION_ID: "<%= ruby_package_version[:id] %>"
+            RUBY_PACKAGE_REVISION: "<%= ruby_package_version[:package_revision] %>"
+
+        - name: Archive package artifact to Google Cloud
+          run: ./internal-scripts/ci-cd/upload-artifact.sh
+          env:
+            ARTIFACT_NAME: "<%= ruby_package_artifact_name(ruby_package_version, distribution, variant) %>"
+            ARTIFACT_PATH: output-<%= variant[:name] %>
+  <%- end %>
+  <%- end -%>
+  <%- end -%>
+  <%- end %>
+
+
+  ### Finalize ###
+
+  finalize:
+    name: Finalize
+    needs:
+      - determine_necessary_jobs
+      - build_common_deb
+      - build_common_rpm
+      - build_rbenv_deb
+      - build_rbenv_rpm
+      <%- distributions.each do |distribution| -%>
+      <%- unindent(2) do %>
+        - build_jemalloc_<%= slug(distribution[:name]) %>
+        <%- ruby_package_versions.each do |ruby_package_version| %>
+        <%- variants.each do |variant| -%>
+        - build_ruby_<%= slug(distribution[:name]) %>-<%= slug(ruby_package_version[:id]) %>-<%= slug(variant[:name]) %>
+        <%- end -%>
+        <%- end %>
+      <%- end %>
+      <%- end -%>
+    runs-on: ubuntu-20.04
+    if: 'always()'
+    steps:
+      - uses: actions/checkout@v2
+      - name: Login to Google Cloud
+        uses: ./.github/actions/gcloud-login
+        with:
+          private_key: ${{ secrets.GCLOUD_KEY }}
+
+
+      ### Publish all artifacts in Google Cloud as Github Actions artifacts ###
+      # We publish these artifacts in a dedicated job instead
+      # of in each job individually, because the individual jobs
+      # could be skipped during a re-run.
+
+      - name: Download common DEB artifact from Google Cloud
+        run: ./internal-scripts/ci-cd/download-artifact.sh
+        env:
+          ARTIFACT_NAME: <%= common_deb_artifact_name %>
+          ARTIFACT_PATH: artifacts
+          CLEAR: true
+      - name: Archive common DEB artifact to Github
+        uses: actions/upload-artifact@v2
+        with:
+          name: <%= common_deb_artifact_name %>
+          path: artifacts
+
+      - name: Download common RPM artifact from Google Cloud
+        run: ./internal-scripts/ci-cd/download-artifact.sh
+        env:
+          ARTIFACT_NAME: <%= common_rpm_artifact_name %>
+          ARTIFACT_PATH: artifacts
+          CLEAR: true
+      - name: Archive common RPM artifact to Github
+        uses: actions/upload-artifact@v2
+        with:
+          name: <%= common_rpm_artifact_name %>
+          path: artifacts
+
+      - name: Download Rbenv DEB artifact from Google Cloud
+        run: ./internal-scripts/ci-cd/download-artifact.sh
+        env:
+          ARTIFACT_NAME: <%= rbenv_deb_artifact_name %>
+          ARTIFACT_PATH: artifacts
+          CLEAR: true
+      - name: Archive Rbenv DEB artifact to Github
+        uses: actions/upload-artifact@v2
+        with:
+          name: <%= rbenv_deb_artifact_name %>
+          path: artifacts
+
+      - name: Download Rbenv RPM artifact from Google Cloud
+        run: ./internal-scripts/ci-cd/download-artifact.sh
+        env:
+          ARTIFACT_NAME: <%= rbenv_rpm_artifact_name %>
+          ARTIFACT_PATH: artifacts
+          CLEAR: true
+      - name: Archive Rbenv RPM artifact to Github
+        uses: actions/upload-artifact@v2
+        with:
+          name: <%= rbenv_rpm_artifact_name %>
+          path: artifacts
+
+      - name: Download Jemalloc binary artifacts from Google Cloud
+        run: ./internal-scripts/ci-cd/download-artifacts.sh
+        env:
+          ARTIFACT_NAMES: |
+            <%- distributions.each do |distribution| -%>
+            jemalloc-bin-<%= distribution[:name] %>
+            <%- end -%>
+          ARTIFACT_PATH: artifacts
+          CLEAR: true
+      <%- distributions.each do |distribution| -%>
+      - name: Archive Jemalloc binary artifact [<%= distribution[:name] %>] to Github
+        uses: actions/upload-artifact@v2
+        with:
+          name: 'jemalloc-bin-<%= distribution[:name] %>'
+          path: 'artifacts/jemalloc-bin-<%= distribution[:name] %>'
+      <%- end -%>
+
+      - name: Download Ruby package artifacts from Google Cloud
+        run: ./internal-scripts/ci-cd/download-artifacts.sh
+        env:
+          ARTIFACT_NAMES: '<%= ruby_package_artifact_names.join(' ') %>'
+          ARTIFACT_PATH: artifacts
+          CLEAR: true
+      <%- ruby_package_artifact_names.each do |artifact_name| -%>
+      - name: Archive Ruby package artifact [<%= artifact_name %>] to Github
+        uses: actions/upload-artifact@v2
+        with:
+          name: <%= artifact_name %>
+          path: artifacts/<%= artifact_name %>
+      <%- end -%>
+
+
+      ### Check whether dependent jobs failed ###
+      # Only trigger next workflow if there are no failures.
+
+      - name: Check whether 'Determine necessary jobs' succeeded
+        run: 'false'
+        if: needs.determine_necessary_jobs.result != 'success'
+      - name: Check whether 'Build common DEB' did not fail
+        run: 'false'
+        if: |
+          needs.build_common_deb.result != 'success'
+          && (needs.build_common_deb.result != 'skipped'
+            || contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build common DEB;'))
+      - name: Check whether 'Build common RPM' did not fail
+        run: 'false'
+        if: |
+          needs.build_common_rpm.result != 'success'
+          && (needs.build_common_rpm.result != 'skipped'
+            || contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build common RPM;'))
+      - name: Check whether 'Build Rbenv DEB' did not fail
+        run: 'false'
+        if: |
+          needs.build_rbenv_deb.result != 'success'
+          && (needs.build_rbenv_deb.result != 'skipped'
+            || contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Rbenv DEB;'))
+      - name: Check whether 'Build Rbenv RPM' did not fail
+        run: 'false'
+        if: |
+          needs.build_rbenv_rpm.result != 'success'
+          && (needs.build_rbenv_rpm.result != 'skipped'
+            || contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Rbenv RPM;'))
+      - name: Check whether 'Build Jemalloc' did not fail
+        run: 'false'
+        if: |
+          false
+          <%- distributions.each do |distribution| -%>
+            || (needs.build_jemalloc_<%= slug(distribution[:name]) %>.result != 'success'
+              && (needs.build_jemalloc_<%= slug(distribution[:name]) %>.result != 'skipped'
+                || contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Jemalloc [<%= distribution[:name] %>];')))
+          <%- end -%>
+      <%- distributions.each do |distribution| -%>
+      - name: Check whether 'Build Ruby [<%= distribution[:name] %>]' did not fail
+        run: 'false'
+        if: |
+          false
+          <%- ruby_package_versions.each do |ruby_package_version| -%>
+          <%- variants.each do |variant| -%>
+            || (needs.build_ruby_<%= slug(distribution[:name]) %>-<%= slug(ruby_package_version[:id]) %>-<%= slug(variant[:name]) %>.result != 'success'
+              && (needs.build_ruby_<%= slug(distribution[:name]) %>-<%= slug(ruby_package_version[:id]) %>-<%= slug(variant[:name]) %>.result != 'skipped'
+                || contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Ruby [<%= distribution[:name] %>/<%= ruby_package_version[:id] %>/<%= variant[:name] %>];')))
+          <%- end -%>
+          <%- end -%>
+      <%- end -%>
+
+
+      ### Trigger next workflow ###
+
+      - name: Create check for 'Publish & test against test repos'
+        uses: LouisBrunner/checks-action@v1.1.0
+        id: create_check
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          name: Publish & test against test repos
+          status: queued
+
+      - name: Trigger workflow for 'Publish & test against test repos'
+        uses: benc-uk/workflow-dispatch@v1.1
+        with:
+          workflow: 'CI/CD: publish & test against test repos'
+          token: ${{ secrets.WORKFLOW_DISPATCH_TOKEN }}
+          inputs: |
+            {
+              "ci_artifacts_run_number": "${{ env.CI_ARTIFACTS_RUN_NUMBER }}",
+              "check_id": "${{ steps.create_check.outputs.check_id }}"
+            }
+
+
+      ### Update own check status ###
+
+      - name: Mark check as 'success'
+        uses: LouisBrunner/checks-action@v1.1.0
+        if: 'github.event.inputs.check_id && success()'
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          check_id: ${{ github.event.inputs.check_id }}
+          conclusion: success
+
+      - name: Mark check as 'failure'
+        uses: LouisBrunner/checks-action@v1.1.0
+        if: 'github.event.inputs.check_id && failure()'
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          check_id: ${{ github.event.inputs.check_id }}
+          conclusion: failure
+
+      - name: Mark check as 'cancelled'
+        uses: LouisBrunner/checks-action@v1.1.0
+        if: 'github.event.inputs.check_id && cancelled()'
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          check_id: ${{ github.event.inputs.check_id }}
+          conclusion: cancelled

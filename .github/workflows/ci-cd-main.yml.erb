@@ -1,0 +1,363 @@
+<%= editing_warning_comment %>
+
+name: 'CI/CD: main'
+
+on:
+  workflow_dispatch:
+    inputs:
+      ci_artifacts_run_number:
+        required: false
+  push:
+    paths-ignore:
+      - '**.md'
+      - 'dev-handbook/**'
+
+env:
+  BINTRAY_ORG: fullstaq
+  CI_ARTIFACTS_BUCKET: fullstaq-ruby-server-edition-ci-artifacts
+  ## Set the following variable to a specific number to make the
+  ## Google Cloud artifact upload/download actions treat as
+  ## if we're running the given CI run number. Useful for
+  ## speeding up development of the CI itself, in order to
+  ## avoid rebuilding.
+  CI_ARTIFACTS_RUN_NUMBER: ${{ github.event.inputs.ci_artifacts_run_number || github.run_number }}
+
+jobs:
+  # Determines which jobs should be run, or (in case this is a re-run)
+  # which jobs can be skipped this time because the last run succeeded.
+  # We determine this by checking whether the artifacts produced by jobs
+  # exist in this run.
+  determine_necessary_jobs:
+    name: Determine necessary jobs
+    runs-on: ubuntu-20.04
+    outputs:
+      necessary_jobs: ${{ steps.check.outputs.necessary_jobs }}
+    steps:
+      - uses: actions/checkout@v2
+      - name: Login to Google Cloud
+        uses: ./.github/actions/gcloud-login
+        with:
+          private_key: ${{ secrets.GCLOUD_KEY }}
+
+      - name: List artifacts built in previous try of same CI run
+        run: ./internal-scripts/ci-cd/determine-necessary-jobs/list-artifacts.sh
+
+      - name: Determine necessary jobs
+        id: check
+        run: ./internal-scripts/ci-cd/determine-necessary-jobs/determine-necessary-jobs.rb
+
+
+  check_workflow_uptodate:
+    name: Check whether workflow is up-to-date
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v2
+      - name: Check
+        run: ./internal-scripts/ci-cd/check-workflow-uptodate/check.sh
+
+
+  check_version_numbers_need_bumping:
+    name: Check whether any version numbers need to be changed
+    needs:
+      - determine_necessary_jobs
+      - download_rbenv_source
+    runs-on: ubuntu-20.04
+    # Run even if a dependent job has been skipped
+    if: '!failure() && !cancelled()'
+    steps:
+      - name: Check whether dependent jobs did not fail
+        run: 'false'
+        if: |
+          needs.download_rbenv_source.result == 'skipped'
+          && contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Download Rbenv source;')
+
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-ruby@v1
+        with:
+          ruby-version: '2.6'
+      - name: Login to Google Cloud
+        uses: ./.github/actions/gcloud-login
+        with:
+          private_key: ${{ secrets.GCLOUD_KEY }}
+      - name: Fetch Rbenv source
+        run: ./internal-scripts/ci-cd/download-artifact.sh
+        env:
+          ARTIFACT_NAME: <%= rbenv_source_artifact_name %>
+          ARTIFACT_PATH: .
+
+      - name: Extract Rbenv source
+        run: ./internal-scripts/ci-cd/check-version-numbers-need-changing/extract-rbenv-source.sh
+      - name: Determine latest release tag
+        # Sets environment variable $LATEST_RELEASE_TAG
+        run: ./internal-scripts/ci-cd/check-version-numbers-need-changing/determine-latest-release-tag.sh
+
+      - name: Check whether the Rbenv version in config.yml is correct
+        run: ./internal-scripts/ci-cd/check-version-numbers-need-changing/check-rbenv-version.sh
+        if: '!cancelled()'
+      - name: Check whether the Rbenv package revision needs to be changed
+        run: ./internal-scripts/ci-cd/check-version-numbers-need-changing/check-rbenv-package-revision.sh
+        if: '!cancelled()'
+
+      - name: Check whether the fullstaq-ruby-common Debian package version or revision needs to be changed
+        run: ./internal-scripts/ci-cd/check-version-numbers-need-changing/check-common-deb-version-revision.sh
+        if: '!cancelled()'
+      - name: Check whether the fullstaq-ruby-common RPM package version or revision needs to be changed
+        run: ./internal-scripts/ci-cd/check-version-numbers-need-changing/check-common-rpm-version-revision.sh
+        if: '!cancelled()'
+
+      - name: Check whether any Ruby package revisions need to be changed
+        run: ./internal-scripts/ci-cd/check-version-numbers-need-changing/check-ruby-package-revisions.sh
+        if: '!cancelled()'
+
+      - name: Check whether any minor Ruby package revisions need to be changed
+        run: ./internal-scripts/ci-cd/check-version-numbers-need-changing/check-minor-ruby-package-revisions.sh
+        if: '!cancelled()'
+
+
+  ### Docker images ###
+
+  <%- docker_images.each do |image| %>
+  <%- unindent(2) do -%>
+    build_docker_image_<%= slug(image[:id]) %>:
+      name: 'Build Docker image [<%= image[:id] %>]'
+      runs-on: ubuntu-18.04
+      needs:
+        - determine_necessary_jobs
+      if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Docker image <%= image[:id] %>;')
+      steps:
+        - uses: actions/checkout@v2
+        - name: Login to Google Cloud
+          uses: ./.github/actions/gcloud-login
+          with:
+            private_key: ${{ secrets.GCLOUD_KEY }}
+
+        - name: Build
+          run: ./internal-scripts/ci-cd/build-docker-images/build.sh
+          env:
+            IMAGE_NAME: '<%= image[:name] %>'
+            IMAGE_TAG: '<%= image[:tag] %>'
+            SOURCE_DIR: 'environments/<%= image[:id] %>'
+
+        - name: Dump image
+          run: ./internal-scripts/ci-cd/build-docker-images/dump-image.sh
+          env:
+            IMAGE_NAME: '<%= image[:name] %>'
+            IMAGE_TAG: '<%= image[:tag] %>'
+        - name: Archive artifact
+          run: ./internal-scripts/ci-cd/upload-artifact.sh
+          env:
+            ARTIFACT_NAME: 'docker-image-<%= image[:id] %>'
+            ARTIFACT_PATH: output
+  <%- end %>
+  <%- end %>
+
+
+  ### Sources ###
+
+  <%- ruby_source_versions.each do |ruby_version| %>
+  <%- unindent(2) do -%>
+    download_ruby_source_<%= slug(ruby_version) %>:
+      name: Download Ruby source [<%= ruby_version %>]
+      runs-on: ubuntu-20.04
+      needs:
+        - determine_necessary_jobs
+      if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Download Ruby source <%= ruby_version %>;')
+      steps:
+        - uses: actions/checkout@v2
+        - name: Login to Google Cloud
+          uses: ./.github/actions/gcloud-login
+          with:
+            private_key: ${{ secrets.GCLOUD_KEY }}
+
+        - name: Fetch cache
+          id: fetch_cache
+          uses: actions/cache@v1
+          with:
+            path: output
+            key: v3-ruby-src-<%= ruby_version %>
+
+        - name: Download
+          run: ./internal-scripts/ci-cd/download-ruby-sources/download.sh
+          if: steps.fetch_cache.outputs.cache-hit != 'true'
+          env:
+            RUBY_VERSION: <%= ruby_version %>
+
+        - name: Archive artifact
+          run: ./internal-scripts/ci-cd/upload-artifact.sh
+          env:
+            ARTIFACT_NAME: <%= ruby_source_artifact_name(ruby_version) %>
+            ARTIFACT_PATH: output
+  <%- end -%>
+  <%- end %>
+
+
+  download_rbenv_source:
+    name: Download Rbenv source
+    runs-on: ubuntu-20.04
+    needs:
+      - determine_necessary_jobs
+    if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Download Rbenv source;')
+    steps:
+      - uses: actions/checkout@v2
+      - name: Login to Google Cloud
+        uses: ./.github/actions/gcloud-login
+        with:
+          private_key: ${{ secrets.GCLOUD_KEY }}
+      - name: Prepare
+        id: prepare
+        run: ./internal-scripts/ci-cd/download-rbenv-source/prepare.sh
+      - name: Fetch cache
+        uses: actions/cache@v1
+        with:
+          path: output
+          key: v2-rbenv-src-${{ steps.prepare.outputs.cache_key }}
+
+      - name: Download
+        run: ./internal-scripts/ci-cd/download-rbenv-source/download.sh
+        env:
+          RBENV_REPO_URL: ${{ steps.prepare.outputs.repo_url }}
+          RBENV_REPO_REF: ${{ steps.prepare.outputs.ref }}
+
+      - name: Archive artifact
+        run: ./internal-scripts/ci-cd/upload-artifact.sh
+        env:
+          ARTIFACT_NAME: <%= rbenv_source_artifact_name %>
+          ARTIFACT_PATH: output
+
+
+  ### Finalize ###
+
+  finalize:
+    name: Finalize
+    needs:
+      - determine_necessary_jobs
+      - check_workflow_uptodate
+      - check_version_numbers_need_bumping
+      - download_rbenv_source
+      <%- docker_images.each do |image| -%>
+      - build_docker_image_<%= slug(image[:id]) %>
+      <%- end -%>
+      <%- ruby_source_versions.each do |ruby_version| -%>
+      - download_ruby_source_<%= slug(ruby_version) %>
+      <%- end -%>
+    runs-on: ubuntu-20.04
+    if: 'always()'
+    steps:
+      - uses: actions/checkout@v2
+      - name: Login to Google Cloud
+        uses: ./.github/actions/gcloud-login
+        with:
+          private_key: ${{ secrets.GCLOUD_KEY }}
+
+
+      ### Publish all artifacts in Google Cloud as Github Actions artifacts ###
+      # We publish these artifacts in a dedicated job instead
+      # of in each job individually, because the individual jobs
+      # could be skipped during a re-run.
+
+      - name: Download Rbenv source artifact from Google Cloud
+        run: ./internal-scripts/ci-cd/download-artifact.sh
+        env:
+          ARTIFACT_NAME: <%= rbenv_source_artifact_name %>
+          ARTIFACT_PATH: artifacts
+      - name: Archive Rbenv source artifact to Github
+        uses: actions/upload-artifact@v2
+        with:
+          name: <%= rbenv_source_artifact_name %>
+          path: artifacts
+
+      <%- docker_images.each do |image| %>
+      <%- unindent(2) do -%>
+        - name: Download Docker image artifact [<%= image[:id] %>] from Google Cloud
+          run: ./internal-scripts/ci-cd/download-artifact.sh
+          if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Docker image <%= image[:id] %>;')
+          env:
+            ARTIFACT_NAME: 'docker-image-<%= image[:id] %>'
+            ARTIFACT_PATH: artifacts
+            CLEAR: true
+        - name: Archive Docker image artifact [<%= image[:id] %>] to Github
+          uses: actions/upload-artifact@v2
+          if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Docker image <%= image[:id] %>;')
+          with:
+            name: 'docker-image-<%= image[:id] %>'
+            path: artifacts
+      <%- end -%>
+      <%- end %>
+
+      <%- ruby_source_versions.each do |ruby_version| %>
+      <%- unindent(2) do -%>
+        - name: Download Ruby source artifact [<%= ruby_version %>] from Google Cloud
+          run: ./internal-scripts/ci-cd/download-artifact.sh
+          env:
+            ARTIFACT_NAME: <%= ruby_source_artifact_name(ruby_version) %>
+            ARTIFACT_PATH: artifacts
+            CLEAR: true
+        - name: Archive Ruby source artifact [<%= ruby_version %>] to Github
+          uses: actions/upload-artifact@v2
+          with:
+            name: <%= ruby_source_artifact_name(ruby_version) %>
+            path: artifacts
+      <%- end -%>
+      <%- end %>
+
+
+      ### Check whether dependent jobs failed ###
+      # Only trigger next workflow if there are no failures.
+
+      - name: Check whether 'Determine necessary jobs' succeeded
+        run: 'false'
+        if: needs.determine_necessary_jobs.result != 'success'
+      - name: Check whether 'Check whether workflow is up-to-date' succeeded
+        run: 'false'
+        if: needs.check_workflow_uptodate.result != 'success'
+      - name: Check whether 'Check whether any version numbers need to be changed' succeeded
+        run: 'false'
+        if: needs.check_version_numbers_need_bumping.result != 'success'
+      - name: Check whether 'Download Rbenv source' did not fail
+        run: 'false'
+        if: |
+          needs.download_rbenv_source.result != 'success'
+          && (needs.download_rbenv_source.result != 'skipped'
+            || contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Download Rbenv source;'))
+      - name: Check whether 'Build Docker image' did not fail
+        run: 'false'
+        if: |
+          false
+          <%- docker_images.each do |image| -%>
+            || (needs.build_docker_image_<%= slug(image[:id]) %>.result != 'success'
+              && (needs.build_docker_image_<%= slug(image[:id]) %>.result != 'skipped'
+                || contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Docker image <%= image[:id] %>;')))
+          <%- end -%>
+      - name: Check whether 'Download Ruby source' did not fail
+        run: 'false'
+        if: |
+          false
+          <%- ruby_source_versions.each do |ruby_version| -%>
+            || (needs.download_ruby_source_<%= slug(ruby_version) %>.result != 'success'
+              && (needs.download_ruby_source_<%= slug(ruby_version) %>.result != 'skipped'
+                || contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Download Ruby source <%= ruby_version %>;')))
+          <%- end -%>
+
+
+      ### Trigger next workflow ###
+
+      - name: Create check for 'Build packages'
+        uses: LouisBrunner/checks-action@v1.1.0
+        id: create_check
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          name: Build packages
+          status: queued
+
+      - name: Trigger workflow for 'Build packages'
+        uses: benc-uk/workflow-dispatch@v1.1
+        with:
+          workflow: 'CI/CD: build packages'
+          token: ${{ secrets.WORKFLOW_DISPATCH_TOKEN }}
+          inputs: |
+            {
+              "ci_artifacts_run_number": "${{ env.CI_ARTIFACTS_RUN_NUMBER }}",
+              "check_id": "${{ steps.create_check.outputs.check_id }}"
+            }
