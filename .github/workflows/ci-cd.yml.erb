@@ -988,6 +988,9 @@ jobs:
       - publish_common_and_rbenv_debs_test
       - publish_common_and_rbenv_rpms_test
       - publish_ruby_packages_test
+    # No 'if' option here: don't run if a dependent job has been
+    # skipped, because that means that one of the transitive
+    # dependencies failed.
     steps:
       - uses: actions/checkout@v2
         with:
@@ -1027,10 +1030,13 @@ jobs:
       needs:
         - determine_necessary_jobs
         - commit_published_packages_test
-      # Run even if a dependent job has been skipped
-      if: |
-        contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against test repo [<%= distribution[:name] %>/<%= ruby_package_version[:id] %>/<%= variant[:name] %>];')
-        && !failure() && !cancelled()
+      <%-
+      # Don't check for '!failure() && !cancelled()' here:
+      # don't run if a dependent job has been skipped, because that means
+      # that one of the transitive dependencies (such as 'Build Ruby')
+      # failed.
+      true %>
+      if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against test repo [<%= distribution[:name] %>/<%= ruby_package_version[:id] %>/<%= variant[:name] %>];')
       steps:
         - uses: actions/checkout@v2
         - name: Run tests
@@ -1069,6 +1075,7 @@ jobs:
     runs-on: ubuntu-20.04
     needs:
       - determine_necessary_jobs
+      - commit_published_packages_test
       <%- distributions.each do |distribution| -%>
       <%- ruby_package_versions.each do |ruby_package_version| -%>
       <%- variants.each do |variant| -%>
@@ -1076,8 +1083,13 @@ jobs:
       <%- end -%>
       <%- end -%>
       <%- end -%>
-    # Run even if a dependent job has been skipped
-    if: '!failure() && !cancelled()'
+    # We don't care whether any 'Test packages against test' jobs
+    # have been skipped. We only care whether 'Commit packages to
+    # test repo' has been skipped, because that indicates a failure
+    # in one of its transitive dependencies (e.g. 'Build Ruby').
+    if: |
+      needs.commit_published_packages_test.result == 'success'
+      && !failure() && !cancelled()
     steps:
       - uses: actions/checkout@v2
         with:
@@ -1183,9 +1195,9 @@ jobs:
       needs:
         - determine_necessary_jobs
         - publish_packages_production
-      # Run even if a dependent job has been skipped
       if: |
         github.ref == 'refs/heads/main'
+        && needs.publish_packages_production.result == 'success'
         && contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [<%= distribution[:name] %>/<%= ruby_package_version[:id] %>/<%= variant[:name] %>];')
         && !failure() && !cancelled()
       steps:
@@ -1225,6 +1237,7 @@ jobs:
     name: Create Git tag
     runs-on: ubuntu-20.04
     needs:
+      - publish_packages_production
       <%- distributions.each do |distribution| -%>
       <%- ruby_package_versions.each do |ruby_package_version| -%>
       <%- variants.each do |variant| -%>
@@ -1232,8 +1245,14 @@ jobs:
       <%- end -%>
       <%- end -%>
       <%- end -%>
-    # Run even if a dependent job has been skipped
-    if: '!failure() && !cancelled()'
+    # We don't care whether any 'Test packages against production' jobs
+    # have been skipped. We only care whether 'Publish packages to
+    # production' has been skipped, because that indicates a failure
+    # in one of its transitive dependencies (e.g. 'Test packages against test'
+    # or 'Build Ruby').
+    if: |
+      needs.publish_packages_production.result == 'success'
+      && !failure() && !cancelled()
     steps:
       - uses: actions/checkout@v2
         with:

@@ -9946,6 +9946,9 @@ jobs:
       - publish_common_and_rbenv_debs_test
       - publish_common_and_rbenv_rpms_test
       - publish_ruby_packages_test
+    # No 'if' option here: don't run if a dependent job has been
+    # skipped, because that means that one of the transitive
+    # dependencies failed.
     steps:
       - uses: actions/checkout@v2
         with:
@@ -9983,10 +9986,8 @@ jobs:
     needs:
       - determine_necessary_jobs
       - commit_published_packages_test
-    # Run even if a dependent job has been skipped
-    if: |
-      contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against test repo [centos-7/2.7/normal];')
-      && !failure() && !cancelled()
+
+    if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against test repo [centos-7/2.7/normal];')
     steps:
       - uses: actions/checkout@v2
       - name: Run tests
@@ -10019,10 +10020,8 @@ jobs:
     needs:
       - determine_necessary_jobs
       - commit_published_packages_test
-    # Run even if a dependent job has been skipped
-    if: |
-      contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against test repo [centos-7/2.7/jemalloc];')
-      && !failure() && !cancelled()
+
+    if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against test repo [centos-7/2.7/jemalloc];')
     steps:
       - uses: actions/checkout@v2
       - name: Run tests
@@ -10055,10 +10054,8 @@ jobs:
     needs:
       - determine_necessary_jobs
       - commit_published_packages_test
-    # Run even if a dependent job has been skipped
-    if: |
-      contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against test repo [centos-7/2.7/malloctrim];')
-      && !failure() && !cancelled()
+
+    if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against test repo [centos-7/2.7/malloctrim];')
     steps:
       - uses: actions/checkout@v2
       - name: Run tests
@@ -10091,10 +10088,8 @@ jobs:
     needs:
       - determine_necessary_jobs
       - commit_published_packages_test
-    # Run even if a dependent job has been skipped
-    if: |
-      contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against test repo [centos-7/2.6/normal];')
-      && !failure() && !cancelled()
+
+    if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against test repo [centos-7/2.6/normal];')
     steps:
       - uses: actions/checkout@v2
       - name: Run tests
@@ -10127,10 +10122,8 @@ jobs:
     needs:
       - determine_necessary_jobs
       - commit_published_packages_test
-    # Run even if a dependent job has been skipped
-    if: |
-      contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against test repo [centos-7/2.6/jemalloc];')
-      && !failure() && !cancelled()
+
+    if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against test repo [centos-7/2.6/jemalloc];')
     steps:
       - uses: actions/checkout@v2
       - name: Run tests
@@ -10163,10 +10156,8 @@ jobs:
     needs:
       - determine_necessary_jobs
       - commit_published_packages_test
-    # Run even if a dependent job has been skipped
-    if: |
-      contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against test repo [centos-7/2.6/malloctrim];')
-      && !failure() && !cancelled()
+
+    if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against test repo [centos-7/2.6/malloctrim];')
     steps:
       - uses: actions/checkout@v2
       - name: Run tests
@@ -10199,10 +10190,8 @@ jobs:
     needs:
       - determine_necessary_jobs
       - commit_published_packages_test
-    # Run even if a dependent job has been skipped
-    if: |
-      contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against test repo [centos-7/2.5/normal];')
-      && !failure() && !cancelled()
+
+    if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against test repo [centos-7/2.5/normal];')
     steps:
       - uses: actions/checkout@v2
       - name: Run tests
@@ -10235,10 +10224,8 @@ jobs:
     needs:
       - determine_necessary_jobs
       - commit_published_packages_test
-    # Run even if a dependent job has been skipped
-    if: |
-      contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against test repo [centos-7/2.5/jemalloc];')
-      && !failure() && !cancelled()
+
+    if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against test repo [centos-7/2.5/jemalloc];')
     steps:
       - uses: actions/checkout@v2
       - name: Run tests
@@ -10271,10 +10258,8 @@ jobs:
     needs:
       - determine_necessary_jobs
       - commit_published_packages_test
-    # Run even if a dependent job has been skipped
-    if: |
-      contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against test repo [centos-7/2.5/malloctrim];')
-      && !failure() && !cancelled()
+
+    if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against test repo [centos-7/2.5/malloctrim];')
     steps:
       - uses: actions/checkout@v2
       - name: Run tests
@@ -10307,10 +10292,8 @@ jobs:
     needs:
       - determine_necessary_jobs
       - commit_published_packages_test
-    # Run even if a dependent job has been skipped
-    if: |
-      contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against test repo [centos-7/2.7.1/normal];')
-      && !failure() && !cancelled()
+
+    if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against test repo [centos-7/2.7.1/normal];')
     steps:
       - uses: actions/checkout@v2
       - name: Run tests
@@ -10343,10 +10326,8 @@ jobs:
     needs:
       - determine_necessary_jobs
       - commit_published_packages_test
-    # Run even if a dependent job has been skipped
-    if: |
-      contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against test repo [centos-7/2.7.1/jemalloc];')
-      && !failure() && !cancelled()
+
+    if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against test repo [centos-7/2.7.1/jemalloc];')
     steps:
       - uses: actions/checkout@v2
       - name: Run tests
@@ -10379,10 +10360,8 @@ jobs:
     needs:
       - determine_necessary_jobs
       - commit_published_packages_test
-    # Run even if a dependent job has been skipped
-    if: |
-      contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against test repo [centos-7/2.7.1/malloctrim];')
-      && !failure() && !cancelled()
+
+    if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against test repo [centos-7/2.7.1/malloctrim];')
     steps:
       - uses: actions/checkout@v2
       - name: Run tests
@@ -10415,10 +10394,8 @@ jobs:
     needs:
       - determine_necessary_jobs
       - commit_published_packages_test
-    # Run even if a dependent job has been skipped
-    if: |
-      contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against test repo [centos-7/2.6.6/normal];')
-      && !failure() && !cancelled()
+
+    if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against test repo [centos-7/2.6.6/normal];')
     steps:
       - uses: actions/checkout@v2
       - name: Run tests
@@ -10451,10 +10428,8 @@ jobs:
     needs:
       - determine_necessary_jobs
       - commit_published_packages_test
-    # Run even if a dependent job has been skipped
-    if: |
-      contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against test repo [centos-7/2.6.6/jemalloc];')
-      && !failure() && !cancelled()
+
+    if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against test repo [centos-7/2.6.6/jemalloc];')
     steps:
       - uses: actions/checkout@v2
       - name: Run tests
@@ -10487,10 +10462,8 @@ jobs:
     needs:
       - determine_necessary_jobs
       - commit_published_packages_test
-    # Run even if a dependent job has been skipped
-    if: |
-      contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against test repo [centos-7/2.6.6/malloctrim];')
-      && !failure() && !cancelled()
+
+    if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against test repo [centos-7/2.6.6/malloctrim];')
     steps:
       - uses: actions/checkout@v2
       - name: Run tests
@@ -10523,10 +10496,8 @@ jobs:
     needs:
       - determine_necessary_jobs
       - commit_published_packages_test
-    # Run even if a dependent job has been skipped
-    if: |
-      contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against test repo [centos-7/2.5.8/normal];')
-      && !failure() && !cancelled()
+
+    if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against test repo [centos-7/2.5.8/normal];')
     steps:
       - uses: actions/checkout@v2
       - name: Run tests
@@ -10559,10 +10530,8 @@ jobs:
     needs:
       - determine_necessary_jobs
       - commit_published_packages_test
-    # Run even if a dependent job has been skipped
-    if: |
-      contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against test repo [centos-7/2.5.8/jemalloc];')
-      && !failure() && !cancelled()
+
+    if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against test repo [centos-7/2.5.8/jemalloc];')
     steps:
       - uses: actions/checkout@v2
       - name: Run tests
@@ -10595,10 +10564,8 @@ jobs:
     needs:
       - determine_necessary_jobs
       - commit_published_packages_test
-    # Run even if a dependent job has been skipped
-    if: |
-      contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against test repo [centos-7/2.5.8/malloctrim];')
-      && !failure() && !cancelled()
+
+    if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against test repo [centos-7/2.5.8/malloctrim];')
     steps:
       - uses: actions/checkout@v2
       - name: Run tests
@@ -10632,10 +10599,8 @@ jobs:
     needs:
       - determine_necessary_jobs
       - commit_published_packages_test
-    # Run even if a dependent job has been skipped
-    if: |
-      contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against test repo [centos-8/2.7/normal];')
-      && !failure() && !cancelled()
+
+    if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against test repo [centos-8/2.7/normal];')
     steps:
       - uses: actions/checkout@v2
       - name: Run tests
@@ -10668,10 +10633,8 @@ jobs:
     needs:
       - determine_necessary_jobs
       - commit_published_packages_test
-    # Run even if a dependent job has been skipped
-    if: |
-      contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against test repo [centos-8/2.7/jemalloc];')
-      && !failure() && !cancelled()
+
+    if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against test repo [centos-8/2.7/jemalloc];')
     steps:
       - uses: actions/checkout@v2
       - name: Run tests
@@ -10704,10 +10667,8 @@ jobs:
     needs:
       - determine_necessary_jobs
       - commit_published_packages_test
-    # Run even if a dependent job has been skipped
-    if: |
-      contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against test repo [centos-8/2.7/malloctrim];')
-      && !failure() && !cancelled()
+
+    if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against test repo [centos-8/2.7/malloctrim];')
     steps:
       - uses: actions/checkout@v2
       - name: Run tests
@@ -10740,10 +10701,8 @@ jobs:
     needs:
       - determine_necessary_jobs
       - commit_published_packages_test
-    # Run even if a dependent job has been skipped
-    if: |
-      contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against test repo [centos-8/2.6/normal];')
-      && !failure() && !cancelled()
+
+    if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against test repo [centos-8/2.6/normal];')
     steps:
       - uses: actions/checkout@v2
       - name: Run tests
@@ -10776,10 +10735,8 @@ jobs:
     needs:
       - determine_necessary_jobs
       - commit_published_packages_test
-    # Run even if a dependent job has been skipped
-    if: |
-      contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against test repo [centos-8/2.6/jemalloc];')
-      && !failure() && !cancelled()
+
+    if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against test repo [centos-8/2.6/jemalloc];')
     steps:
       - uses: actions/checkout@v2
       - name: Run tests
@@ -10812,10 +10769,8 @@ jobs:
     needs:
       - determine_necessary_jobs
       - commit_published_packages_test
-    # Run even if a dependent job has been skipped
-    if: |
-      contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against test repo [centos-8/2.6/malloctrim];')
-      && !failure() && !cancelled()
+
+    if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against test repo [centos-8/2.6/malloctrim];')
     steps:
       - uses: actions/checkout@v2
       - name: Run tests
@@ -10848,10 +10803,8 @@ jobs:
     needs:
       - determine_necessary_jobs
       - commit_published_packages_test
-    # Run even if a dependent job has been skipped
-    if: |
-      contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against test repo [centos-8/2.5/normal];')
-      && !failure() && !cancelled()
+
+    if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against test repo [centos-8/2.5/normal];')
     steps:
       - uses: actions/checkout@v2
       - name: Run tests
@@ -10884,10 +10837,8 @@ jobs:
     needs:
       - determine_necessary_jobs
       - commit_published_packages_test
-    # Run even if a dependent job has been skipped
-    if: |
-      contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against test repo [centos-8/2.5/jemalloc];')
-      && !failure() && !cancelled()
+
+    if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against test repo [centos-8/2.5/jemalloc];')
     steps:
       - uses: actions/checkout@v2
       - name: Run tests
@@ -10920,10 +10871,8 @@ jobs:
     needs:
       - determine_necessary_jobs
       - commit_published_packages_test
-    # Run even if a dependent job has been skipped
-    if: |
-      contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against test repo [centos-8/2.5/malloctrim];')
-      && !failure() && !cancelled()
+
+    if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against test repo [centos-8/2.5/malloctrim];')
     steps:
       - uses: actions/checkout@v2
       - name: Run tests
@@ -10956,10 +10905,8 @@ jobs:
     needs:
       - determine_necessary_jobs
       - commit_published_packages_test
-    # Run even if a dependent job has been skipped
-    if: |
-      contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against test repo [centos-8/2.7.1/normal];')
-      && !failure() && !cancelled()
+
+    if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against test repo [centos-8/2.7.1/normal];')
     steps:
       - uses: actions/checkout@v2
       - name: Run tests
@@ -10992,10 +10939,8 @@ jobs:
     needs:
       - determine_necessary_jobs
       - commit_published_packages_test
-    # Run even if a dependent job has been skipped
-    if: |
-      contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against test repo [centos-8/2.7.1/jemalloc];')
-      && !failure() && !cancelled()
+
+    if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against test repo [centos-8/2.7.1/jemalloc];')
     steps:
       - uses: actions/checkout@v2
       - name: Run tests
@@ -11028,10 +10973,8 @@ jobs:
     needs:
       - determine_necessary_jobs
       - commit_published_packages_test
-    # Run even if a dependent job has been skipped
-    if: |
-      contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against test repo [centos-8/2.7.1/malloctrim];')
-      && !failure() && !cancelled()
+
+    if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against test repo [centos-8/2.7.1/malloctrim];')
     steps:
       - uses: actions/checkout@v2
       - name: Run tests
@@ -11064,10 +11007,8 @@ jobs:
     needs:
       - determine_necessary_jobs
       - commit_published_packages_test
-    # Run even if a dependent job has been skipped
-    if: |
-      contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against test repo [centos-8/2.6.6/normal];')
-      && !failure() && !cancelled()
+
+    if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against test repo [centos-8/2.6.6/normal];')
     steps:
       - uses: actions/checkout@v2
       - name: Run tests
@@ -11100,10 +11041,8 @@ jobs:
     needs:
       - determine_necessary_jobs
       - commit_published_packages_test
-    # Run even if a dependent job has been skipped
-    if: |
-      contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against test repo [centos-8/2.6.6/jemalloc];')
-      && !failure() && !cancelled()
+
+    if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against test repo [centos-8/2.6.6/jemalloc];')
     steps:
       - uses: actions/checkout@v2
       - name: Run tests
@@ -11136,10 +11075,8 @@ jobs:
     needs:
       - determine_necessary_jobs
       - commit_published_packages_test
-    # Run even if a dependent job has been skipped
-    if: |
-      contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against test repo [centos-8/2.6.6/malloctrim];')
-      && !failure() && !cancelled()
+
+    if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against test repo [centos-8/2.6.6/malloctrim];')
     steps:
       - uses: actions/checkout@v2
       - name: Run tests
@@ -11172,10 +11109,8 @@ jobs:
     needs:
       - determine_necessary_jobs
       - commit_published_packages_test
-    # Run even if a dependent job has been skipped
-    if: |
-      contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against test repo [centos-8/2.5.8/normal];')
-      && !failure() && !cancelled()
+
+    if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against test repo [centos-8/2.5.8/normal];')
     steps:
       - uses: actions/checkout@v2
       - name: Run tests
@@ -11208,10 +11143,8 @@ jobs:
     needs:
       - determine_necessary_jobs
       - commit_published_packages_test
-    # Run even if a dependent job has been skipped
-    if: |
-      contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against test repo [centos-8/2.5.8/jemalloc];')
-      && !failure() && !cancelled()
+
+    if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against test repo [centos-8/2.5.8/jemalloc];')
     steps:
       - uses: actions/checkout@v2
       - name: Run tests
@@ -11244,10 +11177,8 @@ jobs:
     needs:
       - determine_necessary_jobs
       - commit_published_packages_test
-    # Run even if a dependent job has been skipped
-    if: |
-      contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against test repo [centos-8/2.5.8/malloctrim];')
-      && !failure() && !cancelled()
+
+    if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against test repo [centos-8/2.5.8/malloctrim];')
     steps:
       - uses: actions/checkout@v2
       - name: Run tests
@@ -11281,10 +11212,8 @@ jobs:
     needs:
       - determine_necessary_jobs
       - commit_published_packages_test
-    # Run even if a dependent job has been skipped
-    if: |
-      contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against test repo [debian-10/2.7/normal];')
-      && !failure() && !cancelled()
+
+    if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against test repo [debian-10/2.7/normal];')
     steps:
       - uses: actions/checkout@v2
       - name: Run tests
@@ -11317,10 +11246,8 @@ jobs:
     needs:
       - determine_necessary_jobs
       - commit_published_packages_test
-    # Run even if a dependent job has been skipped
-    if: |
-      contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against test repo [debian-10/2.7/jemalloc];')
-      && !failure() && !cancelled()
+
+    if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against test repo [debian-10/2.7/jemalloc];')
     steps:
       - uses: actions/checkout@v2
       - name: Run tests
@@ -11353,10 +11280,8 @@ jobs:
     needs:
       - determine_necessary_jobs
       - commit_published_packages_test
-    # Run even if a dependent job has been skipped
-    if: |
-      contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against test repo [debian-10/2.7/malloctrim];')
-      && !failure() && !cancelled()
+
+    if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against test repo [debian-10/2.7/malloctrim];')
     steps:
       - uses: actions/checkout@v2
       - name: Run tests
@@ -11389,10 +11314,8 @@ jobs:
     needs:
       - determine_necessary_jobs
       - commit_published_packages_test
-    # Run even if a dependent job has been skipped
-    if: |
-      contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against test repo [debian-10/2.6/normal];')
-      && !failure() && !cancelled()
+
+    if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against test repo [debian-10/2.6/normal];')
     steps:
       - uses: actions/checkout@v2
       - name: Run tests
@@ -11425,10 +11348,8 @@ jobs:
     needs:
       - determine_necessary_jobs
       - commit_published_packages_test
-    # Run even if a dependent job has been skipped
-    if: |
-      contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against test repo [debian-10/2.6/jemalloc];')
-      && !failure() && !cancelled()
+
+    if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against test repo [debian-10/2.6/jemalloc];')
     steps:
       - uses: actions/checkout@v2
       - name: Run tests
@@ -11461,10 +11382,8 @@ jobs:
     needs:
       - determine_necessary_jobs
       - commit_published_packages_test
-    # Run even if a dependent job has been skipped
-    if: |
-      contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against test repo [debian-10/2.6/malloctrim];')
-      && !failure() && !cancelled()
+
+    if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against test repo [debian-10/2.6/malloctrim];')
     steps:
       - uses: actions/checkout@v2
       - name: Run tests
@@ -11497,10 +11416,8 @@ jobs:
     needs:
       - determine_necessary_jobs
       - commit_published_packages_test
-    # Run even if a dependent job has been skipped
-    if: |
-      contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against test repo [debian-10/2.5/normal];')
-      && !failure() && !cancelled()
+
+    if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against test repo [debian-10/2.5/normal];')
     steps:
       - uses: actions/checkout@v2
       - name: Run tests
@@ -11533,10 +11450,8 @@ jobs:
     needs:
       - determine_necessary_jobs
       - commit_published_packages_test
-    # Run even if a dependent job has been skipped
-    if: |
-      contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against test repo [debian-10/2.5/jemalloc];')
-      && !failure() && !cancelled()
+
+    if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against test repo [debian-10/2.5/jemalloc];')
     steps:
       - uses: actions/checkout@v2
       - name: Run tests
@@ -11569,10 +11484,8 @@ jobs:
     needs:
       - determine_necessary_jobs
       - commit_published_packages_test
-    # Run even if a dependent job has been skipped
-    if: |
-      contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against test repo [debian-10/2.5/malloctrim];')
-      && !failure() && !cancelled()
+
+    if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against test repo [debian-10/2.5/malloctrim];')
     steps:
       - uses: actions/checkout@v2
       - name: Run tests
@@ -11605,10 +11518,8 @@ jobs:
     needs:
       - determine_necessary_jobs
       - commit_published_packages_test
-    # Run even if a dependent job has been skipped
-    if: |
-      contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against test repo [debian-10/2.7.1/normal];')
-      && !failure() && !cancelled()
+
+    if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against test repo [debian-10/2.7.1/normal];')
     steps:
       - uses: actions/checkout@v2
       - name: Run tests
@@ -11641,10 +11552,8 @@ jobs:
     needs:
       - determine_necessary_jobs
       - commit_published_packages_test
-    # Run even if a dependent job has been skipped
-    if: |
-      contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against test repo [debian-10/2.7.1/jemalloc];')
-      && !failure() && !cancelled()
+
+    if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against test repo [debian-10/2.7.1/jemalloc];')
     steps:
       - uses: actions/checkout@v2
       - name: Run tests
@@ -11677,10 +11586,8 @@ jobs:
     needs:
       - determine_necessary_jobs
       - commit_published_packages_test
-    # Run even if a dependent job has been skipped
-    if: |
-      contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against test repo [debian-10/2.7.1/malloctrim];')
-      && !failure() && !cancelled()
+
+    if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against test repo [debian-10/2.7.1/malloctrim];')
     steps:
       - uses: actions/checkout@v2
       - name: Run tests
@@ -11713,10 +11620,8 @@ jobs:
     needs:
       - determine_necessary_jobs
       - commit_published_packages_test
-    # Run even if a dependent job has been skipped
-    if: |
-      contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against test repo [debian-10/2.6.6/normal];')
-      && !failure() && !cancelled()
+
+    if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against test repo [debian-10/2.6.6/normal];')
     steps:
       - uses: actions/checkout@v2
       - name: Run tests
@@ -11749,10 +11654,8 @@ jobs:
     needs:
       - determine_necessary_jobs
       - commit_published_packages_test
-    # Run even if a dependent job has been skipped
-    if: |
-      contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against test repo [debian-10/2.6.6/jemalloc];')
-      && !failure() && !cancelled()
+
+    if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against test repo [debian-10/2.6.6/jemalloc];')
     steps:
       - uses: actions/checkout@v2
       - name: Run tests
@@ -11785,10 +11688,8 @@ jobs:
     needs:
       - determine_necessary_jobs
       - commit_published_packages_test
-    # Run even if a dependent job has been skipped
-    if: |
-      contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against test repo [debian-10/2.6.6/malloctrim];')
-      && !failure() && !cancelled()
+
+    if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against test repo [debian-10/2.6.6/malloctrim];')
     steps:
       - uses: actions/checkout@v2
       - name: Run tests
@@ -11821,10 +11722,8 @@ jobs:
     needs:
       - determine_necessary_jobs
       - commit_published_packages_test
-    # Run even if a dependent job has been skipped
-    if: |
-      contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against test repo [debian-10/2.5.8/normal];')
-      && !failure() && !cancelled()
+
+    if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against test repo [debian-10/2.5.8/normal];')
     steps:
       - uses: actions/checkout@v2
       - name: Run tests
@@ -11857,10 +11756,8 @@ jobs:
     needs:
       - determine_necessary_jobs
       - commit_published_packages_test
-    # Run even if a dependent job has been skipped
-    if: |
-      contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against test repo [debian-10/2.5.8/jemalloc];')
-      && !failure() && !cancelled()
+
+    if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against test repo [debian-10/2.5.8/jemalloc];')
     steps:
       - uses: actions/checkout@v2
       - name: Run tests
@@ -11893,10 +11790,8 @@ jobs:
     needs:
       - determine_necessary_jobs
       - commit_published_packages_test
-    # Run even if a dependent job has been skipped
-    if: |
-      contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against test repo [debian-10/2.5.8/malloctrim];')
-      && !failure() && !cancelled()
+
+    if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against test repo [debian-10/2.5.8/malloctrim];')
     steps:
       - uses: actions/checkout@v2
       - name: Run tests
@@ -11930,10 +11825,8 @@ jobs:
     needs:
       - determine_necessary_jobs
       - commit_published_packages_test
-    # Run even if a dependent job has been skipped
-    if: |
-      contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against test repo [debian-9/2.7/normal];')
-      && !failure() && !cancelled()
+
+    if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against test repo [debian-9/2.7/normal];')
     steps:
       - uses: actions/checkout@v2
       - name: Run tests
@@ -11966,10 +11859,8 @@ jobs:
     needs:
       - determine_necessary_jobs
       - commit_published_packages_test
-    # Run even if a dependent job has been skipped
-    if: |
-      contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against test repo [debian-9/2.7/jemalloc];')
-      && !failure() && !cancelled()
+
+    if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against test repo [debian-9/2.7/jemalloc];')
     steps:
       - uses: actions/checkout@v2
       - name: Run tests
@@ -12002,10 +11893,8 @@ jobs:
     needs:
       - determine_necessary_jobs
       - commit_published_packages_test
-    # Run even if a dependent job has been skipped
-    if: |
-      contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against test repo [debian-9/2.7/malloctrim];')
-      && !failure() && !cancelled()
+
+    if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against test repo [debian-9/2.7/malloctrim];')
     steps:
       - uses: actions/checkout@v2
       - name: Run tests
@@ -12038,10 +11927,8 @@ jobs:
     needs:
       - determine_necessary_jobs
       - commit_published_packages_test
-    # Run even if a dependent job has been skipped
-    if: |
-      contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against test repo [debian-9/2.6/normal];')
-      && !failure() && !cancelled()
+
+    if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against test repo [debian-9/2.6/normal];')
     steps:
       - uses: actions/checkout@v2
       - name: Run tests
@@ -12074,10 +11961,8 @@ jobs:
     needs:
       - determine_necessary_jobs
       - commit_published_packages_test
-    # Run even if a dependent job has been skipped
-    if: |
-      contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against test repo [debian-9/2.6/jemalloc];')
-      && !failure() && !cancelled()
+
+    if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against test repo [debian-9/2.6/jemalloc];')
     steps:
       - uses: actions/checkout@v2
       - name: Run tests
@@ -12110,10 +11995,8 @@ jobs:
     needs:
       - determine_necessary_jobs
       - commit_published_packages_test
-    # Run even if a dependent job has been skipped
-    if: |
-      contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against test repo [debian-9/2.6/malloctrim];')
-      && !failure() && !cancelled()
+
+    if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against test repo [debian-9/2.6/malloctrim];')
     steps:
       - uses: actions/checkout@v2
       - name: Run tests
@@ -12146,10 +12029,8 @@ jobs:
     needs:
       - determine_necessary_jobs
       - commit_published_packages_test
-    # Run even if a dependent job has been skipped
-    if: |
-      contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against test repo [debian-9/2.5/normal];')
-      && !failure() && !cancelled()
+
+    if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against test repo [debian-9/2.5/normal];')
     steps:
       - uses: actions/checkout@v2
       - name: Run tests
@@ -12182,10 +12063,8 @@ jobs:
     needs:
       - determine_necessary_jobs
       - commit_published_packages_test
-    # Run even if a dependent job has been skipped
-    if: |
-      contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against test repo [debian-9/2.5/jemalloc];')
-      && !failure() && !cancelled()
+
+    if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against test repo [debian-9/2.5/jemalloc];')
     steps:
       - uses: actions/checkout@v2
       - name: Run tests
@@ -12218,10 +12097,8 @@ jobs:
     needs:
       - determine_necessary_jobs
       - commit_published_packages_test
-    # Run even if a dependent job has been skipped
-    if: |
-      contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against test repo [debian-9/2.5/malloctrim];')
-      && !failure() && !cancelled()
+
+    if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against test repo [debian-9/2.5/malloctrim];')
     steps:
       - uses: actions/checkout@v2
       - name: Run tests
@@ -12254,10 +12131,8 @@ jobs:
     needs:
       - determine_necessary_jobs
       - commit_published_packages_test
-    # Run even if a dependent job has been skipped
-    if: |
-      contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against test repo [debian-9/2.7.1/normal];')
-      && !failure() && !cancelled()
+
+    if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against test repo [debian-9/2.7.1/normal];')
     steps:
       - uses: actions/checkout@v2
       - name: Run tests
@@ -12290,10 +12165,8 @@ jobs:
     needs:
       - determine_necessary_jobs
       - commit_published_packages_test
-    # Run even if a dependent job has been skipped
-    if: |
-      contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against test repo [debian-9/2.7.1/jemalloc];')
-      && !failure() && !cancelled()
+
+    if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against test repo [debian-9/2.7.1/jemalloc];')
     steps:
       - uses: actions/checkout@v2
       - name: Run tests
@@ -12326,10 +12199,8 @@ jobs:
     needs:
       - determine_necessary_jobs
       - commit_published_packages_test
-    # Run even if a dependent job has been skipped
-    if: |
-      contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against test repo [debian-9/2.7.1/malloctrim];')
-      && !failure() && !cancelled()
+
+    if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against test repo [debian-9/2.7.1/malloctrim];')
     steps:
       - uses: actions/checkout@v2
       - name: Run tests
@@ -12362,10 +12233,8 @@ jobs:
     needs:
       - determine_necessary_jobs
       - commit_published_packages_test
-    # Run even if a dependent job has been skipped
-    if: |
-      contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against test repo [debian-9/2.6.6/normal];')
-      && !failure() && !cancelled()
+
+    if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against test repo [debian-9/2.6.6/normal];')
     steps:
       - uses: actions/checkout@v2
       - name: Run tests
@@ -12398,10 +12267,8 @@ jobs:
     needs:
       - determine_necessary_jobs
       - commit_published_packages_test
-    # Run even if a dependent job has been skipped
-    if: |
-      contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against test repo [debian-9/2.6.6/jemalloc];')
-      && !failure() && !cancelled()
+
+    if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against test repo [debian-9/2.6.6/jemalloc];')
     steps:
       - uses: actions/checkout@v2
       - name: Run tests
@@ -12434,10 +12301,8 @@ jobs:
     needs:
       - determine_necessary_jobs
       - commit_published_packages_test
-    # Run even if a dependent job has been skipped
-    if: |
-      contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against test repo [debian-9/2.6.6/malloctrim];')
-      && !failure() && !cancelled()
+
+    if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against test repo [debian-9/2.6.6/malloctrim];')
     steps:
       - uses: actions/checkout@v2
       - name: Run tests
@@ -12470,10 +12335,8 @@ jobs:
     needs:
       - determine_necessary_jobs
       - commit_published_packages_test
-    # Run even if a dependent job has been skipped
-    if: |
-      contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against test repo [debian-9/2.5.8/normal];')
-      && !failure() && !cancelled()
+
+    if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against test repo [debian-9/2.5.8/normal];')
     steps:
       - uses: actions/checkout@v2
       - name: Run tests
@@ -12506,10 +12369,8 @@ jobs:
     needs:
       - determine_necessary_jobs
       - commit_published_packages_test
-    # Run even if a dependent job has been skipped
-    if: |
-      contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against test repo [debian-9/2.5.8/jemalloc];')
-      && !failure() && !cancelled()
+
+    if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against test repo [debian-9/2.5.8/jemalloc];')
     steps:
       - uses: actions/checkout@v2
       - name: Run tests
@@ -12542,10 +12403,8 @@ jobs:
     needs:
       - determine_necessary_jobs
       - commit_published_packages_test
-    # Run even if a dependent job has been skipped
-    if: |
-      contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against test repo [debian-9/2.5.8/malloctrim];')
-      && !failure() && !cancelled()
+
+    if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against test repo [debian-9/2.5.8/malloctrim];')
     steps:
       - uses: actions/checkout@v2
       - name: Run tests
@@ -12579,10 +12438,8 @@ jobs:
     needs:
       - determine_necessary_jobs
       - commit_published_packages_test
-    # Run even if a dependent job has been skipped
-    if: |
-      contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against test repo [ubuntu-18.04/2.7/normal];')
-      && !failure() && !cancelled()
+
+    if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against test repo [ubuntu-18.04/2.7/normal];')
     steps:
       - uses: actions/checkout@v2
       - name: Run tests
@@ -12615,10 +12472,8 @@ jobs:
     needs:
       - determine_necessary_jobs
       - commit_published_packages_test
-    # Run even if a dependent job has been skipped
-    if: |
-      contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against test repo [ubuntu-18.04/2.7/jemalloc];')
-      && !failure() && !cancelled()
+
+    if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against test repo [ubuntu-18.04/2.7/jemalloc];')
     steps:
       - uses: actions/checkout@v2
       - name: Run tests
@@ -12651,10 +12506,8 @@ jobs:
     needs:
       - determine_necessary_jobs
       - commit_published_packages_test
-    # Run even if a dependent job has been skipped
-    if: |
-      contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against test repo [ubuntu-18.04/2.7/malloctrim];')
-      && !failure() && !cancelled()
+
+    if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against test repo [ubuntu-18.04/2.7/malloctrim];')
     steps:
       - uses: actions/checkout@v2
       - name: Run tests
@@ -12687,10 +12540,8 @@ jobs:
     needs:
       - determine_necessary_jobs
       - commit_published_packages_test
-    # Run even if a dependent job has been skipped
-    if: |
-      contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against test repo [ubuntu-18.04/2.6/normal];')
-      && !failure() && !cancelled()
+
+    if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against test repo [ubuntu-18.04/2.6/normal];')
     steps:
       - uses: actions/checkout@v2
       - name: Run tests
@@ -12723,10 +12574,8 @@ jobs:
     needs:
       - determine_necessary_jobs
       - commit_published_packages_test
-    # Run even if a dependent job has been skipped
-    if: |
-      contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against test repo [ubuntu-18.04/2.6/jemalloc];')
-      && !failure() && !cancelled()
+
+    if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against test repo [ubuntu-18.04/2.6/jemalloc];')
     steps:
       - uses: actions/checkout@v2
       - name: Run tests
@@ -12759,10 +12608,8 @@ jobs:
     needs:
       - determine_necessary_jobs
       - commit_published_packages_test
-    # Run even if a dependent job has been skipped
-    if: |
-      contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against test repo [ubuntu-18.04/2.6/malloctrim];')
-      && !failure() && !cancelled()
+
+    if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against test repo [ubuntu-18.04/2.6/malloctrim];')
     steps:
       - uses: actions/checkout@v2
       - name: Run tests
@@ -12795,10 +12642,8 @@ jobs:
     needs:
       - determine_necessary_jobs
       - commit_published_packages_test
-    # Run even if a dependent job has been skipped
-    if: |
-      contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against test repo [ubuntu-18.04/2.5/normal];')
-      && !failure() && !cancelled()
+
+    if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against test repo [ubuntu-18.04/2.5/normal];')
     steps:
       - uses: actions/checkout@v2
       - name: Run tests
@@ -12831,10 +12676,8 @@ jobs:
     needs:
       - determine_necessary_jobs
       - commit_published_packages_test
-    # Run even if a dependent job has been skipped
-    if: |
-      contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against test repo [ubuntu-18.04/2.5/jemalloc];')
-      && !failure() && !cancelled()
+
+    if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against test repo [ubuntu-18.04/2.5/jemalloc];')
     steps:
       - uses: actions/checkout@v2
       - name: Run tests
@@ -12867,10 +12710,8 @@ jobs:
     needs:
       - determine_necessary_jobs
       - commit_published_packages_test
-    # Run even if a dependent job has been skipped
-    if: |
-      contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against test repo [ubuntu-18.04/2.5/malloctrim];')
-      && !failure() && !cancelled()
+
+    if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against test repo [ubuntu-18.04/2.5/malloctrim];')
     steps:
       - uses: actions/checkout@v2
       - name: Run tests
@@ -12903,10 +12744,8 @@ jobs:
     needs:
       - determine_necessary_jobs
       - commit_published_packages_test
-    # Run even if a dependent job has been skipped
-    if: |
-      contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against test repo [ubuntu-18.04/2.7.1/normal];')
-      && !failure() && !cancelled()
+
+    if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against test repo [ubuntu-18.04/2.7.1/normal];')
     steps:
       - uses: actions/checkout@v2
       - name: Run tests
@@ -12939,10 +12778,8 @@ jobs:
     needs:
       - determine_necessary_jobs
       - commit_published_packages_test
-    # Run even if a dependent job has been skipped
-    if: |
-      contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against test repo [ubuntu-18.04/2.7.1/jemalloc];')
-      && !failure() && !cancelled()
+
+    if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against test repo [ubuntu-18.04/2.7.1/jemalloc];')
     steps:
       - uses: actions/checkout@v2
       - name: Run tests
@@ -12975,10 +12812,8 @@ jobs:
     needs:
       - determine_necessary_jobs
       - commit_published_packages_test
-    # Run even if a dependent job has been skipped
-    if: |
-      contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against test repo [ubuntu-18.04/2.7.1/malloctrim];')
-      && !failure() && !cancelled()
+
+    if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against test repo [ubuntu-18.04/2.7.1/malloctrim];')
     steps:
       - uses: actions/checkout@v2
       - name: Run tests
@@ -13011,10 +12846,8 @@ jobs:
     needs:
       - determine_necessary_jobs
       - commit_published_packages_test
-    # Run even if a dependent job has been skipped
-    if: |
-      contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against test repo [ubuntu-18.04/2.6.6/normal];')
-      && !failure() && !cancelled()
+
+    if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against test repo [ubuntu-18.04/2.6.6/normal];')
     steps:
       - uses: actions/checkout@v2
       - name: Run tests
@@ -13047,10 +12880,8 @@ jobs:
     needs:
       - determine_necessary_jobs
       - commit_published_packages_test
-    # Run even if a dependent job has been skipped
-    if: |
-      contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against test repo [ubuntu-18.04/2.6.6/jemalloc];')
-      && !failure() && !cancelled()
+
+    if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against test repo [ubuntu-18.04/2.6.6/jemalloc];')
     steps:
       - uses: actions/checkout@v2
       - name: Run tests
@@ -13083,10 +12914,8 @@ jobs:
     needs:
       - determine_necessary_jobs
       - commit_published_packages_test
-    # Run even if a dependent job has been skipped
-    if: |
-      contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against test repo [ubuntu-18.04/2.6.6/malloctrim];')
-      && !failure() && !cancelled()
+
+    if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against test repo [ubuntu-18.04/2.6.6/malloctrim];')
     steps:
       - uses: actions/checkout@v2
       - name: Run tests
@@ -13119,10 +12948,8 @@ jobs:
     needs:
       - determine_necessary_jobs
       - commit_published_packages_test
-    # Run even if a dependent job has been skipped
-    if: |
-      contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against test repo [ubuntu-18.04/2.5.8/normal];')
-      && !failure() && !cancelled()
+
+    if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against test repo [ubuntu-18.04/2.5.8/normal];')
     steps:
       - uses: actions/checkout@v2
       - name: Run tests
@@ -13155,10 +12982,8 @@ jobs:
     needs:
       - determine_necessary_jobs
       - commit_published_packages_test
-    # Run even if a dependent job has been skipped
-    if: |
-      contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against test repo [ubuntu-18.04/2.5.8/jemalloc];')
-      && !failure() && !cancelled()
+
+    if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against test repo [ubuntu-18.04/2.5.8/jemalloc];')
     steps:
       - uses: actions/checkout@v2
       - name: Run tests
@@ -13191,10 +13016,8 @@ jobs:
     needs:
       - determine_necessary_jobs
       - commit_published_packages_test
-    # Run even if a dependent job has been skipped
-    if: |
-      contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against test repo [ubuntu-18.04/2.5.8/malloctrim];')
-      && !failure() && !cancelled()
+
+    if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against test repo [ubuntu-18.04/2.5.8/malloctrim];')
     steps:
       - uses: actions/checkout@v2
       - name: Run tests
@@ -13228,10 +13051,8 @@ jobs:
     needs:
       - determine_necessary_jobs
       - commit_published_packages_test
-    # Run even if a dependent job has been skipped
-    if: |
-      contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against test repo [ubuntu-20.04/2.7/normal];')
-      && !failure() && !cancelled()
+
+    if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against test repo [ubuntu-20.04/2.7/normal];')
     steps:
       - uses: actions/checkout@v2
       - name: Run tests
@@ -13264,10 +13085,8 @@ jobs:
     needs:
       - determine_necessary_jobs
       - commit_published_packages_test
-    # Run even if a dependent job has been skipped
-    if: |
-      contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against test repo [ubuntu-20.04/2.7/jemalloc];')
-      && !failure() && !cancelled()
+
+    if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against test repo [ubuntu-20.04/2.7/jemalloc];')
     steps:
       - uses: actions/checkout@v2
       - name: Run tests
@@ -13300,10 +13119,8 @@ jobs:
     needs:
       - determine_necessary_jobs
       - commit_published_packages_test
-    # Run even if a dependent job has been skipped
-    if: |
-      contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against test repo [ubuntu-20.04/2.7/malloctrim];')
-      && !failure() && !cancelled()
+
+    if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against test repo [ubuntu-20.04/2.7/malloctrim];')
     steps:
       - uses: actions/checkout@v2
       - name: Run tests
@@ -13336,10 +13153,8 @@ jobs:
     needs:
       - determine_necessary_jobs
       - commit_published_packages_test
-    # Run even if a dependent job has been skipped
-    if: |
-      contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against test repo [ubuntu-20.04/2.6/normal];')
-      && !failure() && !cancelled()
+
+    if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against test repo [ubuntu-20.04/2.6/normal];')
     steps:
       - uses: actions/checkout@v2
       - name: Run tests
@@ -13372,10 +13187,8 @@ jobs:
     needs:
       - determine_necessary_jobs
       - commit_published_packages_test
-    # Run even if a dependent job has been skipped
-    if: |
-      contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against test repo [ubuntu-20.04/2.6/jemalloc];')
-      && !failure() && !cancelled()
+
+    if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against test repo [ubuntu-20.04/2.6/jemalloc];')
     steps:
       - uses: actions/checkout@v2
       - name: Run tests
@@ -13408,10 +13221,8 @@ jobs:
     needs:
       - determine_necessary_jobs
       - commit_published_packages_test
-    # Run even if a dependent job has been skipped
-    if: |
-      contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against test repo [ubuntu-20.04/2.6/malloctrim];')
-      && !failure() && !cancelled()
+
+    if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against test repo [ubuntu-20.04/2.6/malloctrim];')
     steps:
       - uses: actions/checkout@v2
       - name: Run tests
@@ -13444,10 +13255,8 @@ jobs:
     needs:
       - determine_necessary_jobs
       - commit_published_packages_test
-    # Run even if a dependent job has been skipped
-    if: |
-      contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against test repo [ubuntu-20.04/2.5/normal];')
-      && !failure() && !cancelled()
+
+    if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against test repo [ubuntu-20.04/2.5/normal];')
     steps:
       - uses: actions/checkout@v2
       - name: Run tests
@@ -13480,10 +13289,8 @@ jobs:
     needs:
       - determine_necessary_jobs
       - commit_published_packages_test
-    # Run even if a dependent job has been skipped
-    if: |
-      contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against test repo [ubuntu-20.04/2.5/jemalloc];')
-      && !failure() && !cancelled()
+
+    if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against test repo [ubuntu-20.04/2.5/jemalloc];')
     steps:
       - uses: actions/checkout@v2
       - name: Run tests
@@ -13516,10 +13323,8 @@ jobs:
     needs:
       - determine_necessary_jobs
       - commit_published_packages_test
-    # Run even if a dependent job has been skipped
-    if: |
-      contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against test repo [ubuntu-20.04/2.5/malloctrim];')
-      && !failure() && !cancelled()
+
+    if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against test repo [ubuntu-20.04/2.5/malloctrim];')
     steps:
       - uses: actions/checkout@v2
       - name: Run tests
@@ -13552,10 +13357,8 @@ jobs:
     needs:
       - determine_necessary_jobs
       - commit_published_packages_test
-    # Run even if a dependent job has been skipped
-    if: |
-      contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against test repo [ubuntu-20.04/2.7.1/normal];')
-      && !failure() && !cancelled()
+
+    if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against test repo [ubuntu-20.04/2.7.1/normal];')
     steps:
       - uses: actions/checkout@v2
       - name: Run tests
@@ -13588,10 +13391,8 @@ jobs:
     needs:
       - determine_necessary_jobs
       - commit_published_packages_test
-    # Run even if a dependent job has been skipped
-    if: |
-      contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against test repo [ubuntu-20.04/2.7.1/jemalloc];')
-      && !failure() && !cancelled()
+
+    if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against test repo [ubuntu-20.04/2.7.1/jemalloc];')
     steps:
       - uses: actions/checkout@v2
       - name: Run tests
@@ -13624,10 +13425,8 @@ jobs:
     needs:
       - determine_necessary_jobs
       - commit_published_packages_test
-    # Run even if a dependent job has been skipped
-    if: |
-      contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against test repo [ubuntu-20.04/2.7.1/malloctrim];')
-      && !failure() && !cancelled()
+
+    if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against test repo [ubuntu-20.04/2.7.1/malloctrim];')
     steps:
       - uses: actions/checkout@v2
       - name: Run tests
@@ -13660,10 +13459,8 @@ jobs:
     needs:
       - determine_necessary_jobs
       - commit_published_packages_test
-    # Run even if a dependent job has been skipped
-    if: |
-      contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against test repo [ubuntu-20.04/2.6.6/normal];')
-      && !failure() && !cancelled()
+
+    if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against test repo [ubuntu-20.04/2.6.6/normal];')
     steps:
       - uses: actions/checkout@v2
       - name: Run tests
@@ -13696,10 +13493,8 @@ jobs:
     needs:
       - determine_necessary_jobs
       - commit_published_packages_test
-    # Run even if a dependent job has been skipped
-    if: |
-      contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against test repo [ubuntu-20.04/2.6.6/jemalloc];')
-      && !failure() && !cancelled()
+
+    if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against test repo [ubuntu-20.04/2.6.6/jemalloc];')
     steps:
       - uses: actions/checkout@v2
       - name: Run tests
@@ -13732,10 +13527,8 @@ jobs:
     needs:
       - determine_necessary_jobs
       - commit_published_packages_test
-    # Run even if a dependent job has been skipped
-    if: |
-      contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against test repo [ubuntu-20.04/2.6.6/malloctrim];')
-      && !failure() && !cancelled()
+
+    if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against test repo [ubuntu-20.04/2.6.6/malloctrim];')
     steps:
       - uses: actions/checkout@v2
       - name: Run tests
@@ -13768,10 +13561,8 @@ jobs:
     needs:
       - determine_necessary_jobs
       - commit_published_packages_test
-    # Run even if a dependent job has been skipped
-    if: |
-      contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against test repo [ubuntu-20.04/2.5.8/normal];')
-      && !failure() && !cancelled()
+
+    if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against test repo [ubuntu-20.04/2.5.8/normal];')
     steps:
       - uses: actions/checkout@v2
       - name: Run tests
@@ -13804,10 +13595,8 @@ jobs:
     needs:
       - determine_necessary_jobs
       - commit_published_packages_test
-    # Run even if a dependent job has been skipped
-    if: |
-      contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against test repo [ubuntu-20.04/2.5.8/jemalloc];')
-      && !failure() && !cancelled()
+
+    if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against test repo [ubuntu-20.04/2.5.8/jemalloc];')
     steps:
       - uses: actions/checkout@v2
       - name: Run tests
@@ -13840,10 +13629,8 @@ jobs:
     needs:
       - determine_necessary_jobs
       - commit_published_packages_test
-    # Run even if a dependent job has been skipped
-    if: |
-      contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against test repo [ubuntu-20.04/2.5.8/malloctrim];')
-      && !failure() && !cancelled()
+
+    if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against test repo [ubuntu-20.04/2.5.8/malloctrim];')
     steps:
       - uses: actions/checkout@v2
       - name: Run tests
@@ -13879,6 +13666,7 @@ jobs:
     runs-on: ubuntu-20.04
     needs:
       - determine_necessary_jobs
+      - commit_published_packages_test
       - 'test_packages_against_test_centos_7_2_7_normal'
       - 'test_packages_against_test_centos_7_2_7_jemalloc'
       - 'test_packages_against_test_centos_7_2_7_malloctrim'
@@ -13987,8 +13775,13 @@ jobs:
       - 'test_packages_against_test_ubuntu_20_04_2_5_8_normal'
       - 'test_packages_against_test_ubuntu_20_04_2_5_8_jemalloc'
       - 'test_packages_against_test_ubuntu_20_04_2_5_8_malloctrim'
-    # Run even if a dependent job has been skipped
-    if: '!failure() && !cancelled()'
+    # We don't care whether any 'Test packages against test' jobs
+    # have been skipped. We only care whether 'Commit packages to
+    # test repo' has been skipped, because that indicates a failure
+    # in one of its transitive dependencies (e.g. 'Build Ruby').
+    if: |
+      needs.commit_published_packages_test.result == 'success'
+      && !failure() && !cancelled()
     steps:
       - uses: actions/checkout@v2
         with:
@@ -14624,9 +14417,9 @@ jobs:
     needs:
       - determine_necessary_jobs
       - publish_packages_production
-    # Run even if a dependent job has been skipped
     if: |
       github.ref == 'refs/heads/main'
+      && needs.publish_packages_production.result == 'success'
       && contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [centos-7/2.7/normal];')
       && !failure() && !cancelled()
     steps:
@@ -14661,9 +14454,9 @@ jobs:
     needs:
       - determine_necessary_jobs
       - publish_packages_production
-    # Run even if a dependent job has been skipped
     if: |
       github.ref == 'refs/heads/main'
+      && needs.publish_packages_production.result == 'success'
       && contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [centos-7/2.7/jemalloc];')
       && !failure() && !cancelled()
     steps:
@@ -14698,9 +14491,9 @@ jobs:
     needs:
       - determine_necessary_jobs
       - publish_packages_production
-    # Run even if a dependent job has been skipped
     if: |
       github.ref == 'refs/heads/main'
+      && needs.publish_packages_production.result == 'success'
       && contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [centos-7/2.7/malloctrim];')
       && !failure() && !cancelled()
     steps:
@@ -14735,9 +14528,9 @@ jobs:
     needs:
       - determine_necessary_jobs
       - publish_packages_production
-    # Run even if a dependent job has been skipped
     if: |
       github.ref == 'refs/heads/main'
+      && needs.publish_packages_production.result == 'success'
       && contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [centos-7/2.6/normal];')
       && !failure() && !cancelled()
     steps:
@@ -14772,9 +14565,9 @@ jobs:
     needs:
       - determine_necessary_jobs
       - publish_packages_production
-    # Run even if a dependent job has been skipped
     if: |
       github.ref == 'refs/heads/main'
+      && needs.publish_packages_production.result == 'success'
       && contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [centos-7/2.6/jemalloc];')
       && !failure() && !cancelled()
     steps:
@@ -14809,9 +14602,9 @@ jobs:
     needs:
       - determine_necessary_jobs
       - publish_packages_production
-    # Run even if a dependent job has been skipped
     if: |
       github.ref == 'refs/heads/main'
+      && needs.publish_packages_production.result == 'success'
       && contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [centos-7/2.6/malloctrim];')
       && !failure() && !cancelled()
     steps:
@@ -14846,9 +14639,9 @@ jobs:
     needs:
       - determine_necessary_jobs
       - publish_packages_production
-    # Run even if a dependent job has been skipped
     if: |
       github.ref == 'refs/heads/main'
+      && needs.publish_packages_production.result == 'success'
       && contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [centos-7/2.5/normal];')
       && !failure() && !cancelled()
     steps:
@@ -14883,9 +14676,9 @@ jobs:
     needs:
       - determine_necessary_jobs
       - publish_packages_production
-    # Run even if a dependent job has been skipped
     if: |
       github.ref == 'refs/heads/main'
+      && needs.publish_packages_production.result == 'success'
       && contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [centos-7/2.5/jemalloc];')
       && !failure() && !cancelled()
     steps:
@@ -14920,9 +14713,9 @@ jobs:
     needs:
       - determine_necessary_jobs
       - publish_packages_production
-    # Run even if a dependent job has been skipped
     if: |
       github.ref == 'refs/heads/main'
+      && needs.publish_packages_production.result == 'success'
       && contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [centos-7/2.5/malloctrim];')
       && !failure() && !cancelled()
     steps:
@@ -14957,9 +14750,9 @@ jobs:
     needs:
       - determine_necessary_jobs
       - publish_packages_production
-    # Run even if a dependent job has been skipped
     if: |
       github.ref == 'refs/heads/main'
+      && needs.publish_packages_production.result == 'success'
       && contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [centos-7/2.7.1/normal];')
       && !failure() && !cancelled()
     steps:
@@ -14994,9 +14787,9 @@ jobs:
     needs:
       - determine_necessary_jobs
       - publish_packages_production
-    # Run even if a dependent job has been skipped
     if: |
       github.ref == 'refs/heads/main'
+      && needs.publish_packages_production.result == 'success'
       && contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [centos-7/2.7.1/jemalloc];')
       && !failure() && !cancelled()
     steps:
@@ -15031,9 +14824,9 @@ jobs:
     needs:
       - determine_necessary_jobs
       - publish_packages_production
-    # Run even if a dependent job has been skipped
     if: |
       github.ref == 'refs/heads/main'
+      && needs.publish_packages_production.result == 'success'
       && contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [centos-7/2.7.1/malloctrim];')
       && !failure() && !cancelled()
     steps:
@@ -15068,9 +14861,9 @@ jobs:
     needs:
       - determine_necessary_jobs
       - publish_packages_production
-    # Run even if a dependent job has been skipped
     if: |
       github.ref == 'refs/heads/main'
+      && needs.publish_packages_production.result == 'success'
       && contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [centos-7/2.6.6/normal];')
       && !failure() && !cancelled()
     steps:
@@ -15105,9 +14898,9 @@ jobs:
     needs:
       - determine_necessary_jobs
       - publish_packages_production
-    # Run even if a dependent job has been skipped
     if: |
       github.ref == 'refs/heads/main'
+      && needs.publish_packages_production.result == 'success'
       && contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [centos-7/2.6.6/jemalloc];')
       && !failure() && !cancelled()
     steps:
@@ -15142,9 +14935,9 @@ jobs:
     needs:
       - determine_necessary_jobs
       - publish_packages_production
-    # Run even if a dependent job has been skipped
     if: |
       github.ref == 'refs/heads/main'
+      && needs.publish_packages_production.result == 'success'
       && contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [centos-7/2.6.6/malloctrim];')
       && !failure() && !cancelled()
     steps:
@@ -15179,9 +14972,9 @@ jobs:
     needs:
       - determine_necessary_jobs
       - publish_packages_production
-    # Run even if a dependent job has been skipped
     if: |
       github.ref == 'refs/heads/main'
+      && needs.publish_packages_production.result == 'success'
       && contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [centos-7/2.5.8/normal];')
       && !failure() && !cancelled()
     steps:
@@ -15216,9 +15009,9 @@ jobs:
     needs:
       - determine_necessary_jobs
       - publish_packages_production
-    # Run even if a dependent job has been skipped
     if: |
       github.ref == 'refs/heads/main'
+      && needs.publish_packages_production.result == 'success'
       && contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [centos-7/2.5.8/jemalloc];')
       && !failure() && !cancelled()
     steps:
@@ -15253,9 +15046,9 @@ jobs:
     needs:
       - determine_necessary_jobs
       - publish_packages_production
-    # Run even if a dependent job has been skipped
     if: |
       github.ref == 'refs/heads/main'
+      && needs.publish_packages_production.result == 'success'
       && contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [centos-7/2.5.8/malloctrim];')
       && !failure() && !cancelled()
     steps:
@@ -15291,9 +15084,9 @@ jobs:
     needs:
       - determine_necessary_jobs
       - publish_packages_production
-    # Run even if a dependent job has been skipped
     if: |
       github.ref == 'refs/heads/main'
+      && needs.publish_packages_production.result == 'success'
       && contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [centos-8/2.7/normal];')
       && !failure() && !cancelled()
     steps:
@@ -15328,9 +15121,9 @@ jobs:
     needs:
       - determine_necessary_jobs
       - publish_packages_production
-    # Run even if a dependent job has been skipped
     if: |
       github.ref == 'refs/heads/main'
+      && needs.publish_packages_production.result == 'success'
       && contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [centos-8/2.7/jemalloc];')
       && !failure() && !cancelled()
     steps:
@@ -15365,9 +15158,9 @@ jobs:
     needs:
       - determine_necessary_jobs
       - publish_packages_production
-    # Run even if a dependent job has been skipped
     if: |
       github.ref == 'refs/heads/main'
+      && needs.publish_packages_production.result == 'success'
       && contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [centos-8/2.7/malloctrim];')
       && !failure() && !cancelled()
     steps:
@@ -15402,9 +15195,9 @@ jobs:
     needs:
       - determine_necessary_jobs
       - publish_packages_production
-    # Run even if a dependent job has been skipped
     if: |
       github.ref == 'refs/heads/main'
+      && needs.publish_packages_production.result == 'success'
       && contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [centos-8/2.6/normal];')
       && !failure() && !cancelled()
     steps:
@@ -15439,9 +15232,9 @@ jobs:
     needs:
       - determine_necessary_jobs
       - publish_packages_production
-    # Run even if a dependent job has been skipped
     if: |
       github.ref == 'refs/heads/main'
+      && needs.publish_packages_production.result == 'success'
       && contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [centos-8/2.6/jemalloc];')
       && !failure() && !cancelled()
     steps:
@@ -15476,9 +15269,9 @@ jobs:
     needs:
       - determine_necessary_jobs
       - publish_packages_production
-    # Run even if a dependent job has been skipped
     if: |
       github.ref == 'refs/heads/main'
+      && needs.publish_packages_production.result == 'success'
       && contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [centos-8/2.6/malloctrim];')
       && !failure() && !cancelled()
     steps:
@@ -15513,9 +15306,9 @@ jobs:
     needs:
       - determine_necessary_jobs
       - publish_packages_production
-    # Run even if a dependent job has been skipped
     if: |
       github.ref == 'refs/heads/main'
+      && needs.publish_packages_production.result == 'success'
       && contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [centos-8/2.5/normal];')
       && !failure() && !cancelled()
     steps:
@@ -15550,9 +15343,9 @@ jobs:
     needs:
       - determine_necessary_jobs
       - publish_packages_production
-    # Run even if a dependent job has been skipped
     if: |
       github.ref == 'refs/heads/main'
+      && needs.publish_packages_production.result == 'success'
       && contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [centos-8/2.5/jemalloc];')
       && !failure() && !cancelled()
     steps:
@@ -15587,9 +15380,9 @@ jobs:
     needs:
       - determine_necessary_jobs
       - publish_packages_production
-    # Run even if a dependent job has been skipped
     if: |
       github.ref == 'refs/heads/main'
+      && needs.publish_packages_production.result == 'success'
       && contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [centos-8/2.5/malloctrim];')
       && !failure() && !cancelled()
     steps:
@@ -15624,9 +15417,9 @@ jobs:
     needs:
       - determine_necessary_jobs
       - publish_packages_production
-    # Run even if a dependent job has been skipped
     if: |
       github.ref == 'refs/heads/main'
+      && needs.publish_packages_production.result == 'success'
       && contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [centos-8/2.7.1/normal];')
       && !failure() && !cancelled()
     steps:
@@ -15661,9 +15454,9 @@ jobs:
     needs:
       - determine_necessary_jobs
       - publish_packages_production
-    # Run even if a dependent job has been skipped
     if: |
       github.ref == 'refs/heads/main'
+      && needs.publish_packages_production.result == 'success'
       && contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [centos-8/2.7.1/jemalloc];')
       && !failure() && !cancelled()
     steps:
@@ -15698,9 +15491,9 @@ jobs:
     needs:
       - determine_necessary_jobs
       - publish_packages_production
-    # Run even if a dependent job has been skipped
     if: |
       github.ref == 'refs/heads/main'
+      && needs.publish_packages_production.result == 'success'
       && contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [centos-8/2.7.1/malloctrim];')
       && !failure() && !cancelled()
     steps:
@@ -15735,9 +15528,9 @@ jobs:
     needs:
       - determine_necessary_jobs
       - publish_packages_production
-    # Run even if a dependent job has been skipped
     if: |
       github.ref == 'refs/heads/main'
+      && needs.publish_packages_production.result == 'success'
       && contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [centos-8/2.6.6/normal];')
       && !failure() && !cancelled()
     steps:
@@ -15772,9 +15565,9 @@ jobs:
     needs:
       - determine_necessary_jobs
       - publish_packages_production
-    # Run even if a dependent job has been skipped
     if: |
       github.ref == 'refs/heads/main'
+      && needs.publish_packages_production.result == 'success'
       && contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [centos-8/2.6.6/jemalloc];')
       && !failure() && !cancelled()
     steps:
@@ -15809,9 +15602,9 @@ jobs:
     needs:
       - determine_necessary_jobs
       - publish_packages_production
-    # Run even if a dependent job has been skipped
     if: |
       github.ref == 'refs/heads/main'
+      && needs.publish_packages_production.result == 'success'
       && contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [centos-8/2.6.6/malloctrim];')
       && !failure() && !cancelled()
     steps:
@@ -15846,9 +15639,9 @@ jobs:
     needs:
       - determine_necessary_jobs
       - publish_packages_production
-    # Run even if a dependent job has been skipped
     if: |
       github.ref == 'refs/heads/main'
+      && needs.publish_packages_production.result == 'success'
       && contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [centos-8/2.5.8/normal];')
       && !failure() && !cancelled()
     steps:
@@ -15883,9 +15676,9 @@ jobs:
     needs:
       - determine_necessary_jobs
       - publish_packages_production
-    # Run even if a dependent job has been skipped
     if: |
       github.ref == 'refs/heads/main'
+      && needs.publish_packages_production.result == 'success'
       && contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [centos-8/2.5.8/jemalloc];')
       && !failure() && !cancelled()
     steps:
@@ -15920,9 +15713,9 @@ jobs:
     needs:
       - determine_necessary_jobs
       - publish_packages_production
-    # Run even if a dependent job has been skipped
     if: |
       github.ref == 'refs/heads/main'
+      && needs.publish_packages_production.result == 'success'
       && contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [centos-8/2.5.8/malloctrim];')
       && !failure() && !cancelled()
     steps:
@@ -15958,9 +15751,9 @@ jobs:
     needs:
       - determine_necessary_jobs
       - publish_packages_production
-    # Run even if a dependent job has been skipped
     if: |
       github.ref == 'refs/heads/main'
+      && needs.publish_packages_production.result == 'success'
       && contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [debian-10/2.7/normal];')
       && !failure() && !cancelled()
     steps:
@@ -15995,9 +15788,9 @@ jobs:
     needs:
       - determine_necessary_jobs
       - publish_packages_production
-    # Run even if a dependent job has been skipped
     if: |
       github.ref == 'refs/heads/main'
+      && needs.publish_packages_production.result == 'success'
       && contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [debian-10/2.7/jemalloc];')
       && !failure() && !cancelled()
     steps:
@@ -16032,9 +15825,9 @@ jobs:
     needs:
       - determine_necessary_jobs
       - publish_packages_production
-    # Run even if a dependent job has been skipped
     if: |
       github.ref == 'refs/heads/main'
+      && needs.publish_packages_production.result == 'success'
       && contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [debian-10/2.7/malloctrim];')
       && !failure() && !cancelled()
     steps:
@@ -16069,9 +15862,9 @@ jobs:
     needs:
       - determine_necessary_jobs
       - publish_packages_production
-    # Run even if a dependent job has been skipped
     if: |
       github.ref == 'refs/heads/main'
+      && needs.publish_packages_production.result == 'success'
       && contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [debian-10/2.6/normal];')
       && !failure() && !cancelled()
     steps:
@@ -16106,9 +15899,9 @@ jobs:
     needs:
       - determine_necessary_jobs
       - publish_packages_production
-    # Run even if a dependent job has been skipped
     if: |
       github.ref == 'refs/heads/main'
+      && needs.publish_packages_production.result == 'success'
       && contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [debian-10/2.6/jemalloc];')
       && !failure() && !cancelled()
     steps:
@@ -16143,9 +15936,9 @@ jobs:
     needs:
       - determine_necessary_jobs
       - publish_packages_production
-    # Run even if a dependent job has been skipped
     if: |
       github.ref == 'refs/heads/main'
+      && needs.publish_packages_production.result == 'success'
       && contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [debian-10/2.6/malloctrim];')
       && !failure() && !cancelled()
     steps:
@@ -16180,9 +15973,9 @@ jobs:
     needs:
       - determine_necessary_jobs
       - publish_packages_production
-    # Run even if a dependent job has been skipped
     if: |
       github.ref == 'refs/heads/main'
+      && needs.publish_packages_production.result == 'success'
       && contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [debian-10/2.5/normal];')
       && !failure() && !cancelled()
     steps:
@@ -16217,9 +16010,9 @@ jobs:
     needs:
       - determine_necessary_jobs
       - publish_packages_production
-    # Run even if a dependent job has been skipped
     if: |
       github.ref == 'refs/heads/main'
+      && needs.publish_packages_production.result == 'success'
       && contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [debian-10/2.5/jemalloc];')
       && !failure() && !cancelled()
     steps:
@@ -16254,9 +16047,9 @@ jobs:
     needs:
       - determine_necessary_jobs
       - publish_packages_production
-    # Run even if a dependent job has been skipped
     if: |
       github.ref == 'refs/heads/main'
+      && needs.publish_packages_production.result == 'success'
       && contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [debian-10/2.5/malloctrim];')
       && !failure() && !cancelled()
     steps:
@@ -16291,9 +16084,9 @@ jobs:
     needs:
       - determine_necessary_jobs
       - publish_packages_production
-    # Run even if a dependent job has been skipped
     if: |
       github.ref == 'refs/heads/main'
+      && needs.publish_packages_production.result == 'success'
       && contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [debian-10/2.7.1/normal];')
       && !failure() && !cancelled()
     steps:
@@ -16328,9 +16121,9 @@ jobs:
     needs:
       - determine_necessary_jobs
       - publish_packages_production
-    # Run even if a dependent job has been skipped
     if: |
       github.ref == 'refs/heads/main'
+      && needs.publish_packages_production.result == 'success'
       && contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [debian-10/2.7.1/jemalloc];')
       && !failure() && !cancelled()
     steps:
@@ -16365,9 +16158,9 @@ jobs:
     needs:
       - determine_necessary_jobs
       - publish_packages_production
-    # Run even if a dependent job has been skipped
     if: |
       github.ref == 'refs/heads/main'
+      && needs.publish_packages_production.result == 'success'
       && contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [debian-10/2.7.1/malloctrim];')
       && !failure() && !cancelled()
     steps:
@@ -16402,9 +16195,9 @@ jobs:
     needs:
       - determine_necessary_jobs
       - publish_packages_production
-    # Run even if a dependent job has been skipped
     if: |
       github.ref == 'refs/heads/main'
+      && needs.publish_packages_production.result == 'success'
       && contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [debian-10/2.6.6/normal];')
       && !failure() && !cancelled()
     steps:
@@ -16439,9 +16232,9 @@ jobs:
     needs:
       - determine_necessary_jobs
       - publish_packages_production
-    # Run even if a dependent job has been skipped
     if: |
       github.ref == 'refs/heads/main'
+      && needs.publish_packages_production.result == 'success'
       && contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [debian-10/2.6.6/jemalloc];')
       && !failure() && !cancelled()
     steps:
@@ -16476,9 +16269,9 @@ jobs:
     needs:
       - determine_necessary_jobs
       - publish_packages_production
-    # Run even if a dependent job has been skipped
     if: |
       github.ref == 'refs/heads/main'
+      && needs.publish_packages_production.result == 'success'
       && contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [debian-10/2.6.6/malloctrim];')
       && !failure() && !cancelled()
     steps:
@@ -16513,9 +16306,9 @@ jobs:
     needs:
       - determine_necessary_jobs
       - publish_packages_production
-    # Run even if a dependent job has been skipped
     if: |
       github.ref == 'refs/heads/main'
+      && needs.publish_packages_production.result == 'success'
       && contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [debian-10/2.5.8/normal];')
       && !failure() && !cancelled()
     steps:
@@ -16550,9 +16343,9 @@ jobs:
     needs:
       - determine_necessary_jobs
       - publish_packages_production
-    # Run even if a dependent job has been skipped
     if: |
       github.ref == 'refs/heads/main'
+      && needs.publish_packages_production.result == 'success'
       && contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [debian-10/2.5.8/jemalloc];')
       && !failure() && !cancelled()
     steps:
@@ -16587,9 +16380,9 @@ jobs:
     needs:
       - determine_necessary_jobs
       - publish_packages_production
-    # Run even if a dependent job has been skipped
     if: |
       github.ref == 'refs/heads/main'
+      && needs.publish_packages_production.result == 'success'
       && contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [debian-10/2.5.8/malloctrim];')
       && !failure() && !cancelled()
     steps:
@@ -16625,9 +16418,9 @@ jobs:
     needs:
       - determine_necessary_jobs
       - publish_packages_production
-    # Run even if a dependent job has been skipped
     if: |
       github.ref == 'refs/heads/main'
+      && needs.publish_packages_production.result == 'success'
       && contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [debian-9/2.7/normal];')
       && !failure() && !cancelled()
     steps:
@@ -16662,9 +16455,9 @@ jobs:
     needs:
       - determine_necessary_jobs
       - publish_packages_production
-    # Run even if a dependent job has been skipped
     if: |
       github.ref == 'refs/heads/main'
+      && needs.publish_packages_production.result == 'success'
       && contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [debian-9/2.7/jemalloc];')
       && !failure() && !cancelled()
     steps:
@@ -16699,9 +16492,9 @@ jobs:
     needs:
       - determine_necessary_jobs
       - publish_packages_production
-    # Run even if a dependent job has been skipped
     if: |
       github.ref == 'refs/heads/main'
+      && needs.publish_packages_production.result == 'success'
       && contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [debian-9/2.7/malloctrim];')
       && !failure() && !cancelled()
     steps:
@@ -16736,9 +16529,9 @@ jobs:
     needs:
       - determine_necessary_jobs
       - publish_packages_production
-    # Run even if a dependent job has been skipped
     if: |
       github.ref == 'refs/heads/main'
+      && needs.publish_packages_production.result == 'success'
       && contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [debian-9/2.6/normal];')
       && !failure() && !cancelled()
     steps:
@@ -16773,9 +16566,9 @@ jobs:
     needs:
       - determine_necessary_jobs
       - publish_packages_production
-    # Run even if a dependent job has been skipped
     if: |
       github.ref == 'refs/heads/main'
+      && needs.publish_packages_production.result == 'success'
       && contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [debian-9/2.6/jemalloc];')
       && !failure() && !cancelled()
     steps:
@@ -16810,9 +16603,9 @@ jobs:
     needs:
       - determine_necessary_jobs
       - publish_packages_production
-    # Run even if a dependent job has been skipped
     if: |
       github.ref == 'refs/heads/main'
+      && needs.publish_packages_production.result == 'success'
       && contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [debian-9/2.6/malloctrim];')
       && !failure() && !cancelled()
     steps:
@@ -16847,9 +16640,9 @@ jobs:
     needs:
       - determine_necessary_jobs
       - publish_packages_production
-    # Run even if a dependent job has been skipped
     if: |
       github.ref == 'refs/heads/main'
+      && needs.publish_packages_production.result == 'success'
       && contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [debian-9/2.5/normal];')
       && !failure() && !cancelled()
     steps:
@@ -16884,9 +16677,9 @@ jobs:
     needs:
       - determine_necessary_jobs
       - publish_packages_production
-    # Run even if a dependent job has been skipped
     if: |
       github.ref == 'refs/heads/main'
+      && needs.publish_packages_production.result == 'success'
       && contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [debian-9/2.5/jemalloc];')
       && !failure() && !cancelled()
     steps:
@@ -16921,9 +16714,9 @@ jobs:
     needs:
       - determine_necessary_jobs
       - publish_packages_production
-    # Run even if a dependent job has been skipped
     if: |
       github.ref == 'refs/heads/main'
+      && needs.publish_packages_production.result == 'success'
       && contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [debian-9/2.5/malloctrim];')
       && !failure() && !cancelled()
     steps:
@@ -16958,9 +16751,9 @@ jobs:
     needs:
       - determine_necessary_jobs
       - publish_packages_production
-    # Run even if a dependent job has been skipped
     if: |
       github.ref == 'refs/heads/main'
+      && needs.publish_packages_production.result == 'success'
       && contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [debian-9/2.7.1/normal];')
       && !failure() && !cancelled()
     steps:
@@ -16995,9 +16788,9 @@ jobs:
     needs:
       - determine_necessary_jobs
       - publish_packages_production
-    # Run even if a dependent job has been skipped
     if: |
       github.ref == 'refs/heads/main'
+      && needs.publish_packages_production.result == 'success'
       && contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [debian-9/2.7.1/jemalloc];')
       && !failure() && !cancelled()
     steps:
@@ -17032,9 +16825,9 @@ jobs:
     needs:
       - determine_necessary_jobs
       - publish_packages_production
-    # Run even if a dependent job has been skipped
     if: |
       github.ref == 'refs/heads/main'
+      && needs.publish_packages_production.result == 'success'
       && contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [debian-9/2.7.1/malloctrim];')
       && !failure() && !cancelled()
     steps:
@@ -17069,9 +16862,9 @@ jobs:
     needs:
       - determine_necessary_jobs
       - publish_packages_production
-    # Run even if a dependent job has been skipped
     if: |
       github.ref == 'refs/heads/main'
+      && needs.publish_packages_production.result == 'success'
       && contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [debian-9/2.6.6/normal];')
       && !failure() && !cancelled()
     steps:
@@ -17106,9 +16899,9 @@ jobs:
     needs:
       - determine_necessary_jobs
       - publish_packages_production
-    # Run even if a dependent job has been skipped
     if: |
       github.ref == 'refs/heads/main'
+      && needs.publish_packages_production.result == 'success'
       && contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [debian-9/2.6.6/jemalloc];')
       && !failure() && !cancelled()
     steps:
@@ -17143,9 +16936,9 @@ jobs:
     needs:
       - determine_necessary_jobs
       - publish_packages_production
-    # Run even if a dependent job has been skipped
     if: |
       github.ref == 'refs/heads/main'
+      && needs.publish_packages_production.result == 'success'
       && contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [debian-9/2.6.6/malloctrim];')
       && !failure() && !cancelled()
     steps:
@@ -17180,9 +16973,9 @@ jobs:
     needs:
       - determine_necessary_jobs
       - publish_packages_production
-    # Run even if a dependent job has been skipped
     if: |
       github.ref == 'refs/heads/main'
+      && needs.publish_packages_production.result == 'success'
       && contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [debian-9/2.5.8/normal];')
       && !failure() && !cancelled()
     steps:
@@ -17217,9 +17010,9 @@ jobs:
     needs:
       - determine_necessary_jobs
       - publish_packages_production
-    # Run even if a dependent job has been skipped
     if: |
       github.ref == 'refs/heads/main'
+      && needs.publish_packages_production.result == 'success'
       && contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [debian-9/2.5.8/jemalloc];')
       && !failure() && !cancelled()
     steps:
@@ -17254,9 +17047,9 @@ jobs:
     needs:
       - determine_necessary_jobs
       - publish_packages_production
-    # Run even if a dependent job has been skipped
     if: |
       github.ref == 'refs/heads/main'
+      && needs.publish_packages_production.result == 'success'
       && contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [debian-9/2.5.8/malloctrim];')
       && !failure() && !cancelled()
     steps:
@@ -17292,9 +17085,9 @@ jobs:
     needs:
       - determine_necessary_jobs
       - publish_packages_production
-    # Run even if a dependent job has been skipped
     if: |
       github.ref == 'refs/heads/main'
+      && needs.publish_packages_production.result == 'success'
       && contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [ubuntu-18.04/2.7/normal];')
       && !failure() && !cancelled()
     steps:
@@ -17329,9 +17122,9 @@ jobs:
     needs:
       - determine_necessary_jobs
       - publish_packages_production
-    # Run even if a dependent job has been skipped
     if: |
       github.ref == 'refs/heads/main'
+      && needs.publish_packages_production.result == 'success'
       && contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [ubuntu-18.04/2.7/jemalloc];')
       && !failure() && !cancelled()
     steps:
@@ -17366,9 +17159,9 @@ jobs:
     needs:
       - determine_necessary_jobs
       - publish_packages_production
-    # Run even if a dependent job has been skipped
     if: |
       github.ref == 'refs/heads/main'
+      && needs.publish_packages_production.result == 'success'
       && contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [ubuntu-18.04/2.7/malloctrim];')
       && !failure() && !cancelled()
     steps:
@@ -17403,9 +17196,9 @@ jobs:
     needs:
       - determine_necessary_jobs
       - publish_packages_production
-    # Run even if a dependent job has been skipped
     if: |
       github.ref == 'refs/heads/main'
+      && needs.publish_packages_production.result == 'success'
       && contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [ubuntu-18.04/2.6/normal];')
       && !failure() && !cancelled()
     steps:
@@ -17440,9 +17233,9 @@ jobs:
     needs:
       - determine_necessary_jobs
       - publish_packages_production
-    # Run even if a dependent job has been skipped
     if: |
       github.ref == 'refs/heads/main'
+      && needs.publish_packages_production.result == 'success'
       && contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [ubuntu-18.04/2.6/jemalloc];')
       && !failure() && !cancelled()
     steps:
@@ -17477,9 +17270,9 @@ jobs:
     needs:
       - determine_necessary_jobs
       - publish_packages_production
-    # Run even if a dependent job has been skipped
     if: |
       github.ref == 'refs/heads/main'
+      && needs.publish_packages_production.result == 'success'
       && contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [ubuntu-18.04/2.6/malloctrim];')
       && !failure() && !cancelled()
     steps:
@@ -17514,9 +17307,9 @@ jobs:
     needs:
       - determine_necessary_jobs
       - publish_packages_production
-    # Run even if a dependent job has been skipped
     if: |
       github.ref == 'refs/heads/main'
+      && needs.publish_packages_production.result == 'success'
       && contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [ubuntu-18.04/2.5/normal];')
       && !failure() && !cancelled()
     steps:
@@ -17551,9 +17344,9 @@ jobs:
     needs:
       - determine_necessary_jobs
       - publish_packages_production
-    # Run even if a dependent job has been skipped
     if: |
       github.ref == 'refs/heads/main'
+      && needs.publish_packages_production.result == 'success'
       && contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [ubuntu-18.04/2.5/jemalloc];')
       && !failure() && !cancelled()
     steps:
@@ -17588,9 +17381,9 @@ jobs:
     needs:
       - determine_necessary_jobs
       - publish_packages_production
-    # Run even if a dependent job has been skipped
     if: |
       github.ref == 'refs/heads/main'
+      && needs.publish_packages_production.result == 'success'
       && contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [ubuntu-18.04/2.5/malloctrim];')
       && !failure() && !cancelled()
     steps:
@@ -17625,9 +17418,9 @@ jobs:
     needs:
       - determine_necessary_jobs
       - publish_packages_production
-    # Run even if a dependent job has been skipped
     if: |
       github.ref == 'refs/heads/main'
+      && needs.publish_packages_production.result == 'success'
       && contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [ubuntu-18.04/2.7.1/normal];')
       && !failure() && !cancelled()
     steps:
@@ -17662,9 +17455,9 @@ jobs:
     needs:
       - determine_necessary_jobs
       - publish_packages_production
-    # Run even if a dependent job has been skipped
     if: |
       github.ref == 'refs/heads/main'
+      && needs.publish_packages_production.result == 'success'
       && contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [ubuntu-18.04/2.7.1/jemalloc];')
       && !failure() && !cancelled()
     steps:
@@ -17699,9 +17492,9 @@ jobs:
     needs:
       - determine_necessary_jobs
       - publish_packages_production
-    # Run even if a dependent job has been skipped
     if: |
       github.ref == 'refs/heads/main'
+      && needs.publish_packages_production.result == 'success'
       && contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [ubuntu-18.04/2.7.1/malloctrim];')
       && !failure() && !cancelled()
     steps:
@@ -17736,9 +17529,9 @@ jobs:
     needs:
       - determine_necessary_jobs
       - publish_packages_production
-    # Run even if a dependent job has been skipped
     if: |
       github.ref == 'refs/heads/main'
+      && needs.publish_packages_production.result == 'success'
       && contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [ubuntu-18.04/2.6.6/normal];')
       && !failure() && !cancelled()
     steps:
@@ -17773,9 +17566,9 @@ jobs:
     needs:
       - determine_necessary_jobs
       - publish_packages_production
-    # Run even if a dependent job has been skipped
     if: |
       github.ref == 'refs/heads/main'
+      && needs.publish_packages_production.result == 'success'
       && contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [ubuntu-18.04/2.6.6/jemalloc];')
       && !failure() && !cancelled()
     steps:
@@ -17810,9 +17603,9 @@ jobs:
     needs:
       - determine_necessary_jobs
       - publish_packages_production
-    # Run even if a dependent job has been skipped
     if: |
       github.ref == 'refs/heads/main'
+      && needs.publish_packages_production.result == 'success'
       && contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [ubuntu-18.04/2.6.6/malloctrim];')
       && !failure() && !cancelled()
     steps:
@@ -17847,9 +17640,9 @@ jobs:
     needs:
       - determine_necessary_jobs
       - publish_packages_production
-    # Run even if a dependent job has been skipped
     if: |
       github.ref == 'refs/heads/main'
+      && needs.publish_packages_production.result == 'success'
       && contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [ubuntu-18.04/2.5.8/normal];')
       && !failure() && !cancelled()
     steps:
@@ -17884,9 +17677,9 @@ jobs:
     needs:
       - determine_necessary_jobs
       - publish_packages_production
-    # Run even if a dependent job has been skipped
     if: |
       github.ref == 'refs/heads/main'
+      && needs.publish_packages_production.result == 'success'
       && contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [ubuntu-18.04/2.5.8/jemalloc];')
       && !failure() && !cancelled()
     steps:
@@ -17921,9 +17714,9 @@ jobs:
     needs:
       - determine_necessary_jobs
       - publish_packages_production
-    # Run even if a dependent job has been skipped
     if: |
       github.ref == 'refs/heads/main'
+      && needs.publish_packages_production.result == 'success'
       && contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [ubuntu-18.04/2.5.8/malloctrim];')
       && !failure() && !cancelled()
     steps:
@@ -17959,9 +17752,9 @@ jobs:
     needs:
       - determine_necessary_jobs
       - publish_packages_production
-    # Run even if a dependent job has been skipped
     if: |
       github.ref == 'refs/heads/main'
+      && needs.publish_packages_production.result == 'success'
       && contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [ubuntu-20.04/2.7/normal];')
       && !failure() && !cancelled()
     steps:
@@ -17996,9 +17789,9 @@ jobs:
     needs:
       - determine_necessary_jobs
       - publish_packages_production
-    # Run even if a dependent job has been skipped
     if: |
       github.ref == 'refs/heads/main'
+      && needs.publish_packages_production.result == 'success'
       && contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [ubuntu-20.04/2.7/jemalloc];')
       && !failure() && !cancelled()
     steps:
@@ -18033,9 +17826,9 @@ jobs:
     needs:
       - determine_necessary_jobs
       - publish_packages_production
-    # Run even if a dependent job has been skipped
     if: |
       github.ref == 'refs/heads/main'
+      && needs.publish_packages_production.result == 'success'
       && contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [ubuntu-20.04/2.7/malloctrim];')
       && !failure() && !cancelled()
     steps:
@@ -18070,9 +17863,9 @@ jobs:
     needs:
       - determine_necessary_jobs
       - publish_packages_production
-    # Run even if a dependent job has been skipped
     if: |
       github.ref == 'refs/heads/main'
+      && needs.publish_packages_production.result == 'success'
       && contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [ubuntu-20.04/2.6/normal];')
       && !failure() && !cancelled()
     steps:
@@ -18107,9 +17900,9 @@ jobs:
     needs:
       - determine_necessary_jobs
       - publish_packages_production
-    # Run even if a dependent job has been skipped
     if: |
       github.ref == 'refs/heads/main'
+      && needs.publish_packages_production.result == 'success'
       && contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [ubuntu-20.04/2.6/jemalloc];')
       && !failure() && !cancelled()
     steps:
@@ -18144,9 +17937,9 @@ jobs:
     needs:
       - determine_necessary_jobs
       - publish_packages_production
-    # Run even if a dependent job has been skipped
     if: |
       github.ref == 'refs/heads/main'
+      && needs.publish_packages_production.result == 'success'
       && contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [ubuntu-20.04/2.6/malloctrim];')
       && !failure() && !cancelled()
     steps:
@@ -18181,9 +17974,9 @@ jobs:
     needs:
       - determine_necessary_jobs
       - publish_packages_production
-    # Run even if a dependent job has been skipped
     if: |
       github.ref == 'refs/heads/main'
+      && needs.publish_packages_production.result == 'success'
       && contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [ubuntu-20.04/2.5/normal];')
       && !failure() && !cancelled()
     steps:
@@ -18218,9 +18011,9 @@ jobs:
     needs:
       - determine_necessary_jobs
       - publish_packages_production
-    # Run even if a dependent job has been skipped
     if: |
       github.ref == 'refs/heads/main'
+      && needs.publish_packages_production.result == 'success'
       && contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [ubuntu-20.04/2.5/jemalloc];')
       && !failure() && !cancelled()
     steps:
@@ -18255,9 +18048,9 @@ jobs:
     needs:
       - determine_necessary_jobs
       - publish_packages_production
-    # Run even if a dependent job has been skipped
     if: |
       github.ref == 'refs/heads/main'
+      && needs.publish_packages_production.result == 'success'
       && contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [ubuntu-20.04/2.5/malloctrim];')
       && !failure() && !cancelled()
     steps:
@@ -18292,9 +18085,9 @@ jobs:
     needs:
       - determine_necessary_jobs
       - publish_packages_production
-    # Run even if a dependent job has been skipped
     if: |
       github.ref == 'refs/heads/main'
+      && needs.publish_packages_production.result == 'success'
       && contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [ubuntu-20.04/2.7.1/normal];')
       && !failure() && !cancelled()
     steps:
@@ -18329,9 +18122,9 @@ jobs:
     needs:
       - determine_necessary_jobs
       - publish_packages_production
-    # Run even if a dependent job has been skipped
     if: |
       github.ref == 'refs/heads/main'
+      && needs.publish_packages_production.result == 'success'
       && contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [ubuntu-20.04/2.7.1/jemalloc];')
       && !failure() && !cancelled()
     steps:
@@ -18366,9 +18159,9 @@ jobs:
     needs:
       - determine_necessary_jobs
       - publish_packages_production
-    # Run even if a dependent job has been skipped
     if: |
       github.ref == 'refs/heads/main'
+      && needs.publish_packages_production.result == 'success'
       && contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [ubuntu-20.04/2.7.1/malloctrim];')
       && !failure() && !cancelled()
     steps:
@@ -18403,9 +18196,9 @@ jobs:
     needs:
       - determine_necessary_jobs
       - publish_packages_production
-    # Run even if a dependent job has been skipped
     if: |
       github.ref == 'refs/heads/main'
+      && needs.publish_packages_production.result == 'success'
       && contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [ubuntu-20.04/2.6.6/normal];')
       && !failure() && !cancelled()
     steps:
@@ -18440,9 +18233,9 @@ jobs:
     needs:
       - determine_necessary_jobs
       - publish_packages_production
-    # Run even if a dependent job has been skipped
     if: |
       github.ref == 'refs/heads/main'
+      && needs.publish_packages_production.result == 'success'
       && contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [ubuntu-20.04/2.6.6/jemalloc];')
       && !failure() && !cancelled()
     steps:
@@ -18477,9 +18270,9 @@ jobs:
     needs:
       - determine_necessary_jobs
       - publish_packages_production
-    # Run even if a dependent job has been skipped
     if: |
       github.ref == 'refs/heads/main'
+      && needs.publish_packages_production.result == 'success'
       && contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [ubuntu-20.04/2.6.6/malloctrim];')
       && !failure() && !cancelled()
     steps:
@@ -18514,9 +18307,9 @@ jobs:
     needs:
       - determine_necessary_jobs
       - publish_packages_production
-    # Run even if a dependent job has been skipped
     if: |
       github.ref == 'refs/heads/main'
+      && needs.publish_packages_production.result == 'success'
       && contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [ubuntu-20.04/2.5.8/normal];')
       && !failure() && !cancelled()
     steps:
@@ -18551,9 +18344,9 @@ jobs:
     needs:
       - determine_necessary_jobs
       - publish_packages_production
-    # Run even if a dependent job has been skipped
     if: |
       github.ref == 'refs/heads/main'
+      && needs.publish_packages_production.result == 'success'
       && contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [ubuntu-20.04/2.5.8/jemalloc];')
       && !failure() && !cancelled()
     steps:
@@ -18588,9 +18381,9 @@ jobs:
     needs:
       - determine_necessary_jobs
       - publish_packages_production
-    # Run even if a dependent job has been skipped
     if: |
       github.ref == 'refs/heads/main'
+      && needs.publish_packages_production.result == 'success'
       && contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [ubuntu-20.04/2.5.8/malloctrim];')
       && !failure() && !cancelled()
     steps:
@@ -18627,6 +18420,7 @@ jobs:
     name: Create Git tag
     runs-on: ubuntu-20.04
     needs:
+      - publish_packages_production
       - 'test_packages_against_production_centos_7_2_7_normal'
       - 'test_packages_against_production_centos_7_2_7_jemalloc'
       - 'test_packages_against_production_centos_7_2_7_malloctrim'
@@ -18735,8 +18529,14 @@ jobs:
       - 'test_packages_against_production_ubuntu_20_04_2_5_8_normal'
       - 'test_packages_against_production_ubuntu_20_04_2_5_8_jemalloc'
       - 'test_packages_against_production_ubuntu_20_04_2_5_8_malloctrim'
-    # Run even if a dependent job has been skipped
-    if: '!failure() && !cancelled()'
+    # We don't care whether any 'Test packages against production' jobs
+    # have been skipped. We only care whether 'Publish packages to
+    # production' has been skipped, because that indicates a failure
+    # in one of its transitive dependencies (e.g. 'Test packages against test'
+    # or 'Build Ruby').
+    if: |
+      needs.publish_packages_production.result == 'success'
+      && !failure() && !cancelled()
     steps:
       - uses: actions/checkout@v2
         with:
