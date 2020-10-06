@@ -6,6 +6,7 @@ ROOTDIR=$(cd "$SELFDIR/../../.." && pwd)
 # shellcheck source=../../../lib/library.sh
 source "$ROOTDIR/lib/library.sh"
 
+require_envvar GITHUB_ENV
 require_envvar LATEST_RELEASE_TAG
 
 
@@ -41,5 +42,5 @@ else
 fi
 
 echo
-echo "::set-env name=NEXT_RELEASE_VERSION::${VERSION_COMPONENTS[0]}.${VERSION_COMPONENTS[1]}"
+echo "NEXT_RELEASE_VERSION=${VERSION_COMPONENTS[0]}.${VERSION_COMPONENTS[1]}" >> "$GITHUB_ENV"
 echo "Next epic version: ${VERSION_COMPONENTS[0]}.${VERSION_COMPONENTS[1]}"
