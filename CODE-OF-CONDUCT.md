@@ -59,7 +59,12 @@ representative at an online or offline event.
 ## Enforcement
 
 Instances of abusive, harassing, or otherwise unacceptable behavior may be
-reported by contacting the project team at open-source@fullstaq.com.
+reported by contacting the project team at open-source@fullstaq.com (@fullstaq-labs/open-source).
+
+If you'd like to contact individual maintainers please contact one of the following:
+
+* Daniel Paulus - @PaulusTM - d.paulus@gmail.com
+* Hongli Lai - @FooBarWidget - honglilai@gmail.com
 
 All complaints will be reviewed and investigated promptly and fairly.
 
