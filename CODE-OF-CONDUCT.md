@@ -63,8 +63,8 @@ reported by contacting the project team at open-source@fullstaq.com ([@fullstaq-
 
 If you'd like to contact individual maintainers please contact one of the following:
 
-* Daniel Paulus - [@PaulusTM](/PaulusTM) - d.paulus@gmail.com
-* Hongli Lai - [@FooBarWidget](/FooBarWidget) - honglilai@gmail.com
+* Daniel Paulus - [@PaulusTM](https://github.com/PaulusTM) - d.paulus@gmail.com
+* Hongli Lai - [@FooBarWidget](https://github.com/FooBarWidget) - honglilai@gmail.com
 
 All complaints will be reviewed and investigated promptly and fairly.
 
