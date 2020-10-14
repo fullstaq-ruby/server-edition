@@ -1,0 +1,10 @@
+name: 'CI/CD: publish & test against production repos'
+
+on:
+  workflow_dispatch: {}
+
+jobs:
+  dummy:
+    runs-on: ubuntu-20.04
+    steps:
+      - run: 'true'

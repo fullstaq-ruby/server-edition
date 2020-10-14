@@ -1,0 +1,10 @@
+name: 'CI/CD: build packages'
+
+on:
+  workflow_dispatch: {}
+
+jobs:
+  dummy:
+    runs-on: ubuntu-20.04
+    steps:
+      - run: 'true'
