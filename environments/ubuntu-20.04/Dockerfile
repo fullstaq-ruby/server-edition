@@ -1,5 +1,9 @@
 FROM ubuntu:20.04
 
+# Used to link container image to the repo: 
+# https://docs.github.com/en/free-pro-team@latest/packages/managing-container-images-with-github-container-registry/connecting-a-repository-to-a-container-image#connecting-a-repository-to-a-container-image-on-the-command-line
+LABEL org.opencontainers.image.source https://github.com/fullstaq-labs/fullstaq-ruby-server-edition
+
 # If you make a change and you want to force users to re-pull the image
 # (e.g. when your change adds a feature that our scripts rely on, or is
 # breaking), then bump the version number in the `image_tag` file.
