@@ -43,8 +43,8 @@ The more "stuff" we support, the more quickly the number rises! Clearly, some so
 
 In our codebase, workflow management is separated from step execution. This means that the build scripts for the individual steps (e.g. `build-ruby`) know nothing about config.yml. These scripts accept parameters, and it is up to a higher workflow management system to pass the right parameters.
 
-The workflow management system is implemented in Github Workflow, in `.github/workflows/ci-cd.yml.erb`. This is an ERB template that, given the parameters in `config.yml`, outputs a Github Workflow YAML file that roughly implements the build pipeline described in [Build steps](build-steps.md):
+The workflow management system is implemented in Github Workflow, in `.github/workflows/ci-cd-*.yml.erb`. These are ERB templates that, given the parameters in `config.yml`, outputs a bunch of Github Workflow YAML files that roughly implements the build pipeline described in [Build steps](build-steps.md):
 
 ![](build-steps.png)
 
-The ERB template is run by `./internal-scripts/generate-ci-cd.rb`. It is recommended that you [setup a Git hook](dev-environment-setup.md), which runs that script automatically before every commit, so that the Github workflow file gets properly updated whenever you either modify the ERB template, or config.yml.
+The ERB templates are run by `./internal-scripts/generate-ci-cd.rb`. It is recommended that you [setup a Git hook](dev-environment-setup.md), which runs that script automatically before every commit, so that the Github workflow file gets properly updated whenever you either modify the ERB template, or config.yml.
