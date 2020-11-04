@@ -42,6 +42,7 @@
 ## Organizational (for team members)
 
  * [Way of working](way-of-working.md)
+ * [Responsibilities & expectations](responsibilities-expectations.md)
 
 ## References & recommended reading
 

@@ -16,3 +16,20 @@ To learn how the Fullstaq Ruby codebase works and how to develop, please read ou
 ## Stuck? Need help?
 
 Please post something on our [discussion forum](https://github.com/fullstaq-labs/fullstaq-ruby-server-edition/discussions).
+
+## Joining the team
+
+Anyone who wishes to contribute regularly to Fullstaq Ruby Server Edition, or who wishes to assume responsibility for the health and progress of this project, is welcome to join the team!
+
+To learn more about what it means to be a team member, see [Responsibilities & expectations](dev-handbook/responsibilities-expectations.md).
+
+### Trust
+
+Because joining the team means gaining access to protected resources, trust is essential. We judge trustworthiness through the following manners:
+
+ * Having an established relationship with either the Fullstaq Ruby project, or the wider Ruby community. The longer the better.
+ * A contractual relationship (such as employment) with [Fullstaq B.V.](https://fullstaq.com/). Contractual relationships carry legal weight and provide greater likelihood of a stable trust relationship; at a minimum they establish strong legal accountability.
+
+### Apply
+
+If you wish to join, please [apply by submitting an issue](https://github.com/fullstaq-labs/fullstaq-ruby-server-edition/issues/new?template=apply_join_team.md).
