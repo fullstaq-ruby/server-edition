@@ -54,6 +54,7 @@ You can think of Fullstaq Ruby as a competitor of `apt/yum install ruby`, `rbenv
    - [Will Fullstaq Ruby become paid in the future?](#will-fullstaq-ruby-become-paid-in-the-future)
    - [I am wary of vendor lock-in or that I will become dependent on a specific party for supplying packages. What is Fullstaq Ruby's take on this?](#i-am-wary-of-vendor-lock-in-or-that-i-will-become-dependent-on-a-specific-party-for-supplying-packages-what-is-fullstaq-rubys-take-on-this)
  * [Contributing](#contributing)
+ * [Community — getting help, reporting issues, proposing ideas](#community--getting-help-reporting-issues-proposing-ideas)
 
 
 ---
@@ -794,3 +795,10 @@ Because Fullstaq Ruby is still a work-in-progress, we don't have documentation y
 ## Contributing
 
 If you're interested in contributing to Fullstaq Ruby, please check out our [contribution guide](CONTRIBUTING.md) to get started.
+
+## Community — getting help, reporting issues, proposing ideas
+
+To engage with our community, please visit:
+
+ * [The issue tracker](https://github.com/fullstaq-labs/fullstaq-ruby-server-edition/issues)
+ * [The discussion forum](https://github.com/fullstaq-labs/fullstaq-ruby-server-edition/discussions)

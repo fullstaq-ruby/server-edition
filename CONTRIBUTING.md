@@ -15,4 +15,4 @@ To learn how the Fullstaq Ruby codebase works and how to develop, please read ou
 
 ## Stuck? Need help?
 
-Open a [Question or discussion](https://github.com/fullstaq-labs/fullstaq-ruby-server-edition/issues/new?assignees=&labels=question&template=question_discussion.md) issue.
+Please post something on our [discussion forum](https://github.com/fullstaq-labs/fullstaq-ruby-server-edition/discussions).
