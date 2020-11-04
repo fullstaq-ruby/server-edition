@@ -376,27 +376,27 @@ Fullstaq Ruby, ensures that the right version of Jemalloc is used. We are a bunc
 
 ### RHEL/CentOS
 
- * Supported RHEL/CentOS versions: 7, 8
+ * Supported RHEL/CentOS versions: 8, 7
  * Supported architectures: x86-64
 
 Add the Fullstaq Ruby repository by creating `/etc/yum.repos.d/fullstaq-ruby.repo`. Pick one of the following:
-
-CentOS 7:
-
-    [fullstaq-ruby]
-    name=fullstaq-ruby
-    baseurl=https://yum.fullstaqruby.org/centos-7/$basearch
-    gpgcheck=0
-    repo_gpgcheck=1
-    enabled=1
-    gpgkey=https://raw.githubusercontent.com/fullstaq-labs/fullstaq-ruby-server-edition/main/fullstaq-ruby.asc
-    sslverify=1
 
 CentOS 8:
 
     [fullstaq-ruby]
     name=fullstaq-ruby
     baseurl=https://yum.fullstaqruby.org/centos-8/$basearch
+    gpgcheck=0
+    repo_gpgcheck=1
+    enabled=1
+    gpgkey=https://raw.githubusercontent.com/fullstaq-labs/fullstaq-ruby-server-edition/main/fullstaq-ruby.asc
+    sslverify=1
+
+CentOS 7:
+
+    [fullstaq-ruby]
+    name=fullstaq-ruby
+    baseurl=https://yum.fullstaqruby.org/centos-7/$basearch
     gpgcheck=0
     repo_gpgcheck=1
     enabled=1
@@ -451,8 +451,8 @@ sudo yum install fullstaq-ruby-2.6.3
 
 ### Debian/Ubuntu
 
- * Supported Debian versions: 9 *(stretch)*, 10 *(buster)*
- * Supported Ubuntu versions: 18.04, 20.04
+ * Supported Debian versions: 10 *(buster)*, 9 *(stretch)*
+ * Supported Ubuntu versions: 20.04, 18.04
  * Supported architectures: x86-64
 
 First, make sure your package manager supports HTTPS and that the necessary crypto tools are installed:
@@ -470,11 +470,11 @@ deb https://apt.fullstaqruby.org ubuntu-20.04 main
 # Ubuntu 18.04
 deb https://apt.fullstaqruby.org ubuntu-18.04 main
 
-# Debian 9
-deb https://apt.fullstaqruby.org debian-9 main
-
 # Debian 10
 deb https://apt.fullstaqruby.org debian-10 main
+
+# Debian 9
+deb https://apt.fullstaqruby.org debian-9 main
 ~~~
 
 Then run:
