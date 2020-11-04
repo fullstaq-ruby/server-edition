@@ -1,17 +1,29 @@
 # Contribution guide
 
-We're thrilled that you'd like to contribute to us! Your help is essential to [keeping Fullstaq Ruby great](https://www.joyfulbikeshedding.com/blog/2020-05-15-why-fullstaq-ruby.html).
+> You are reading the contribution guide for the **Server Edition**. Interested in contributing to other parts of Fullstaq Ruby? Check the [Fullstaq Ruby Umbrella contribution guide](https://github.com/fullstaq-labs/fullstaq-ruby-umbrella/blob/main/CONTRIBUTING.md).
 
-## What to work on
+Thanks for considering to contribute! 😀 Your help is essential to [keeping Fullstaq Ruby great](https://www.joyfulbikeshedding.com/blog/2020-05-15-why-fullstaq-ruby.html). We welcome all contributions, no matter who you are, and no matter whether it's big or small (see also our [Code of Conduct](CODE_OF_CONDUCT.md)). With this guide, we aim to make contributing as clear and easy as possible.
 
-Please have a look at our [issue trackers](https://github.com/fullstaq-labs/fullstaq-ruby-umbrella/blob/main/ISSUE_TRACKERS.md).
+## What counts as a contribution?
 
- * Looking for something easy? Have a look at issues labeled "good first issue".
- * In for a challenge? Have a look at issues labeled "help wanted".
+Anything that helps improving the project, whether directly (through a pull request) or indirectly (by engaging with us) counts as a contribution. Here's a non-exhaustive list:
+
+ * Reporting an issue.
+ * Triaging issues: determining whether an issue report is clear enough, whether the issue still persists, and whether it is reproducible.
+ * Updating documentation.
+ * Proposing an improvement.
+ * Sending a pull request.
+
+## Not sure how to get started?
+
+Have a look at our [issue tracker](https://github.com/fullstaq-labs/fullstaq-ruby-server-edition/issues). Issues with the following labels are good starting points:
+
+ * "good first issue" if you're looking for something easy.
+ * "help wanted" if you're in for a challenge, or if you want to help with a high-impact issue.
 
 ## Development handbook
 
-To learn how the Fullstaq Ruby codebase works and how to develop, please read our [development handbook](dev-handbook/README.md).
+To learn how the Fullstaq Ruby Server Edition codebase works and how to develop it, please read our [development handbook](dev-handbook/README.md).
 
 ## Stuck? Need help?
 
