@@ -25,7 +25,7 @@ When triggering the next workflow, we pass along the "Main" workflow's CI run nu
 
 ## Caveats
 
-## Additional checks & correlating workflow runs
+### Additional checks & correlating workflow runs
 
 We want _all_ workflows to show up in a commit's or a pull request's list of checks. This doesn't happen naturally: only the "Main" workflow is triggered by a Git push, and all other workflows are triggered via the API, so Github normally has no way of knowing that all the other workflows are related.
 
