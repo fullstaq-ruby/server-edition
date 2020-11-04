@@ -39,6 +39,10 @@
  * [Adding support for a new distribution](add-new-distro.md)
  * [Adding support for a new Ruby version](add-new-ruby-version.md)
 
+## Organizational (for team members)
+
+ * [Way of working](way-of-working.md)
+
 ## References & recommended reading
 
  * [How Debian packaging works](https://www.joyfulbikeshedding.com/blog/2020-08-03-how-debian-packaging-works.html)
