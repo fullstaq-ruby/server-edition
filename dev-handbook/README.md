@@ -45,6 +45,8 @@
  * [Responsibilities & expectations](responsibilities-expectations.md)
  * [Members](members.md)
  * [Mentorship](mentorship.md)
+ * [Onboarding](onboarding.md)
+ * [Offboarding](offboarding.md)
 
 ## References & recommended reading
 
