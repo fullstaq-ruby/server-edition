@@ -43,6 +43,8 @@
 
  * [Way of working](way-of-working.md)
  * [Responsibilities & expectations](responsibilities-expectations.md)
+ * [Members](members.md)
+ * [Mentorship](mentorship.md)
 
 ## References & recommended reading
 
