@@ -13,6 +13,7 @@ Anything that helps improving the project, whether directly (through a pull requ
  * Updating documentation.
  * Proposing an improvement.
  * Sending a pull request.
+ * Reviewing someone else's pull request.
 
 ## Not sure how to get started?
 
