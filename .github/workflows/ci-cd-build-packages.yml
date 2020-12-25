@@ -531,6 +531,266 @@ jobs:
 
 
 
+  build_ruby_centos_7-3_0-normal:
+    name: 'Build Ruby [centos-7/3.0/normal]'
+    runs-on: ubuntu-20.04
+    needs:
+      - determine_necessary_jobs
+      - build_jemalloc_centos_7
+    # Run even if a dependent job has been skipped
+    if: |
+      contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Ruby [centos-7/3.0/normal];')
+      && !failure() && !cancelled()
+    steps:
+      - name: Check whether 'Build Jemalloc [centos-7]' did not fail
+        run: 'false'
+        if: |
+          needs.build_jemalloc_centos_7.result == 'skipped'
+          && contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Jemalloc [centos-7];')
+
+      - uses: actions/checkout@v2
+      - name: Login to Google Cloud
+        uses: ./.github/actions/gcloud-login
+        with:
+          private_key: ${{ secrets.GCLOUD_KEY }}
+      - name: Fetch Ruby source
+        run: ./internal-scripts/ci-cd/download-artifact.sh
+        env:
+          ARTIFACT_NAME: ruby-src-3.0.0
+          ARTIFACT_PATH: .
+
+      - name: Download Docker image necessary for building
+        run: ./internal-scripts/ci-cd/download-artifact.sh
+        if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Docker image centos-7;')
+        env:
+          ARTIFACT_NAME: 'docker-image-centos-7'
+          ARTIFACT_PATH: .
+      - name: Load Docker image necessary for building
+        run: ./internal-scripts/ci-cd/load-docker-image.sh
+        if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Docker image centos-7;')
+        env:
+          TARBALL: image.tar.zst
+
+      - name: Download Docker image necessary for packaging
+        run: ./internal-scripts/ci-cd/download-artifact.sh
+        if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Docker image utility;')
+        env:
+          ARTIFACT_NAME: 'docker-image-centos-7'
+          ARTIFACT_PATH: .
+      - name: Load Docker image necessary for packaging
+        run: ./internal-scripts/ci-cd/load-docker-image.sh
+        if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Docker image utility;')
+        env:
+          TARBALL: image.tar.zst
+
+      
+
+      - name: Reset & prepare workspace
+        run: mkdir cache-normal
+      - name: "[normal] Fetch cache"
+        uses: actions/cache@v2
+        with:
+          path: cache-normal
+          key: v2-ruby-bin-3.0-centos-7-normal
+
+      - name: Build binaries
+        run: ./internal-scripts/ci-cd/build-ruby-packages/build-binaries.sh
+        env:
+          ENVIRONMENT_NAME: "centos-7"
+          VARIANT_NAME: "normal"
+          RUBY_PACKAGE_VERSION_ID: "3.0"
+
+      - name: Build package
+        run: ./internal-scripts/ci-cd/build-ruby-packages/build-package.sh
+        env:
+          DISTRIBUTION_NAME: "centos-7"
+          VARIANT_NAME: "normal"
+          VARIANT_PACKAGE_SUFFIX: ""
+          PACKAGE_FORMAT: "RPM"
+          RUBY_PACKAGE_VERSION_ID: "3.0"
+          RUBY_PACKAGE_REVISION: "1"
+
+      - name: Archive package artifact to Google Cloud
+        run: ./internal-scripts/ci-cd/upload-artifact.sh
+        env:
+          ARTIFACT_NAME: "ruby-pkg_3.0_centos-7_normal"
+          ARTIFACT_PATH: output-normal
+
+  build_ruby_centos_7-3_0-jemalloc:
+    name: 'Build Ruby [centos-7/3.0/jemalloc]'
+    runs-on: ubuntu-20.04
+    needs:
+      - determine_necessary_jobs
+      - build_jemalloc_centos_7
+    # Run even if a dependent job has been skipped
+    if: |
+      contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Ruby [centos-7/3.0/jemalloc];')
+      && !failure() && !cancelled()
+    steps:
+      - name: Check whether 'Build Jemalloc [centos-7]' did not fail
+        run: 'false'
+        if: |
+          needs.build_jemalloc_centos_7.result == 'skipped'
+          && contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Jemalloc [centos-7];')
+
+      - uses: actions/checkout@v2
+      - name: Login to Google Cloud
+        uses: ./.github/actions/gcloud-login
+        with:
+          private_key: ${{ secrets.GCLOUD_KEY }}
+      - name: Fetch Ruby source
+        run: ./internal-scripts/ci-cd/download-artifact.sh
+        env:
+          ARTIFACT_NAME: ruby-src-3.0.0
+          ARTIFACT_PATH: .
+
+      - name: Download Docker image necessary for building
+        run: ./internal-scripts/ci-cd/download-artifact.sh
+        if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Docker image centos-7;')
+        env:
+          ARTIFACT_NAME: 'docker-image-centos-7'
+          ARTIFACT_PATH: .
+      - name: Load Docker image necessary for building
+        run: ./internal-scripts/ci-cd/load-docker-image.sh
+        if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Docker image centos-7;')
+        env:
+          TARBALL: image.tar.zst
+
+      - name: Download Docker image necessary for packaging
+        run: ./internal-scripts/ci-cd/download-artifact.sh
+        if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Docker image utility;')
+        env:
+          ARTIFACT_NAME: 'docker-image-centos-7'
+          ARTIFACT_PATH: .
+      - name: Load Docker image necessary for packaging
+        run: ./internal-scripts/ci-cd/load-docker-image.sh
+        if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Docker image utility;')
+        env:
+          TARBALL: image.tar.zst
+
+      
+      - name: Fetch Jemalloc binary
+        run: ./internal-scripts/ci-cd/download-artifact.sh
+        env:
+          ARTIFACT_NAME: jemalloc-bin-centos-7
+          ARTIFACT_PATH: .        
+
+      - name: Reset & prepare workspace
+        run: mkdir cache-jemalloc
+      - name: "[jemalloc] Fetch cache"
+        uses: actions/cache@v2
+        with:
+          path: cache-jemalloc
+          key: v2-ruby-bin-3.0-centos-7-jemalloc
+
+      - name: Build binaries
+        run: ./internal-scripts/ci-cd/build-ruby-packages/build-binaries.sh
+        env:
+          ENVIRONMENT_NAME: "centos-7"
+          VARIANT_NAME: "jemalloc"
+          RUBY_PACKAGE_VERSION_ID: "3.0"
+
+      - name: Build package
+        run: ./internal-scripts/ci-cd/build-ruby-packages/build-package.sh
+        env:
+          DISTRIBUTION_NAME: "centos-7"
+          VARIANT_NAME: "jemalloc"
+          VARIANT_PACKAGE_SUFFIX: "-jemalloc"
+          PACKAGE_FORMAT: "RPM"
+          RUBY_PACKAGE_VERSION_ID: "3.0"
+          RUBY_PACKAGE_REVISION: "1"
+
+      - name: Archive package artifact to Google Cloud
+        run: ./internal-scripts/ci-cd/upload-artifact.sh
+        env:
+          ARTIFACT_NAME: "ruby-pkg_3.0_centos-7_jemalloc"
+          ARTIFACT_PATH: output-jemalloc
+
+  build_ruby_centos_7-3_0-malloctrim:
+    name: 'Build Ruby [centos-7/3.0/malloctrim]'
+    runs-on: ubuntu-20.04
+    needs:
+      - determine_necessary_jobs
+      - build_jemalloc_centos_7
+    # Run even if a dependent job has been skipped
+    if: |
+      contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Ruby [centos-7/3.0/malloctrim];')
+      && !failure() && !cancelled()
+    steps:
+      - name: Check whether 'Build Jemalloc [centos-7]' did not fail
+        run: 'false'
+        if: |
+          needs.build_jemalloc_centos_7.result == 'skipped'
+          && contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Jemalloc [centos-7];')
+
+      - uses: actions/checkout@v2
+      - name: Login to Google Cloud
+        uses: ./.github/actions/gcloud-login
+        with:
+          private_key: ${{ secrets.GCLOUD_KEY }}
+      - name: Fetch Ruby source
+        run: ./internal-scripts/ci-cd/download-artifact.sh
+        env:
+          ARTIFACT_NAME: ruby-src-3.0.0
+          ARTIFACT_PATH: .
+
+      - name: Download Docker image necessary for building
+        run: ./internal-scripts/ci-cd/download-artifact.sh
+        if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Docker image centos-7;')
+        env:
+          ARTIFACT_NAME: 'docker-image-centos-7'
+          ARTIFACT_PATH: .
+      - name: Load Docker image necessary for building
+        run: ./internal-scripts/ci-cd/load-docker-image.sh
+        if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Docker image centos-7;')
+        env:
+          TARBALL: image.tar.zst
+
+      - name: Download Docker image necessary for packaging
+        run: ./internal-scripts/ci-cd/download-artifact.sh
+        if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Docker image utility;')
+        env:
+          ARTIFACT_NAME: 'docker-image-centos-7'
+          ARTIFACT_PATH: .
+      - name: Load Docker image necessary for packaging
+        run: ./internal-scripts/ci-cd/load-docker-image.sh
+        if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Docker image utility;')
+        env:
+          TARBALL: image.tar.zst
+
+      
+
+      - name: Reset & prepare workspace
+        run: mkdir cache-malloctrim
+      - name: "[malloctrim] Fetch cache"
+        uses: actions/cache@v2
+        with:
+          path: cache-malloctrim
+          key: v2-ruby-bin-3.0-centos-7-malloctrim
+
+      - name: Build binaries
+        run: ./internal-scripts/ci-cd/build-ruby-packages/build-binaries.sh
+        env:
+          ENVIRONMENT_NAME: "centos-7"
+          VARIANT_NAME: "malloctrim"
+          RUBY_PACKAGE_VERSION_ID: "3.0"
+
+      - name: Build package
+        run: ./internal-scripts/ci-cd/build-ruby-packages/build-package.sh
+        env:
+          DISTRIBUTION_NAME: "centos-7"
+          VARIANT_NAME: "malloctrim"
+          VARIANT_PACKAGE_SUFFIX: "-malloctrim"
+          PACKAGE_FORMAT: "RPM"
+          RUBY_PACKAGE_VERSION_ID: "3.0"
+          RUBY_PACKAGE_REVISION: "1"
+
+      - name: Archive package artifact to Google Cloud
+        run: ./internal-scripts/ci-cd/upload-artifact.sh
+        env:
+          ARTIFACT_NAME: "ruby-pkg_3.0_centos-7_malloctrim"
+          ARTIFACT_PATH: output-malloctrim
+
   build_ruby_centos_7-2_7-normal:
     name: 'Build Ruby [centos-7/2.7/normal]'
     runs-on: ubuntu-20.04
@@ -1309,6 +1569,266 @@ jobs:
         run: ./internal-scripts/ci-cd/upload-artifact.sh
         env:
           ARTIFACT_NAME: "ruby-pkg_2.5_centos-7_malloctrim"
+          ARTIFACT_PATH: output-malloctrim
+
+  build_ruby_centos_7-3_0_0-normal:
+    name: 'Build Ruby [centos-7/3.0.0/normal]'
+    runs-on: ubuntu-20.04
+    needs:
+      - determine_necessary_jobs
+      - build_jemalloc_centos_7
+    # Run even if a dependent job has been skipped
+    if: |
+      contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Ruby [centos-7/3.0.0/normal];')
+      && !failure() && !cancelled()
+    steps:
+      - name: Check whether 'Build Jemalloc [centos-7]' did not fail
+        run: 'false'
+        if: |
+          needs.build_jemalloc_centos_7.result == 'skipped'
+          && contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Jemalloc [centos-7];')
+
+      - uses: actions/checkout@v2
+      - name: Login to Google Cloud
+        uses: ./.github/actions/gcloud-login
+        with:
+          private_key: ${{ secrets.GCLOUD_KEY }}
+      - name: Fetch Ruby source
+        run: ./internal-scripts/ci-cd/download-artifact.sh
+        env:
+          ARTIFACT_NAME: ruby-src-3.0.0
+          ARTIFACT_PATH: .
+
+      - name: Download Docker image necessary for building
+        run: ./internal-scripts/ci-cd/download-artifact.sh
+        if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Docker image centos-7;')
+        env:
+          ARTIFACT_NAME: 'docker-image-centos-7'
+          ARTIFACT_PATH: .
+      - name: Load Docker image necessary for building
+        run: ./internal-scripts/ci-cd/load-docker-image.sh
+        if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Docker image centos-7;')
+        env:
+          TARBALL: image.tar.zst
+
+      - name: Download Docker image necessary for packaging
+        run: ./internal-scripts/ci-cd/download-artifact.sh
+        if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Docker image utility;')
+        env:
+          ARTIFACT_NAME: 'docker-image-centos-7'
+          ARTIFACT_PATH: .
+      - name: Load Docker image necessary for packaging
+        run: ./internal-scripts/ci-cd/load-docker-image.sh
+        if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Docker image utility;')
+        env:
+          TARBALL: image.tar.zst
+
+      
+
+      - name: Reset & prepare workspace
+        run: mkdir cache-normal
+      - name: "[normal] Fetch cache"
+        uses: actions/cache@v2
+        with:
+          path: cache-normal
+          key: v2-ruby-bin-3.0.0-centos-7-normal
+
+      - name: Build binaries
+        run: ./internal-scripts/ci-cd/build-ruby-packages/build-binaries.sh
+        env:
+          ENVIRONMENT_NAME: "centos-7"
+          VARIANT_NAME: "normal"
+          RUBY_PACKAGE_VERSION_ID: "3.0.0"
+
+      - name: Build package
+        run: ./internal-scripts/ci-cd/build-ruby-packages/build-package.sh
+        env:
+          DISTRIBUTION_NAME: "centos-7"
+          VARIANT_NAME: "normal"
+          VARIANT_PACKAGE_SUFFIX: ""
+          PACKAGE_FORMAT: "RPM"
+          RUBY_PACKAGE_VERSION_ID: "3.0.0"
+          RUBY_PACKAGE_REVISION: "1"
+
+      - name: Archive package artifact to Google Cloud
+        run: ./internal-scripts/ci-cd/upload-artifact.sh
+        env:
+          ARTIFACT_NAME: "ruby-pkg_3.0.0_centos-7_normal"
+          ARTIFACT_PATH: output-normal
+
+  build_ruby_centos_7-3_0_0-jemalloc:
+    name: 'Build Ruby [centos-7/3.0.0/jemalloc]'
+    runs-on: ubuntu-20.04
+    needs:
+      - determine_necessary_jobs
+      - build_jemalloc_centos_7
+    # Run even if a dependent job has been skipped
+    if: |
+      contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Ruby [centos-7/3.0.0/jemalloc];')
+      && !failure() && !cancelled()
+    steps:
+      - name: Check whether 'Build Jemalloc [centos-7]' did not fail
+        run: 'false'
+        if: |
+          needs.build_jemalloc_centos_7.result == 'skipped'
+          && contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Jemalloc [centos-7];')
+
+      - uses: actions/checkout@v2
+      - name: Login to Google Cloud
+        uses: ./.github/actions/gcloud-login
+        with:
+          private_key: ${{ secrets.GCLOUD_KEY }}
+      - name: Fetch Ruby source
+        run: ./internal-scripts/ci-cd/download-artifact.sh
+        env:
+          ARTIFACT_NAME: ruby-src-3.0.0
+          ARTIFACT_PATH: .
+
+      - name: Download Docker image necessary for building
+        run: ./internal-scripts/ci-cd/download-artifact.sh
+        if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Docker image centos-7;')
+        env:
+          ARTIFACT_NAME: 'docker-image-centos-7'
+          ARTIFACT_PATH: .
+      - name: Load Docker image necessary for building
+        run: ./internal-scripts/ci-cd/load-docker-image.sh
+        if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Docker image centos-7;')
+        env:
+          TARBALL: image.tar.zst
+
+      - name: Download Docker image necessary for packaging
+        run: ./internal-scripts/ci-cd/download-artifact.sh
+        if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Docker image utility;')
+        env:
+          ARTIFACT_NAME: 'docker-image-centos-7'
+          ARTIFACT_PATH: .
+      - name: Load Docker image necessary for packaging
+        run: ./internal-scripts/ci-cd/load-docker-image.sh
+        if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Docker image utility;')
+        env:
+          TARBALL: image.tar.zst
+
+      
+      - name: Fetch Jemalloc binary
+        run: ./internal-scripts/ci-cd/download-artifact.sh
+        env:
+          ARTIFACT_NAME: jemalloc-bin-centos-7
+          ARTIFACT_PATH: .        
+
+      - name: Reset & prepare workspace
+        run: mkdir cache-jemalloc
+      - name: "[jemalloc] Fetch cache"
+        uses: actions/cache@v2
+        with:
+          path: cache-jemalloc
+          key: v2-ruby-bin-3.0.0-centos-7-jemalloc
+
+      - name: Build binaries
+        run: ./internal-scripts/ci-cd/build-ruby-packages/build-binaries.sh
+        env:
+          ENVIRONMENT_NAME: "centos-7"
+          VARIANT_NAME: "jemalloc"
+          RUBY_PACKAGE_VERSION_ID: "3.0.0"
+
+      - name: Build package
+        run: ./internal-scripts/ci-cd/build-ruby-packages/build-package.sh
+        env:
+          DISTRIBUTION_NAME: "centos-7"
+          VARIANT_NAME: "jemalloc"
+          VARIANT_PACKAGE_SUFFIX: "-jemalloc"
+          PACKAGE_FORMAT: "RPM"
+          RUBY_PACKAGE_VERSION_ID: "3.0.0"
+          RUBY_PACKAGE_REVISION: "1"
+
+      - name: Archive package artifact to Google Cloud
+        run: ./internal-scripts/ci-cd/upload-artifact.sh
+        env:
+          ARTIFACT_NAME: "ruby-pkg_3.0.0_centos-7_jemalloc"
+          ARTIFACT_PATH: output-jemalloc
+
+  build_ruby_centos_7-3_0_0-malloctrim:
+    name: 'Build Ruby [centos-7/3.0.0/malloctrim]'
+    runs-on: ubuntu-20.04
+    needs:
+      - determine_necessary_jobs
+      - build_jemalloc_centos_7
+    # Run even if a dependent job has been skipped
+    if: |
+      contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Ruby [centos-7/3.0.0/malloctrim];')
+      && !failure() && !cancelled()
+    steps:
+      - name: Check whether 'Build Jemalloc [centos-7]' did not fail
+        run: 'false'
+        if: |
+          needs.build_jemalloc_centos_7.result == 'skipped'
+          && contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Jemalloc [centos-7];')
+
+      - uses: actions/checkout@v2
+      - name: Login to Google Cloud
+        uses: ./.github/actions/gcloud-login
+        with:
+          private_key: ${{ secrets.GCLOUD_KEY }}
+      - name: Fetch Ruby source
+        run: ./internal-scripts/ci-cd/download-artifact.sh
+        env:
+          ARTIFACT_NAME: ruby-src-3.0.0
+          ARTIFACT_PATH: .
+
+      - name: Download Docker image necessary for building
+        run: ./internal-scripts/ci-cd/download-artifact.sh
+        if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Docker image centos-7;')
+        env:
+          ARTIFACT_NAME: 'docker-image-centos-7'
+          ARTIFACT_PATH: .
+      - name: Load Docker image necessary for building
+        run: ./internal-scripts/ci-cd/load-docker-image.sh
+        if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Docker image centos-7;')
+        env:
+          TARBALL: image.tar.zst
+
+      - name: Download Docker image necessary for packaging
+        run: ./internal-scripts/ci-cd/download-artifact.sh
+        if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Docker image utility;')
+        env:
+          ARTIFACT_NAME: 'docker-image-centos-7'
+          ARTIFACT_PATH: .
+      - name: Load Docker image necessary for packaging
+        run: ./internal-scripts/ci-cd/load-docker-image.sh
+        if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Docker image utility;')
+        env:
+          TARBALL: image.tar.zst
+
+      
+
+      - name: Reset & prepare workspace
+        run: mkdir cache-malloctrim
+      - name: "[malloctrim] Fetch cache"
+        uses: actions/cache@v2
+        with:
+          path: cache-malloctrim
+          key: v2-ruby-bin-3.0.0-centos-7-malloctrim
+
+      - name: Build binaries
+        run: ./internal-scripts/ci-cd/build-ruby-packages/build-binaries.sh
+        env:
+          ENVIRONMENT_NAME: "centos-7"
+          VARIANT_NAME: "malloctrim"
+          RUBY_PACKAGE_VERSION_ID: "3.0.0"
+
+      - name: Build package
+        run: ./internal-scripts/ci-cd/build-ruby-packages/build-package.sh
+        env:
+          DISTRIBUTION_NAME: "centos-7"
+          VARIANT_NAME: "malloctrim"
+          VARIANT_PACKAGE_SUFFIX: "-malloctrim"
+          PACKAGE_FORMAT: "RPM"
+          RUBY_PACKAGE_VERSION_ID: "3.0.0"
+          RUBY_PACKAGE_REVISION: "1"
+
+      - name: Archive package artifact to Google Cloud
+        run: ./internal-scripts/ci-cd/upload-artifact.sh
+        env:
+          ARTIFACT_NAME: "ruby-pkg_3.0.0_centos-7_malloctrim"
           ARTIFACT_PATH: output-malloctrim
 
   build_ruby_centos_7-2_7_2-normal:
@@ -2092,6 +2612,266 @@ jobs:
           ARTIFACT_PATH: output-malloctrim
 
 
+  build_ruby_centos_8-3_0-normal:
+    name: 'Build Ruby [centos-8/3.0/normal]'
+    runs-on: ubuntu-20.04
+    needs:
+      - determine_necessary_jobs
+      - build_jemalloc_centos_8
+    # Run even if a dependent job has been skipped
+    if: |
+      contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Ruby [centos-8/3.0/normal];')
+      && !failure() && !cancelled()
+    steps:
+      - name: Check whether 'Build Jemalloc [centos-8]' did not fail
+        run: 'false'
+        if: |
+          needs.build_jemalloc_centos_8.result == 'skipped'
+          && contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Jemalloc [centos-8];')
+
+      - uses: actions/checkout@v2
+      - name: Login to Google Cloud
+        uses: ./.github/actions/gcloud-login
+        with:
+          private_key: ${{ secrets.GCLOUD_KEY }}
+      - name: Fetch Ruby source
+        run: ./internal-scripts/ci-cd/download-artifact.sh
+        env:
+          ARTIFACT_NAME: ruby-src-3.0.0
+          ARTIFACT_PATH: .
+
+      - name: Download Docker image necessary for building
+        run: ./internal-scripts/ci-cd/download-artifact.sh
+        if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Docker image centos-8;')
+        env:
+          ARTIFACT_NAME: 'docker-image-centos-8'
+          ARTIFACT_PATH: .
+      - name: Load Docker image necessary for building
+        run: ./internal-scripts/ci-cd/load-docker-image.sh
+        if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Docker image centos-8;')
+        env:
+          TARBALL: image.tar.zst
+
+      - name: Download Docker image necessary for packaging
+        run: ./internal-scripts/ci-cd/download-artifact.sh
+        if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Docker image utility;')
+        env:
+          ARTIFACT_NAME: 'docker-image-centos-8'
+          ARTIFACT_PATH: .
+      - name: Load Docker image necessary for packaging
+        run: ./internal-scripts/ci-cd/load-docker-image.sh
+        if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Docker image utility;')
+        env:
+          TARBALL: image.tar.zst
+
+      
+
+      - name: Reset & prepare workspace
+        run: mkdir cache-normal
+      - name: "[normal] Fetch cache"
+        uses: actions/cache@v2
+        with:
+          path: cache-normal
+          key: v2-ruby-bin-3.0-centos-8-normal
+
+      - name: Build binaries
+        run: ./internal-scripts/ci-cd/build-ruby-packages/build-binaries.sh
+        env:
+          ENVIRONMENT_NAME: "centos-8"
+          VARIANT_NAME: "normal"
+          RUBY_PACKAGE_VERSION_ID: "3.0"
+
+      - name: Build package
+        run: ./internal-scripts/ci-cd/build-ruby-packages/build-package.sh
+        env:
+          DISTRIBUTION_NAME: "centos-8"
+          VARIANT_NAME: "normal"
+          VARIANT_PACKAGE_SUFFIX: ""
+          PACKAGE_FORMAT: "RPM"
+          RUBY_PACKAGE_VERSION_ID: "3.0"
+          RUBY_PACKAGE_REVISION: "1"
+
+      - name: Archive package artifact to Google Cloud
+        run: ./internal-scripts/ci-cd/upload-artifact.sh
+        env:
+          ARTIFACT_NAME: "ruby-pkg_3.0_centos-8_normal"
+          ARTIFACT_PATH: output-normal
+
+  build_ruby_centos_8-3_0-jemalloc:
+    name: 'Build Ruby [centos-8/3.0/jemalloc]'
+    runs-on: ubuntu-20.04
+    needs:
+      - determine_necessary_jobs
+      - build_jemalloc_centos_8
+    # Run even if a dependent job has been skipped
+    if: |
+      contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Ruby [centos-8/3.0/jemalloc];')
+      && !failure() && !cancelled()
+    steps:
+      - name: Check whether 'Build Jemalloc [centos-8]' did not fail
+        run: 'false'
+        if: |
+          needs.build_jemalloc_centos_8.result == 'skipped'
+          && contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Jemalloc [centos-8];')
+
+      - uses: actions/checkout@v2
+      - name: Login to Google Cloud
+        uses: ./.github/actions/gcloud-login
+        with:
+          private_key: ${{ secrets.GCLOUD_KEY }}
+      - name: Fetch Ruby source
+        run: ./internal-scripts/ci-cd/download-artifact.sh
+        env:
+          ARTIFACT_NAME: ruby-src-3.0.0
+          ARTIFACT_PATH: .
+
+      - name: Download Docker image necessary for building
+        run: ./internal-scripts/ci-cd/download-artifact.sh
+        if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Docker image centos-8;')
+        env:
+          ARTIFACT_NAME: 'docker-image-centos-8'
+          ARTIFACT_PATH: .
+      - name: Load Docker image necessary for building
+        run: ./internal-scripts/ci-cd/load-docker-image.sh
+        if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Docker image centos-8;')
+        env:
+          TARBALL: image.tar.zst
+
+      - name: Download Docker image necessary for packaging
+        run: ./internal-scripts/ci-cd/download-artifact.sh
+        if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Docker image utility;')
+        env:
+          ARTIFACT_NAME: 'docker-image-centos-8'
+          ARTIFACT_PATH: .
+      - name: Load Docker image necessary for packaging
+        run: ./internal-scripts/ci-cd/load-docker-image.sh
+        if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Docker image utility;')
+        env:
+          TARBALL: image.tar.zst
+
+      
+      - name: Fetch Jemalloc binary
+        run: ./internal-scripts/ci-cd/download-artifact.sh
+        env:
+          ARTIFACT_NAME: jemalloc-bin-centos-8
+          ARTIFACT_PATH: .        
+
+      - name: Reset & prepare workspace
+        run: mkdir cache-jemalloc
+      - name: "[jemalloc] Fetch cache"
+        uses: actions/cache@v2
+        with:
+          path: cache-jemalloc
+          key: v2-ruby-bin-3.0-centos-8-jemalloc
+
+      - name: Build binaries
+        run: ./internal-scripts/ci-cd/build-ruby-packages/build-binaries.sh
+        env:
+          ENVIRONMENT_NAME: "centos-8"
+          VARIANT_NAME: "jemalloc"
+          RUBY_PACKAGE_VERSION_ID: "3.0"
+
+      - name: Build package
+        run: ./internal-scripts/ci-cd/build-ruby-packages/build-package.sh
+        env:
+          DISTRIBUTION_NAME: "centos-8"
+          VARIANT_NAME: "jemalloc"
+          VARIANT_PACKAGE_SUFFIX: "-jemalloc"
+          PACKAGE_FORMAT: "RPM"
+          RUBY_PACKAGE_VERSION_ID: "3.0"
+          RUBY_PACKAGE_REVISION: "1"
+
+      - name: Archive package artifact to Google Cloud
+        run: ./internal-scripts/ci-cd/upload-artifact.sh
+        env:
+          ARTIFACT_NAME: "ruby-pkg_3.0_centos-8_jemalloc"
+          ARTIFACT_PATH: output-jemalloc
+
+  build_ruby_centos_8-3_0-malloctrim:
+    name: 'Build Ruby [centos-8/3.0/malloctrim]'
+    runs-on: ubuntu-20.04
+    needs:
+      - determine_necessary_jobs
+      - build_jemalloc_centos_8
+    # Run even if a dependent job has been skipped
+    if: |
+      contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Ruby [centos-8/3.0/malloctrim];')
+      && !failure() && !cancelled()
+    steps:
+      - name: Check whether 'Build Jemalloc [centos-8]' did not fail
+        run: 'false'
+        if: |
+          needs.build_jemalloc_centos_8.result == 'skipped'
+          && contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Jemalloc [centos-8];')
+
+      - uses: actions/checkout@v2
+      - name: Login to Google Cloud
+        uses: ./.github/actions/gcloud-login
+        with:
+          private_key: ${{ secrets.GCLOUD_KEY }}
+      - name: Fetch Ruby source
+        run: ./internal-scripts/ci-cd/download-artifact.sh
+        env:
+          ARTIFACT_NAME: ruby-src-3.0.0
+          ARTIFACT_PATH: .
+
+      - name: Download Docker image necessary for building
+        run: ./internal-scripts/ci-cd/download-artifact.sh
+        if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Docker image centos-8;')
+        env:
+          ARTIFACT_NAME: 'docker-image-centos-8'
+          ARTIFACT_PATH: .
+      - name: Load Docker image necessary for building
+        run: ./internal-scripts/ci-cd/load-docker-image.sh
+        if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Docker image centos-8;')
+        env:
+          TARBALL: image.tar.zst
+
+      - name: Download Docker image necessary for packaging
+        run: ./internal-scripts/ci-cd/download-artifact.sh
+        if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Docker image utility;')
+        env:
+          ARTIFACT_NAME: 'docker-image-centos-8'
+          ARTIFACT_PATH: .
+      - name: Load Docker image necessary for packaging
+        run: ./internal-scripts/ci-cd/load-docker-image.sh
+        if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Docker image utility;')
+        env:
+          TARBALL: image.tar.zst
+
+      
+
+      - name: Reset & prepare workspace
+        run: mkdir cache-malloctrim
+      - name: "[malloctrim] Fetch cache"
+        uses: actions/cache@v2
+        with:
+          path: cache-malloctrim
+          key: v2-ruby-bin-3.0-centos-8-malloctrim
+
+      - name: Build binaries
+        run: ./internal-scripts/ci-cd/build-ruby-packages/build-binaries.sh
+        env:
+          ENVIRONMENT_NAME: "centos-8"
+          VARIANT_NAME: "malloctrim"
+          RUBY_PACKAGE_VERSION_ID: "3.0"
+
+      - name: Build package
+        run: ./internal-scripts/ci-cd/build-ruby-packages/build-package.sh
+        env:
+          DISTRIBUTION_NAME: "centos-8"
+          VARIANT_NAME: "malloctrim"
+          VARIANT_PACKAGE_SUFFIX: "-malloctrim"
+          PACKAGE_FORMAT: "RPM"
+          RUBY_PACKAGE_VERSION_ID: "3.0"
+          RUBY_PACKAGE_REVISION: "1"
+
+      - name: Archive package artifact to Google Cloud
+        run: ./internal-scripts/ci-cd/upload-artifact.sh
+        env:
+          ARTIFACT_NAME: "ruby-pkg_3.0_centos-8_malloctrim"
+          ARTIFACT_PATH: output-malloctrim
+
   build_ruby_centos_8-2_7-normal:
     name: 'Build Ruby [centos-8/2.7/normal]'
     runs-on: ubuntu-20.04
@@ -2870,6 +3650,266 @@ jobs:
         run: ./internal-scripts/ci-cd/upload-artifact.sh
         env:
           ARTIFACT_NAME: "ruby-pkg_2.5_centos-8_malloctrim"
+          ARTIFACT_PATH: output-malloctrim
+
+  build_ruby_centos_8-3_0_0-normal:
+    name: 'Build Ruby [centos-8/3.0.0/normal]'
+    runs-on: ubuntu-20.04
+    needs:
+      - determine_necessary_jobs
+      - build_jemalloc_centos_8
+    # Run even if a dependent job has been skipped
+    if: |
+      contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Ruby [centos-8/3.0.0/normal];')
+      && !failure() && !cancelled()
+    steps:
+      - name: Check whether 'Build Jemalloc [centos-8]' did not fail
+        run: 'false'
+        if: |
+          needs.build_jemalloc_centos_8.result == 'skipped'
+          && contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Jemalloc [centos-8];')
+
+      - uses: actions/checkout@v2
+      - name: Login to Google Cloud
+        uses: ./.github/actions/gcloud-login
+        with:
+          private_key: ${{ secrets.GCLOUD_KEY }}
+      - name: Fetch Ruby source
+        run: ./internal-scripts/ci-cd/download-artifact.sh
+        env:
+          ARTIFACT_NAME: ruby-src-3.0.0
+          ARTIFACT_PATH: .
+
+      - name: Download Docker image necessary for building
+        run: ./internal-scripts/ci-cd/download-artifact.sh
+        if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Docker image centos-8;')
+        env:
+          ARTIFACT_NAME: 'docker-image-centos-8'
+          ARTIFACT_PATH: .
+      - name: Load Docker image necessary for building
+        run: ./internal-scripts/ci-cd/load-docker-image.sh
+        if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Docker image centos-8;')
+        env:
+          TARBALL: image.tar.zst
+
+      - name: Download Docker image necessary for packaging
+        run: ./internal-scripts/ci-cd/download-artifact.sh
+        if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Docker image utility;')
+        env:
+          ARTIFACT_NAME: 'docker-image-centos-8'
+          ARTIFACT_PATH: .
+      - name: Load Docker image necessary for packaging
+        run: ./internal-scripts/ci-cd/load-docker-image.sh
+        if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Docker image utility;')
+        env:
+          TARBALL: image.tar.zst
+
+      
+
+      - name: Reset & prepare workspace
+        run: mkdir cache-normal
+      - name: "[normal] Fetch cache"
+        uses: actions/cache@v2
+        with:
+          path: cache-normal
+          key: v2-ruby-bin-3.0.0-centos-8-normal
+
+      - name: Build binaries
+        run: ./internal-scripts/ci-cd/build-ruby-packages/build-binaries.sh
+        env:
+          ENVIRONMENT_NAME: "centos-8"
+          VARIANT_NAME: "normal"
+          RUBY_PACKAGE_VERSION_ID: "3.0.0"
+
+      - name: Build package
+        run: ./internal-scripts/ci-cd/build-ruby-packages/build-package.sh
+        env:
+          DISTRIBUTION_NAME: "centos-8"
+          VARIANT_NAME: "normal"
+          VARIANT_PACKAGE_SUFFIX: ""
+          PACKAGE_FORMAT: "RPM"
+          RUBY_PACKAGE_VERSION_ID: "3.0.0"
+          RUBY_PACKAGE_REVISION: "1"
+
+      - name: Archive package artifact to Google Cloud
+        run: ./internal-scripts/ci-cd/upload-artifact.sh
+        env:
+          ARTIFACT_NAME: "ruby-pkg_3.0.0_centos-8_normal"
+          ARTIFACT_PATH: output-normal
+
+  build_ruby_centos_8-3_0_0-jemalloc:
+    name: 'Build Ruby [centos-8/3.0.0/jemalloc]'
+    runs-on: ubuntu-20.04
+    needs:
+      - determine_necessary_jobs
+      - build_jemalloc_centos_8
+    # Run even if a dependent job has been skipped
+    if: |
+      contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Ruby [centos-8/3.0.0/jemalloc];')
+      && !failure() && !cancelled()
+    steps:
+      - name: Check whether 'Build Jemalloc [centos-8]' did not fail
+        run: 'false'
+        if: |
+          needs.build_jemalloc_centos_8.result == 'skipped'
+          && contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Jemalloc [centos-8];')
+
+      - uses: actions/checkout@v2
+      - name: Login to Google Cloud
+        uses: ./.github/actions/gcloud-login
+        with:
+          private_key: ${{ secrets.GCLOUD_KEY }}
+      - name: Fetch Ruby source
+        run: ./internal-scripts/ci-cd/download-artifact.sh
+        env:
+          ARTIFACT_NAME: ruby-src-3.0.0
+          ARTIFACT_PATH: .
+
+      - name: Download Docker image necessary for building
+        run: ./internal-scripts/ci-cd/download-artifact.sh
+        if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Docker image centos-8;')
+        env:
+          ARTIFACT_NAME: 'docker-image-centos-8'
+          ARTIFACT_PATH: .
+      - name: Load Docker image necessary for building
+        run: ./internal-scripts/ci-cd/load-docker-image.sh
+        if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Docker image centos-8;')
+        env:
+          TARBALL: image.tar.zst
+
+      - name: Download Docker image necessary for packaging
+        run: ./internal-scripts/ci-cd/download-artifact.sh
+        if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Docker image utility;')
+        env:
+          ARTIFACT_NAME: 'docker-image-centos-8'
+          ARTIFACT_PATH: .
+      - name: Load Docker image necessary for packaging
+        run: ./internal-scripts/ci-cd/load-docker-image.sh
+        if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Docker image utility;')
+        env:
+          TARBALL: image.tar.zst
+
+      
+      - name: Fetch Jemalloc binary
+        run: ./internal-scripts/ci-cd/download-artifact.sh
+        env:
+          ARTIFACT_NAME: jemalloc-bin-centos-8
+          ARTIFACT_PATH: .        
+
+      - name: Reset & prepare workspace
+        run: mkdir cache-jemalloc
+      - name: "[jemalloc] Fetch cache"
+        uses: actions/cache@v2
+        with:
+          path: cache-jemalloc
+          key: v2-ruby-bin-3.0.0-centos-8-jemalloc
+
+      - name: Build binaries
+        run: ./internal-scripts/ci-cd/build-ruby-packages/build-binaries.sh
+        env:
+          ENVIRONMENT_NAME: "centos-8"
+          VARIANT_NAME: "jemalloc"
+          RUBY_PACKAGE_VERSION_ID: "3.0.0"
+
+      - name: Build package
+        run: ./internal-scripts/ci-cd/build-ruby-packages/build-package.sh
+        env:
+          DISTRIBUTION_NAME: "centos-8"
+          VARIANT_NAME: "jemalloc"
+          VARIANT_PACKAGE_SUFFIX: "-jemalloc"
+          PACKAGE_FORMAT: "RPM"
+          RUBY_PACKAGE_VERSION_ID: "3.0.0"
+          RUBY_PACKAGE_REVISION: "1"
+
+      - name: Archive package artifact to Google Cloud
+        run: ./internal-scripts/ci-cd/upload-artifact.sh
+        env:
+          ARTIFACT_NAME: "ruby-pkg_3.0.0_centos-8_jemalloc"
+          ARTIFACT_PATH: output-jemalloc
+
+  build_ruby_centos_8-3_0_0-malloctrim:
+    name: 'Build Ruby [centos-8/3.0.0/malloctrim]'
+    runs-on: ubuntu-20.04
+    needs:
+      - determine_necessary_jobs
+      - build_jemalloc_centos_8
+    # Run even if a dependent job has been skipped
+    if: |
+      contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Ruby [centos-8/3.0.0/malloctrim];')
+      && !failure() && !cancelled()
+    steps:
+      - name: Check whether 'Build Jemalloc [centos-8]' did not fail
+        run: 'false'
+        if: |
+          needs.build_jemalloc_centos_8.result == 'skipped'
+          && contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Jemalloc [centos-8];')
+
+      - uses: actions/checkout@v2
+      - name: Login to Google Cloud
+        uses: ./.github/actions/gcloud-login
+        with:
+          private_key: ${{ secrets.GCLOUD_KEY }}
+      - name: Fetch Ruby source
+        run: ./internal-scripts/ci-cd/download-artifact.sh
+        env:
+          ARTIFACT_NAME: ruby-src-3.0.0
+          ARTIFACT_PATH: .
+
+      - name: Download Docker image necessary for building
+        run: ./internal-scripts/ci-cd/download-artifact.sh
+        if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Docker image centos-8;')
+        env:
+          ARTIFACT_NAME: 'docker-image-centos-8'
+          ARTIFACT_PATH: .
+      - name: Load Docker image necessary for building
+        run: ./internal-scripts/ci-cd/load-docker-image.sh
+        if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Docker image centos-8;')
+        env:
+          TARBALL: image.tar.zst
+
+      - name: Download Docker image necessary for packaging
+        run: ./internal-scripts/ci-cd/download-artifact.sh
+        if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Docker image utility;')
+        env:
+          ARTIFACT_NAME: 'docker-image-centos-8'
+          ARTIFACT_PATH: .
+      - name: Load Docker image necessary for packaging
+        run: ./internal-scripts/ci-cd/load-docker-image.sh
+        if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Docker image utility;')
+        env:
+          TARBALL: image.tar.zst
+
+      
+
+      - name: Reset & prepare workspace
+        run: mkdir cache-malloctrim
+      - name: "[malloctrim] Fetch cache"
+        uses: actions/cache@v2
+        with:
+          path: cache-malloctrim
+          key: v2-ruby-bin-3.0.0-centos-8-malloctrim
+
+      - name: Build binaries
+        run: ./internal-scripts/ci-cd/build-ruby-packages/build-binaries.sh
+        env:
+          ENVIRONMENT_NAME: "centos-8"
+          VARIANT_NAME: "malloctrim"
+          RUBY_PACKAGE_VERSION_ID: "3.0.0"
+
+      - name: Build package
+        run: ./internal-scripts/ci-cd/build-ruby-packages/build-package.sh
+        env:
+          DISTRIBUTION_NAME: "centos-8"
+          VARIANT_NAME: "malloctrim"
+          VARIANT_PACKAGE_SUFFIX: "-malloctrim"
+          PACKAGE_FORMAT: "RPM"
+          RUBY_PACKAGE_VERSION_ID: "3.0.0"
+          RUBY_PACKAGE_REVISION: "1"
+
+      - name: Archive package artifact to Google Cloud
+        run: ./internal-scripts/ci-cd/upload-artifact.sh
+        env:
+          ARTIFACT_NAME: "ruby-pkg_3.0.0_centos-8_malloctrim"
           ARTIFACT_PATH: output-malloctrim
 
   build_ruby_centos_8-2_7_2-normal:
@@ -3653,6 +4693,266 @@ jobs:
           ARTIFACT_PATH: output-malloctrim
 
 
+  build_ruby_debian_10-3_0-normal:
+    name: 'Build Ruby [debian-10/3.0/normal]'
+    runs-on: ubuntu-20.04
+    needs:
+      - determine_necessary_jobs
+      - build_jemalloc_debian_10
+    # Run even if a dependent job has been skipped
+    if: |
+      contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Ruby [debian-10/3.0/normal];')
+      && !failure() && !cancelled()
+    steps:
+      - name: Check whether 'Build Jemalloc [debian-10]' did not fail
+        run: 'false'
+        if: |
+          needs.build_jemalloc_debian_10.result == 'skipped'
+          && contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Jemalloc [debian-10];')
+
+      - uses: actions/checkout@v2
+      - name: Login to Google Cloud
+        uses: ./.github/actions/gcloud-login
+        with:
+          private_key: ${{ secrets.GCLOUD_KEY }}
+      - name: Fetch Ruby source
+        run: ./internal-scripts/ci-cd/download-artifact.sh
+        env:
+          ARTIFACT_NAME: ruby-src-3.0.0
+          ARTIFACT_PATH: .
+
+      - name: Download Docker image necessary for building
+        run: ./internal-scripts/ci-cd/download-artifact.sh
+        if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Docker image debian-10;')
+        env:
+          ARTIFACT_NAME: 'docker-image-debian-10'
+          ARTIFACT_PATH: .
+      - name: Load Docker image necessary for building
+        run: ./internal-scripts/ci-cd/load-docker-image.sh
+        if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Docker image debian-10;')
+        env:
+          TARBALL: image.tar.zst
+
+      - name: Download Docker image necessary for packaging
+        run: ./internal-scripts/ci-cd/download-artifact.sh
+        if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Docker image utility;')
+        env:
+          ARTIFACT_NAME: 'docker-image-debian-10'
+          ARTIFACT_PATH: .
+      - name: Load Docker image necessary for packaging
+        run: ./internal-scripts/ci-cd/load-docker-image.sh
+        if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Docker image utility;')
+        env:
+          TARBALL: image.tar.zst
+
+      
+
+      - name: Reset & prepare workspace
+        run: mkdir cache-normal
+      - name: "[normal] Fetch cache"
+        uses: actions/cache@v2
+        with:
+          path: cache-normal
+          key: v2-ruby-bin-3.0-debian-10-normal
+
+      - name: Build binaries
+        run: ./internal-scripts/ci-cd/build-ruby-packages/build-binaries.sh
+        env:
+          ENVIRONMENT_NAME: "debian-10"
+          VARIANT_NAME: "normal"
+          RUBY_PACKAGE_VERSION_ID: "3.0"
+
+      - name: Build package
+        run: ./internal-scripts/ci-cd/build-ruby-packages/build-package.sh
+        env:
+          DISTRIBUTION_NAME: "debian-10"
+          VARIANT_NAME: "normal"
+          VARIANT_PACKAGE_SUFFIX: ""
+          PACKAGE_FORMAT: "DEB"
+          RUBY_PACKAGE_VERSION_ID: "3.0"
+          RUBY_PACKAGE_REVISION: "1"
+
+      - name: Archive package artifact to Google Cloud
+        run: ./internal-scripts/ci-cd/upload-artifact.sh
+        env:
+          ARTIFACT_NAME: "ruby-pkg_3.0_debian-10_normal"
+          ARTIFACT_PATH: output-normal
+
+  build_ruby_debian_10-3_0-jemalloc:
+    name: 'Build Ruby [debian-10/3.0/jemalloc]'
+    runs-on: ubuntu-20.04
+    needs:
+      - determine_necessary_jobs
+      - build_jemalloc_debian_10
+    # Run even if a dependent job has been skipped
+    if: |
+      contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Ruby [debian-10/3.0/jemalloc];')
+      && !failure() && !cancelled()
+    steps:
+      - name: Check whether 'Build Jemalloc [debian-10]' did not fail
+        run: 'false'
+        if: |
+          needs.build_jemalloc_debian_10.result == 'skipped'
+          && contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Jemalloc [debian-10];')
+
+      - uses: actions/checkout@v2
+      - name: Login to Google Cloud
+        uses: ./.github/actions/gcloud-login
+        with:
+          private_key: ${{ secrets.GCLOUD_KEY }}
+      - name: Fetch Ruby source
+        run: ./internal-scripts/ci-cd/download-artifact.sh
+        env:
+          ARTIFACT_NAME: ruby-src-3.0.0
+          ARTIFACT_PATH: .
+
+      - name: Download Docker image necessary for building
+        run: ./internal-scripts/ci-cd/download-artifact.sh
+        if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Docker image debian-10;')
+        env:
+          ARTIFACT_NAME: 'docker-image-debian-10'
+          ARTIFACT_PATH: .
+      - name: Load Docker image necessary for building
+        run: ./internal-scripts/ci-cd/load-docker-image.sh
+        if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Docker image debian-10;')
+        env:
+          TARBALL: image.tar.zst
+
+      - name: Download Docker image necessary for packaging
+        run: ./internal-scripts/ci-cd/download-artifact.sh
+        if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Docker image utility;')
+        env:
+          ARTIFACT_NAME: 'docker-image-debian-10'
+          ARTIFACT_PATH: .
+      - name: Load Docker image necessary for packaging
+        run: ./internal-scripts/ci-cd/load-docker-image.sh
+        if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Docker image utility;')
+        env:
+          TARBALL: image.tar.zst
+
+      
+      - name: Fetch Jemalloc binary
+        run: ./internal-scripts/ci-cd/download-artifact.sh
+        env:
+          ARTIFACT_NAME: jemalloc-bin-debian-10
+          ARTIFACT_PATH: .        
+
+      - name: Reset & prepare workspace
+        run: mkdir cache-jemalloc
+      - name: "[jemalloc] Fetch cache"
+        uses: actions/cache@v2
+        with:
+          path: cache-jemalloc
+          key: v2-ruby-bin-3.0-debian-10-jemalloc
+
+      - name: Build binaries
+        run: ./internal-scripts/ci-cd/build-ruby-packages/build-binaries.sh
+        env:
+          ENVIRONMENT_NAME: "debian-10"
+          VARIANT_NAME: "jemalloc"
+          RUBY_PACKAGE_VERSION_ID: "3.0"
+
+      - name: Build package
+        run: ./internal-scripts/ci-cd/build-ruby-packages/build-package.sh
+        env:
+          DISTRIBUTION_NAME: "debian-10"
+          VARIANT_NAME: "jemalloc"
+          VARIANT_PACKAGE_SUFFIX: "-jemalloc"
+          PACKAGE_FORMAT: "DEB"
+          RUBY_PACKAGE_VERSION_ID: "3.0"
+          RUBY_PACKAGE_REVISION: "1"
+
+      - name: Archive package artifact to Google Cloud
+        run: ./internal-scripts/ci-cd/upload-artifact.sh
+        env:
+          ARTIFACT_NAME: "ruby-pkg_3.0_debian-10_jemalloc"
+          ARTIFACT_PATH: output-jemalloc
+
+  build_ruby_debian_10-3_0-malloctrim:
+    name: 'Build Ruby [debian-10/3.0/malloctrim]'
+    runs-on: ubuntu-20.04
+    needs:
+      - determine_necessary_jobs
+      - build_jemalloc_debian_10
+    # Run even if a dependent job has been skipped
+    if: |
+      contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Ruby [debian-10/3.0/malloctrim];')
+      && !failure() && !cancelled()
+    steps:
+      - name: Check whether 'Build Jemalloc [debian-10]' did not fail
+        run: 'false'
+        if: |
+          needs.build_jemalloc_debian_10.result == 'skipped'
+          && contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Jemalloc [debian-10];')
+
+      - uses: actions/checkout@v2
+      - name: Login to Google Cloud
+        uses: ./.github/actions/gcloud-login
+        with:
+          private_key: ${{ secrets.GCLOUD_KEY }}
+      - name: Fetch Ruby source
+        run: ./internal-scripts/ci-cd/download-artifact.sh
+        env:
+          ARTIFACT_NAME: ruby-src-3.0.0
+          ARTIFACT_PATH: .
+
+      - name: Download Docker image necessary for building
+        run: ./internal-scripts/ci-cd/download-artifact.sh
+        if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Docker image debian-10;')
+        env:
+          ARTIFACT_NAME: 'docker-image-debian-10'
+          ARTIFACT_PATH: .
+      - name: Load Docker image necessary for building
+        run: ./internal-scripts/ci-cd/load-docker-image.sh
+        if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Docker image debian-10;')
+        env:
+          TARBALL: image.tar.zst
+
+      - name: Download Docker image necessary for packaging
+        run: ./internal-scripts/ci-cd/download-artifact.sh
+        if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Docker image utility;')
+        env:
+          ARTIFACT_NAME: 'docker-image-debian-10'
+          ARTIFACT_PATH: .
+      - name: Load Docker image necessary for packaging
+        run: ./internal-scripts/ci-cd/load-docker-image.sh
+        if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Docker image utility;')
+        env:
+          TARBALL: image.tar.zst
+
+      
+
+      - name: Reset & prepare workspace
+        run: mkdir cache-malloctrim
+      - name: "[malloctrim] Fetch cache"
+        uses: actions/cache@v2
+        with:
+          path: cache-malloctrim
+          key: v2-ruby-bin-3.0-debian-10-malloctrim
+
+      - name: Build binaries
+        run: ./internal-scripts/ci-cd/build-ruby-packages/build-binaries.sh
+        env:
+          ENVIRONMENT_NAME: "debian-10"
+          VARIANT_NAME: "malloctrim"
+          RUBY_PACKAGE_VERSION_ID: "3.0"
+
+      - name: Build package
+        run: ./internal-scripts/ci-cd/build-ruby-packages/build-package.sh
+        env:
+          DISTRIBUTION_NAME: "debian-10"
+          VARIANT_NAME: "malloctrim"
+          VARIANT_PACKAGE_SUFFIX: "-malloctrim"
+          PACKAGE_FORMAT: "DEB"
+          RUBY_PACKAGE_VERSION_ID: "3.0"
+          RUBY_PACKAGE_REVISION: "1"
+
+      - name: Archive package artifact to Google Cloud
+        run: ./internal-scripts/ci-cd/upload-artifact.sh
+        env:
+          ARTIFACT_NAME: "ruby-pkg_3.0_debian-10_malloctrim"
+          ARTIFACT_PATH: output-malloctrim
+
   build_ruby_debian_10-2_7-normal:
     name: 'Build Ruby [debian-10/2.7/normal]'
     runs-on: ubuntu-20.04
@@ -4431,6 +5731,266 @@ jobs:
         run: ./internal-scripts/ci-cd/upload-artifact.sh
         env:
           ARTIFACT_NAME: "ruby-pkg_2.5_debian-10_malloctrim"
+          ARTIFACT_PATH: output-malloctrim
+
+  build_ruby_debian_10-3_0_0-normal:
+    name: 'Build Ruby [debian-10/3.0.0/normal]'
+    runs-on: ubuntu-20.04
+    needs:
+      - determine_necessary_jobs
+      - build_jemalloc_debian_10
+    # Run even if a dependent job has been skipped
+    if: |
+      contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Ruby [debian-10/3.0.0/normal];')
+      && !failure() && !cancelled()
+    steps:
+      - name: Check whether 'Build Jemalloc [debian-10]' did not fail
+        run: 'false'
+        if: |
+          needs.build_jemalloc_debian_10.result == 'skipped'
+          && contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Jemalloc [debian-10];')
+
+      - uses: actions/checkout@v2
+      - name: Login to Google Cloud
+        uses: ./.github/actions/gcloud-login
+        with:
+          private_key: ${{ secrets.GCLOUD_KEY }}
+      - name: Fetch Ruby source
+        run: ./internal-scripts/ci-cd/download-artifact.sh
+        env:
+          ARTIFACT_NAME: ruby-src-3.0.0
+          ARTIFACT_PATH: .
+
+      - name: Download Docker image necessary for building
+        run: ./internal-scripts/ci-cd/download-artifact.sh
+        if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Docker image debian-10;')
+        env:
+          ARTIFACT_NAME: 'docker-image-debian-10'
+          ARTIFACT_PATH: .
+      - name: Load Docker image necessary for building
+        run: ./internal-scripts/ci-cd/load-docker-image.sh
+        if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Docker image debian-10;')
+        env:
+          TARBALL: image.tar.zst
+
+      - name: Download Docker image necessary for packaging
+        run: ./internal-scripts/ci-cd/download-artifact.sh
+        if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Docker image utility;')
+        env:
+          ARTIFACT_NAME: 'docker-image-debian-10'
+          ARTIFACT_PATH: .
+      - name: Load Docker image necessary for packaging
+        run: ./internal-scripts/ci-cd/load-docker-image.sh
+        if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Docker image utility;')
+        env:
+          TARBALL: image.tar.zst
+
+      
+
+      - name: Reset & prepare workspace
+        run: mkdir cache-normal
+      - name: "[normal] Fetch cache"
+        uses: actions/cache@v2
+        with:
+          path: cache-normal
+          key: v2-ruby-bin-3.0.0-debian-10-normal
+
+      - name: Build binaries
+        run: ./internal-scripts/ci-cd/build-ruby-packages/build-binaries.sh
+        env:
+          ENVIRONMENT_NAME: "debian-10"
+          VARIANT_NAME: "normal"
+          RUBY_PACKAGE_VERSION_ID: "3.0.0"
+
+      - name: Build package
+        run: ./internal-scripts/ci-cd/build-ruby-packages/build-package.sh
+        env:
+          DISTRIBUTION_NAME: "debian-10"
+          VARIANT_NAME: "normal"
+          VARIANT_PACKAGE_SUFFIX: ""
+          PACKAGE_FORMAT: "DEB"
+          RUBY_PACKAGE_VERSION_ID: "3.0.0"
+          RUBY_PACKAGE_REVISION: "1"
+
+      - name: Archive package artifact to Google Cloud
+        run: ./internal-scripts/ci-cd/upload-artifact.sh
+        env:
+          ARTIFACT_NAME: "ruby-pkg_3.0.0_debian-10_normal"
+          ARTIFACT_PATH: output-normal
+
+  build_ruby_debian_10-3_0_0-jemalloc:
+    name: 'Build Ruby [debian-10/3.0.0/jemalloc]'
+    runs-on: ubuntu-20.04
+    needs:
+      - determine_necessary_jobs
+      - build_jemalloc_debian_10
+    # Run even if a dependent job has been skipped
+    if: |
+      contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Ruby [debian-10/3.0.0/jemalloc];')
+      && !failure() && !cancelled()
+    steps:
+      - name: Check whether 'Build Jemalloc [debian-10]' did not fail
+        run: 'false'
+        if: |
+          needs.build_jemalloc_debian_10.result == 'skipped'
+          && contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Jemalloc [debian-10];')
+
+      - uses: actions/checkout@v2
+      - name: Login to Google Cloud
+        uses: ./.github/actions/gcloud-login
+        with:
+          private_key: ${{ secrets.GCLOUD_KEY }}
+      - name: Fetch Ruby source
+        run: ./internal-scripts/ci-cd/download-artifact.sh
+        env:
+          ARTIFACT_NAME: ruby-src-3.0.0
+          ARTIFACT_PATH: .
+
+      - name: Download Docker image necessary for building
+        run: ./internal-scripts/ci-cd/download-artifact.sh
+        if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Docker image debian-10;')
+        env:
+          ARTIFACT_NAME: 'docker-image-debian-10'
+          ARTIFACT_PATH: .
+      - name: Load Docker image necessary for building
+        run: ./internal-scripts/ci-cd/load-docker-image.sh
+        if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Docker image debian-10;')
+        env:
+          TARBALL: image.tar.zst
+
+      - name: Download Docker image necessary for packaging
+        run: ./internal-scripts/ci-cd/download-artifact.sh
+        if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Docker image utility;')
+        env:
+          ARTIFACT_NAME: 'docker-image-debian-10'
+          ARTIFACT_PATH: .
+      - name: Load Docker image necessary for packaging
+        run: ./internal-scripts/ci-cd/load-docker-image.sh
+        if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Docker image utility;')
+        env:
+          TARBALL: image.tar.zst
+
+      
+      - name: Fetch Jemalloc binary
+        run: ./internal-scripts/ci-cd/download-artifact.sh
+        env:
+          ARTIFACT_NAME: jemalloc-bin-debian-10
+          ARTIFACT_PATH: .        
+
+      - name: Reset & prepare workspace
+        run: mkdir cache-jemalloc
+      - name: "[jemalloc] Fetch cache"
+        uses: actions/cache@v2
+        with:
+          path: cache-jemalloc
+          key: v2-ruby-bin-3.0.0-debian-10-jemalloc
+
+      - name: Build binaries
+        run: ./internal-scripts/ci-cd/build-ruby-packages/build-binaries.sh
+        env:
+          ENVIRONMENT_NAME: "debian-10"
+          VARIANT_NAME: "jemalloc"
+          RUBY_PACKAGE_VERSION_ID: "3.0.0"
+
+      - name: Build package
+        run: ./internal-scripts/ci-cd/build-ruby-packages/build-package.sh
+        env:
+          DISTRIBUTION_NAME: "debian-10"
+          VARIANT_NAME: "jemalloc"
+          VARIANT_PACKAGE_SUFFIX: "-jemalloc"
+          PACKAGE_FORMAT: "DEB"
+          RUBY_PACKAGE_VERSION_ID: "3.0.0"
+          RUBY_PACKAGE_REVISION: "1"
+
+      - name: Archive package artifact to Google Cloud
+        run: ./internal-scripts/ci-cd/upload-artifact.sh
+        env:
+          ARTIFACT_NAME: "ruby-pkg_3.0.0_debian-10_jemalloc"
+          ARTIFACT_PATH: output-jemalloc
+
+  build_ruby_debian_10-3_0_0-malloctrim:
+    name: 'Build Ruby [debian-10/3.0.0/malloctrim]'
+    runs-on: ubuntu-20.04
+    needs:
+      - determine_necessary_jobs
+      - build_jemalloc_debian_10
+    # Run even if a dependent job has been skipped
+    if: |
+      contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Ruby [debian-10/3.0.0/malloctrim];')
+      && !failure() && !cancelled()
+    steps:
+      - name: Check whether 'Build Jemalloc [debian-10]' did not fail
+        run: 'false'
+        if: |
+          needs.build_jemalloc_debian_10.result == 'skipped'
+          && contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Jemalloc [debian-10];')
+
+      - uses: actions/checkout@v2
+      - name: Login to Google Cloud
+        uses: ./.github/actions/gcloud-login
+        with:
+          private_key: ${{ secrets.GCLOUD_KEY }}
+      - name: Fetch Ruby source
+        run: ./internal-scripts/ci-cd/download-artifact.sh
+        env:
+          ARTIFACT_NAME: ruby-src-3.0.0
+          ARTIFACT_PATH: .
+
+      - name: Download Docker image necessary for building
+        run: ./internal-scripts/ci-cd/download-artifact.sh
+        if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Docker image debian-10;')
+        env:
+          ARTIFACT_NAME: 'docker-image-debian-10'
+          ARTIFACT_PATH: .
+      - name: Load Docker image necessary for building
+        run: ./internal-scripts/ci-cd/load-docker-image.sh
+        if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Docker image debian-10;')
+        env:
+          TARBALL: image.tar.zst
+
+      - name: Download Docker image necessary for packaging
+        run: ./internal-scripts/ci-cd/download-artifact.sh
+        if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Docker image utility;')
+        env:
+          ARTIFACT_NAME: 'docker-image-debian-10'
+          ARTIFACT_PATH: .
+      - name: Load Docker image necessary for packaging
+        run: ./internal-scripts/ci-cd/load-docker-image.sh
+        if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Docker image utility;')
+        env:
+          TARBALL: image.tar.zst
+
+      
+
+      - name: Reset & prepare workspace
+        run: mkdir cache-malloctrim
+      - name: "[malloctrim] Fetch cache"
+        uses: actions/cache@v2
+        with:
+          path: cache-malloctrim
+          key: v2-ruby-bin-3.0.0-debian-10-malloctrim
+
+      - name: Build binaries
+        run: ./internal-scripts/ci-cd/build-ruby-packages/build-binaries.sh
+        env:
+          ENVIRONMENT_NAME: "debian-10"
+          VARIANT_NAME: "malloctrim"
+          RUBY_PACKAGE_VERSION_ID: "3.0.0"
+
+      - name: Build package
+        run: ./internal-scripts/ci-cd/build-ruby-packages/build-package.sh
+        env:
+          DISTRIBUTION_NAME: "debian-10"
+          VARIANT_NAME: "malloctrim"
+          VARIANT_PACKAGE_SUFFIX: "-malloctrim"
+          PACKAGE_FORMAT: "DEB"
+          RUBY_PACKAGE_VERSION_ID: "3.0.0"
+          RUBY_PACKAGE_REVISION: "1"
+
+      - name: Archive package artifact to Google Cloud
+        run: ./internal-scripts/ci-cd/upload-artifact.sh
+        env:
+          ARTIFACT_NAME: "ruby-pkg_3.0.0_debian-10_malloctrim"
           ARTIFACT_PATH: output-malloctrim
 
   build_ruby_debian_10-2_7_2-normal:
@@ -5214,6 +6774,266 @@ jobs:
           ARTIFACT_PATH: output-malloctrim
 
 
+  build_ruby_debian_9-3_0-normal:
+    name: 'Build Ruby [debian-9/3.0/normal]'
+    runs-on: ubuntu-20.04
+    needs:
+      - determine_necessary_jobs
+      - build_jemalloc_debian_9
+    # Run even if a dependent job has been skipped
+    if: |
+      contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Ruby [debian-9/3.0/normal];')
+      && !failure() && !cancelled()
+    steps:
+      - name: Check whether 'Build Jemalloc [debian-9]' did not fail
+        run: 'false'
+        if: |
+          needs.build_jemalloc_debian_9.result == 'skipped'
+          && contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Jemalloc [debian-9];')
+
+      - uses: actions/checkout@v2
+      - name: Login to Google Cloud
+        uses: ./.github/actions/gcloud-login
+        with:
+          private_key: ${{ secrets.GCLOUD_KEY }}
+      - name: Fetch Ruby source
+        run: ./internal-scripts/ci-cd/download-artifact.sh
+        env:
+          ARTIFACT_NAME: ruby-src-3.0.0
+          ARTIFACT_PATH: .
+
+      - name: Download Docker image necessary for building
+        run: ./internal-scripts/ci-cd/download-artifact.sh
+        if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Docker image debian-9;')
+        env:
+          ARTIFACT_NAME: 'docker-image-debian-9'
+          ARTIFACT_PATH: .
+      - name: Load Docker image necessary for building
+        run: ./internal-scripts/ci-cd/load-docker-image.sh
+        if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Docker image debian-9;')
+        env:
+          TARBALL: image.tar.zst
+
+      - name: Download Docker image necessary for packaging
+        run: ./internal-scripts/ci-cd/download-artifact.sh
+        if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Docker image utility;')
+        env:
+          ARTIFACT_NAME: 'docker-image-debian-9'
+          ARTIFACT_PATH: .
+      - name: Load Docker image necessary for packaging
+        run: ./internal-scripts/ci-cd/load-docker-image.sh
+        if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Docker image utility;')
+        env:
+          TARBALL: image.tar.zst
+
+      
+
+      - name: Reset & prepare workspace
+        run: mkdir cache-normal
+      - name: "[normal] Fetch cache"
+        uses: actions/cache@v2
+        with:
+          path: cache-normal
+          key: v2-ruby-bin-3.0-debian-9-normal
+
+      - name: Build binaries
+        run: ./internal-scripts/ci-cd/build-ruby-packages/build-binaries.sh
+        env:
+          ENVIRONMENT_NAME: "debian-9"
+          VARIANT_NAME: "normal"
+          RUBY_PACKAGE_VERSION_ID: "3.0"
+
+      - name: Build package
+        run: ./internal-scripts/ci-cd/build-ruby-packages/build-package.sh
+        env:
+          DISTRIBUTION_NAME: "debian-9"
+          VARIANT_NAME: "normal"
+          VARIANT_PACKAGE_SUFFIX: ""
+          PACKAGE_FORMAT: "DEB"
+          RUBY_PACKAGE_VERSION_ID: "3.0"
+          RUBY_PACKAGE_REVISION: "1"
+
+      - name: Archive package artifact to Google Cloud
+        run: ./internal-scripts/ci-cd/upload-artifact.sh
+        env:
+          ARTIFACT_NAME: "ruby-pkg_3.0_debian-9_normal"
+          ARTIFACT_PATH: output-normal
+
+  build_ruby_debian_9-3_0-jemalloc:
+    name: 'Build Ruby [debian-9/3.0/jemalloc]'
+    runs-on: ubuntu-20.04
+    needs:
+      - determine_necessary_jobs
+      - build_jemalloc_debian_9
+    # Run even if a dependent job has been skipped
+    if: |
+      contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Ruby [debian-9/3.0/jemalloc];')
+      && !failure() && !cancelled()
+    steps:
+      - name: Check whether 'Build Jemalloc [debian-9]' did not fail
+        run: 'false'
+        if: |
+          needs.build_jemalloc_debian_9.result == 'skipped'
+          && contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Jemalloc [debian-9];')
+
+      - uses: actions/checkout@v2
+      - name: Login to Google Cloud
+        uses: ./.github/actions/gcloud-login
+        with:
+          private_key: ${{ secrets.GCLOUD_KEY }}
+      - name: Fetch Ruby source
+        run: ./internal-scripts/ci-cd/download-artifact.sh
+        env:
+          ARTIFACT_NAME: ruby-src-3.0.0
+          ARTIFACT_PATH: .
+
+      - name: Download Docker image necessary for building
+        run: ./internal-scripts/ci-cd/download-artifact.sh
+        if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Docker image debian-9;')
+        env:
+          ARTIFACT_NAME: 'docker-image-debian-9'
+          ARTIFACT_PATH: .
+      - name: Load Docker image necessary for building
+        run: ./internal-scripts/ci-cd/load-docker-image.sh
+        if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Docker image debian-9;')
+        env:
+          TARBALL: image.tar.zst
+
+      - name: Download Docker image necessary for packaging
+        run: ./internal-scripts/ci-cd/download-artifact.sh
+        if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Docker image utility;')
+        env:
+          ARTIFACT_NAME: 'docker-image-debian-9'
+          ARTIFACT_PATH: .
+      - name: Load Docker image necessary for packaging
+        run: ./internal-scripts/ci-cd/load-docker-image.sh
+        if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Docker image utility;')
+        env:
+          TARBALL: image.tar.zst
+
+      
+      - name: Fetch Jemalloc binary
+        run: ./internal-scripts/ci-cd/download-artifact.sh
+        env:
+          ARTIFACT_NAME: jemalloc-bin-debian-9
+          ARTIFACT_PATH: .        
+
+      - name: Reset & prepare workspace
+        run: mkdir cache-jemalloc
+      - name: "[jemalloc] Fetch cache"
+        uses: actions/cache@v2
+        with:
+          path: cache-jemalloc
+          key: v2-ruby-bin-3.0-debian-9-jemalloc
+
+      - name: Build binaries
+        run: ./internal-scripts/ci-cd/build-ruby-packages/build-binaries.sh
+        env:
+          ENVIRONMENT_NAME: "debian-9"
+          VARIANT_NAME: "jemalloc"
+          RUBY_PACKAGE_VERSION_ID: "3.0"
+
+      - name: Build package
+        run: ./internal-scripts/ci-cd/build-ruby-packages/build-package.sh
+        env:
+          DISTRIBUTION_NAME: "debian-9"
+          VARIANT_NAME: "jemalloc"
+          VARIANT_PACKAGE_SUFFIX: "-jemalloc"
+          PACKAGE_FORMAT: "DEB"
+          RUBY_PACKAGE_VERSION_ID: "3.0"
+          RUBY_PACKAGE_REVISION: "1"
+
+      - name: Archive package artifact to Google Cloud
+        run: ./internal-scripts/ci-cd/upload-artifact.sh
+        env:
+          ARTIFACT_NAME: "ruby-pkg_3.0_debian-9_jemalloc"
+          ARTIFACT_PATH: output-jemalloc
+
+  build_ruby_debian_9-3_0-malloctrim:
+    name: 'Build Ruby [debian-9/3.0/malloctrim]'
+    runs-on: ubuntu-20.04
+    needs:
+      - determine_necessary_jobs
+      - build_jemalloc_debian_9
+    # Run even if a dependent job has been skipped
+    if: |
+      contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Ruby [debian-9/3.0/malloctrim];')
+      && !failure() && !cancelled()
+    steps:
+      - name: Check whether 'Build Jemalloc [debian-9]' did not fail
+        run: 'false'
+        if: |
+          needs.build_jemalloc_debian_9.result == 'skipped'
+          && contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Jemalloc [debian-9];')
+
+      - uses: actions/checkout@v2
+      - name: Login to Google Cloud
+        uses: ./.github/actions/gcloud-login
+        with:
+          private_key: ${{ secrets.GCLOUD_KEY }}
+      - name: Fetch Ruby source
+        run: ./internal-scripts/ci-cd/download-artifact.sh
+        env:
+          ARTIFACT_NAME: ruby-src-3.0.0
+          ARTIFACT_PATH: .
+
+      - name: Download Docker image necessary for building
+        run: ./internal-scripts/ci-cd/download-artifact.sh
+        if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Docker image debian-9;')
+        env:
+          ARTIFACT_NAME: 'docker-image-debian-9'
+          ARTIFACT_PATH: .
+      - name: Load Docker image necessary for building
+        run: ./internal-scripts/ci-cd/load-docker-image.sh
+        if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Docker image debian-9;')
+        env:
+          TARBALL: image.tar.zst
+
+      - name: Download Docker image necessary for packaging
+        run: ./internal-scripts/ci-cd/download-artifact.sh
+        if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Docker image utility;')
+        env:
+          ARTIFACT_NAME: 'docker-image-debian-9'
+          ARTIFACT_PATH: .
+      - name: Load Docker image necessary for packaging
+        run: ./internal-scripts/ci-cd/load-docker-image.sh
+        if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Docker image utility;')
+        env:
+          TARBALL: image.tar.zst
+
+      
+
+      - name: Reset & prepare workspace
+        run: mkdir cache-malloctrim
+      - name: "[malloctrim] Fetch cache"
+        uses: actions/cache@v2
+        with:
+          path: cache-malloctrim
+          key: v2-ruby-bin-3.0-debian-9-malloctrim
+
+      - name: Build binaries
+        run: ./internal-scripts/ci-cd/build-ruby-packages/build-binaries.sh
+        env:
+          ENVIRONMENT_NAME: "debian-9"
+          VARIANT_NAME: "malloctrim"
+          RUBY_PACKAGE_VERSION_ID: "3.0"
+
+      - name: Build package
+        run: ./internal-scripts/ci-cd/build-ruby-packages/build-package.sh
+        env:
+          DISTRIBUTION_NAME: "debian-9"
+          VARIANT_NAME: "malloctrim"
+          VARIANT_PACKAGE_SUFFIX: "-malloctrim"
+          PACKAGE_FORMAT: "DEB"
+          RUBY_PACKAGE_VERSION_ID: "3.0"
+          RUBY_PACKAGE_REVISION: "1"
+
+      - name: Archive package artifact to Google Cloud
+        run: ./internal-scripts/ci-cd/upload-artifact.sh
+        env:
+          ARTIFACT_NAME: "ruby-pkg_3.0_debian-9_malloctrim"
+          ARTIFACT_PATH: output-malloctrim
+
   build_ruby_debian_9-2_7-normal:
     name: 'Build Ruby [debian-9/2.7/normal]'
     runs-on: ubuntu-20.04
@@ -5992,6 +7812,266 @@ jobs:
         run: ./internal-scripts/ci-cd/upload-artifact.sh
         env:
           ARTIFACT_NAME: "ruby-pkg_2.5_debian-9_malloctrim"
+          ARTIFACT_PATH: output-malloctrim
+
+  build_ruby_debian_9-3_0_0-normal:
+    name: 'Build Ruby [debian-9/3.0.0/normal]'
+    runs-on: ubuntu-20.04
+    needs:
+      - determine_necessary_jobs
+      - build_jemalloc_debian_9
+    # Run even if a dependent job has been skipped
+    if: |
+      contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Ruby [debian-9/3.0.0/normal];')
+      && !failure() && !cancelled()
+    steps:
+      - name: Check whether 'Build Jemalloc [debian-9]' did not fail
+        run: 'false'
+        if: |
+          needs.build_jemalloc_debian_9.result == 'skipped'
+          && contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Jemalloc [debian-9];')
+
+      - uses: actions/checkout@v2
+      - name: Login to Google Cloud
+        uses: ./.github/actions/gcloud-login
+        with:
+          private_key: ${{ secrets.GCLOUD_KEY }}
+      - name: Fetch Ruby source
+        run: ./internal-scripts/ci-cd/download-artifact.sh
+        env:
+          ARTIFACT_NAME: ruby-src-3.0.0
+          ARTIFACT_PATH: .
+
+      - name: Download Docker image necessary for building
+        run: ./internal-scripts/ci-cd/download-artifact.sh
+        if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Docker image debian-9;')
+        env:
+          ARTIFACT_NAME: 'docker-image-debian-9'
+          ARTIFACT_PATH: .
+      - name: Load Docker image necessary for building
+        run: ./internal-scripts/ci-cd/load-docker-image.sh
+        if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Docker image debian-9;')
+        env:
+          TARBALL: image.tar.zst
+
+      - name: Download Docker image necessary for packaging
+        run: ./internal-scripts/ci-cd/download-artifact.sh
+        if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Docker image utility;')
+        env:
+          ARTIFACT_NAME: 'docker-image-debian-9'
+          ARTIFACT_PATH: .
+      - name: Load Docker image necessary for packaging
+        run: ./internal-scripts/ci-cd/load-docker-image.sh
+        if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Docker image utility;')
+        env:
+          TARBALL: image.tar.zst
+
+      
+
+      - name: Reset & prepare workspace
+        run: mkdir cache-normal
+      - name: "[normal] Fetch cache"
+        uses: actions/cache@v2
+        with:
+          path: cache-normal
+          key: v2-ruby-bin-3.0.0-debian-9-normal
+
+      - name: Build binaries
+        run: ./internal-scripts/ci-cd/build-ruby-packages/build-binaries.sh
+        env:
+          ENVIRONMENT_NAME: "debian-9"
+          VARIANT_NAME: "normal"
+          RUBY_PACKAGE_VERSION_ID: "3.0.0"
+
+      - name: Build package
+        run: ./internal-scripts/ci-cd/build-ruby-packages/build-package.sh
+        env:
+          DISTRIBUTION_NAME: "debian-9"
+          VARIANT_NAME: "normal"
+          VARIANT_PACKAGE_SUFFIX: ""
+          PACKAGE_FORMAT: "DEB"
+          RUBY_PACKAGE_VERSION_ID: "3.0.0"
+          RUBY_PACKAGE_REVISION: "1"
+
+      - name: Archive package artifact to Google Cloud
+        run: ./internal-scripts/ci-cd/upload-artifact.sh
+        env:
+          ARTIFACT_NAME: "ruby-pkg_3.0.0_debian-9_normal"
+          ARTIFACT_PATH: output-normal
+
+  build_ruby_debian_9-3_0_0-jemalloc:
+    name: 'Build Ruby [debian-9/3.0.0/jemalloc]'
+    runs-on: ubuntu-20.04
+    needs:
+      - determine_necessary_jobs
+      - build_jemalloc_debian_9
+    # Run even if a dependent job has been skipped
+    if: |
+      contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Ruby [debian-9/3.0.0/jemalloc];')
+      && !failure() && !cancelled()
+    steps:
+      - name: Check whether 'Build Jemalloc [debian-9]' did not fail
+        run: 'false'
+        if: |
+          needs.build_jemalloc_debian_9.result == 'skipped'
+          && contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Jemalloc [debian-9];')
+
+      - uses: actions/checkout@v2
+      - name: Login to Google Cloud
+        uses: ./.github/actions/gcloud-login
+        with:
+          private_key: ${{ secrets.GCLOUD_KEY }}
+      - name: Fetch Ruby source
+        run: ./internal-scripts/ci-cd/download-artifact.sh
+        env:
+          ARTIFACT_NAME: ruby-src-3.0.0
+          ARTIFACT_PATH: .
+
+      - name: Download Docker image necessary for building
+        run: ./internal-scripts/ci-cd/download-artifact.sh
+        if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Docker image debian-9;')
+        env:
+          ARTIFACT_NAME: 'docker-image-debian-9'
+          ARTIFACT_PATH: .
+      - name: Load Docker image necessary for building
+        run: ./internal-scripts/ci-cd/load-docker-image.sh
+        if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Docker image debian-9;')
+        env:
+          TARBALL: image.tar.zst
+
+      - name: Download Docker image necessary for packaging
+        run: ./internal-scripts/ci-cd/download-artifact.sh
+        if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Docker image utility;')
+        env:
+          ARTIFACT_NAME: 'docker-image-debian-9'
+          ARTIFACT_PATH: .
+      - name: Load Docker image necessary for packaging
+        run: ./internal-scripts/ci-cd/load-docker-image.sh
+        if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Docker image utility;')
+        env:
+          TARBALL: image.tar.zst
+
+      
+      - name: Fetch Jemalloc binary
+        run: ./internal-scripts/ci-cd/download-artifact.sh
+        env:
+          ARTIFACT_NAME: jemalloc-bin-debian-9
+          ARTIFACT_PATH: .        
+
+      - name: Reset & prepare workspace
+        run: mkdir cache-jemalloc
+      - name: "[jemalloc] Fetch cache"
+        uses: actions/cache@v2
+        with:
+          path: cache-jemalloc
+          key: v2-ruby-bin-3.0.0-debian-9-jemalloc
+
+      - name: Build binaries
+        run: ./internal-scripts/ci-cd/build-ruby-packages/build-binaries.sh
+        env:
+          ENVIRONMENT_NAME: "debian-9"
+          VARIANT_NAME: "jemalloc"
+          RUBY_PACKAGE_VERSION_ID: "3.0.0"
+
+      - name: Build package
+        run: ./internal-scripts/ci-cd/build-ruby-packages/build-package.sh
+        env:
+          DISTRIBUTION_NAME: "debian-9"
+          VARIANT_NAME: "jemalloc"
+          VARIANT_PACKAGE_SUFFIX: "-jemalloc"
+          PACKAGE_FORMAT: "DEB"
+          RUBY_PACKAGE_VERSION_ID: "3.0.0"
+          RUBY_PACKAGE_REVISION: "1"
+
+      - name: Archive package artifact to Google Cloud
+        run: ./internal-scripts/ci-cd/upload-artifact.sh
+        env:
+          ARTIFACT_NAME: "ruby-pkg_3.0.0_debian-9_jemalloc"
+          ARTIFACT_PATH: output-jemalloc
+
+  build_ruby_debian_9-3_0_0-malloctrim:
+    name: 'Build Ruby [debian-9/3.0.0/malloctrim]'
+    runs-on: ubuntu-20.04
+    needs:
+      - determine_necessary_jobs
+      - build_jemalloc_debian_9
+    # Run even if a dependent job has been skipped
+    if: |
+      contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Ruby [debian-9/3.0.0/malloctrim];')
+      && !failure() && !cancelled()
+    steps:
+      - name: Check whether 'Build Jemalloc [debian-9]' did not fail
+        run: 'false'
+        if: |
+          needs.build_jemalloc_debian_9.result == 'skipped'
+          && contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Jemalloc [debian-9];')
+
+      - uses: actions/checkout@v2
+      - name: Login to Google Cloud
+        uses: ./.github/actions/gcloud-login
+        with:
+          private_key: ${{ secrets.GCLOUD_KEY }}
+      - name: Fetch Ruby source
+        run: ./internal-scripts/ci-cd/download-artifact.sh
+        env:
+          ARTIFACT_NAME: ruby-src-3.0.0
+          ARTIFACT_PATH: .
+
+      - name: Download Docker image necessary for building
+        run: ./internal-scripts/ci-cd/download-artifact.sh
+        if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Docker image debian-9;')
+        env:
+          ARTIFACT_NAME: 'docker-image-debian-9'
+          ARTIFACT_PATH: .
+      - name: Load Docker image necessary for building
+        run: ./internal-scripts/ci-cd/load-docker-image.sh
+        if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Docker image debian-9;')
+        env:
+          TARBALL: image.tar.zst
+
+      - name: Download Docker image necessary for packaging
+        run: ./internal-scripts/ci-cd/download-artifact.sh
+        if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Docker image utility;')
+        env:
+          ARTIFACT_NAME: 'docker-image-debian-9'
+          ARTIFACT_PATH: .
+      - name: Load Docker image necessary for packaging
+        run: ./internal-scripts/ci-cd/load-docker-image.sh
+        if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Docker image utility;')
+        env:
+          TARBALL: image.tar.zst
+
+      
+
+      - name: Reset & prepare workspace
+        run: mkdir cache-malloctrim
+      - name: "[malloctrim] Fetch cache"
+        uses: actions/cache@v2
+        with:
+          path: cache-malloctrim
+          key: v2-ruby-bin-3.0.0-debian-9-malloctrim
+
+      - name: Build binaries
+        run: ./internal-scripts/ci-cd/build-ruby-packages/build-binaries.sh
+        env:
+          ENVIRONMENT_NAME: "debian-9"
+          VARIANT_NAME: "malloctrim"
+          RUBY_PACKAGE_VERSION_ID: "3.0.0"
+
+      - name: Build package
+        run: ./internal-scripts/ci-cd/build-ruby-packages/build-package.sh
+        env:
+          DISTRIBUTION_NAME: "debian-9"
+          VARIANT_NAME: "malloctrim"
+          VARIANT_PACKAGE_SUFFIX: "-malloctrim"
+          PACKAGE_FORMAT: "DEB"
+          RUBY_PACKAGE_VERSION_ID: "3.0.0"
+          RUBY_PACKAGE_REVISION: "1"
+
+      - name: Archive package artifact to Google Cloud
+        run: ./internal-scripts/ci-cd/upload-artifact.sh
+        env:
+          ARTIFACT_NAME: "ruby-pkg_3.0.0_debian-9_malloctrim"
           ARTIFACT_PATH: output-malloctrim
 
   build_ruby_debian_9-2_7_2-normal:
@@ -6775,6 +8855,266 @@ jobs:
           ARTIFACT_PATH: output-malloctrim
 
 
+  build_ruby_ubuntu_18_04-3_0-normal:
+    name: 'Build Ruby [ubuntu-18.04/3.0/normal]'
+    runs-on: ubuntu-20.04
+    needs:
+      - determine_necessary_jobs
+      - build_jemalloc_ubuntu_18_04
+    # Run even if a dependent job has been skipped
+    if: |
+      contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Ruby [ubuntu-18.04/3.0/normal];')
+      && !failure() && !cancelled()
+    steps:
+      - name: Check whether 'Build Jemalloc [ubuntu-18.04]' did not fail
+        run: 'false'
+        if: |
+          needs.build_jemalloc_ubuntu_18_04.result == 'skipped'
+          && contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Jemalloc [ubuntu-18.04];')
+
+      - uses: actions/checkout@v2
+      - name: Login to Google Cloud
+        uses: ./.github/actions/gcloud-login
+        with:
+          private_key: ${{ secrets.GCLOUD_KEY }}
+      - name: Fetch Ruby source
+        run: ./internal-scripts/ci-cd/download-artifact.sh
+        env:
+          ARTIFACT_NAME: ruby-src-3.0.0
+          ARTIFACT_PATH: .
+
+      - name: Download Docker image necessary for building
+        run: ./internal-scripts/ci-cd/download-artifact.sh
+        if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Docker image ubuntu-18.04;')
+        env:
+          ARTIFACT_NAME: 'docker-image-ubuntu-18.04'
+          ARTIFACT_PATH: .
+      - name: Load Docker image necessary for building
+        run: ./internal-scripts/ci-cd/load-docker-image.sh
+        if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Docker image ubuntu-18.04;')
+        env:
+          TARBALL: image.tar.zst
+
+      - name: Download Docker image necessary for packaging
+        run: ./internal-scripts/ci-cd/download-artifact.sh
+        if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Docker image utility;')
+        env:
+          ARTIFACT_NAME: 'docker-image-ubuntu-18.04'
+          ARTIFACT_PATH: .
+      - name: Load Docker image necessary for packaging
+        run: ./internal-scripts/ci-cd/load-docker-image.sh
+        if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Docker image utility;')
+        env:
+          TARBALL: image.tar.zst
+
+      
+
+      - name: Reset & prepare workspace
+        run: mkdir cache-normal
+      - name: "[normal] Fetch cache"
+        uses: actions/cache@v2
+        with:
+          path: cache-normal
+          key: v2-ruby-bin-3.0-ubuntu-18.04-normal
+
+      - name: Build binaries
+        run: ./internal-scripts/ci-cd/build-ruby-packages/build-binaries.sh
+        env:
+          ENVIRONMENT_NAME: "ubuntu-18.04"
+          VARIANT_NAME: "normal"
+          RUBY_PACKAGE_VERSION_ID: "3.0"
+
+      - name: Build package
+        run: ./internal-scripts/ci-cd/build-ruby-packages/build-package.sh
+        env:
+          DISTRIBUTION_NAME: "ubuntu-18.04"
+          VARIANT_NAME: "normal"
+          VARIANT_PACKAGE_SUFFIX: ""
+          PACKAGE_FORMAT: "DEB"
+          RUBY_PACKAGE_VERSION_ID: "3.0"
+          RUBY_PACKAGE_REVISION: "1"
+
+      - name: Archive package artifact to Google Cloud
+        run: ./internal-scripts/ci-cd/upload-artifact.sh
+        env:
+          ARTIFACT_NAME: "ruby-pkg_3.0_ubuntu-18.04_normal"
+          ARTIFACT_PATH: output-normal
+
+  build_ruby_ubuntu_18_04-3_0-jemalloc:
+    name: 'Build Ruby [ubuntu-18.04/3.0/jemalloc]'
+    runs-on: ubuntu-20.04
+    needs:
+      - determine_necessary_jobs
+      - build_jemalloc_ubuntu_18_04
+    # Run even if a dependent job has been skipped
+    if: |
+      contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Ruby [ubuntu-18.04/3.0/jemalloc];')
+      && !failure() && !cancelled()
+    steps:
+      - name: Check whether 'Build Jemalloc [ubuntu-18.04]' did not fail
+        run: 'false'
+        if: |
+          needs.build_jemalloc_ubuntu_18_04.result == 'skipped'
+          && contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Jemalloc [ubuntu-18.04];')
+
+      - uses: actions/checkout@v2
+      - name: Login to Google Cloud
+        uses: ./.github/actions/gcloud-login
+        with:
+          private_key: ${{ secrets.GCLOUD_KEY }}
+      - name: Fetch Ruby source
+        run: ./internal-scripts/ci-cd/download-artifact.sh
+        env:
+          ARTIFACT_NAME: ruby-src-3.0.0
+          ARTIFACT_PATH: .
+
+      - name: Download Docker image necessary for building
+        run: ./internal-scripts/ci-cd/download-artifact.sh
+        if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Docker image ubuntu-18.04;')
+        env:
+          ARTIFACT_NAME: 'docker-image-ubuntu-18.04'
+          ARTIFACT_PATH: .
+      - name: Load Docker image necessary for building
+        run: ./internal-scripts/ci-cd/load-docker-image.sh
+        if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Docker image ubuntu-18.04;')
+        env:
+          TARBALL: image.tar.zst
+
+      - name: Download Docker image necessary for packaging
+        run: ./internal-scripts/ci-cd/download-artifact.sh
+        if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Docker image utility;')
+        env:
+          ARTIFACT_NAME: 'docker-image-ubuntu-18.04'
+          ARTIFACT_PATH: .
+      - name: Load Docker image necessary for packaging
+        run: ./internal-scripts/ci-cd/load-docker-image.sh
+        if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Docker image utility;')
+        env:
+          TARBALL: image.tar.zst
+
+      
+      - name: Fetch Jemalloc binary
+        run: ./internal-scripts/ci-cd/download-artifact.sh
+        env:
+          ARTIFACT_NAME: jemalloc-bin-ubuntu-18.04
+          ARTIFACT_PATH: .        
+
+      - name: Reset & prepare workspace
+        run: mkdir cache-jemalloc
+      - name: "[jemalloc] Fetch cache"
+        uses: actions/cache@v2
+        with:
+          path: cache-jemalloc
+          key: v2-ruby-bin-3.0-ubuntu-18.04-jemalloc
+
+      - name: Build binaries
+        run: ./internal-scripts/ci-cd/build-ruby-packages/build-binaries.sh
+        env:
+          ENVIRONMENT_NAME: "ubuntu-18.04"
+          VARIANT_NAME: "jemalloc"
+          RUBY_PACKAGE_VERSION_ID: "3.0"
+
+      - name: Build package
+        run: ./internal-scripts/ci-cd/build-ruby-packages/build-package.sh
+        env:
+          DISTRIBUTION_NAME: "ubuntu-18.04"
+          VARIANT_NAME: "jemalloc"
+          VARIANT_PACKAGE_SUFFIX: "-jemalloc"
+          PACKAGE_FORMAT: "DEB"
+          RUBY_PACKAGE_VERSION_ID: "3.0"
+          RUBY_PACKAGE_REVISION: "1"
+
+      - name: Archive package artifact to Google Cloud
+        run: ./internal-scripts/ci-cd/upload-artifact.sh
+        env:
+          ARTIFACT_NAME: "ruby-pkg_3.0_ubuntu-18.04_jemalloc"
+          ARTIFACT_PATH: output-jemalloc
+
+  build_ruby_ubuntu_18_04-3_0-malloctrim:
+    name: 'Build Ruby [ubuntu-18.04/3.0/malloctrim]'
+    runs-on: ubuntu-20.04
+    needs:
+      - determine_necessary_jobs
+      - build_jemalloc_ubuntu_18_04
+    # Run even if a dependent job has been skipped
+    if: |
+      contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Ruby [ubuntu-18.04/3.0/malloctrim];')
+      && !failure() && !cancelled()
+    steps:
+      - name: Check whether 'Build Jemalloc [ubuntu-18.04]' did not fail
+        run: 'false'
+        if: |
+          needs.build_jemalloc_ubuntu_18_04.result == 'skipped'
+          && contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Jemalloc [ubuntu-18.04];')
+
+      - uses: actions/checkout@v2
+      - name: Login to Google Cloud
+        uses: ./.github/actions/gcloud-login
+        with:
+          private_key: ${{ secrets.GCLOUD_KEY }}
+      - name: Fetch Ruby source
+        run: ./internal-scripts/ci-cd/download-artifact.sh
+        env:
+          ARTIFACT_NAME: ruby-src-3.0.0
+          ARTIFACT_PATH: .
+
+      - name: Download Docker image necessary for building
+        run: ./internal-scripts/ci-cd/download-artifact.sh
+        if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Docker image ubuntu-18.04;')
+        env:
+          ARTIFACT_NAME: 'docker-image-ubuntu-18.04'
+          ARTIFACT_PATH: .
+      - name: Load Docker image necessary for building
+        run: ./internal-scripts/ci-cd/load-docker-image.sh
+        if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Docker image ubuntu-18.04;')
+        env:
+          TARBALL: image.tar.zst
+
+      - name: Download Docker image necessary for packaging
+        run: ./internal-scripts/ci-cd/download-artifact.sh
+        if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Docker image utility;')
+        env:
+          ARTIFACT_NAME: 'docker-image-ubuntu-18.04'
+          ARTIFACT_PATH: .
+      - name: Load Docker image necessary for packaging
+        run: ./internal-scripts/ci-cd/load-docker-image.sh
+        if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Docker image utility;')
+        env:
+          TARBALL: image.tar.zst
+
+      
+
+      - name: Reset & prepare workspace
+        run: mkdir cache-malloctrim
+      - name: "[malloctrim] Fetch cache"
+        uses: actions/cache@v2
+        with:
+          path: cache-malloctrim
+          key: v2-ruby-bin-3.0-ubuntu-18.04-malloctrim
+
+      - name: Build binaries
+        run: ./internal-scripts/ci-cd/build-ruby-packages/build-binaries.sh
+        env:
+          ENVIRONMENT_NAME: "ubuntu-18.04"
+          VARIANT_NAME: "malloctrim"
+          RUBY_PACKAGE_VERSION_ID: "3.0"
+
+      - name: Build package
+        run: ./internal-scripts/ci-cd/build-ruby-packages/build-package.sh
+        env:
+          DISTRIBUTION_NAME: "ubuntu-18.04"
+          VARIANT_NAME: "malloctrim"
+          VARIANT_PACKAGE_SUFFIX: "-malloctrim"
+          PACKAGE_FORMAT: "DEB"
+          RUBY_PACKAGE_VERSION_ID: "3.0"
+          RUBY_PACKAGE_REVISION: "1"
+
+      - name: Archive package artifact to Google Cloud
+        run: ./internal-scripts/ci-cd/upload-artifact.sh
+        env:
+          ARTIFACT_NAME: "ruby-pkg_3.0_ubuntu-18.04_malloctrim"
+          ARTIFACT_PATH: output-malloctrim
+
   build_ruby_ubuntu_18_04-2_7-normal:
     name: 'Build Ruby [ubuntu-18.04/2.7/normal]'
     runs-on: ubuntu-20.04
@@ -7553,6 +9893,266 @@ jobs:
         run: ./internal-scripts/ci-cd/upload-artifact.sh
         env:
           ARTIFACT_NAME: "ruby-pkg_2.5_ubuntu-18.04_malloctrim"
+          ARTIFACT_PATH: output-malloctrim
+
+  build_ruby_ubuntu_18_04-3_0_0-normal:
+    name: 'Build Ruby [ubuntu-18.04/3.0.0/normal]'
+    runs-on: ubuntu-20.04
+    needs:
+      - determine_necessary_jobs
+      - build_jemalloc_ubuntu_18_04
+    # Run even if a dependent job has been skipped
+    if: |
+      contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Ruby [ubuntu-18.04/3.0.0/normal];')
+      && !failure() && !cancelled()
+    steps:
+      - name: Check whether 'Build Jemalloc [ubuntu-18.04]' did not fail
+        run: 'false'
+        if: |
+          needs.build_jemalloc_ubuntu_18_04.result == 'skipped'
+          && contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Jemalloc [ubuntu-18.04];')
+
+      - uses: actions/checkout@v2
+      - name: Login to Google Cloud
+        uses: ./.github/actions/gcloud-login
+        with:
+          private_key: ${{ secrets.GCLOUD_KEY }}
+      - name: Fetch Ruby source
+        run: ./internal-scripts/ci-cd/download-artifact.sh
+        env:
+          ARTIFACT_NAME: ruby-src-3.0.0
+          ARTIFACT_PATH: .
+
+      - name: Download Docker image necessary for building
+        run: ./internal-scripts/ci-cd/download-artifact.sh
+        if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Docker image ubuntu-18.04;')
+        env:
+          ARTIFACT_NAME: 'docker-image-ubuntu-18.04'
+          ARTIFACT_PATH: .
+      - name: Load Docker image necessary for building
+        run: ./internal-scripts/ci-cd/load-docker-image.sh
+        if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Docker image ubuntu-18.04;')
+        env:
+          TARBALL: image.tar.zst
+
+      - name: Download Docker image necessary for packaging
+        run: ./internal-scripts/ci-cd/download-artifact.sh
+        if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Docker image utility;')
+        env:
+          ARTIFACT_NAME: 'docker-image-ubuntu-18.04'
+          ARTIFACT_PATH: .
+      - name: Load Docker image necessary for packaging
+        run: ./internal-scripts/ci-cd/load-docker-image.sh
+        if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Docker image utility;')
+        env:
+          TARBALL: image.tar.zst
+
+      
+
+      - name: Reset & prepare workspace
+        run: mkdir cache-normal
+      - name: "[normal] Fetch cache"
+        uses: actions/cache@v2
+        with:
+          path: cache-normal
+          key: v2-ruby-bin-3.0.0-ubuntu-18.04-normal
+
+      - name: Build binaries
+        run: ./internal-scripts/ci-cd/build-ruby-packages/build-binaries.sh
+        env:
+          ENVIRONMENT_NAME: "ubuntu-18.04"
+          VARIANT_NAME: "normal"
+          RUBY_PACKAGE_VERSION_ID: "3.0.0"
+
+      - name: Build package
+        run: ./internal-scripts/ci-cd/build-ruby-packages/build-package.sh
+        env:
+          DISTRIBUTION_NAME: "ubuntu-18.04"
+          VARIANT_NAME: "normal"
+          VARIANT_PACKAGE_SUFFIX: ""
+          PACKAGE_FORMAT: "DEB"
+          RUBY_PACKAGE_VERSION_ID: "3.0.0"
+          RUBY_PACKAGE_REVISION: "1"
+
+      - name: Archive package artifact to Google Cloud
+        run: ./internal-scripts/ci-cd/upload-artifact.sh
+        env:
+          ARTIFACT_NAME: "ruby-pkg_3.0.0_ubuntu-18.04_normal"
+          ARTIFACT_PATH: output-normal
+
+  build_ruby_ubuntu_18_04-3_0_0-jemalloc:
+    name: 'Build Ruby [ubuntu-18.04/3.0.0/jemalloc]'
+    runs-on: ubuntu-20.04
+    needs:
+      - determine_necessary_jobs
+      - build_jemalloc_ubuntu_18_04
+    # Run even if a dependent job has been skipped
+    if: |
+      contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Ruby [ubuntu-18.04/3.0.0/jemalloc];')
+      && !failure() && !cancelled()
+    steps:
+      - name: Check whether 'Build Jemalloc [ubuntu-18.04]' did not fail
+        run: 'false'
+        if: |
+          needs.build_jemalloc_ubuntu_18_04.result == 'skipped'
+          && contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Jemalloc [ubuntu-18.04];')
+
+      - uses: actions/checkout@v2
+      - name: Login to Google Cloud
+        uses: ./.github/actions/gcloud-login
+        with:
+          private_key: ${{ secrets.GCLOUD_KEY }}
+      - name: Fetch Ruby source
+        run: ./internal-scripts/ci-cd/download-artifact.sh
+        env:
+          ARTIFACT_NAME: ruby-src-3.0.0
+          ARTIFACT_PATH: .
+
+      - name: Download Docker image necessary for building
+        run: ./internal-scripts/ci-cd/download-artifact.sh
+        if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Docker image ubuntu-18.04;')
+        env:
+          ARTIFACT_NAME: 'docker-image-ubuntu-18.04'
+          ARTIFACT_PATH: .
+      - name: Load Docker image necessary for building
+        run: ./internal-scripts/ci-cd/load-docker-image.sh
+        if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Docker image ubuntu-18.04;')
+        env:
+          TARBALL: image.tar.zst
+
+      - name: Download Docker image necessary for packaging
+        run: ./internal-scripts/ci-cd/download-artifact.sh
+        if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Docker image utility;')
+        env:
+          ARTIFACT_NAME: 'docker-image-ubuntu-18.04'
+          ARTIFACT_PATH: .
+      - name: Load Docker image necessary for packaging
+        run: ./internal-scripts/ci-cd/load-docker-image.sh
+        if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Docker image utility;')
+        env:
+          TARBALL: image.tar.zst
+
+      
+      - name: Fetch Jemalloc binary
+        run: ./internal-scripts/ci-cd/download-artifact.sh
+        env:
+          ARTIFACT_NAME: jemalloc-bin-ubuntu-18.04
+          ARTIFACT_PATH: .        
+
+      - name: Reset & prepare workspace
+        run: mkdir cache-jemalloc
+      - name: "[jemalloc] Fetch cache"
+        uses: actions/cache@v2
+        with:
+          path: cache-jemalloc
+          key: v2-ruby-bin-3.0.0-ubuntu-18.04-jemalloc
+
+      - name: Build binaries
+        run: ./internal-scripts/ci-cd/build-ruby-packages/build-binaries.sh
+        env:
+          ENVIRONMENT_NAME: "ubuntu-18.04"
+          VARIANT_NAME: "jemalloc"
+          RUBY_PACKAGE_VERSION_ID: "3.0.0"
+
+      - name: Build package
+        run: ./internal-scripts/ci-cd/build-ruby-packages/build-package.sh
+        env:
+          DISTRIBUTION_NAME: "ubuntu-18.04"
+          VARIANT_NAME: "jemalloc"
+          VARIANT_PACKAGE_SUFFIX: "-jemalloc"
+          PACKAGE_FORMAT: "DEB"
+          RUBY_PACKAGE_VERSION_ID: "3.0.0"
+          RUBY_PACKAGE_REVISION: "1"
+
+      - name: Archive package artifact to Google Cloud
+        run: ./internal-scripts/ci-cd/upload-artifact.sh
+        env:
+          ARTIFACT_NAME: "ruby-pkg_3.0.0_ubuntu-18.04_jemalloc"
+          ARTIFACT_PATH: output-jemalloc
+
+  build_ruby_ubuntu_18_04-3_0_0-malloctrim:
+    name: 'Build Ruby [ubuntu-18.04/3.0.0/malloctrim]'
+    runs-on: ubuntu-20.04
+    needs:
+      - determine_necessary_jobs
+      - build_jemalloc_ubuntu_18_04
+    # Run even if a dependent job has been skipped
+    if: |
+      contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Ruby [ubuntu-18.04/3.0.0/malloctrim];')
+      && !failure() && !cancelled()
+    steps:
+      - name: Check whether 'Build Jemalloc [ubuntu-18.04]' did not fail
+        run: 'false'
+        if: |
+          needs.build_jemalloc_ubuntu_18_04.result == 'skipped'
+          && contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Jemalloc [ubuntu-18.04];')
+
+      - uses: actions/checkout@v2
+      - name: Login to Google Cloud
+        uses: ./.github/actions/gcloud-login
+        with:
+          private_key: ${{ secrets.GCLOUD_KEY }}
+      - name: Fetch Ruby source
+        run: ./internal-scripts/ci-cd/download-artifact.sh
+        env:
+          ARTIFACT_NAME: ruby-src-3.0.0
+          ARTIFACT_PATH: .
+
+      - name: Download Docker image necessary for building
+        run: ./internal-scripts/ci-cd/download-artifact.sh
+        if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Docker image ubuntu-18.04;')
+        env:
+          ARTIFACT_NAME: 'docker-image-ubuntu-18.04'
+          ARTIFACT_PATH: .
+      - name: Load Docker image necessary for building
+        run: ./internal-scripts/ci-cd/load-docker-image.sh
+        if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Docker image ubuntu-18.04;')
+        env:
+          TARBALL: image.tar.zst
+
+      - name: Download Docker image necessary for packaging
+        run: ./internal-scripts/ci-cd/download-artifact.sh
+        if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Docker image utility;')
+        env:
+          ARTIFACT_NAME: 'docker-image-ubuntu-18.04'
+          ARTIFACT_PATH: .
+      - name: Load Docker image necessary for packaging
+        run: ./internal-scripts/ci-cd/load-docker-image.sh
+        if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Docker image utility;')
+        env:
+          TARBALL: image.tar.zst
+
+      
+
+      - name: Reset & prepare workspace
+        run: mkdir cache-malloctrim
+      - name: "[malloctrim] Fetch cache"
+        uses: actions/cache@v2
+        with:
+          path: cache-malloctrim
+          key: v2-ruby-bin-3.0.0-ubuntu-18.04-malloctrim
+
+      - name: Build binaries
+        run: ./internal-scripts/ci-cd/build-ruby-packages/build-binaries.sh
+        env:
+          ENVIRONMENT_NAME: "ubuntu-18.04"
+          VARIANT_NAME: "malloctrim"
+          RUBY_PACKAGE_VERSION_ID: "3.0.0"
+
+      - name: Build package
+        run: ./internal-scripts/ci-cd/build-ruby-packages/build-package.sh
+        env:
+          DISTRIBUTION_NAME: "ubuntu-18.04"
+          VARIANT_NAME: "malloctrim"
+          VARIANT_PACKAGE_SUFFIX: "-malloctrim"
+          PACKAGE_FORMAT: "DEB"
+          RUBY_PACKAGE_VERSION_ID: "3.0.0"
+          RUBY_PACKAGE_REVISION: "1"
+
+      - name: Archive package artifact to Google Cloud
+        run: ./internal-scripts/ci-cd/upload-artifact.sh
+        env:
+          ARTIFACT_NAME: "ruby-pkg_3.0.0_ubuntu-18.04_malloctrim"
           ARTIFACT_PATH: output-malloctrim
 
   build_ruby_ubuntu_18_04-2_7_2-normal:
@@ -8336,6 +10936,266 @@ jobs:
           ARTIFACT_PATH: output-malloctrim
 
 
+  build_ruby_ubuntu_20_04-3_0-normal:
+    name: 'Build Ruby [ubuntu-20.04/3.0/normal]'
+    runs-on: ubuntu-20.04
+    needs:
+      - determine_necessary_jobs
+      - build_jemalloc_ubuntu_20_04
+    # Run even if a dependent job has been skipped
+    if: |
+      contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Ruby [ubuntu-20.04/3.0/normal];')
+      && !failure() && !cancelled()
+    steps:
+      - name: Check whether 'Build Jemalloc [ubuntu-20.04]' did not fail
+        run: 'false'
+        if: |
+          needs.build_jemalloc_ubuntu_20_04.result == 'skipped'
+          && contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Jemalloc [ubuntu-20.04];')
+
+      - uses: actions/checkout@v2
+      - name: Login to Google Cloud
+        uses: ./.github/actions/gcloud-login
+        with:
+          private_key: ${{ secrets.GCLOUD_KEY }}
+      - name: Fetch Ruby source
+        run: ./internal-scripts/ci-cd/download-artifact.sh
+        env:
+          ARTIFACT_NAME: ruby-src-3.0.0
+          ARTIFACT_PATH: .
+
+      - name: Download Docker image necessary for building
+        run: ./internal-scripts/ci-cd/download-artifact.sh
+        if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Docker image ubuntu-20.04;')
+        env:
+          ARTIFACT_NAME: 'docker-image-ubuntu-20.04'
+          ARTIFACT_PATH: .
+      - name: Load Docker image necessary for building
+        run: ./internal-scripts/ci-cd/load-docker-image.sh
+        if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Docker image ubuntu-20.04;')
+        env:
+          TARBALL: image.tar.zst
+
+      - name: Download Docker image necessary for packaging
+        run: ./internal-scripts/ci-cd/download-artifact.sh
+        if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Docker image utility;')
+        env:
+          ARTIFACT_NAME: 'docker-image-ubuntu-20.04'
+          ARTIFACT_PATH: .
+      - name: Load Docker image necessary for packaging
+        run: ./internal-scripts/ci-cd/load-docker-image.sh
+        if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Docker image utility;')
+        env:
+          TARBALL: image.tar.zst
+
+      
+
+      - name: Reset & prepare workspace
+        run: mkdir cache-normal
+      - name: "[normal] Fetch cache"
+        uses: actions/cache@v2
+        with:
+          path: cache-normal
+          key: v2-ruby-bin-3.0-ubuntu-20.04-normal
+
+      - name: Build binaries
+        run: ./internal-scripts/ci-cd/build-ruby-packages/build-binaries.sh
+        env:
+          ENVIRONMENT_NAME: "ubuntu-20.04"
+          VARIANT_NAME: "normal"
+          RUBY_PACKAGE_VERSION_ID: "3.0"
+
+      - name: Build package
+        run: ./internal-scripts/ci-cd/build-ruby-packages/build-package.sh
+        env:
+          DISTRIBUTION_NAME: "ubuntu-20.04"
+          VARIANT_NAME: "normal"
+          VARIANT_PACKAGE_SUFFIX: ""
+          PACKAGE_FORMAT: "DEB"
+          RUBY_PACKAGE_VERSION_ID: "3.0"
+          RUBY_PACKAGE_REVISION: "1"
+
+      - name: Archive package artifact to Google Cloud
+        run: ./internal-scripts/ci-cd/upload-artifact.sh
+        env:
+          ARTIFACT_NAME: "ruby-pkg_3.0_ubuntu-20.04_normal"
+          ARTIFACT_PATH: output-normal
+
+  build_ruby_ubuntu_20_04-3_0-jemalloc:
+    name: 'Build Ruby [ubuntu-20.04/3.0/jemalloc]'
+    runs-on: ubuntu-20.04
+    needs:
+      - determine_necessary_jobs
+      - build_jemalloc_ubuntu_20_04
+    # Run even if a dependent job has been skipped
+    if: |
+      contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Ruby [ubuntu-20.04/3.0/jemalloc];')
+      && !failure() && !cancelled()
+    steps:
+      - name: Check whether 'Build Jemalloc [ubuntu-20.04]' did not fail
+        run: 'false'
+        if: |
+          needs.build_jemalloc_ubuntu_20_04.result == 'skipped'
+          && contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Jemalloc [ubuntu-20.04];')
+
+      - uses: actions/checkout@v2
+      - name: Login to Google Cloud
+        uses: ./.github/actions/gcloud-login
+        with:
+          private_key: ${{ secrets.GCLOUD_KEY }}
+      - name: Fetch Ruby source
+        run: ./internal-scripts/ci-cd/download-artifact.sh
+        env:
+          ARTIFACT_NAME: ruby-src-3.0.0
+          ARTIFACT_PATH: .
+
+      - name: Download Docker image necessary for building
+        run: ./internal-scripts/ci-cd/download-artifact.sh
+        if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Docker image ubuntu-20.04;')
+        env:
+          ARTIFACT_NAME: 'docker-image-ubuntu-20.04'
+          ARTIFACT_PATH: .
+      - name: Load Docker image necessary for building
+        run: ./internal-scripts/ci-cd/load-docker-image.sh
+        if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Docker image ubuntu-20.04;')
+        env:
+          TARBALL: image.tar.zst
+
+      - name: Download Docker image necessary for packaging
+        run: ./internal-scripts/ci-cd/download-artifact.sh
+        if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Docker image utility;')
+        env:
+          ARTIFACT_NAME: 'docker-image-ubuntu-20.04'
+          ARTIFACT_PATH: .
+      - name: Load Docker image necessary for packaging
+        run: ./internal-scripts/ci-cd/load-docker-image.sh
+        if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Docker image utility;')
+        env:
+          TARBALL: image.tar.zst
+
+      
+      - name: Fetch Jemalloc binary
+        run: ./internal-scripts/ci-cd/download-artifact.sh
+        env:
+          ARTIFACT_NAME: jemalloc-bin-ubuntu-20.04
+          ARTIFACT_PATH: .        
+
+      - name: Reset & prepare workspace
+        run: mkdir cache-jemalloc
+      - name: "[jemalloc] Fetch cache"
+        uses: actions/cache@v2
+        with:
+          path: cache-jemalloc
+          key: v2-ruby-bin-3.0-ubuntu-20.04-jemalloc
+
+      - name: Build binaries
+        run: ./internal-scripts/ci-cd/build-ruby-packages/build-binaries.sh
+        env:
+          ENVIRONMENT_NAME: "ubuntu-20.04"
+          VARIANT_NAME: "jemalloc"
+          RUBY_PACKAGE_VERSION_ID: "3.0"
+
+      - name: Build package
+        run: ./internal-scripts/ci-cd/build-ruby-packages/build-package.sh
+        env:
+          DISTRIBUTION_NAME: "ubuntu-20.04"
+          VARIANT_NAME: "jemalloc"
+          VARIANT_PACKAGE_SUFFIX: "-jemalloc"
+          PACKAGE_FORMAT: "DEB"
+          RUBY_PACKAGE_VERSION_ID: "3.0"
+          RUBY_PACKAGE_REVISION: "1"
+
+      - name: Archive package artifact to Google Cloud
+        run: ./internal-scripts/ci-cd/upload-artifact.sh
+        env:
+          ARTIFACT_NAME: "ruby-pkg_3.0_ubuntu-20.04_jemalloc"
+          ARTIFACT_PATH: output-jemalloc
+
+  build_ruby_ubuntu_20_04-3_0-malloctrim:
+    name: 'Build Ruby [ubuntu-20.04/3.0/malloctrim]'
+    runs-on: ubuntu-20.04
+    needs:
+      - determine_necessary_jobs
+      - build_jemalloc_ubuntu_20_04
+    # Run even if a dependent job has been skipped
+    if: |
+      contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Ruby [ubuntu-20.04/3.0/malloctrim];')
+      && !failure() && !cancelled()
+    steps:
+      - name: Check whether 'Build Jemalloc [ubuntu-20.04]' did not fail
+        run: 'false'
+        if: |
+          needs.build_jemalloc_ubuntu_20_04.result == 'skipped'
+          && contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Jemalloc [ubuntu-20.04];')
+
+      - uses: actions/checkout@v2
+      - name: Login to Google Cloud
+        uses: ./.github/actions/gcloud-login
+        with:
+          private_key: ${{ secrets.GCLOUD_KEY }}
+      - name: Fetch Ruby source
+        run: ./internal-scripts/ci-cd/download-artifact.sh
+        env:
+          ARTIFACT_NAME: ruby-src-3.0.0
+          ARTIFACT_PATH: .
+
+      - name: Download Docker image necessary for building
+        run: ./internal-scripts/ci-cd/download-artifact.sh
+        if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Docker image ubuntu-20.04;')
+        env:
+          ARTIFACT_NAME: 'docker-image-ubuntu-20.04'
+          ARTIFACT_PATH: .
+      - name: Load Docker image necessary for building
+        run: ./internal-scripts/ci-cd/load-docker-image.sh
+        if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Docker image ubuntu-20.04;')
+        env:
+          TARBALL: image.tar.zst
+
+      - name: Download Docker image necessary for packaging
+        run: ./internal-scripts/ci-cd/download-artifact.sh
+        if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Docker image utility;')
+        env:
+          ARTIFACT_NAME: 'docker-image-ubuntu-20.04'
+          ARTIFACT_PATH: .
+      - name: Load Docker image necessary for packaging
+        run: ./internal-scripts/ci-cd/load-docker-image.sh
+        if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Docker image utility;')
+        env:
+          TARBALL: image.tar.zst
+
+      
+
+      - name: Reset & prepare workspace
+        run: mkdir cache-malloctrim
+      - name: "[malloctrim] Fetch cache"
+        uses: actions/cache@v2
+        with:
+          path: cache-malloctrim
+          key: v2-ruby-bin-3.0-ubuntu-20.04-malloctrim
+
+      - name: Build binaries
+        run: ./internal-scripts/ci-cd/build-ruby-packages/build-binaries.sh
+        env:
+          ENVIRONMENT_NAME: "ubuntu-20.04"
+          VARIANT_NAME: "malloctrim"
+          RUBY_PACKAGE_VERSION_ID: "3.0"
+
+      - name: Build package
+        run: ./internal-scripts/ci-cd/build-ruby-packages/build-package.sh
+        env:
+          DISTRIBUTION_NAME: "ubuntu-20.04"
+          VARIANT_NAME: "malloctrim"
+          VARIANT_PACKAGE_SUFFIX: "-malloctrim"
+          PACKAGE_FORMAT: "DEB"
+          RUBY_PACKAGE_VERSION_ID: "3.0"
+          RUBY_PACKAGE_REVISION: "1"
+
+      - name: Archive package artifact to Google Cloud
+        run: ./internal-scripts/ci-cd/upload-artifact.sh
+        env:
+          ARTIFACT_NAME: "ruby-pkg_3.0_ubuntu-20.04_malloctrim"
+          ARTIFACT_PATH: output-malloctrim
+
   build_ruby_ubuntu_20_04-2_7-normal:
     name: 'Build Ruby [ubuntu-20.04/2.7/normal]'
     runs-on: ubuntu-20.04
@@ -9114,6 +11974,266 @@ jobs:
         run: ./internal-scripts/ci-cd/upload-artifact.sh
         env:
           ARTIFACT_NAME: "ruby-pkg_2.5_ubuntu-20.04_malloctrim"
+          ARTIFACT_PATH: output-malloctrim
+
+  build_ruby_ubuntu_20_04-3_0_0-normal:
+    name: 'Build Ruby [ubuntu-20.04/3.0.0/normal]'
+    runs-on: ubuntu-20.04
+    needs:
+      - determine_necessary_jobs
+      - build_jemalloc_ubuntu_20_04
+    # Run even if a dependent job has been skipped
+    if: |
+      contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Ruby [ubuntu-20.04/3.0.0/normal];')
+      && !failure() && !cancelled()
+    steps:
+      - name: Check whether 'Build Jemalloc [ubuntu-20.04]' did not fail
+        run: 'false'
+        if: |
+          needs.build_jemalloc_ubuntu_20_04.result == 'skipped'
+          && contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Jemalloc [ubuntu-20.04];')
+
+      - uses: actions/checkout@v2
+      - name: Login to Google Cloud
+        uses: ./.github/actions/gcloud-login
+        with:
+          private_key: ${{ secrets.GCLOUD_KEY }}
+      - name: Fetch Ruby source
+        run: ./internal-scripts/ci-cd/download-artifact.sh
+        env:
+          ARTIFACT_NAME: ruby-src-3.0.0
+          ARTIFACT_PATH: .
+
+      - name: Download Docker image necessary for building
+        run: ./internal-scripts/ci-cd/download-artifact.sh
+        if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Docker image ubuntu-20.04;')
+        env:
+          ARTIFACT_NAME: 'docker-image-ubuntu-20.04'
+          ARTIFACT_PATH: .
+      - name: Load Docker image necessary for building
+        run: ./internal-scripts/ci-cd/load-docker-image.sh
+        if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Docker image ubuntu-20.04;')
+        env:
+          TARBALL: image.tar.zst
+
+      - name: Download Docker image necessary for packaging
+        run: ./internal-scripts/ci-cd/download-artifact.sh
+        if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Docker image utility;')
+        env:
+          ARTIFACT_NAME: 'docker-image-ubuntu-20.04'
+          ARTIFACT_PATH: .
+      - name: Load Docker image necessary for packaging
+        run: ./internal-scripts/ci-cd/load-docker-image.sh
+        if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Docker image utility;')
+        env:
+          TARBALL: image.tar.zst
+
+      
+
+      - name: Reset & prepare workspace
+        run: mkdir cache-normal
+      - name: "[normal] Fetch cache"
+        uses: actions/cache@v2
+        with:
+          path: cache-normal
+          key: v2-ruby-bin-3.0.0-ubuntu-20.04-normal
+
+      - name: Build binaries
+        run: ./internal-scripts/ci-cd/build-ruby-packages/build-binaries.sh
+        env:
+          ENVIRONMENT_NAME: "ubuntu-20.04"
+          VARIANT_NAME: "normal"
+          RUBY_PACKAGE_VERSION_ID: "3.0.0"
+
+      - name: Build package
+        run: ./internal-scripts/ci-cd/build-ruby-packages/build-package.sh
+        env:
+          DISTRIBUTION_NAME: "ubuntu-20.04"
+          VARIANT_NAME: "normal"
+          VARIANT_PACKAGE_SUFFIX: ""
+          PACKAGE_FORMAT: "DEB"
+          RUBY_PACKAGE_VERSION_ID: "3.0.0"
+          RUBY_PACKAGE_REVISION: "1"
+
+      - name: Archive package artifact to Google Cloud
+        run: ./internal-scripts/ci-cd/upload-artifact.sh
+        env:
+          ARTIFACT_NAME: "ruby-pkg_3.0.0_ubuntu-20.04_normal"
+          ARTIFACT_PATH: output-normal
+
+  build_ruby_ubuntu_20_04-3_0_0-jemalloc:
+    name: 'Build Ruby [ubuntu-20.04/3.0.0/jemalloc]'
+    runs-on: ubuntu-20.04
+    needs:
+      - determine_necessary_jobs
+      - build_jemalloc_ubuntu_20_04
+    # Run even if a dependent job has been skipped
+    if: |
+      contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Ruby [ubuntu-20.04/3.0.0/jemalloc];')
+      && !failure() && !cancelled()
+    steps:
+      - name: Check whether 'Build Jemalloc [ubuntu-20.04]' did not fail
+        run: 'false'
+        if: |
+          needs.build_jemalloc_ubuntu_20_04.result == 'skipped'
+          && contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Jemalloc [ubuntu-20.04];')
+
+      - uses: actions/checkout@v2
+      - name: Login to Google Cloud
+        uses: ./.github/actions/gcloud-login
+        with:
+          private_key: ${{ secrets.GCLOUD_KEY }}
+      - name: Fetch Ruby source
+        run: ./internal-scripts/ci-cd/download-artifact.sh
+        env:
+          ARTIFACT_NAME: ruby-src-3.0.0
+          ARTIFACT_PATH: .
+
+      - name: Download Docker image necessary for building
+        run: ./internal-scripts/ci-cd/download-artifact.sh
+        if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Docker image ubuntu-20.04;')
+        env:
+          ARTIFACT_NAME: 'docker-image-ubuntu-20.04'
+          ARTIFACT_PATH: .
+      - name: Load Docker image necessary for building
+        run: ./internal-scripts/ci-cd/load-docker-image.sh
+        if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Docker image ubuntu-20.04;')
+        env:
+          TARBALL: image.tar.zst
+
+      - name: Download Docker image necessary for packaging
+        run: ./internal-scripts/ci-cd/download-artifact.sh
+        if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Docker image utility;')
+        env:
+          ARTIFACT_NAME: 'docker-image-ubuntu-20.04'
+          ARTIFACT_PATH: .
+      - name: Load Docker image necessary for packaging
+        run: ./internal-scripts/ci-cd/load-docker-image.sh
+        if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Docker image utility;')
+        env:
+          TARBALL: image.tar.zst
+
+      
+      - name: Fetch Jemalloc binary
+        run: ./internal-scripts/ci-cd/download-artifact.sh
+        env:
+          ARTIFACT_NAME: jemalloc-bin-ubuntu-20.04
+          ARTIFACT_PATH: .        
+
+      - name: Reset & prepare workspace
+        run: mkdir cache-jemalloc
+      - name: "[jemalloc] Fetch cache"
+        uses: actions/cache@v2
+        with:
+          path: cache-jemalloc
+          key: v2-ruby-bin-3.0.0-ubuntu-20.04-jemalloc
+
+      - name: Build binaries
+        run: ./internal-scripts/ci-cd/build-ruby-packages/build-binaries.sh
+        env:
+          ENVIRONMENT_NAME: "ubuntu-20.04"
+          VARIANT_NAME: "jemalloc"
+          RUBY_PACKAGE_VERSION_ID: "3.0.0"
+
+      - name: Build package
+        run: ./internal-scripts/ci-cd/build-ruby-packages/build-package.sh
+        env:
+          DISTRIBUTION_NAME: "ubuntu-20.04"
+          VARIANT_NAME: "jemalloc"
+          VARIANT_PACKAGE_SUFFIX: "-jemalloc"
+          PACKAGE_FORMAT: "DEB"
+          RUBY_PACKAGE_VERSION_ID: "3.0.0"
+          RUBY_PACKAGE_REVISION: "1"
+
+      - name: Archive package artifact to Google Cloud
+        run: ./internal-scripts/ci-cd/upload-artifact.sh
+        env:
+          ARTIFACT_NAME: "ruby-pkg_3.0.0_ubuntu-20.04_jemalloc"
+          ARTIFACT_PATH: output-jemalloc
+
+  build_ruby_ubuntu_20_04-3_0_0-malloctrim:
+    name: 'Build Ruby [ubuntu-20.04/3.0.0/malloctrim]'
+    runs-on: ubuntu-20.04
+    needs:
+      - determine_necessary_jobs
+      - build_jemalloc_ubuntu_20_04
+    # Run even if a dependent job has been skipped
+    if: |
+      contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Ruby [ubuntu-20.04/3.0.0/malloctrim];')
+      && !failure() && !cancelled()
+    steps:
+      - name: Check whether 'Build Jemalloc [ubuntu-20.04]' did not fail
+        run: 'false'
+        if: |
+          needs.build_jemalloc_ubuntu_20_04.result == 'skipped'
+          && contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Jemalloc [ubuntu-20.04];')
+
+      - uses: actions/checkout@v2
+      - name: Login to Google Cloud
+        uses: ./.github/actions/gcloud-login
+        with:
+          private_key: ${{ secrets.GCLOUD_KEY }}
+      - name: Fetch Ruby source
+        run: ./internal-scripts/ci-cd/download-artifact.sh
+        env:
+          ARTIFACT_NAME: ruby-src-3.0.0
+          ARTIFACT_PATH: .
+
+      - name: Download Docker image necessary for building
+        run: ./internal-scripts/ci-cd/download-artifact.sh
+        if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Docker image ubuntu-20.04;')
+        env:
+          ARTIFACT_NAME: 'docker-image-ubuntu-20.04'
+          ARTIFACT_PATH: .
+      - name: Load Docker image necessary for building
+        run: ./internal-scripts/ci-cd/load-docker-image.sh
+        if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Docker image ubuntu-20.04;')
+        env:
+          TARBALL: image.tar.zst
+
+      - name: Download Docker image necessary for packaging
+        run: ./internal-scripts/ci-cd/download-artifact.sh
+        if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Docker image utility;')
+        env:
+          ARTIFACT_NAME: 'docker-image-ubuntu-20.04'
+          ARTIFACT_PATH: .
+      - name: Load Docker image necessary for packaging
+        run: ./internal-scripts/ci-cd/load-docker-image.sh
+        if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Docker image utility;')
+        env:
+          TARBALL: image.tar.zst
+
+      
+
+      - name: Reset & prepare workspace
+        run: mkdir cache-malloctrim
+      - name: "[malloctrim] Fetch cache"
+        uses: actions/cache@v2
+        with:
+          path: cache-malloctrim
+          key: v2-ruby-bin-3.0.0-ubuntu-20.04-malloctrim
+
+      - name: Build binaries
+        run: ./internal-scripts/ci-cd/build-ruby-packages/build-binaries.sh
+        env:
+          ENVIRONMENT_NAME: "ubuntu-20.04"
+          VARIANT_NAME: "malloctrim"
+          RUBY_PACKAGE_VERSION_ID: "3.0.0"
+
+      - name: Build package
+        run: ./internal-scripts/ci-cd/build-ruby-packages/build-package.sh
+        env:
+          DISTRIBUTION_NAME: "ubuntu-20.04"
+          VARIANT_NAME: "malloctrim"
+          VARIANT_PACKAGE_SUFFIX: "-malloctrim"
+          PACKAGE_FORMAT: "DEB"
+          RUBY_PACKAGE_VERSION_ID: "3.0.0"
+          RUBY_PACKAGE_REVISION: "1"
+
+      - name: Archive package artifact to Google Cloud
+        run: ./internal-scripts/ci-cd/upload-artifact.sh
+        env:
+          ARTIFACT_NAME: "ruby-pkg_3.0.0_ubuntu-20.04_malloctrim"
           ARTIFACT_PATH: output-malloctrim
 
   build_ruby_ubuntu_20_04-2_7_2-normal:
@@ -9911,6 +13031,10 @@ jobs:
 
       - build_jemalloc_centos_7
 
+      - build_ruby_centos_7-3_0-normal
+      - build_ruby_centos_7-3_0-jemalloc
+      - build_ruby_centos_7-3_0-malloctrim
+
       - build_ruby_centos_7-2_7-normal
       - build_ruby_centos_7-2_7-jemalloc
       - build_ruby_centos_7-2_7-malloctrim
@@ -9922,6 +13046,10 @@ jobs:
       - build_ruby_centos_7-2_5-normal
       - build_ruby_centos_7-2_5-jemalloc
       - build_ruby_centos_7-2_5-malloctrim
+
+      - build_ruby_centos_7-3_0_0-normal
+      - build_ruby_centos_7-3_0_0-jemalloc
+      - build_ruby_centos_7-3_0_0-malloctrim
 
       - build_ruby_centos_7-2_7_2-normal
       - build_ruby_centos_7-2_7_2-jemalloc
@@ -9937,6 +13065,10 @@ jobs:
 
       - build_jemalloc_centos_8
 
+      - build_ruby_centos_8-3_0-normal
+      - build_ruby_centos_8-3_0-jemalloc
+      - build_ruby_centos_8-3_0-malloctrim
+
       - build_ruby_centos_8-2_7-normal
       - build_ruby_centos_8-2_7-jemalloc
       - build_ruby_centos_8-2_7-malloctrim
@@ -9948,6 +13080,10 @@ jobs:
       - build_ruby_centos_8-2_5-normal
       - build_ruby_centos_8-2_5-jemalloc
       - build_ruby_centos_8-2_5-malloctrim
+
+      - build_ruby_centos_8-3_0_0-normal
+      - build_ruby_centos_8-3_0_0-jemalloc
+      - build_ruby_centos_8-3_0_0-malloctrim
 
       - build_ruby_centos_8-2_7_2-normal
       - build_ruby_centos_8-2_7_2-jemalloc
@@ -9963,6 +13099,10 @@ jobs:
 
       - build_jemalloc_debian_10
 
+      - build_ruby_debian_10-3_0-normal
+      - build_ruby_debian_10-3_0-jemalloc
+      - build_ruby_debian_10-3_0-malloctrim
+
       - build_ruby_debian_10-2_7-normal
       - build_ruby_debian_10-2_7-jemalloc
       - build_ruby_debian_10-2_7-malloctrim
@@ -9974,6 +13114,10 @@ jobs:
       - build_ruby_debian_10-2_5-normal
       - build_ruby_debian_10-2_5-jemalloc
       - build_ruby_debian_10-2_5-malloctrim
+
+      - build_ruby_debian_10-3_0_0-normal
+      - build_ruby_debian_10-3_0_0-jemalloc
+      - build_ruby_debian_10-3_0_0-malloctrim
 
       - build_ruby_debian_10-2_7_2-normal
       - build_ruby_debian_10-2_7_2-jemalloc
@@ -9989,6 +13133,10 @@ jobs:
 
       - build_jemalloc_debian_9
 
+      - build_ruby_debian_9-3_0-normal
+      - build_ruby_debian_9-3_0-jemalloc
+      - build_ruby_debian_9-3_0-malloctrim
+
       - build_ruby_debian_9-2_7-normal
       - build_ruby_debian_9-2_7-jemalloc
       - build_ruby_debian_9-2_7-malloctrim
@@ -10000,6 +13148,10 @@ jobs:
       - build_ruby_debian_9-2_5-normal
       - build_ruby_debian_9-2_5-jemalloc
       - build_ruby_debian_9-2_5-malloctrim
+
+      - build_ruby_debian_9-3_0_0-normal
+      - build_ruby_debian_9-3_0_0-jemalloc
+      - build_ruby_debian_9-3_0_0-malloctrim
 
       - build_ruby_debian_9-2_7_2-normal
       - build_ruby_debian_9-2_7_2-jemalloc
@@ -10015,6 +13167,10 @@ jobs:
 
       - build_jemalloc_ubuntu_18_04
 
+      - build_ruby_ubuntu_18_04-3_0-normal
+      - build_ruby_ubuntu_18_04-3_0-jemalloc
+      - build_ruby_ubuntu_18_04-3_0-malloctrim
+
       - build_ruby_ubuntu_18_04-2_7-normal
       - build_ruby_ubuntu_18_04-2_7-jemalloc
       - build_ruby_ubuntu_18_04-2_7-malloctrim
@@ -10026,6 +13182,10 @@ jobs:
       - build_ruby_ubuntu_18_04-2_5-normal
       - build_ruby_ubuntu_18_04-2_5-jemalloc
       - build_ruby_ubuntu_18_04-2_5-malloctrim
+
+      - build_ruby_ubuntu_18_04-3_0_0-normal
+      - build_ruby_ubuntu_18_04-3_0_0-jemalloc
+      - build_ruby_ubuntu_18_04-3_0_0-malloctrim
 
       - build_ruby_ubuntu_18_04-2_7_2-normal
       - build_ruby_ubuntu_18_04-2_7_2-jemalloc
@@ -10041,6 +13201,10 @@ jobs:
 
       - build_jemalloc_ubuntu_20_04
 
+      - build_ruby_ubuntu_20_04-3_0-normal
+      - build_ruby_ubuntu_20_04-3_0-jemalloc
+      - build_ruby_ubuntu_20_04-3_0-malloctrim
+
       - build_ruby_ubuntu_20_04-2_7-normal
       - build_ruby_ubuntu_20_04-2_7-jemalloc
       - build_ruby_ubuntu_20_04-2_7-malloctrim
@@ -10052,6 +13216,10 @@ jobs:
       - build_ruby_ubuntu_20_04-2_5-normal
       - build_ruby_ubuntu_20_04-2_5-jemalloc
       - build_ruby_ubuntu_20_04-2_5-malloctrim
+
+      - build_ruby_ubuntu_20_04-3_0_0-normal
+      - build_ruby_ubuntu_20_04-3_0_0-jemalloc
+      - build_ruby_ubuntu_20_04-3_0_0-malloctrim
 
       - build_ruby_ubuntu_20_04-2_7_2-normal
       - build_ruby_ubuntu_20_04-2_7_2-jemalloc
@@ -10173,9 +13341,99 @@ jobs:
       - name: Download Ruby package artifacts from Google Cloud
         run: ./internal-scripts/ci-cd/download-artifacts.sh
         env:
-          ARTIFACT_NAMES: 'ruby-pkg_2.7_centos-7_normal ruby-pkg_2.7_centos-7_jemalloc ruby-pkg_2.7_centos-7_malloctrim ruby-pkg_2.7_centos-8_normal ruby-pkg_2.7_centos-8_jemalloc ruby-pkg_2.7_centos-8_malloctrim ruby-pkg_2.7_debian-10_normal ruby-pkg_2.7_debian-10_jemalloc ruby-pkg_2.7_debian-10_malloctrim ruby-pkg_2.7_debian-9_normal ruby-pkg_2.7_debian-9_jemalloc ruby-pkg_2.7_debian-9_malloctrim ruby-pkg_2.7_ubuntu-18.04_normal ruby-pkg_2.7_ubuntu-18.04_jemalloc ruby-pkg_2.7_ubuntu-18.04_malloctrim ruby-pkg_2.7_ubuntu-20.04_normal ruby-pkg_2.7_ubuntu-20.04_jemalloc ruby-pkg_2.7_ubuntu-20.04_malloctrim ruby-pkg_2.6_centos-7_normal ruby-pkg_2.6_centos-7_jemalloc ruby-pkg_2.6_centos-7_malloctrim ruby-pkg_2.6_centos-8_normal ruby-pkg_2.6_centos-8_jemalloc ruby-pkg_2.6_centos-8_malloctrim ruby-pkg_2.6_debian-10_normal ruby-pkg_2.6_debian-10_jemalloc ruby-pkg_2.6_debian-10_malloctrim ruby-pkg_2.6_debian-9_normal ruby-pkg_2.6_debian-9_jemalloc ruby-pkg_2.6_debian-9_malloctrim ruby-pkg_2.6_ubuntu-18.04_normal ruby-pkg_2.6_ubuntu-18.04_jemalloc ruby-pkg_2.6_ubuntu-18.04_malloctrim ruby-pkg_2.6_ubuntu-20.04_normal ruby-pkg_2.6_ubuntu-20.04_jemalloc ruby-pkg_2.6_ubuntu-20.04_malloctrim ruby-pkg_2.5_centos-7_normal ruby-pkg_2.5_centos-7_jemalloc ruby-pkg_2.5_centos-7_malloctrim ruby-pkg_2.5_centos-8_normal ruby-pkg_2.5_centos-8_jemalloc ruby-pkg_2.5_centos-8_malloctrim ruby-pkg_2.5_debian-10_normal ruby-pkg_2.5_debian-10_jemalloc ruby-pkg_2.5_debian-10_malloctrim ruby-pkg_2.5_debian-9_normal ruby-pkg_2.5_debian-9_jemalloc ruby-pkg_2.5_debian-9_malloctrim ruby-pkg_2.5_ubuntu-18.04_normal ruby-pkg_2.5_ubuntu-18.04_jemalloc ruby-pkg_2.5_ubuntu-18.04_malloctrim ruby-pkg_2.5_ubuntu-20.04_normal ruby-pkg_2.5_ubuntu-20.04_jemalloc ruby-pkg_2.5_ubuntu-20.04_malloctrim ruby-pkg_2.7.2_centos-7_normal ruby-pkg_2.7.2_centos-7_jemalloc ruby-pkg_2.7.2_centos-7_malloctrim ruby-pkg_2.7.2_centos-8_normal ruby-pkg_2.7.2_centos-8_jemalloc ruby-pkg_2.7.2_centos-8_malloctrim ruby-pkg_2.7.2_debian-10_normal ruby-pkg_2.7.2_debian-10_jemalloc ruby-pkg_2.7.2_debian-10_malloctrim ruby-pkg_2.7.2_debian-9_normal ruby-pkg_2.7.2_debian-9_jemalloc ruby-pkg_2.7.2_debian-9_malloctrim ruby-pkg_2.7.2_ubuntu-18.04_normal ruby-pkg_2.7.2_ubuntu-18.04_jemalloc ruby-pkg_2.7.2_ubuntu-18.04_malloctrim ruby-pkg_2.7.2_ubuntu-20.04_normal ruby-pkg_2.7.2_ubuntu-20.04_jemalloc ruby-pkg_2.7.2_ubuntu-20.04_malloctrim ruby-pkg_2.6.6_centos-7_normal ruby-pkg_2.6.6_centos-7_jemalloc ruby-pkg_2.6.6_centos-7_malloctrim ruby-pkg_2.6.6_centos-8_normal ruby-pkg_2.6.6_centos-8_jemalloc ruby-pkg_2.6.6_centos-8_malloctrim ruby-pkg_2.6.6_debian-10_normal ruby-pkg_2.6.6_debian-10_jemalloc ruby-pkg_2.6.6_debian-10_malloctrim ruby-pkg_2.6.6_debian-9_normal ruby-pkg_2.6.6_debian-9_jemalloc ruby-pkg_2.6.6_debian-9_malloctrim ruby-pkg_2.6.6_ubuntu-18.04_normal ruby-pkg_2.6.6_ubuntu-18.04_jemalloc ruby-pkg_2.6.6_ubuntu-18.04_malloctrim ruby-pkg_2.6.6_ubuntu-20.04_normal ruby-pkg_2.6.6_ubuntu-20.04_jemalloc ruby-pkg_2.6.6_ubuntu-20.04_malloctrim ruby-pkg_2.5.8_centos-7_normal ruby-pkg_2.5.8_centos-7_jemalloc ruby-pkg_2.5.8_centos-7_malloctrim ruby-pkg_2.5.8_centos-8_normal ruby-pkg_2.5.8_centos-8_jemalloc ruby-pkg_2.5.8_centos-8_malloctrim ruby-pkg_2.5.8_debian-10_normal ruby-pkg_2.5.8_debian-10_jemalloc ruby-pkg_2.5.8_debian-10_malloctrim ruby-pkg_2.5.8_debian-9_normal ruby-pkg_2.5.8_debian-9_jemalloc ruby-pkg_2.5.8_debian-9_malloctrim ruby-pkg_2.5.8_ubuntu-18.04_normal ruby-pkg_2.5.8_ubuntu-18.04_jemalloc ruby-pkg_2.5.8_ubuntu-18.04_malloctrim ruby-pkg_2.5.8_ubuntu-20.04_normal ruby-pkg_2.5.8_ubuntu-20.04_jemalloc ruby-pkg_2.5.8_ubuntu-20.04_malloctrim'
+          ARTIFACT_NAMES: 'ruby-pkg_3.0_centos-7_normal ruby-pkg_3.0_centos-7_jemalloc ruby-pkg_3.0_centos-7_malloctrim ruby-pkg_3.0_centos-8_normal ruby-pkg_3.0_centos-8_jemalloc ruby-pkg_3.0_centos-8_malloctrim ruby-pkg_3.0_debian-10_normal ruby-pkg_3.0_debian-10_jemalloc ruby-pkg_3.0_debian-10_malloctrim ruby-pkg_3.0_debian-9_normal ruby-pkg_3.0_debian-9_jemalloc ruby-pkg_3.0_debian-9_malloctrim ruby-pkg_3.0_ubuntu-18.04_normal ruby-pkg_3.0_ubuntu-18.04_jemalloc ruby-pkg_3.0_ubuntu-18.04_malloctrim ruby-pkg_3.0_ubuntu-20.04_normal ruby-pkg_3.0_ubuntu-20.04_jemalloc ruby-pkg_3.0_ubuntu-20.04_malloctrim ruby-pkg_2.7_centos-7_normal ruby-pkg_2.7_centos-7_jemalloc ruby-pkg_2.7_centos-7_malloctrim ruby-pkg_2.7_centos-8_normal ruby-pkg_2.7_centos-8_jemalloc ruby-pkg_2.7_centos-8_malloctrim ruby-pkg_2.7_debian-10_normal ruby-pkg_2.7_debian-10_jemalloc ruby-pkg_2.7_debian-10_malloctrim ruby-pkg_2.7_debian-9_normal ruby-pkg_2.7_debian-9_jemalloc ruby-pkg_2.7_debian-9_malloctrim ruby-pkg_2.7_ubuntu-18.04_normal ruby-pkg_2.7_ubuntu-18.04_jemalloc ruby-pkg_2.7_ubuntu-18.04_malloctrim ruby-pkg_2.7_ubuntu-20.04_normal ruby-pkg_2.7_ubuntu-20.04_jemalloc ruby-pkg_2.7_ubuntu-20.04_malloctrim ruby-pkg_2.6_centos-7_normal ruby-pkg_2.6_centos-7_jemalloc ruby-pkg_2.6_centos-7_malloctrim ruby-pkg_2.6_centos-8_normal ruby-pkg_2.6_centos-8_jemalloc ruby-pkg_2.6_centos-8_malloctrim ruby-pkg_2.6_debian-10_normal ruby-pkg_2.6_debian-10_jemalloc ruby-pkg_2.6_debian-10_malloctrim ruby-pkg_2.6_debian-9_normal ruby-pkg_2.6_debian-9_jemalloc ruby-pkg_2.6_debian-9_malloctrim ruby-pkg_2.6_ubuntu-18.04_normal ruby-pkg_2.6_ubuntu-18.04_jemalloc ruby-pkg_2.6_ubuntu-18.04_malloctrim ruby-pkg_2.6_ubuntu-20.04_normal ruby-pkg_2.6_ubuntu-20.04_jemalloc ruby-pkg_2.6_ubuntu-20.04_malloctrim ruby-pkg_2.5_centos-7_normal ruby-pkg_2.5_centos-7_jemalloc ruby-pkg_2.5_centos-7_malloctrim ruby-pkg_2.5_centos-8_normal ruby-pkg_2.5_centos-8_jemalloc ruby-pkg_2.5_centos-8_malloctrim ruby-pkg_2.5_debian-10_normal ruby-pkg_2.5_debian-10_jemalloc ruby-pkg_2.5_debian-10_malloctrim ruby-pkg_2.5_debian-9_normal ruby-pkg_2.5_debian-9_jemalloc ruby-pkg_2.5_debian-9_malloctrim ruby-pkg_2.5_ubuntu-18.04_normal ruby-pkg_2.5_ubuntu-18.04_jemalloc ruby-pkg_2.5_ubuntu-18.04_malloctrim ruby-pkg_2.5_ubuntu-20.04_normal ruby-pkg_2.5_ubuntu-20.04_jemalloc ruby-pkg_2.5_ubuntu-20.04_malloctrim ruby-pkg_3.0.0_centos-7_normal ruby-pkg_3.0.0_centos-7_jemalloc ruby-pkg_3.0.0_centos-7_malloctrim ruby-pkg_3.0.0_centos-8_normal ruby-pkg_3.0.0_centos-8_jemalloc ruby-pkg_3.0.0_centos-8_malloctrim ruby-pkg_3.0.0_debian-10_normal ruby-pkg_3.0.0_debian-10_jemalloc ruby-pkg_3.0.0_debian-10_malloctrim ruby-pkg_3.0.0_debian-9_normal ruby-pkg_3.0.0_debian-9_jemalloc ruby-pkg_3.0.0_debian-9_malloctrim ruby-pkg_3.0.0_ubuntu-18.04_normal ruby-pkg_3.0.0_ubuntu-18.04_jemalloc ruby-pkg_3.0.0_ubuntu-18.04_malloctrim ruby-pkg_3.0.0_ubuntu-20.04_normal ruby-pkg_3.0.0_ubuntu-20.04_jemalloc ruby-pkg_3.0.0_ubuntu-20.04_malloctrim ruby-pkg_2.7.2_centos-7_normal ruby-pkg_2.7.2_centos-7_jemalloc ruby-pkg_2.7.2_centos-7_malloctrim ruby-pkg_2.7.2_centos-8_normal ruby-pkg_2.7.2_centos-8_jemalloc ruby-pkg_2.7.2_centos-8_malloctrim ruby-pkg_2.7.2_debian-10_normal ruby-pkg_2.7.2_debian-10_jemalloc ruby-pkg_2.7.2_debian-10_malloctrim ruby-pkg_2.7.2_debian-9_normal ruby-pkg_2.7.2_debian-9_jemalloc ruby-pkg_2.7.2_debian-9_malloctrim ruby-pkg_2.7.2_ubuntu-18.04_normal ruby-pkg_2.7.2_ubuntu-18.04_jemalloc ruby-pkg_2.7.2_ubuntu-18.04_malloctrim ruby-pkg_2.7.2_ubuntu-20.04_normal ruby-pkg_2.7.2_ubuntu-20.04_jemalloc ruby-pkg_2.7.2_ubuntu-20.04_malloctrim ruby-pkg_2.6.6_centos-7_normal ruby-pkg_2.6.6_centos-7_jemalloc ruby-pkg_2.6.6_centos-7_malloctrim ruby-pkg_2.6.6_centos-8_normal ruby-pkg_2.6.6_centos-8_jemalloc ruby-pkg_2.6.6_centos-8_malloctrim ruby-pkg_2.6.6_debian-10_normal ruby-pkg_2.6.6_debian-10_jemalloc ruby-pkg_2.6.6_debian-10_malloctrim ruby-pkg_2.6.6_debian-9_normal ruby-pkg_2.6.6_debian-9_jemalloc ruby-pkg_2.6.6_debian-9_malloctrim ruby-pkg_2.6.6_ubuntu-18.04_normal ruby-pkg_2.6.6_ubuntu-18.04_jemalloc ruby-pkg_2.6.6_ubuntu-18.04_malloctrim ruby-pkg_2.6.6_ubuntu-20.04_normal ruby-pkg_2.6.6_ubuntu-20.04_jemalloc ruby-pkg_2.6.6_ubuntu-20.04_malloctrim ruby-pkg_2.5.8_centos-7_normal ruby-pkg_2.5.8_centos-7_jemalloc ruby-pkg_2.5.8_centos-7_malloctrim ruby-pkg_2.5.8_centos-8_normal ruby-pkg_2.5.8_centos-8_jemalloc ruby-pkg_2.5.8_centos-8_malloctrim ruby-pkg_2.5.8_debian-10_normal ruby-pkg_2.5.8_debian-10_jemalloc ruby-pkg_2.5.8_debian-10_malloctrim ruby-pkg_2.5.8_debian-9_normal ruby-pkg_2.5.8_debian-9_jemalloc ruby-pkg_2.5.8_debian-9_malloctrim ruby-pkg_2.5.8_ubuntu-18.04_normal ruby-pkg_2.5.8_ubuntu-18.04_jemalloc ruby-pkg_2.5.8_ubuntu-18.04_malloctrim ruby-pkg_2.5.8_ubuntu-20.04_normal ruby-pkg_2.5.8_ubuntu-20.04_jemalloc ruby-pkg_2.5.8_ubuntu-20.04_malloctrim'
           ARTIFACT_PATH: artifacts
           CLEAR: true
+      - name: Archive Ruby package artifact [ruby-pkg_3.0_centos-7_normal] to Github
+        uses: actions/upload-artifact@v2
+        with:
+          name: ruby-pkg_3.0_centos-7_normal
+          path: artifacts/ruby-pkg_3.0_centos-7_normal
+      - name: Archive Ruby package artifact [ruby-pkg_3.0_centos-7_jemalloc] to Github
+        uses: actions/upload-artifact@v2
+        with:
+          name: ruby-pkg_3.0_centos-7_jemalloc
+          path: artifacts/ruby-pkg_3.0_centos-7_jemalloc
+      - name: Archive Ruby package artifact [ruby-pkg_3.0_centos-7_malloctrim] to Github
+        uses: actions/upload-artifact@v2
+        with:
+          name: ruby-pkg_3.0_centos-7_malloctrim
+          path: artifacts/ruby-pkg_3.0_centos-7_malloctrim
+      - name: Archive Ruby package artifact [ruby-pkg_3.0_centos-8_normal] to Github
+        uses: actions/upload-artifact@v2
+        with:
+          name: ruby-pkg_3.0_centos-8_normal
+          path: artifacts/ruby-pkg_3.0_centos-8_normal
+      - name: Archive Ruby package artifact [ruby-pkg_3.0_centos-8_jemalloc] to Github
+        uses: actions/upload-artifact@v2
+        with:
+          name: ruby-pkg_3.0_centos-8_jemalloc
+          path: artifacts/ruby-pkg_3.0_centos-8_jemalloc
+      - name: Archive Ruby package artifact [ruby-pkg_3.0_centos-8_malloctrim] to Github
+        uses: actions/upload-artifact@v2
+        with:
+          name: ruby-pkg_3.0_centos-8_malloctrim
+          path: artifacts/ruby-pkg_3.0_centos-8_malloctrim
+      - name: Archive Ruby package artifact [ruby-pkg_3.0_debian-10_normal] to Github
+        uses: actions/upload-artifact@v2
+        with:
+          name: ruby-pkg_3.0_debian-10_normal
+          path: artifacts/ruby-pkg_3.0_debian-10_normal
+      - name: Archive Ruby package artifact [ruby-pkg_3.0_debian-10_jemalloc] to Github
+        uses: actions/upload-artifact@v2
+        with:
+          name: ruby-pkg_3.0_debian-10_jemalloc
+          path: artifacts/ruby-pkg_3.0_debian-10_jemalloc
+      - name: Archive Ruby package artifact [ruby-pkg_3.0_debian-10_malloctrim] to Github
+        uses: actions/upload-artifact@v2
+        with:
+          name: ruby-pkg_3.0_debian-10_malloctrim
+          path: artifacts/ruby-pkg_3.0_debian-10_malloctrim
+      - name: Archive Ruby package artifact [ruby-pkg_3.0_debian-9_normal] to Github
+        uses: actions/upload-artifact@v2
+        with:
+          name: ruby-pkg_3.0_debian-9_normal
+          path: artifacts/ruby-pkg_3.0_debian-9_normal
+      - name: Archive Ruby package artifact [ruby-pkg_3.0_debian-9_jemalloc] to Github
+        uses: actions/upload-artifact@v2
+        with:
+          name: ruby-pkg_3.0_debian-9_jemalloc
+          path: artifacts/ruby-pkg_3.0_debian-9_jemalloc
+      - name: Archive Ruby package artifact [ruby-pkg_3.0_debian-9_malloctrim] to Github
+        uses: actions/upload-artifact@v2
+        with:
+          name: ruby-pkg_3.0_debian-9_malloctrim
+          path: artifacts/ruby-pkg_3.0_debian-9_malloctrim
+      - name: Archive Ruby package artifact [ruby-pkg_3.0_ubuntu-18.04_normal] to Github
+        uses: actions/upload-artifact@v2
+        with:
+          name: ruby-pkg_3.0_ubuntu-18.04_normal
+          path: artifacts/ruby-pkg_3.0_ubuntu-18.04_normal
+      - name: Archive Ruby package artifact [ruby-pkg_3.0_ubuntu-18.04_jemalloc] to Github
+        uses: actions/upload-artifact@v2
+        with:
+          name: ruby-pkg_3.0_ubuntu-18.04_jemalloc
+          path: artifacts/ruby-pkg_3.0_ubuntu-18.04_jemalloc
+      - name: Archive Ruby package artifact [ruby-pkg_3.0_ubuntu-18.04_malloctrim] to Github
+        uses: actions/upload-artifact@v2
+        with:
+          name: ruby-pkg_3.0_ubuntu-18.04_malloctrim
+          path: artifacts/ruby-pkg_3.0_ubuntu-18.04_malloctrim
+      - name: Archive Ruby package artifact [ruby-pkg_3.0_ubuntu-20.04_normal] to Github
+        uses: actions/upload-artifact@v2
+        with:
+          name: ruby-pkg_3.0_ubuntu-20.04_normal
+          path: artifacts/ruby-pkg_3.0_ubuntu-20.04_normal
+      - name: Archive Ruby package artifact [ruby-pkg_3.0_ubuntu-20.04_jemalloc] to Github
+        uses: actions/upload-artifact@v2
+        with:
+          name: ruby-pkg_3.0_ubuntu-20.04_jemalloc
+          path: artifacts/ruby-pkg_3.0_ubuntu-20.04_jemalloc
+      - name: Archive Ruby package artifact [ruby-pkg_3.0_ubuntu-20.04_malloctrim] to Github
+        uses: actions/upload-artifact@v2
+        with:
+          name: ruby-pkg_3.0_ubuntu-20.04_malloctrim
+          path: artifacts/ruby-pkg_3.0_ubuntu-20.04_malloctrim
       - name: Archive Ruby package artifact [ruby-pkg_2.7_centos-7_normal] to Github
         uses: actions/upload-artifact@v2
         with:
@@ -10446,6 +13704,96 @@ jobs:
         with:
           name: ruby-pkg_2.5_ubuntu-20.04_malloctrim
           path: artifacts/ruby-pkg_2.5_ubuntu-20.04_malloctrim
+      - name: Archive Ruby package artifact [ruby-pkg_3.0.0_centos-7_normal] to Github
+        uses: actions/upload-artifact@v2
+        with:
+          name: ruby-pkg_3.0.0_centos-7_normal
+          path: artifacts/ruby-pkg_3.0.0_centos-7_normal
+      - name: Archive Ruby package artifact [ruby-pkg_3.0.0_centos-7_jemalloc] to Github
+        uses: actions/upload-artifact@v2
+        with:
+          name: ruby-pkg_3.0.0_centos-7_jemalloc
+          path: artifacts/ruby-pkg_3.0.0_centos-7_jemalloc
+      - name: Archive Ruby package artifact [ruby-pkg_3.0.0_centos-7_malloctrim] to Github
+        uses: actions/upload-artifact@v2
+        with:
+          name: ruby-pkg_3.0.0_centos-7_malloctrim
+          path: artifacts/ruby-pkg_3.0.0_centos-7_malloctrim
+      - name: Archive Ruby package artifact [ruby-pkg_3.0.0_centos-8_normal] to Github
+        uses: actions/upload-artifact@v2
+        with:
+          name: ruby-pkg_3.0.0_centos-8_normal
+          path: artifacts/ruby-pkg_3.0.0_centos-8_normal
+      - name: Archive Ruby package artifact [ruby-pkg_3.0.0_centos-8_jemalloc] to Github
+        uses: actions/upload-artifact@v2
+        with:
+          name: ruby-pkg_3.0.0_centos-8_jemalloc
+          path: artifacts/ruby-pkg_3.0.0_centos-8_jemalloc
+      - name: Archive Ruby package artifact [ruby-pkg_3.0.0_centos-8_malloctrim] to Github
+        uses: actions/upload-artifact@v2
+        with:
+          name: ruby-pkg_3.0.0_centos-8_malloctrim
+          path: artifacts/ruby-pkg_3.0.0_centos-8_malloctrim
+      - name: Archive Ruby package artifact [ruby-pkg_3.0.0_debian-10_normal] to Github
+        uses: actions/upload-artifact@v2
+        with:
+          name: ruby-pkg_3.0.0_debian-10_normal
+          path: artifacts/ruby-pkg_3.0.0_debian-10_normal
+      - name: Archive Ruby package artifact [ruby-pkg_3.0.0_debian-10_jemalloc] to Github
+        uses: actions/upload-artifact@v2
+        with:
+          name: ruby-pkg_3.0.0_debian-10_jemalloc
+          path: artifacts/ruby-pkg_3.0.0_debian-10_jemalloc
+      - name: Archive Ruby package artifact [ruby-pkg_3.0.0_debian-10_malloctrim] to Github
+        uses: actions/upload-artifact@v2
+        with:
+          name: ruby-pkg_3.0.0_debian-10_malloctrim
+          path: artifacts/ruby-pkg_3.0.0_debian-10_malloctrim
+      - name: Archive Ruby package artifact [ruby-pkg_3.0.0_debian-9_normal] to Github
+        uses: actions/upload-artifact@v2
+        with:
+          name: ruby-pkg_3.0.0_debian-9_normal
+          path: artifacts/ruby-pkg_3.0.0_debian-9_normal
+      - name: Archive Ruby package artifact [ruby-pkg_3.0.0_debian-9_jemalloc] to Github
+        uses: actions/upload-artifact@v2
+        with:
+          name: ruby-pkg_3.0.0_debian-9_jemalloc
+          path: artifacts/ruby-pkg_3.0.0_debian-9_jemalloc
+      - name: Archive Ruby package artifact [ruby-pkg_3.0.0_debian-9_malloctrim] to Github
+        uses: actions/upload-artifact@v2
+        with:
+          name: ruby-pkg_3.0.0_debian-9_malloctrim
+          path: artifacts/ruby-pkg_3.0.0_debian-9_malloctrim
+      - name: Archive Ruby package artifact [ruby-pkg_3.0.0_ubuntu-18.04_normal] to Github
+        uses: actions/upload-artifact@v2
+        with:
+          name: ruby-pkg_3.0.0_ubuntu-18.04_normal
+          path: artifacts/ruby-pkg_3.0.0_ubuntu-18.04_normal
+      - name: Archive Ruby package artifact [ruby-pkg_3.0.0_ubuntu-18.04_jemalloc] to Github
+        uses: actions/upload-artifact@v2
+        with:
+          name: ruby-pkg_3.0.0_ubuntu-18.04_jemalloc
+          path: artifacts/ruby-pkg_3.0.0_ubuntu-18.04_jemalloc
+      - name: Archive Ruby package artifact [ruby-pkg_3.0.0_ubuntu-18.04_malloctrim] to Github
+        uses: actions/upload-artifact@v2
+        with:
+          name: ruby-pkg_3.0.0_ubuntu-18.04_malloctrim
+          path: artifacts/ruby-pkg_3.0.0_ubuntu-18.04_malloctrim
+      - name: Archive Ruby package artifact [ruby-pkg_3.0.0_ubuntu-20.04_normal] to Github
+        uses: actions/upload-artifact@v2
+        with:
+          name: ruby-pkg_3.0.0_ubuntu-20.04_normal
+          path: artifacts/ruby-pkg_3.0.0_ubuntu-20.04_normal
+      - name: Archive Ruby package artifact [ruby-pkg_3.0.0_ubuntu-20.04_jemalloc] to Github
+        uses: actions/upload-artifact@v2
+        with:
+          name: ruby-pkg_3.0.0_ubuntu-20.04_jemalloc
+          path: artifacts/ruby-pkg_3.0.0_ubuntu-20.04_jemalloc
+      - name: Archive Ruby package artifact [ruby-pkg_3.0.0_ubuntu-20.04_malloctrim] to Github
+        uses: actions/upload-artifact@v2
+        with:
+          name: ruby-pkg_3.0.0_ubuntu-20.04_malloctrim
+          path: artifacts/ruby-pkg_3.0.0_ubuntu-20.04_malloctrim
       - name: Archive Ruby package artifact [ruby-pkg_2.7.2_centos-7_normal] to Github
         uses: actions/upload-artifact@v2
         with:
@@ -10774,6 +14122,15 @@ jobs:
         run: 'false'
         if: |
           false
+            || (needs.build_ruby_centos_7-3_0-normal.result != 'success'
+              && (needs.build_ruby_centos_7-3_0-normal.result != 'skipped'
+                || contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Ruby [centos-7/3.0/normal];')))
+            || (needs.build_ruby_centos_7-3_0-jemalloc.result != 'success'
+              && (needs.build_ruby_centos_7-3_0-jemalloc.result != 'skipped'
+                || contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Ruby [centos-7/3.0/jemalloc];')))
+            || (needs.build_ruby_centos_7-3_0-malloctrim.result != 'success'
+              && (needs.build_ruby_centos_7-3_0-malloctrim.result != 'skipped'
+                || contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Ruby [centos-7/3.0/malloctrim];')))
             || (needs.build_ruby_centos_7-2_7-normal.result != 'success'
               && (needs.build_ruby_centos_7-2_7-normal.result != 'skipped'
                 || contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Ruby [centos-7/2.7/normal];')))
@@ -10801,6 +14158,15 @@ jobs:
             || (needs.build_ruby_centos_7-2_5-malloctrim.result != 'success'
               && (needs.build_ruby_centos_7-2_5-malloctrim.result != 'skipped'
                 || contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Ruby [centos-7/2.5/malloctrim];')))
+            || (needs.build_ruby_centos_7-3_0_0-normal.result != 'success'
+              && (needs.build_ruby_centos_7-3_0_0-normal.result != 'skipped'
+                || contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Ruby [centos-7/3.0.0/normal];')))
+            || (needs.build_ruby_centos_7-3_0_0-jemalloc.result != 'success'
+              && (needs.build_ruby_centos_7-3_0_0-jemalloc.result != 'skipped'
+                || contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Ruby [centos-7/3.0.0/jemalloc];')))
+            || (needs.build_ruby_centos_7-3_0_0-malloctrim.result != 'success'
+              && (needs.build_ruby_centos_7-3_0_0-malloctrim.result != 'skipped'
+                || contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Ruby [centos-7/3.0.0/malloctrim];')))
             || (needs.build_ruby_centos_7-2_7_2-normal.result != 'success'
               && (needs.build_ruby_centos_7-2_7_2-normal.result != 'skipped'
                 || contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Ruby [centos-7/2.7.2/normal];')))
@@ -10832,6 +14198,15 @@ jobs:
         run: 'false'
         if: |
           false
+            || (needs.build_ruby_centos_8-3_0-normal.result != 'success'
+              && (needs.build_ruby_centos_8-3_0-normal.result != 'skipped'
+                || contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Ruby [centos-8/3.0/normal];')))
+            || (needs.build_ruby_centos_8-3_0-jemalloc.result != 'success'
+              && (needs.build_ruby_centos_8-3_0-jemalloc.result != 'skipped'
+                || contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Ruby [centos-8/3.0/jemalloc];')))
+            || (needs.build_ruby_centos_8-3_0-malloctrim.result != 'success'
+              && (needs.build_ruby_centos_8-3_0-malloctrim.result != 'skipped'
+                || contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Ruby [centos-8/3.0/malloctrim];')))
             || (needs.build_ruby_centos_8-2_7-normal.result != 'success'
               && (needs.build_ruby_centos_8-2_7-normal.result != 'skipped'
                 || contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Ruby [centos-8/2.7/normal];')))
@@ -10859,6 +14234,15 @@ jobs:
             || (needs.build_ruby_centos_8-2_5-malloctrim.result != 'success'
               && (needs.build_ruby_centos_8-2_5-malloctrim.result != 'skipped'
                 || contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Ruby [centos-8/2.5/malloctrim];')))
+            || (needs.build_ruby_centos_8-3_0_0-normal.result != 'success'
+              && (needs.build_ruby_centos_8-3_0_0-normal.result != 'skipped'
+                || contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Ruby [centos-8/3.0.0/normal];')))
+            || (needs.build_ruby_centos_8-3_0_0-jemalloc.result != 'success'
+              && (needs.build_ruby_centos_8-3_0_0-jemalloc.result != 'skipped'
+                || contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Ruby [centos-8/3.0.0/jemalloc];')))
+            || (needs.build_ruby_centos_8-3_0_0-malloctrim.result != 'success'
+              && (needs.build_ruby_centos_8-3_0_0-malloctrim.result != 'skipped'
+                || contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Ruby [centos-8/3.0.0/malloctrim];')))
             || (needs.build_ruby_centos_8-2_7_2-normal.result != 'success'
               && (needs.build_ruby_centos_8-2_7_2-normal.result != 'skipped'
                 || contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Ruby [centos-8/2.7.2/normal];')))
@@ -10890,6 +14274,15 @@ jobs:
         run: 'false'
         if: |
           false
+            || (needs.build_ruby_debian_10-3_0-normal.result != 'success'
+              && (needs.build_ruby_debian_10-3_0-normal.result != 'skipped'
+                || contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Ruby [debian-10/3.0/normal];')))
+            || (needs.build_ruby_debian_10-3_0-jemalloc.result != 'success'
+              && (needs.build_ruby_debian_10-3_0-jemalloc.result != 'skipped'
+                || contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Ruby [debian-10/3.0/jemalloc];')))
+            || (needs.build_ruby_debian_10-3_0-malloctrim.result != 'success'
+              && (needs.build_ruby_debian_10-3_0-malloctrim.result != 'skipped'
+                || contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Ruby [debian-10/3.0/malloctrim];')))
             || (needs.build_ruby_debian_10-2_7-normal.result != 'success'
               && (needs.build_ruby_debian_10-2_7-normal.result != 'skipped'
                 || contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Ruby [debian-10/2.7/normal];')))
@@ -10917,6 +14310,15 @@ jobs:
             || (needs.build_ruby_debian_10-2_5-malloctrim.result != 'success'
               && (needs.build_ruby_debian_10-2_5-malloctrim.result != 'skipped'
                 || contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Ruby [debian-10/2.5/malloctrim];')))
+            || (needs.build_ruby_debian_10-3_0_0-normal.result != 'success'
+              && (needs.build_ruby_debian_10-3_0_0-normal.result != 'skipped'
+                || contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Ruby [debian-10/3.0.0/normal];')))
+            || (needs.build_ruby_debian_10-3_0_0-jemalloc.result != 'success'
+              && (needs.build_ruby_debian_10-3_0_0-jemalloc.result != 'skipped'
+                || contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Ruby [debian-10/3.0.0/jemalloc];')))
+            || (needs.build_ruby_debian_10-3_0_0-malloctrim.result != 'success'
+              && (needs.build_ruby_debian_10-3_0_0-malloctrim.result != 'skipped'
+                || contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Ruby [debian-10/3.0.0/malloctrim];')))
             || (needs.build_ruby_debian_10-2_7_2-normal.result != 'success'
               && (needs.build_ruby_debian_10-2_7_2-normal.result != 'skipped'
                 || contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Ruby [debian-10/2.7.2/normal];')))
@@ -10948,6 +14350,15 @@ jobs:
         run: 'false'
         if: |
           false
+            || (needs.build_ruby_debian_9-3_0-normal.result != 'success'
+              && (needs.build_ruby_debian_9-3_0-normal.result != 'skipped'
+                || contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Ruby [debian-9/3.0/normal];')))
+            || (needs.build_ruby_debian_9-3_0-jemalloc.result != 'success'
+              && (needs.build_ruby_debian_9-3_0-jemalloc.result != 'skipped'
+                || contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Ruby [debian-9/3.0/jemalloc];')))
+            || (needs.build_ruby_debian_9-3_0-malloctrim.result != 'success'
+              && (needs.build_ruby_debian_9-3_0-malloctrim.result != 'skipped'
+                || contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Ruby [debian-9/3.0/malloctrim];')))
             || (needs.build_ruby_debian_9-2_7-normal.result != 'success'
               && (needs.build_ruby_debian_9-2_7-normal.result != 'skipped'
                 || contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Ruby [debian-9/2.7/normal];')))
@@ -10975,6 +14386,15 @@ jobs:
             || (needs.build_ruby_debian_9-2_5-malloctrim.result != 'success'
               && (needs.build_ruby_debian_9-2_5-malloctrim.result != 'skipped'
                 || contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Ruby [debian-9/2.5/malloctrim];')))
+            || (needs.build_ruby_debian_9-3_0_0-normal.result != 'success'
+              && (needs.build_ruby_debian_9-3_0_0-normal.result != 'skipped'
+                || contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Ruby [debian-9/3.0.0/normal];')))
+            || (needs.build_ruby_debian_9-3_0_0-jemalloc.result != 'success'
+              && (needs.build_ruby_debian_9-3_0_0-jemalloc.result != 'skipped'
+                || contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Ruby [debian-9/3.0.0/jemalloc];')))
+            || (needs.build_ruby_debian_9-3_0_0-malloctrim.result != 'success'
+              && (needs.build_ruby_debian_9-3_0_0-malloctrim.result != 'skipped'
+                || contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Ruby [debian-9/3.0.0/malloctrim];')))
             || (needs.build_ruby_debian_9-2_7_2-normal.result != 'success'
               && (needs.build_ruby_debian_9-2_7_2-normal.result != 'skipped'
                 || contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Ruby [debian-9/2.7.2/normal];')))
@@ -11006,6 +14426,15 @@ jobs:
         run: 'false'
         if: |
           false
+            || (needs.build_ruby_ubuntu_18_04-3_0-normal.result != 'success'
+              && (needs.build_ruby_ubuntu_18_04-3_0-normal.result != 'skipped'
+                || contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Ruby [ubuntu-18.04/3.0/normal];')))
+            || (needs.build_ruby_ubuntu_18_04-3_0-jemalloc.result != 'success'
+              && (needs.build_ruby_ubuntu_18_04-3_0-jemalloc.result != 'skipped'
+                || contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Ruby [ubuntu-18.04/3.0/jemalloc];')))
+            || (needs.build_ruby_ubuntu_18_04-3_0-malloctrim.result != 'success'
+              && (needs.build_ruby_ubuntu_18_04-3_0-malloctrim.result != 'skipped'
+                || contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Ruby [ubuntu-18.04/3.0/malloctrim];')))
             || (needs.build_ruby_ubuntu_18_04-2_7-normal.result != 'success'
               && (needs.build_ruby_ubuntu_18_04-2_7-normal.result != 'skipped'
                 || contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Ruby [ubuntu-18.04/2.7/normal];')))
@@ -11033,6 +14462,15 @@ jobs:
             || (needs.build_ruby_ubuntu_18_04-2_5-malloctrim.result != 'success'
               && (needs.build_ruby_ubuntu_18_04-2_5-malloctrim.result != 'skipped'
                 || contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Ruby [ubuntu-18.04/2.5/malloctrim];')))
+            || (needs.build_ruby_ubuntu_18_04-3_0_0-normal.result != 'success'
+              && (needs.build_ruby_ubuntu_18_04-3_0_0-normal.result != 'skipped'
+                || contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Ruby [ubuntu-18.04/3.0.0/normal];')))
+            || (needs.build_ruby_ubuntu_18_04-3_0_0-jemalloc.result != 'success'
+              && (needs.build_ruby_ubuntu_18_04-3_0_0-jemalloc.result != 'skipped'
+                || contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Ruby [ubuntu-18.04/3.0.0/jemalloc];')))
+            || (needs.build_ruby_ubuntu_18_04-3_0_0-malloctrim.result != 'success'
+              && (needs.build_ruby_ubuntu_18_04-3_0_0-malloctrim.result != 'skipped'
+                || contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Ruby [ubuntu-18.04/3.0.0/malloctrim];')))
             || (needs.build_ruby_ubuntu_18_04-2_7_2-normal.result != 'success'
               && (needs.build_ruby_ubuntu_18_04-2_7_2-normal.result != 'skipped'
                 || contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Ruby [ubuntu-18.04/2.7.2/normal];')))
@@ -11064,6 +14502,15 @@ jobs:
         run: 'false'
         if: |
           false
+            || (needs.build_ruby_ubuntu_20_04-3_0-normal.result != 'success'
+              && (needs.build_ruby_ubuntu_20_04-3_0-normal.result != 'skipped'
+                || contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Ruby [ubuntu-20.04/3.0/normal];')))
+            || (needs.build_ruby_ubuntu_20_04-3_0-jemalloc.result != 'success'
+              && (needs.build_ruby_ubuntu_20_04-3_0-jemalloc.result != 'skipped'
+                || contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Ruby [ubuntu-20.04/3.0/jemalloc];')))
+            || (needs.build_ruby_ubuntu_20_04-3_0-malloctrim.result != 'success'
+              && (needs.build_ruby_ubuntu_20_04-3_0-malloctrim.result != 'skipped'
+                || contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Ruby [ubuntu-20.04/3.0/malloctrim];')))
             || (needs.build_ruby_ubuntu_20_04-2_7-normal.result != 'success'
               && (needs.build_ruby_ubuntu_20_04-2_7-normal.result != 'skipped'
                 || contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Ruby [ubuntu-20.04/2.7/normal];')))
@@ -11091,6 +14538,15 @@ jobs:
             || (needs.build_ruby_ubuntu_20_04-2_5-malloctrim.result != 'success'
               && (needs.build_ruby_ubuntu_20_04-2_5-malloctrim.result != 'skipped'
                 || contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Ruby [ubuntu-20.04/2.5/malloctrim];')))
+            || (needs.build_ruby_ubuntu_20_04-3_0_0-normal.result != 'success'
+              && (needs.build_ruby_ubuntu_20_04-3_0_0-normal.result != 'skipped'
+                || contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Ruby [ubuntu-20.04/3.0.0/normal];')))
+            || (needs.build_ruby_ubuntu_20_04-3_0_0-jemalloc.result != 'success'
+              && (needs.build_ruby_ubuntu_20_04-3_0_0-jemalloc.result != 'skipped'
+                || contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Ruby [ubuntu-20.04/3.0.0/jemalloc];')))
+            || (needs.build_ruby_ubuntu_20_04-3_0_0-malloctrim.result != 'success'
+              && (needs.build_ruby_ubuntu_20_04-3_0_0-malloctrim.result != 'skipped'
+                || contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Ruby [ubuntu-20.04/3.0.0/malloctrim];')))
             || (needs.build_ruby_ubuntu_20_04-2_7_2-normal.result != 'success'
               && (needs.build_ruby_ubuntu_20_04-2_7_2-normal.result != 'skipped'
                 || contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Ruby [ubuntu-20.04/2.7.2/normal];')))
