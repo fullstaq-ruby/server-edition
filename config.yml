@@ -34,9 +34,6 @@ ruby:
     - minor_version: 2.6
       full_version: 2.6.6
       package_revision: 6
-    - minor_version: 2.5
-      full_version: 2.5.8
-      package_revision: 5
 
   ## (Optional)
   ## Which tiny Ruby version packages to build.
@@ -46,8 +43,6 @@ ruby:
     - full_version: 2.7.2
       package_revision: 2
     - full_version: 2.6.6
-      package_revision: 2
-    - full_version: 2.5.8
       package_revision: 2
 
 ## (Required)
