@@ -351,6 +351,37 @@ jobs:
   ### Sources ###
 
 
+  download_ruby_source_3_0_0:
+    name: Download Ruby source [3.0.0]
+    runs-on: ubuntu-20.04
+    needs:
+      - determine_necessary_jobs
+    if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Download Ruby source 3.0.0;')
+    steps:
+      - uses: actions/checkout@v2
+      - name: Login to Google Cloud
+        uses: ./.github/actions/gcloud-login
+        with:
+          private_key: ${{ secrets.GCLOUD_KEY }}
+
+      - name: Fetch cache
+        id: fetch_cache
+        uses: actions/cache@v1
+        with:
+          path: output
+          key: v3-ruby-src-3.0.0
+
+      - name: Download
+        run: ./internal-scripts/ci-cd/download-ruby-sources/download.sh
+        if: steps.fetch_cache.outputs.cache-hit != 'true'
+        env:
+          RUBY_VERSION: 3.0.0
+
+      - name: Archive artifact
+        run: ./internal-scripts/ci-cd/upload-artifact.sh
+        env:
+          ARTIFACT_NAME: ruby-src-3.0.0
+          ARTIFACT_PATH: output
   download_ruby_source_2_7_2:
     name: Download Ruby source [2.7.2]
     runs-on: ubuntu-20.04
@@ -413,37 +444,6 @@ jobs:
         env:
           ARTIFACT_NAME: ruby-src-2.6.6
           ARTIFACT_PATH: output
-  download_ruby_source_2_5_8:
-    name: Download Ruby source [2.5.8]
-    runs-on: ubuntu-20.04
-    needs:
-      - determine_necessary_jobs
-    if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Download Ruby source 2.5.8;')
-    steps:
-      - uses: actions/checkout@v2
-      - name: Login to Google Cloud
-        uses: ./.github/actions/gcloud-login
-        with:
-          private_key: ${{ secrets.GCLOUD_KEY }}
-
-      - name: Fetch cache
-        id: fetch_cache
-        uses: actions/cache@v1
-        with:
-          path: output
-          key: v3-ruby-src-2.5.8
-
-      - name: Download
-        run: ./internal-scripts/ci-cd/download-ruby-sources/download.sh
-        if: steps.fetch_cache.outputs.cache-hit != 'true'
-        env:
-          RUBY_VERSION: 2.5.8
-
-      - name: Archive artifact
-        run: ./internal-scripts/ci-cd/upload-artifact.sh
-        env:
-          ARTIFACT_NAME: ruby-src-2.5.8
-          ARTIFACT_PATH: output
 
 
   download_rbenv_source:
@@ -496,9 +496,9 @@ jobs:
       - build_docker_image_ubuntu_18_04
       - build_docker_image_ubuntu_20_04
       - build_docker_image_utility
+      - download_ruby_source_3_0_0
       - download_ruby_source_2_7_2
       - download_ruby_source_2_6_6
-      - download_ruby_source_2_5_8
     runs-on: ubuntu-20.04
     if: 'always()'
     steps:
@@ -619,6 +619,17 @@ jobs:
           path: artifacts
 
 
+      - name: Download Ruby source artifact [3.0.0] from Google Cloud
+        run: ./internal-scripts/ci-cd/download-artifact.sh
+        env:
+          ARTIFACT_NAME: ruby-src-3.0.0
+          ARTIFACT_PATH: artifacts
+          CLEAR: true
+      - name: Archive Ruby source artifact [3.0.0] to Github
+        uses: actions/upload-artifact@v2
+        with:
+          name: ruby-src-3.0.0
+          path: artifacts
       - name: Download Ruby source artifact [2.7.2] from Google Cloud
         run: ./internal-scripts/ci-cd/download-artifact.sh
         env:
@@ -640,17 +651,6 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: ruby-src-2.6.6
-          path: artifacts
-      - name: Download Ruby source artifact [2.5.8] from Google Cloud
-        run: ./internal-scripts/ci-cd/download-artifact.sh
-        env:
-          ARTIFACT_NAME: ruby-src-2.5.8
-          ARTIFACT_PATH: artifacts
-          CLEAR: true
-      - name: Archive Ruby source artifact [2.5.8] to Github
-        uses: actions/upload-artifact@v2
-        with:
-          name: ruby-src-2.5.8
           path: artifacts
 
 
@@ -701,15 +701,15 @@ jobs:
         run: 'false'
         if: |
           false
+            || (needs.download_ruby_source_3_0_0.result != 'success'
+              && (needs.download_ruby_source_3_0_0.result != 'skipped'
+                || contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Download Ruby source 3.0.0;')))
             || (needs.download_ruby_source_2_7_2.result != 'success'
               && (needs.download_ruby_source_2_7_2.result != 'skipped'
                 || contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Download Ruby source 2.7.2;')))
             || (needs.download_ruby_source_2_6_6.result != 'success'
               && (needs.download_ruby_source_2_6_6.result != 'skipped'
                 || contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Download Ruby source 2.6.6;')))
-            || (needs.download_ruby_source_2_5_8.result != 'success'
-              && (needs.download_ruby_source_2_5_8.result != 'skipped'
-                || contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Download Ruby source 2.5.8;')))
 
 
       ### Trigger next workflow ###
