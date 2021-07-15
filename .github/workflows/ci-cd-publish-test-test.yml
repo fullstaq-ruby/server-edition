@@ -21,7 +21,7 @@ on:
         required: false
 
 env:
-  BINTRAY_ORG: fullstaq
+  GCLOUD_PROJECT: fullstaq-ruby
   CI_ARTIFACTS_BUCKET: fullstaq-ruby-server-edition-ci-artifacts
   CI_ARTIFACTS_RUN_NUMBER: ${{ github.event.inputs.ci_artifacts_run_number || github.run_number }}
 
@@ -83,6 +83,8 @@ jobs:
         uses: ./.github/actions/gcloud-login
         with:
           private_key: ${{ secrets.GCLOUD_KEY }}
+      - name: Set Google Cloud project
+        run: gcloud config set core/project ${{ env.GCLOUD_PROJECT }}
 
       - name: Download artifacts
         run: ./internal-scripts/ci-cd/download-artifacts.sh
@@ -106,56 +108,27 @@ jobs:
         if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Docker image utility;')
         env:
           TARBALL: image.tar.zst
+      - name: Install Aptly
+        run: ./internal-scripts/ci-cd/publish/install-aptly.sh
 
       - name: Determine latest release tag
         # Sets environment variable $LATEST_RELEASE_TAG
         run: ./internal-scripts/ci-cd/check-version-numbers-need-changing/determine-latest-release-tag.sh
-      - name: Determine Bintray repository package version
-        # Sets environment variable $REPO_PACKAGE_VERSION
-        run: ./internal-scripts/ci-cd/publish/determine-repo-package-version.sh
-
-      - name: Recreate APT repo
-        run: ./internal-scripts/ci-cd/publish/recreate-apt-repo.sh
-        env:
-          BINTRAY_API_USERNAME: ${{ secrets.BINTRAY_API_USERNAME }}
-          BINTRAY_API_KEY: ${{ secrets.BINTRAY_API_KEY }}
-          REPO_NAME: fullstaq-ruby-apt-ci-${{ env.CI_ARTIFACTS_RUN_NUMBER }}
-      - name: Recreate YUM repo
-        run: ./internal-scripts/ci-cd/publish/recreate-yum-repo.sh
-        env:
-          BINTRAY_API_USERNAME: ${{ secrets.BINTRAY_API_USERNAME }}
-          BINTRAY_API_KEY: ${{ secrets.BINTRAY_API_KEY }}
-          REPO_NAME: fullstaq-ruby-yum-ci-${{ env.CI_ARTIFACTS_RUN_NUMBER }}
 
       - name: Upload DEBs to repo
-        run: ./internal-scripts/ci-cd/publish/publish-debs.sh pkgs/*/*.deb
+        run: ./internal-scripts/ci-cd/publish/publish-debs.rb pkgs/*/*.deb
         env:
-          BINTRAY_API_USERNAME: ${{ secrets.BINTRAY_API_USERNAME }}
-          BINTRAY_API_KEY: ${{ secrets.BINTRAY_API_KEY }}
-          REPO_NAME: fullstaq-ruby-apt-ci-${{ env.CI_ARTIFACTS_RUN_NUMBER }}
-          DRY_RUN: false
-          IGNORE_EXISTING: false
+          PRODUCTION_REPO_BUCKET_NAME: fullstaq-ruby-server-edition-apt-repo
+          CI_ARTIFACTS_BUCKET_NAME: ${{ env.CI_ARTIFACTS_BUCKET }}
+          TESTING: true
+          OVERWRITE_EXISTING: true
       - name: Upload RPMs to repo
-        run: ./internal-scripts/ci-cd/publish/publish-rpms.sh pkgs/*/*.rpm
+        run: ./internal-scripts/ci-cd/publish/publish-rpms.rb pkgs/*/*.rpm
         env:
-          BINTRAY_API_USERNAME: ${{ secrets.BINTRAY_API_USERNAME }}
-          BINTRAY_API_KEY: ${{ secrets.BINTRAY_API_KEY }}
-          REPO_NAME: fullstaq-ruby-yum-ci-${{ env.CI_ARTIFACTS_RUN_NUMBER }}
-          DRY_RUN: false
-          IGNORE_EXISTING: false
-
-      - name: Commit files published to APT repo
-        run: ./internal-scripts/ci-cd/publish/commit-published-packages.sh
-        env:
-          BINTRAY_API_USERNAME: ${{ secrets.BINTRAY_API_USERNAME }}
-          BINTRAY_API_KEY: ${{ secrets.BINTRAY_API_KEY }}
-          REPO_NAME: fullstaq-ruby-apt-ci-${{ env.CI_ARTIFACTS_RUN_NUMBER }}
-      - name: Commit files published to YUM repo
-        run: ./internal-scripts/ci-cd/publish/commit-published-packages.sh
-        env:
-          BINTRAY_API_USERNAME: ${{ secrets.BINTRAY_API_USERNAME }}
-          BINTRAY_API_KEY: ${{ secrets.BINTRAY_API_KEY }}
-          REPO_NAME: fullstaq-ruby-yum-ci-${{ env.CI_ARTIFACTS_RUN_NUMBER }}
+          PRODUCTION_REPO_BUCKET_NAME: fullstaq-ruby-server-edition-yum-repo
+          CI_ARTIFACTS_BUCKET_NAME: ${{ env.CI_ARTIFACTS_BUCKET }}
+          TESTING: true
+          OVERWRITE_EXISTING: true
 
 
   ### Run tests ###
@@ -185,8 +158,8 @@ jobs:
           VARIANT_NAME: "normal"
           VARIANT_PACKAGE_SUFFIX: ""
           TEST_IMAGE_NAME: "centos:7"
-          APT_REPO_URL: https://dl.bintray.com/fullstaq/fullstaq-ruby-apt-ci-${{ env.CI_ARTIFACTS_RUN_NUMBER }}
-          YUM_REPO_URL: https://dl.bintray.com/fullstaq/fullstaq-ruby-yum-ci-${{ env.CI_ARTIFACTS_RUN_NUMBER }}
+          APT_REPO_URL: https://storage.googleapis.com/${{ env.CI_ARTIFACTS_BUCKET }}/${{ env.CI_ARTIFACTS_RUN_NUMBER }}/apt-repo/versions/singleton/public
+          YUM_REPO_URL: https://storage.googleapis.com/${{ env.CI_ARTIFACTS_BUCKET }}/${{ env.CI_ARTIFACTS_RUN_NUMBER }}/yum-repo/versions/singleton/public
 
       - name: Create mark file
         run: mkdir mark-normal && touch mark-normal/done.txt
@@ -219,8 +192,8 @@ jobs:
           VARIANT_NAME: "jemalloc"
           VARIANT_PACKAGE_SUFFIX: "-jemalloc"
           TEST_IMAGE_NAME: "centos:7"
-          APT_REPO_URL: https://dl.bintray.com/fullstaq/fullstaq-ruby-apt-ci-${{ env.CI_ARTIFACTS_RUN_NUMBER }}
-          YUM_REPO_URL: https://dl.bintray.com/fullstaq/fullstaq-ruby-yum-ci-${{ env.CI_ARTIFACTS_RUN_NUMBER }}
+          APT_REPO_URL: https://storage.googleapis.com/${{ env.CI_ARTIFACTS_BUCKET }}/${{ env.CI_ARTIFACTS_RUN_NUMBER }}/apt-repo/versions/singleton/public
+          YUM_REPO_URL: https://storage.googleapis.com/${{ env.CI_ARTIFACTS_BUCKET }}/${{ env.CI_ARTIFACTS_RUN_NUMBER }}/yum-repo/versions/singleton/public
 
       - name: Create mark file
         run: mkdir mark-jemalloc && touch mark-jemalloc/done.txt
@@ -253,8 +226,8 @@ jobs:
           VARIANT_NAME: "malloctrim"
           VARIANT_PACKAGE_SUFFIX: "-malloctrim"
           TEST_IMAGE_NAME: "centos:7"
-          APT_REPO_URL: https://dl.bintray.com/fullstaq/fullstaq-ruby-apt-ci-${{ env.CI_ARTIFACTS_RUN_NUMBER }}
-          YUM_REPO_URL: https://dl.bintray.com/fullstaq/fullstaq-ruby-yum-ci-${{ env.CI_ARTIFACTS_RUN_NUMBER }}
+          APT_REPO_URL: https://storage.googleapis.com/${{ env.CI_ARTIFACTS_BUCKET }}/${{ env.CI_ARTIFACTS_RUN_NUMBER }}/apt-repo/versions/singleton/public
+          YUM_REPO_URL: https://storage.googleapis.com/${{ env.CI_ARTIFACTS_BUCKET }}/${{ env.CI_ARTIFACTS_RUN_NUMBER }}/yum-repo/versions/singleton/public
 
       - name: Create mark file
         run: mkdir mark-malloctrim && touch mark-malloctrim/done.txt
@@ -287,8 +260,8 @@ jobs:
           VARIANT_NAME: "normal"
           VARIANT_PACKAGE_SUFFIX: ""
           TEST_IMAGE_NAME: "centos:7"
-          APT_REPO_URL: https://dl.bintray.com/fullstaq/fullstaq-ruby-apt-ci-${{ env.CI_ARTIFACTS_RUN_NUMBER }}
-          YUM_REPO_URL: https://dl.bintray.com/fullstaq/fullstaq-ruby-yum-ci-${{ env.CI_ARTIFACTS_RUN_NUMBER }}
+          APT_REPO_URL: https://storage.googleapis.com/${{ env.CI_ARTIFACTS_BUCKET }}/${{ env.CI_ARTIFACTS_RUN_NUMBER }}/apt-repo/versions/singleton/public
+          YUM_REPO_URL: https://storage.googleapis.com/${{ env.CI_ARTIFACTS_BUCKET }}/${{ env.CI_ARTIFACTS_RUN_NUMBER }}/yum-repo/versions/singleton/public
 
       - name: Create mark file
         run: mkdir mark-normal && touch mark-normal/done.txt
@@ -321,8 +294,8 @@ jobs:
           VARIANT_NAME: "jemalloc"
           VARIANT_PACKAGE_SUFFIX: "-jemalloc"
           TEST_IMAGE_NAME: "centos:7"
-          APT_REPO_URL: https://dl.bintray.com/fullstaq/fullstaq-ruby-apt-ci-${{ env.CI_ARTIFACTS_RUN_NUMBER }}
-          YUM_REPO_URL: https://dl.bintray.com/fullstaq/fullstaq-ruby-yum-ci-${{ env.CI_ARTIFACTS_RUN_NUMBER }}
+          APT_REPO_URL: https://storage.googleapis.com/${{ env.CI_ARTIFACTS_BUCKET }}/${{ env.CI_ARTIFACTS_RUN_NUMBER }}/apt-repo/versions/singleton/public
+          YUM_REPO_URL: https://storage.googleapis.com/${{ env.CI_ARTIFACTS_BUCKET }}/${{ env.CI_ARTIFACTS_RUN_NUMBER }}/yum-repo/versions/singleton/public
 
       - name: Create mark file
         run: mkdir mark-jemalloc && touch mark-jemalloc/done.txt
@@ -355,8 +328,8 @@ jobs:
           VARIANT_NAME: "malloctrim"
           VARIANT_PACKAGE_SUFFIX: "-malloctrim"
           TEST_IMAGE_NAME: "centos:7"
-          APT_REPO_URL: https://dl.bintray.com/fullstaq/fullstaq-ruby-apt-ci-${{ env.CI_ARTIFACTS_RUN_NUMBER }}
-          YUM_REPO_URL: https://dl.bintray.com/fullstaq/fullstaq-ruby-yum-ci-${{ env.CI_ARTIFACTS_RUN_NUMBER }}
+          APT_REPO_URL: https://storage.googleapis.com/${{ env.CI_ARTIFACTS_BUCKET }}/${{ env.CI_ARTIFACTS_RUN_NUMBER }}/apt-repo/versions/singleton/public
+          YUM_REPO_URL: https://storage.googleapis.com/${{ env.CI_ARTIFACTS_BUCKET }}/${{ env.CI_ARTIFACTS_RUN_NUMBER }}/yum-repo/versions/singleton/public
 
       - name: Create mark file
         run: mkdir mark-malloctrim && touch mark-malloctrim/done.txt
@@ -389,8 +362,8 @@ jobs:
           VARIANT_NAME: "normal"
           VARIANT_PACKAGE_SUFFIX: ""
           TEST_IMAGE_NAME: "centos:7"
-          APT_REPO_URL: https://dl.bintray.com/fullstaq/fullstaq-ruby-apt-ci-${{ env.CI_ARTIFACTS_RUN_NUMBER }}
-          YUM_REPO_URL: https://dl.bintray.com/fullstaq/fullstaq-ruby-yum-ci-${{ env.CI_ARTIFACTS_RUN_NUMBER }}
+          APT_REPO_URL: https://storage.googleapis.com/${{ env.CI_ARTIFACTS_BUCKET }}/${{ env.CI_ARTIFACTS_RUN_NUMBER }}/apt-repo/versions/singleton/public
+          YUM_REPO_URL: https://storage.googleapis.com/${{ env.CI_ARTIFACTS_BUCKET }}/${{ env.CI_ARTIFACTS_RUN_NUMBER }}/yum-repo/versions/singleton/public
 
       - name: Create mark file
         run: mkdir mark-normal && touch mark-normal/done.txt
@@ -423,8 +396,8 @@ jobs:
           VARIANT_NAME: "jemalloc"
           VARIANT_PACKAGE_SUFFIX: "-jemalloc"
           TEST_IMAGE_NAME: "centos:7"
-          APT_REPO_URL: https://dl.bintray.com/fullstaq/fullstaq-ruby-apt-ci-${{ env.CI_ARTIFACTS_RUN_NUMBER }}
-          YUM_REPO_URL: https://dl.bintray.com/fullstaq/fullstaq-ruby-yum-ci-${{ env.CI_ARTIFACTS_RUN_NUMBER }}
+          APT_REPO_URL: https://storage.googleapis.com/${{ env.CI_ARTIFACTS_BUCKET }}/${{ env.CI_ARTIFACTS_RUN_NUMBER }}/apt-repo/versions/singleton/public
+          YUM_REPO_URL: https://storage.googleapis.com/${{ env.CI_ARTIFACTS_BUCKET }}/${{ env.CI_ARTIFACTS_RUN_NUMBER }}/yum-repo/versions/singleton/public
 
       - name: Create mark file
         run: mkdir mark-jemalloc && touch mark-jemalloc/done.txt
@@ -457,8 +430,8 @@ jobs:
           VARIANT_NAME: "malloctrim"
           VARIANT_PACKAGE_SUFFIX: "-malloctrim"
           TEST_IMAGE_NAME: "centos:7"
-          APT_REPO_URL: https://dl.bintray.com/fullstaq/fullstaq-ruby-apt-ci-${{ env.CI_ARTIFACTS_RUN_NUMBER }}
-          YUM_REPO_URL: https://dl.bintray.com/fullstaq/fullstaq-ruby-yum-ci-${{ env.CI_ARTIFACTS_RUN_NUMBER }}
+          APT_REPO_URL: https://storage.googleapis.com/${{ env.CI_ARTIFACTS_BUCKET }}/${{ env.CI_ARTIFACTS_RUN_NUMBER }}/apt-repo/versions/singleton/public
+          YUM_REPO_URL: https://storage.googleapis.com/${{ env.CI_ARTIFACTS_BUCKET }}/${{ env.CI_ARTIFACTS_RUN_NUMBER }}/yum-repo/versions/singleton/public
 
       - name: Create mark file
         run: mkdir mark-malloctrim && touch mark-malloctrim/done.txt
@@ -491,8 +464,8 @@ jobs:
           VARIANT_NAME: "normal"
           VARIANT_PACKAGE_SUFFIX: ""
           TEST_IMAGE_NAME: "centos:7"
-          APT_REPO_URL: https://dl.bintray.com/fullstaq/fullstaq-ruby-apt-ci-${{ env.CI_ARTIFACTS_RUN_NUMBER }}
-          YUM_REPO_URL: https://dl.bintray.com/fullstaq/fullstaq-ruby-yum-ci-${{ env.CI_ARTIFACTS_RUN_NUMBER }}
+          APT_REPO_URL: https://storage.googleapis.com/${{ env.CI_ARTIFACTS_BUCKET }}/${{ env.CI_ARTIFACTS_RUN_NUMBER }}/apt-repo/versions/singleton/public
+          YUM_REPO_URL: https://storage.googleapis.com/${{ env.CI_ARTIFACTS_BUCKET }}/${{ env.CI_ARTIFACTS_RUN_NUMBER }}/yum-repo/versions/singleton/public
 
       - name: Create mark file
         run: mkdir mark-normal && touch mark-normal/done.txt
@@ -525,8 +498,8 @@ jobs:
           VARIANT_NAME: "jemalloc"
           VARIANT_PACKAGE_SUFFIX: "-jemalloc"
           TEST_IMAGE_NAME: "centos:7"
-          APT_REPO_URL: https://dl.bintray.com/fullstaq/fullstaq-ruby-apt-ci-${{ env.CI_ARTIFACTS_RUN_NUMBER }}
-          YUM_REPO_URL: https://dl.bintray.com/fullstaq/fullstaq-ruby-yum-ci-${{ env.CI_ARTIFACTS_RUN_NUMBER }}
+          APT_REPO_URL: https://storage.googleapis.com/${{ env.CI_ARTIFACTS_BUCKET }}/${{ env.CI_ARTIFACTS_RUN_NUMBER }}/apt-repo/versions/singleton/public
+          YUM_REPO_URL: https://storage.googleapis.com/${{ env.CI_ARTIFACTS_BUCKET }}/${{ env.CI_ARTIFACTS_RUN_NUMBER }}/yum-repo/versions/singleton/public
 
       - name: Create mark file
         run: mkdir mark-jemalloc && touch mark-jemalloc/done.txt
@@ -559,8 +532,8 @@ jobs:
           VARIANT_NAME: "malloctrim"
           VARIANT_PACKAGE_SUFFIX: "-malloctrim"
           TEST_IMAGE_NAME: "centos:7"
-          APT_REPO_URL: https://dl.bintray.com/fullstaq/fullstaq-ruby-apt-ci-${{ env.CI_ARTIFACTS_RUN_NUMBER }}
-          YUM_REPO_URL: https://dl.bintray.com/fullstaq/fullstaq-ruby-yum-ci-${{ env.CI_ARTIFACTS_RUN_NUMBER }}
+          APT_REPO_URL: https://storage.googleapis.com/${{ env.CI_ARTIFACTS_BUCKET }}/${{ env.CI_ARTIFACTS_RUN_NUMBER }}/apt-repo/versions/singleton/public
+          YUM_REPO_URL: https://storage.googleapis.com/${{ env.CI_ARTIFACTS_BUCKET }}/${{ env.CI_ARTIFACTS_RUN_NUMBER }}/yum-repo/versions/singleton/public
 
       - name: Create mark file
         run: mkdir mark-malloctrim && touch mark-malloctrim/done.txt
@@ -593,8 +566,8 @@ jobs:
           VARIANT_NAME: "normal"
           VARIANT_PACKAGE_SUFFIX: ""
           TEST_IMAGE_NAME: "centos:7"
-          APT_REPO_URL: https://dl.bintray.com/fullstaq/fullstaq-ruby-apt-ci-${{ env.CI_ARTIFACTS_RUN_NUMBER }}
-          YUM_REPO_URL: https://dl.bintray.com/fullstaq/fullstaq-ruby-yum-ci-${{ env.CI_ARTIFACTS_RUN_NUMBER }}
+          APT_REPO_URL: https://storage.googleapis.com/${{ env.CI_ARTIFACTS_BUCKET }}/${{ env.CI_ARTIFACTS_RUN_NUMBER }}/apt-repo/versions/singleton/public
+          YUM_REPO_URL: https://storage.googleapis.com/${{ env.CI_ARTIFACTS_BUCKET }}/${{ env.CI_ARTIFACTS_RUN_NUMBER }}/yum-repo/versions/singleton/public
 
       - name: Create mark file
         run: mkdir mark-normal && touch mark-normal/done.txt
@@ -627,8 +600,8 @@ jobs:
           VARIANT_NAME: "jemalloc"
           VARIANT_PACKAGE_SUFFIX: "-jemalloc"
           TEST_IMAGE_NAME: "centos:7"
-          APT_REPO_URL: https://dl.bintray.com/fullstaq/fullstaq-ruby-apt-ci-${{ env.CI_ARTIFACTS_RUN_NUMBER }}
-          YUM_REPO_URL: https://dl.bintray.com/fullstaq/fullstaq-ruby-yum-ci-${{ env.CI_ARTIFACTS_RUN_NUMBER }}
+          APT_REPO_URL: https://storage.googleapis.com/${{ env.CI_ARTIFACTS_BUCKET }}/${{ env.CI_ARTIFACTS_RUN_NUMBER }}/apt-repo/versions/singleton/public
+          YUM_REPO_URL: https://storage.googleapis.com/${{ env.CI_ARTIFACTS_BUCKET }}/${{ env.CI_ARTIFACTS_RUN_NUMBER }}/yum-repo/versions/singleton/public
 
       - name: Create mark file
         run: mkdir mark-jemalloc && touch mark-jemalloc/done.txt
@@ -661,8 +634,8 @@ jobs:
           VARIANT_NAME: "malloctrim"
           VARIANT_PACKAGE_SUFFIX: "-malloctrim"
           TEST_IMAGE_NAME: "centos:7"
-          APT_REPO_URL: https://dl.bintray.com/fullstaq/fullstaq-ruby-apt-ci-${{ env.CI_ARTIFACTS_RUN_NUMBER }}
-          YUM_REPO_URL: https://dl.bintray.com/fullstaq/fullstaq-ruby-yum-ci-${{ env.CI_ARTIFACTS_RUN_NUMBER }}
+          APT_REPO_URL: https://storage.googleapis.com/${{ env.CI_ARTIFACTS_BUCKET }}/${{ env.CI_ARTIFACTS_RUN_NUMBER }}/apt-repo/versions/singleton/public
+          YUM_REPO_URL: https://storage.googleapis.com/${{ env.CI_ARTIFACTS_BUCKET }}/${{ env.CI_ARTIFACTS_RUN_NUMBER }}/yum-repo/versions/singleton/public
 
       - name: Create mark file
         run: mkdir mark-malloctrim && touch mark-malloctrim/done.txt
@@ -695,8 +668,8 @@ jobs:
           VARIANT_NAME: "normal"
           VARIANT_PACKAGE_SUFFIX: ""
           TEST_IMAGE_NAME: "centos:7"
-          APT_REPO_URL: https://dl.bintray.com/fullstaq/fullstaq-ruby-apt-ci-${{ env.CI_ARTIFACTS_RUN_NUMBER }}
-          YUM_REPO_URL: https://dl.bintray.com/fullstaq/fullstaq-ruby-yum-ci-${{ env.CI_ARTIFACTS_RUN_NUMBER }}
+          APT_REPO_URL: https://storage.googleapis.com/${{ env.CI_ARTIFACTS_BUCKET }}/${{ env.CI_ARTIFACTS_RUN_NUMBER }}/apt-repo/versions/singleton/public
+          YUM_REPO_URL: https://storage.googleapis.com/${{ env.CI_ARTIFACTS_BUCKET }}/${{ env.CI_ARTIFACTS_RUN_NUMBER }}/yum-repo/versions/singleton/public
 
       - name: Create mark file
         run: mkdir mark-normal && touch mark-normal/done.txt
@@ -729,8 +702,8 @@ jobs:
           VARIANT_NAME: "jemalloc"
           VARIANT_PACKAGE_SUFFIX: "-jemalloc"
           TEST_IMAGE_NAME: "centos:7"
-          APT_REPO_URL: https://dl.bintray.com/fullstaq/fullstaq-ruby-apt-ci-${{ env.CI_ARTIFACTS_RUN_NUMBER }}
-          YUM_REPO_URL: https://dl.bintray.com/fullstaq/fullstaq-ruby-yum-ci-${{ env.CI_ARTIFACTS_RUN_NUMBER }}
+          APT_REPO_URL: https://storage.googleapis.com/${{ env.CI_ARTIFACTS_BUCKET }}/${{ env.CI_ARTIFACTS_RUN_NUMBER }}/apt-repo/versions/singleton/public
+          YUM_REPO_URL: https://storage.googleapis.com/${{ env.CI_ARTIFACTS_BUCKET }}/${{ env.CI_ARTIFACTS_RUN_NUMBER }}/yum-repo/versions/singleton/public
 
       - name: Create mark file
         run: mkdir mark-jemalloc && touch mark-jemalloc/done.txt
@@ -763,8 +736,8 @@ jobs:
           VARIANT_NAME: "malloctrim"
           VARIANT_PACKAGE_SUFFIX: "-malloctrim"
           TEST_IMAGE_NAME: "centos:7"
-          APT_REPO_URL: https://dl.bintray.com/fullstaq/fullstaq-ruby-apt-ci-${{ env.CI_ARTIFACTS_RUN_NUMBER }}
-          YUM_REPO_URL: https://dl.bintray.com/fullstaq/fullstaq-ruby-yum-ci-${{ env.CI_ARTIFACTS_RUN_NUMBER }}
+          APT_REPO_URL: https://storage.googleapis.com/${{ env.CI_ARTIFACTS_BUCKET }}/${{ env.CI_ARTIFACTS_RUN_NUMBER }}/apt-repo/versions/singleton/public
+          YUM_REPO_URL: https://storage.googleapis.com/${{ env.CI_ARTIFACTS_BUCKET }}/${{ env.CI_ARTIFACTS_RUN_NUMBER }}/yum-repo/versions/singleton/public
 
       - name: Create mark file
         run: mkdir mark-malloctrim && touch mark-malloctrim/done.txt
@@ -798,8 +771,8 @@ jobs:
           VARIANT_NAME: "normal"
           VARIANT_PACKAGE_SUFFIX: ""
           TEST_IMAGE_NAME: "centos:8"
-          APT_REPO_URL: https://dl.bintray.com/fullstaq/fullstaq-ruby-apt-ci-${{ env.CI_ARTIFACTS_RUN_NUMBER }}
-          YUM_REPO_URL: https://dl.bintray.com/fullstaq/fullstaq-ruby-yum-ci-${{ env.CI_ARTIFACTS_RUN_NUMBER }}
+          APT_REPO_URL: https://storage.googleapis.com/${{ env.CI_ARTIFACTS_BUCKET }}/${{ env.CI_ARTIFACTS_RUN_NUMBER }}/apt-repo/versions/singleton/public
+          YUM_REPO_URL: https://storage.googleapis.com/${{ env.CI_ARTIFACTS_BUCKET }}/${{ env.CI_ARTIFACTS_RUN_NUMBER }}/yum-repo/versions/singleton/public
 
       - name: Create mark file
         run: mkdir mark-normal && touch mark-normal/done.txt
@@ -832,8 +805,8 @@ jobs:
           VARIANT_NAME: "jemalloc"
           VARIANT_PACKAGE_SUFFIX: "-jemalloc"
           TEST_IMAGE_NAME: "centos:8"
-          APT_REPO_URL: https://dl.bintray.com/fullstaq/fullstaq-ruby-apt-ci-${{ env.CI_ARTIFACTS_RUN_NUMBER }}
-          YUM_REPO_URL: https://dl.bintray.com/fullstaq/fullstaq-ruby-yum-ci-${{ env.CI_ARTIFACTS_RUN_NUMBER }}
+          APT_REPO_URL: https://storage.googleapis.com/${{ env.CI_ARTIFACTS_BUCKET }}/${{ env.CI_ARTIFACTS_RUN_NUMBER }}/apt-repo/versions/singleton/public
+          YUM_REPO_URL: https://storage.googleapis.com/${{ env.CI_ARTIFACTS_BUCKET }}/${{ env.CI_ARTIFACTS_RUN_NUMBER }}/yum-repo/versions/singleton/public
 
       - name: Create mark file
         run: mkdir mark-jemalloc && touch mark-jemalloc/done.txt
@@ -866,8 +839,8 @@ jobs:
           VARIANT_NAME: "malloctrim"
           VARIANT_PACKAGE_SUFFIX: "-malloctrim"
           TEST_IMAGE_NAME: "centos:8"
-          APT_REPO_URL: https://dl.bintray.com/fullstaq/fullstaq-ruby-apt-ci-${{ env.CI_ARTIFACTS_RUN_NUMBER }}
-          YUM_REPO_URL: https://dl.bintray.com/fullstaq/fullstaq-ruby-yum-ci-${{ env.CI_ARTIFACTS_RUN_NUMBER }}
+          APT_REPO_URL: https://storage.googleapis.com/${{ env.CI_ARTIFACTS_BUCKET }}/${{ env.CI_ARTIFACTS_RUN_NUMBER }}/apt-repo/versions/singleton/public
+          YUM_REPO_URL: https://storage.googleapis.com/${{ env.CI_ARTIFACTS_BUCKET }}/${{ env.CI_ARTIFACTS_RUN_NUMBER }}/yum-repo/versions/singleton/public
 
       - name: Create mark file
         run: mkdir mark-malloctrim && touch mark-malloctrim/done.txt
@@ -900,8 +873,8 @@ jobs:
           VARIANT_NAME: "normal"
           VARIANT_PACKAGE_SUFFIX: ""
           TEST_IMAGE_NAME: "centos:8"
-          APT_REPO_URL: https://dl.bintray.com/fullstaq/fullstaq-ruby-apt-ci-${{ env.CI_ARTIFACTS_RUN_NUMBER }}
-          YUM_REPO_URL: https://dl.bintray.com/fullstaq/fullstaq-ruby-yum-ci-${{ env.CI_ARTIFACTS_RUN_NUMBER }}
+          APT_REPO_URL: https://storage.googleapis.com/${{ env.CI_ARTIFACTS_BUCKET }}/${{ env.CI_ARTIFACTS_RUN_NUMBER }}/apt-repo/versions/singleton/public
+          YUM_REPO_URL: https://storage.googleapis.com/${{ env.CI_ARTIFACTS_BUCKET }}/${{ env.CI_ARTIFACTS_RUN_NUMBER }}/yum-repo/versions/singleton/public
 
       - name: Create mark file
         run: mkdir mark-normal && touch mark-normal/done.txt
@@ -934,8 +907,8 @@ jobs:
           VARIANT_NAME: "jemalloc"
           VARIANT_PACKAGE_SUFFIX: "-jemalloc"
           TEST_IMAGE_NAME: "centos:8"
-          APT_REPO_URL: https://dl.bintray.com/fullstaq/fullstaq-ruby-apt-ci-${{ env.CI_ARTIFACTS_RUN_NUMBER }}
-          YUM_REPO_URL: https://dl.bintray.com/fullstaq/fullstaq-ruby-yum-ci-${{ env.CI_ARTIFACTS_RUN_NUMBER }}
+          APT_REPO_URL: https://storage.googleapis.com/${{ env.CI_ARTIFACTS_BUCKET }}/${{ env.CI_ARTIFACTS_RUN_NUMBER }}/apt-repo/versions/singleton/public
+          YUM_REPO_URL: https://storage.googleapis.com/${{ env.CI_ARTIFACTS_BUCKET }}/${{ env.CI_ARTIFACTS_RUN_NUMBER }}/yum-repo/versions/singleton/public
 
       - name: Create mark file
         run: mkdir mark-jemalloc && touch mark-jemalloc/done.txt
@@ -968,8 +941,8 @@ jobs:
           VARIANT_NAME: "malloctrim"
           VARIANT_PACKAGE_SUFFIX: "-malloctrim"
           TEST_IMAGE_NAME: "centos:8"
-          APT_REPO_URL: https://dl.bintray.com/fullstaq/fullstaq-ruby-apt-ci-${{ env.CI_ARTIFACTS_RUN_NUMBER }}
-          YUM_REPO_URL: https://dl.bintray.com/fullstaq/fullstaq-ruby-yum-ci-${{ env.CI_ARTIFACTS_RUN_NUMBER }}
+          APT_REPO_URL: https://storage.googleapis.com/${{ env.CI_ARTIFACTS_BUCKET }}/${{ env.CI_ARTIFACTS_RUN_NUMBER }}/apt-repo/versions/singleton/public
+          YUM_REPO_URL: https://storage.googleapis.com/${{ env.CI_ARTIFACTS_BUCKET }}/${{ env.CI_ARTIFACTS_RUN_NUMBER }}/yum-repo/versions/singleton/public
 
       - name: Create mark file
         run: mkdir mark-malloctrim && touch mark-malloctrim/done.txt
@@ -1002,8 +975,8 @@ jobs:
           VARIANT_NAME: "normal"
           VARIANT_PACKAGE_SUFFIX: ""
           TEST_IMAGE_NAME: "centos:8"
-          APT_REPO_URL: https://dl.bintray.com/fullstaq/fullstaq-ruby-apt-ci-${{ env.CI_ARTIFACTS_RUN_NUMBER }}
-          YUM_REPO_URL: https://dl.bintray.com/fullstaq/fullstaq-ruby-yum-ci-${{ env.CI_ARTIFACTS_RUN_NUMBER }}
+          APT_REPO_URL: https://storage.googleapis.com/${{ env.CI_ARTIFACTS_BUCKET }}/${{ env.CI_ARTIFACTS_RUN_NUMBER }}/apt-repo/versions/singleton/public
+          YUM_REPO_URL: https://storage.googleapis.com/${{ env.CI_ARTIFACTS_BUCKET }}/${{ env.CI_ARTIFACTS_RUN_NUMBER }}/yum-repo/versions/singleton/public
 
       - name: Create mark file
         run: mkdir mark-normal && touch mark-normal/done.txt
@@ -1036,8 +1009,8 @@ jobs:
           VARIANT_NAME: "jemalloc"
           VARIANT_PACKAGE_SUFFIX: "-jemalloc"
           TEST_IMAGE_NAME: "centos:8"
-          APT_REPO_URL: https://dl.bintray.com/fullstaq/fullstaq-ruby-apt-ci-${{ env.CI_ARTIFACTS_RUN_NUMBER }}
-          YUM_REPO_URL: https://dl.bintray.com/fullstaq/fullstaq-ruby-yum-ci-${{ env.CI_ARTIFACTS_RUN_NUMBER }}
+          APT_REPO_URL: https://storage.googleapis.com/${{ env.CI_ARTIFACTS_BUCKET }}/${{ env.CI_ARTIFACTS_RUN_NUMBER }}/apt-repo/versions/singleton/public
+          YUM_REPO_URL: https://storage.googleapis.com/${{ env.CI_ARTIFACTS_BUCKET }}/${{ env.CI_ARTIFACTS_RUN_NUMBER }}/yum-repo/versions/singleton/public
 
       - name: Create mark file
         run: mkdir mark-jemalloc && touch mark-jemalloc/done.txt
@@ -1070,8 +1043,8 @@ jobs:
           VARIANT_NAME: "malloctrim"
           VARIANT_PACKAGE_SUFFIX: "-malloctrim"
           TEST_IMAGE_NAME: "centos:8"
-          APT_REPO_URL: https://dl.bintray.com/fullstaq/fullstaq-ruby-apt-ci-${{ env.CI_ARTIFACTS_RUN_NUMBER }}
-          YUM_REPO_URL: https://dl.bintray.com/fullstaq/fullstaq-ruby-yum-ci-${{ env.CI_ARTIFACTS_RUN_NUMBER }}
+          APT_REPO_URL: https://storage.googleapis.com/${{ env.CI_ARTIFACTS_BUCKET }}/${{ env.CI_ARTIFACTS_RUN_NUMBER }}/apt-repo/versions/singleton/public
+          YUM_REPO_URL: https://storage.googleapis.com/${{ env.CI_ARTIFACTS_BUCKET }}/${{ env.CI_ARTIFACTS_RUN_NUMBER }}/yum-repo/versions/singleton/public
 
       - name: Create mark file
         run: mkdir mark-malloctrim && touch mark-malloctrim/done.txt
@@ -1104,8 +1077,8 @@ jobs:
           VARIANT_NAME: "normal"
           VARIANT_PACKAGE_SUFFIX: ""
           TEST_IMAGE_NAME: "centos:8"
-          APT_REPO_URL: https://dl.bintray.com/fullstaq/fullstaq-ruby-apt-ci-${{ env.CI_ARTIFACTS_RUN_NUMBER }}
-          YUM_REPO_URL: https://dl.bintray.com/fullstaq/fullstaq-ruby-yum-ci-${{ env.CI_ARTIFACTS_RUN_NUMBER }}
+          APT_REPO_URL: https://storage.googleapis.com/${{ env.CI_ARTIFACTS_BUCKET }}/${{ env.CI_ARTIFACTS_RUN_NUMBER }}/apt-repo/versions/singleton/public
+          YUM_REPO_URL: https://storage.googleapis.com/${{ env.CI_ARTIFACTS_BUCKET }}/${{ env.CI_ARTIFACTS_RUN_NUMBER }}/yum-repo/versions/singleton/public
 
       - name: Create mark file
         run: mkdir mark-normal && touch mark-normal/done.txt
@@ -1138,8 +1111,8 @@ jobs:
           VARIANT_NAME: "jemalloc"
           VARIANT_PACKAGE_SUFFIX: "-jemalloc"
           TEST_IMAGE_NAME: "centos:8"
-          APT_REPO_URL: https://dl.bintray.com/fullstaq/fullstaq-ruby-apt-ci-${{ env.CI_ARTIFACTS_RUN_NUMBER }}
-          YUM_REPO_URL: https://dl.bintray.com/fullstaq/fullstaq-ruby-yum-ci-${{ env.CI_ARTIFACTS_RUN_NUMBER }}
+          APT_REPO_URL: https://storage.googleapis.com/${{ env.CI_ARTIFACTS_BUCKET }}/${{ env.CI_ARTIFACTS_RUN_NUMBER }}/apt-repo/versions/singleton/public
+          YUM_REPO_URL: https://storage.googleapis.com/${{ env.CI_ARTIFACTS_BUCKET }}/${{ env.CI_ARTIFACTS_RUN_NUMBER }}/yum-repo/versions/singleton/public
 
       - name: Create mark file
         run: mkdir mark-jemalloc && touch mark-jemalloc/done.txt
@@ -1172,8 +1145,8 @@ jobs:
           VARIANT_NAME: "malloctrim"
           VARIANT_PACKAGE_SUFFIX: "-malloctrim"
           TEST_IMAGE_NAME: "centos:8"
-          APT_REPO_URL: https://dl.bintray.com/fullstaq/fullstaq-ruby-apt-ci-${{ env.CI_ARTIFACTS_RUN_NUMBER }}
-          YUM_REPO_URL: https://dl.bintray.com/fullstaq/fullstaq-ruby-yum-ci-${{ env.CI_ARTIFACTS_RUN_NUMBER }}
+          APT_REPO_URL: https://storage.googleapis.com/${{ env.CI_ARTIFACTS_BUCKET }}/${{ env.CI_ARTIFACTS_RUN_NUMBER }}/apt-repo/versions/singleton/public
+          YUM_REPO_URL: https://storage.googleapis.com/${{ env.CI_ARTIFACTS_BUCKET }}/${{ env.CI_ARTIFACTS_RUN_NUMBER }}/yum-repo/versions/singleton/public
 
       - name: Create mark file
         run: mkdir mark-malloctrim && touch mark-malloctrim/done.txt
@@ -1206,8 +1179,8 @@ jobs:
           VARIANT_NAME: "normal"
           VARIANT_PACKAGE_SUFFIX: ""
           TEST_IMAGE_NAME: "centos:8"
-          APT_REPO_URL: https://dl.bintray.com/fullstaq/fullstaq-ruby-apt-ci-${{ env.CI_ARTIFACTS_RUN_NUMBER }}
-          YUM_REPO_URL: https://dl.bintray.com/fullstaq/fullstaq-ruby-yum-ci-${{ env.CI_ARTIFACTS_RUN_NUMBER }}
+          APT_REPO_URL: https://storage.googleapis.com/${{ env.CI_ARTIFACTS_BUCKET }}/${{ env.CI_ARTIFACTS_RUN_NUMBER }}/apt-repo/versions/singleton/public
+          YUM_REPO_URL: https://storage.googleapis.com/${{ env.CI_ARTIFACTS_BUCKET }}/${{ env.CI_ARTIFACTS_RUN_NUMBER }}/yum-repo/versions/singleton/public
 
       - name: Create mark file
         run: mkdir mark-normal && touch mark-normal/done.txt
@@ -1240,8 +1213,8 @@ jobs:
           VARIANT_NAME: "jemalloc"
           VARIANT_PACKAGE_SUFFIX: "-jemalloc"
           TEST_IMAGE_NAME: "centos:8"
-          APT_REPO_URL: https://dl.bintray.com/fullstaq/fullstaq-ruby-apt-ci-${{ env.CI_ARTIFACTS_RUN_NUMBER }}
-          YUM_REPO_URL: https://dl.bintray.com/fullstaq/fullstaq-ruby-yum-ci-${{ env.CI_ARTIFACTS_RUN_NUMBER }}
+          APT_REPO_URL: https://storage.googleapis.com/${{ env.CI_ARTIFACTS_BUCKET }}/${{ env.CI_ARTIFACTS_RUN_NUMBER }}/apt-repo/versions/singleton/public
+          YUM_REPO_URL: https://storage.googleapis.com/${{ env.CI_ARTIFACTS_BUCKET }}/${{ env.CI_ARTIFACTS_RUN_NUMBER }}/yum-repo/versions/singleton/public
 
       - name: Create mark file
         run: mkdir mark-jemalloc && touch mark-jemalloc/done.txt
@@ -1274,8 +1247,8 @@ jobs:
           VARIANT_NAME: "malloctrim"
           VARIANT_PACKAGE_SUFFIX: "-malloctrim"
           TEST_IMAGE_NAME: "centos:8"
-          APT_REPO_URL: https://dl.bintray.com/fullstaq/fullstaq-ruby-apt-ci-${{ env.CI_ARTIFACTS_RUN_NUMBER }}
-          YUM_REPO_URL: https://dl.bintray.com/fullstaq/fullstaq-ruby-yum-ci-${{ env.CI_ARTIFACTS_RUN_NUMBER }}
+          APT_REPO_URL: https://storage.googleapis.com/${{ env.CI_ARTIFACTS_BUCKET }}/${{ env.CI_ARTIFACTS_RUN_NUMBER }}/apt-repo/versions/singleton/public
+          YUM_REPO_URL: https://storage.googleapis.com/${{ env.CI_ARTIFACTS_BUCKET }}/${{ env.CI_ARTIFACTS_RUN_NUMBER }}/yum-repo/versions/singleton/public
 
       - name: Create mark file
         run: mkdir mark-malloctrim && touch mark-malloctrim/done.txt
@@ -1308,8 +1281,8 @@ jobs:
           VARIANT_NAME: "normal"
           VARIANT_PACKAGE_SUFFIX: ""
           TEST_IMAGE_NAME: "centos:8"
-          APT_REPO_URL: https://dl.bintray.com/fullstaq/fullstaq-ruby-apt-ci-${{ env.CI_ARTIFACTS_RUN_NUMBER }}
-          YUM_REPO_URL: https://dl.bintray.com/fullstaq/fullstaq-ruby-yum-ci-${{ env.CI_ARTIFACTS_RUN_NUMBER }}
+          APT_REPO_URL: https://storage.googleapis.com/${{ env.CI_ARTIFACTS_BUCKET }}/${{ env.CI_ARTIFACTS_RUN_NUMBER }}/apt-repo/versions/singleton/public
+          YUM_REPO_URL: https://storage.googleapis.com/${{ env.CI_ARTIFACTS_BUCKET }}/${{ env.CI_ARTIFACTS_RUN_NUMBER }}/yum-repo/versions/singleton/public
 
       - name: Create mark file
         run: mkdir mark-normal && touch mark-normal/done.txt
@@ -1342,8 +1315,8 @@ jobs:
           VARIANT_NAME: "jemalloc"
           VARIANT_PACKAGE_SUFFIX: "-jemalloc"
           TEST_IMAGE_NAME: "centos:8"
-          APT_REPO_URL: https://dl.bintray.com/fullstaq/fullstaq-ruby-apt-ci-${{ env.CI_ARTIFACTS_RUN_NUMBER }}
-          YUM_REPO_URL: https://dl.bintray.com/fullstaq/fullstaq-ruby-yum-ci-${{ env.CI_ARTIFACTS_RUN_NUMBER }}
+          APT_REPO_URL: https://storage.googleapis.com/${{ env.CI_ARTIFACTS_BUCKET }}/${{ env.CI_ARTIFACTS_RUN_NUMBER }}/apt-repo/versions/singleton/public
+          YUM_REPO_URL: https://storage.googleapis.com/${{ env.CI_ARTIFACTS_BUCKET }}/${{ env.CI_ARTIFACTS_RUN_NUMBER }}/yum-repo/versions/singleton/public
 
       - name: Create mark file
         run: mkdir mark-jemalloc && touch mark-jemalloc/done.txt
@@ -1376,8 +1349,8 @@ jobs:
           VARIANT_NAME: "malloctrim"
           VARIANT_PACKAGE_SUFFIX: "-malloctrim"
           TEST_IMAGE_NAME: "centos:8"
-          APT_REPO_URL: https://dl.bintray.com/fullstaq/fullstaq-ruby-apt-ci-${{ env.CI_ARTIFACTS_RUN_NUMBER }}
-          YUM_REPO_URL: https://dl.bintray.com/fullstaq/fullstaq-ruby-yum-ci-${{ env.CI_ARTIFACTS_RUN_NUMBER }}
+          APT_REPO_URL: https://storage.googleapis.com/${{ env.CI_ARTIFACTS_BUCKET }}/${{ env.CI_ARTIFACTS_RUN_NUMBER }}/apt-repo/versions/singleton/public
+          YUM_REPO_URL: https://storage.googleapis.com/${{ env.CI_ARTIFACTS_BUCKET }}/${{ env.CI_ARTIFACTS_RUN_NUMBER }}/yum-repo/versions/singleton/public
 
       - name: Create mark file
         run: mkdir mark-malloctrim && touch mark-malloctrim/done.txt
@@ -1411,8 +1384,8 @@ jobs:
           VARIANT_NAME: "normal"
           VARIANT_PACKAGE_SUFFIX: ""
           TEST_IMAGE_NAME: "debian:10"
-          APT_REPO_URL: https://dl.bintray.com/fullstaq/fullstaq-ruby-apt-ci-${{ env.CI_ARTIFACTS_RUN_NUMBER }}
-          YUM_REPO_URL: https://dl.bintray.com/fullstaq/fullstaq-ruby-yum-ci-${{ env.CI_ARTIFACTS_RUN_NUMBER }}
+          APT_REPO_URL: https://storage.googleapis.com/${{ env.CI_ARTIFACTS_BUCKET }}/${{ env.CI_ARTIFACTS_RUN_NUMBER }}/apt-repo/versions/singleton/public
+          YUM_REPO_URL: https://storage.googleapis.com/${{ env.CI_ARTIFACTS_BUCKET }}/${{ env.CI_ARTIFACTS_RUN_NUMBER }}/yum-repo/versions/singleton/public
 
       - name: Create mark file
         run: mkdir mark-normal && touch mark-normal/done.txt
@@ -1445,8 +1418,8 @@ jobs:
           VARIANT_NAME: "jemalloc"
           VARIANT_PACKAGE_SUFFIX: "-jemalloc"
           TEST_IMAGE_NAME: "debian:10"
-          APT_REPO_URL: https://dl.bintray.com/fullstaq/fullstaq-ruby-apt-ci-${{ env.CI_ARTIFACTS_RUN_NUMBER }}
-          YUM_REPO_URL: https://dl.bintray.com/fullstaq/fullstaq-ruby-yum-ci-${{ env.CI_ARTIFACTS_RUN_NUMBER }}
+          APT_REPO_URL: https://storage.googleapis.com/${{ env.CI_ARTIFACTS_BUCKET }}/${{ env.CI_ARTIFACTS_RUN_NUMBER }}/apt-repo/versions/singleton/public
+          YUM_REPO_URL: https://storage.googleapis.com/${{ env.CI_ARTIFACTS_BUCKET }}/${{ env.CI_ARTIFACTS_RUN_NUMBER }}/yum-repo/versions/singleton/public
 
       - name: Create mark file
         run: mkdir mark-jemalloc && touch mark-jemalloc/done.txt
@@ -1479,8 +1452,8 @@ jobs:
           VARIANT_NAME: "malloctrim"
           VARIANT_PACKAGE_SUFFIX: "-malloctrim"
           TEST_IMAGE_NAME: "debian:10"
-          APT_REPO_URL: https://dl.bintray.com/fullstaq/fullstaq-ruby-apt-ci-${{ env.CI_ARTIFACTS_RUN_NUMBER }}
-          YUM_REPO_URL: https://dl.bintray.com/fullstaq/fullstaq-ruby-yum-ci-${{ env.CI_ARTIFACTS_RUN_NUMBER }}
+          APT_REPO_URL: https://storage.googleapis.com/${{ env.CI_ARTIFACTS_BUCKET }}/${{ env.CI_ARTIFACTS_RUN_NUMBER }}/apt-repo/versions/singleton/public
+          YUM_REPO_URL: https://storage.googleapis.com/${{ env.CI_ARTIFACTS_BUCKET }}/${{ env.CI_ARTIFACTS_RUN_NUMBER }}/yum-repo/versions/singleton/public
 
       - name: Create mark file
         run: mkdir mark-malloctrim && touch mark-malloctrim/done.txt
@@ -1513,8 +1486,8 @@ jobs:
           VARIANT_NAME: "normal"
           VARIANT_PACKAGE_SUFFIX: ""
           TEST_IMAGE_NAME: "debian:10"
-          APT_REPO_URL: https://dl.bintray.com/fullstaq/fullstaq-ruby-apt-ci-${{ env.CI_ARTIFACTS_RUN_NUMBER }}
-          YUM_REPO_URL: https://dl.bintray.com/fullstaq/fullstaq-ruby-yum-ci-${{ env.CI_ARTIFACTS_RUN_NUMBER }}
+          APT_REPO_URL: https://storage.googleapis.com/${{ env.CI_ARTIFACTS_BUCKET }}/${{ env.CI_ARTIFACTS_RUN_NUMBER }}/apt-repo/versions/singleton/public
+          YUM_REPO_URL: https://storage.googleapis.com/${{ env.CI_ARTIFACTS_BUCKET }}/${{ env.CI_ARTIFACTS_RUN_NUMBER }}/yum-repo/versions/singleton/public
 
       - name: Create mark file
         run: mkdir mark-normal && touch mark-normal/done.txt
@@ -1547,8 +1520,8 @@ jobs:
           VARIANT_NAME: "jemalloc"
           VARIANT_PACKAGE_SUFFIX: "-jemalloc"
           TEST_IMAGE_NAME: "debian:10"
-          APT_REPO_URL: https://dl.bintray.com/fullstaq/fullstaq-ruby-apt-ci-${{ env.CI_ARTIFACTS_RUN_NUMBER }}
-          YUM_REPO_URL: https://dl.bintray.com/fullstaq/fullstaq-ruby-yum-ci-${{ env.CI_ARTIFACTS_RUN_NUMBER }}
+          APT_REPO_URL: https://storage.googleapis.com/${{ env.CI_ARTIFACTS_BUCKET }}/${{ env.CI_ARTIFACTS_RUN_NUMBER }}/apt-repo/versions/singleton/public
+          YUM_REPO_URL: https://storage.googleapis.com/${{ env.CI_ARTIFACTS_BUCKET }}/${{ env.CI_ARTIFACTS_RUN_NUMBER }}/yum-repo/versions/singleton/public
 
       - name: Create mark file
         run: mkdir mark-jemalloc && touch mark-jemalloc/done.txt
@@ -1581,8 +1554,8 @@ jobs:
           VARIANT_NAME: "malloctrim"
           VARIANT_PACKAGE_SUFFIX: "-malloctrim"
           TEST_IMAGE_NAME: "debian:10"
-          APT_REPO_URL: https://dl.bintray.com/fullstaq/fullstaq-ruby-apt-ci-${{ env.CI_ARTIFACTS_RUN_NUMBER }}
-          YUM_REPO_URL: https://dl.bintray.com/fullstaq/fullstaq-ruby-yum-ci-${{ env.CI_ARTIFACTS_RUN_NUMBER }}
+          APT_REPO_URL: https://storage.googleapis.com/${{ env.CI_ARTIFACTS_BUCKET }}/${{ env.CI_ARTIFACTS_RUN_NUMBER }}/apt-repo/versions/singleton/public
+          YUM_REPO_URL: https://storage.googleapis.com/${{ env.CI_ARTIFACTS_BUCKET }}/${{ env.CI_ARTIFACTS_RUN_NUMBER }}/yum-repo/versions/singleton/public
 
       - name: Create mark file
         run: mkdir mark-malloctrim && touch mark-malloctrim/done.txt
@@ -1615,8 +1588,8 @@ jobs:
           VARIANT_NAME: "normal"
           VARIANT_PACKAGE_SUFFIX: ""
           TEST_IMAGE_NAME: "debian:10"
-          APT_REPO_URL: https://dl.bintray.com/fullstaq/fullstaq-ruby-apt-ci-${{ env.CI_ARTIFACTS_RUN_NUMBER }}
-          YUM_REPO_URL: https://dl.bintray.com/fullstaq/fullstaq-ruby-yum-ci-${{ env.CI_ARTIFACTS_RUN_NUMBER }}
+          APT_REPO_URL: https://storage.googleapis.com/${{ env.CI_ARTIFACTS_BUCKET }}/${{ env.CI_ARTIFACTS_RUN_NUMBER }}/apt-repo/versions/singleton/public
+          YUM_REPO_URL: https://storage.googleapis.com/${{ env.CI_ARTIFACTS_BUCKET }}/${{ env.CI_ARTIFACTS_RUN_NUMBER }}/yum-repo/versions/singleton/public
 
       - name: Create mark file
         run: mkdir mark-normal && touch mark-normal/done.txt
@@ -1649,8 +1622,8 @@ jobs:
           VARIANT_NAME: "jemalloc"
           VARIANT_PACKAGE_SUFFIX: "-jemalloc"
           TEST_IMAGE_NAME: "debian:10"
-          APT_REPO_URL: https://dl.bintray.com/fullstaq/fullstaq-ruby-apt-ci-${{ env.CI_ARTIFACTS_RUN_NUMBER }}
-          YUM_REPO_URL: https://dl.bintray.com/fullstaq/fullstaq-ruby-yum-ci-${{ env.CI_ARTIFACTS_RUN_NUMBER }}
+          APT_REPO_URL: https://storage.googleapis.com/${{ env.CI_ARTIFACTS_BUCKET }}/${{ env.CI_ARTIFACTS_RUN_NUMBER }}/apt-repo/versions/singleton/public
+          YUM_REPO_URL: https://storage.googleapis.com/${{ env.CI_ARTIFACTS_BUCKET }}/${{ env.CI_ARTIFACTS_RUN_NUMBER }}/yum-repo/versions/singleton/public
 
       - name: Create mark file
         run: mkdir mark-jemalloc && touch mark-jemalloc/done.txt
@@ -1683,8 +1656,8 @@ jobs:
           VARIANT_NAME: "malloctrim"
           VARIANT_PACKAGE_SUFFIX: "-malloctrim"
           TEST_IMAGE_NAME: "debian:10"
-          APT_REPO_URL: https://dl.bintray.com/fullstaq/fullstaq-ruby-apt-ci-${{ env.CI_ARTIFACTS_RUN_NUMBER }}
-          YUM_REPO_URL: https://dl.bintray.com/fullstaq/fullstaq-ruby-yum-ci-${{ env.CI_ARTIFACTS_RUN_NUMBER }}
+          APT_REPO_URL: https://storage.googleapis.com/${{ env.CI_ARTIFACTS_BUCKET }}/${{ env.CI_ARTIFACTS_RUN_NUMBER }}/apt-repo/versions/singleton/public
+          YUM_REPO_URL: https://storage.googleapis.com/${{ env.CI_ARTIFACTS_BUCKET }}/${{ env.CI_ARTIFACTS_RUN_NUMBER }}/yum-repo/versions/singleton/public
 
       - name: Create mark file
         run: mkdir mark-malloctrim && touch mark-malloctrim/done.txt
@@ -1717,8 +1690,8 @@ jobs:
           VARIANT_NAME: "normal"
           VARIANT_PACKAGE_SUFFIX: ""
           TEST_IMAGE_NAME: "debian:10"
-          APT_REPO_URL: https://dl.bintray.com/fullstaq/fullstaq-ruby-apt-ci-${{ env.CI_ARTIFACTS_RUN_NUMBER }}
-          YUM_REPO_URL: https://dl.bintray.com/fullstaq/fullstaq-ruby-yum-ci-${{ env.CI_ARTIFACTS_RUN_NUMBER }}
+          APT_REPO_URL: https://storage.googleapis.com/${{ env.CI_ARTIFACTS_BUCKET }}/${{ env.CI_ARTIFACTS_RUN_NUMBER }}/apt-repo/versions/singleton/public
+          YUM_REPO_URL: https://storage.googleapis.com/${{ env.CI_ARTIFACTS_BUCKET }}/${{ env.CI_ARTIFACTS_RUN_NUMBER }}/yum-repo/versions/singleton/public
 
       - name: Create mark file
         run: mkdir mark-normal && touch mark-normal/done.txt
@@ -1751,8 +1724,8 @@ jobs:
           VARIANT_NAME: "jemalloc"
           VARIANT_PACKAGE_SUFFIX: "-jemalloc"
           TEST_IMAGE_NAME: "debian:10"
-          APT_REPO_URL: https://dl.bintray.com/fullstaq/fullstaq-ruby-apt-ci-${{ env.CI_ARTIFACTS_RUN_NUMBER }}
-          YUM_REPO_URL: https://dl.bintray.com/fullstaq/fullstaq-ruby-yum-ci-${{ env.CI_ARTIFACTS_RUN_NUMBER }}
+          APT_REPO_URL: https://storage.googleapis.com/${{ env.CI_ARTIFACTS_BUCKET }}/${{ env.CI_ARTIFACTS_RUN_NUMBER }}/apt-repo/versions/singleton/public
+          YUM_REPO_URL: https://storage.googleapis.com/${{ env.CI_ARTIFACTS_BUCKET }}/${{ env.CI_ARTIFACTS_RUN_NUMBER }}/yum-repo/versions/singleton/public
 
       - name: Create mark file
         run: mkdir mark-jemalloc && touch mark-jemalloc/done.txt
@@ -1785,8 +1758,8 @@ jobs:
           VARIANT_NAME: "malloctrim"
           VARIANT_PACKAGE_SUFFIX: "-malloctrim"
           TEST_IMAGE_NAME: "debian:10"
-          APT_REPO_URL: https://dl.bintray.com/fullstaq/fullstaq-ruby-apt-ci-${{ env.CI_ARTIFACTS_RUN_NUMBER }}
-          YUM_REPO_URL: https://dl.bintray.com/fullstaq/fullstaq-ruby-yum-ci-${{ env.CI_ARTIFACTS_RUN_NUMBER }}
+          APT_REPO_URL: https://storage.googleapis.com/${{ env.CI_ARTIFACTS_BUCKET }}/${{ env.CI_ARTIFACTS_RUN_NUMBER }}/apt-repo/versions/singleton/public
+          YUM_REPO_URL: https://storage.googleapis.com/${{ env.CI_ARTIFACTS_BUCKET }}/${{ env.CI_ARTIFACTS_RUN_NUMBER }}/yum-repo/versions/singleton/public
 
       - name: Create mark file
         run: mkdir mark-malloctrim && touch mark-malloctrim/done.txt
@@ -1819,8 +1792,8 @@ jobs:
           VARIANT_NAME: "normal"
           VARIANT_PACKAGE_SUFFIX: ""
           TEST_IMAGE_NAME: "debian:10"
-          APT_REPO_URL: https://dl.bintray.com/fullstaq/fullstaq-ruby-apt-ci-${{ env.CI_ARTIFACTS_RUN_NUMBER }}
-          YUM_REPO_URL: https://dl.bintray.com/fullstaq/fullstaq-ruby-yum-ci-${{ env.CI_ARTIFACTS_RUN_NUMBER }}
+          APT_REPO_URL: https://storage.googleapis.com/${{ env.CI_ARTIFACTS_BUCKET }}/${{ env.CI_ARTIFACTS_RUN_NUMBER }}/apt-repo/versions/singleton/public
+          YUM_REPO_URL: https://storage.googleapis.com/${{ env.CI_ARTIFACTS_BUCKET }}/${{ env.CI_ARTIFACTS_RUN_NUMBER }}/yum-repo/versions/singleton/public
 
       - name: Create mark file
         run: mkdir mark-normal && touch mark-normal/done.txt
@@ -1853,8 +1826,8 @@ jobs:
           VARIANT_NAME: "jemalloc"
           VARIANT_PACKAGE_SUFFIX: "-jemalloc"
           TEST_IMAGE_NAME: "debian:10"
-          APT_REPO_URL: https://dl.bintray.com/fullstaq/fullstaq-ruby-apt-ci-${{ env.CI_ARTIFACTS_RUN_NUMBER }}
-          YUM_REPO_URL: https://dl.bintray.com/fullstaq/fullstaq-ruby-yum-ci-${{ env.CI_ARTIFACTS_RUN_NUMBER }}
+          APT_REPO_URL: https://storage.googleapis.com/${{ env.CI_ARTIFACTS_BUCKET }}/${{ env.CI_ARTIFACTS_RUN_NUMBER }}/apt-repo/versions/singleton/public
+          YUM_REPO_URL: https://storage.googleapis.com/${{ env.CI_ARTIFACTS_BUCKET }}/${{ env.CI_ARTIFACTS_RUN_NUMBER }}/yum-repo/versions/singleton/public
 
       - name: Create mark file
         run: mkdir mark-jemalloc && touch mark-jemalloc/done.txt
@@ -1887,8 +1860,8 @@ jobs:
           VARIANT_NAME: "malloctrim"
           VARIANT_PACKAGE_SUFFIX: "-malloctrim"
           TEST_IMAGE_NAME: "debian:10"
-          APT_REPO_URL: https://dl.bintray.com/fullstaq/fullstaq-ruby-apt-ci-${{ env.CI_ARTIFACTS_RUN_NUMBER }}
-          YUM_REPO_URL: https://dl.bintray.com/fullstaq/fullstaq-ruby-yum-ci-${{ env.CI_ARTIFACTS_RUN_NUMBER }}
+          APT_REPO_URL: https://storage.googleapis.com/${{ env.CI_ARTIFACTS_BUCKET }}/${{ env.CI_ARTIFACTS_RUN_NUMBER }}/apt-repo/versions/singleton/public
+          YUM_REPO_URL: https://storage.googleapis.com/${{ env.CI_ARTIFACTS_BUCKET }}/${{ env.CI_ARTIFACTS_RUN_NUMBER }}/yum-repo/versions/singleton/public
 
       - name: Create mark file
         run: mkdir mark-malloctrim && touch mark-malloctrim/done.txt
@@ -1921,8 +1894,8 @@ jobs:
           VARIANT_NAME: "normal"
           VARIANT_PACKAGE_SUFFIX: ""
           TEST_IMAGE_NAME: "debian:10"
-          APT_REPO_URL: https://dl.bintray.com/fullstaq/fullstaq-ruby-apt-ci-${{ env.CI_ARTIFACTS_RUN_NUMBER }}
-          YUM_REPO_URL: https://dl.bintray.com/fullstaq/fullstaq-ruby-yum-ci-${{ env.CI_ARTIFACTS_RUN_NUMBER }}
+          APT_REPO_URL: https://storage.googleapis.com/${{ env.CI_ARTIFACTS_BUCKET }}/${{ env.CI_ARTIFACTS_RUN_NUMBER }}/apt-repo/versions/singleton/public
+          YUM_REPO_URL: https://storage.googleapis.com/${{ env.CI_ARTIFACTS_BUCKET }}/${{ env.CI_ARTIFACTS_RUN_NUMBER }}/yum-repo/versions/singleton/public
 
       - name: Create mark file
         run: mkdir mark-normal && touch mark-normal/done.txt
@@ -1955,8 +1928,8 @@ jobs:
           VARIANT_NAME: "jemalloc"
           VARIANT_PACKAGE_SUFFIX: "-jemalloc"
           TEST_IMAGE_NAME: "debian:10"
-          APT_REPO_URL: https://dl.bintray.com/fullstaq/fullstaq-ruby-apt-ci-${{ env.CI_ARTIFACTS_RUN_NUMBER }}
-          YUM_REPO_URL: https://dl.bintray.com/fullstaq/fullstaq-ruby-yum-ci-${{ env.CI_ARTIFACTS_RUN_NUMBER }}
+          APT_REPO_URL: https://storage.googleapis.com/${{ env.CI_ARTIFACTS_BUCKET }}/${{ env.CI_ARTIFACTS_RUN_NUMBER }}/apt-repo/versions/singleton/public
+          YUM_REPO_URL: https://storage.googleapis.com/${{ env.CI_ARTIFACTS_BUCKET }}/${{ env.CI_ARTIFACTS_RUN_NUMBER }}/yum-repo/versions/singleton/public
 
       - name: Create mark file
         run: mkdir mark-jemalloc && touch mark-jemalloc/done.txt
@@ -1989,8 +1962,8 @@ jobs:
           VARIANT_NAME: "malloctrim"
           VARIANT_PACKAGE_SUFFIX: "-malloctrim"
           TEST_IMAGE_NAME: "debian:10"
-          APT_REPO_URL: https://dl.bintray.com/fullstaq/fullstaq-ruby-apt-ci-${{ env.CI_ARTIFACTS_RUN_NUMBER }}
-          YUM_REPO_URL: https://dl.bintray.com/fullstaq/fullstaq-ruby-yum-ci-${{ env.CI_ARTIFACTS_RUN_NUMBER }}
+          APT_REPO_URL: https://storage.googleapis.com/${{ env.CI_ARTIFACTS_BUCKET }}/${{ env.CI_ARTIFACTS_RUN_NUMBER }}/apt-repo/versions/singleton/public
+          YUM_REPO_URL: https://storage.googleapis.com/${{ env.CI_ARTIFACTS_BUCKET }}/${{ env.CI_ARTIFACTS_RUN_NUMBER }}/yum-repo/versions/singleton/public
 
       - name: Create mark file
         run: mkdir mark-malloctrim && touch mark-malloctrim/done.txt
@@ -2024,8 +1997,8 @@ jobs:
           VARIANT_NAME: "normal"
           VARIANT_PACKAGE_SUFFIX: ""
           TEST_IMAGE_NAME: "debian:9"
-          APT_REPO_URL: https://dl.bintray.com/fullstaq/fullstaq-ruby-apt-ci-${{ env.CI_ARTIFACTS_RUN_NUMBER }}
-          YUM_REPO_URL: https://dl.bintray.com/fullstaq/fullstaq-ruby-yum-ci-${{ env.CI_ARTIFACTS_RUN_NUMBER }}
+          APT_REPO_URL: https://storage.googleapis.com/${{ env.CI_ARTIFACTS_BUCKET }}/${{ env.CI_ARTIFACTS_RUN_NUMBER }}/apt-repo/versions/singleton/public
+          YUM_REPO_URL: https://storage.googleapis.com/${{ env.CI_ARTIFACTS_BUCKET }}/${{ env.CI_ARTIFACTS_RUN_NUMBER }}/yum-repo/versions/singleton/public
 
       - name: Create mark file
         run: mkdir mark-normal && touch mark-normal/done.txt
@@ -2058,8 +2031,8 @@ jobs:
           VARIANT_NAME: "jemalloc"
           VARIANT_PACKAGE_SUFFIX: "-jemalloc"
           TEST_IMAGE_NAME: "debian:9"
-          APT_REPO_URL: https://dl.bintray.com/fullstaq/fullstaq-ruby-apt-ci-${{ env.CI_ARTIFACTS_RUN_NUMBER }}
-          YUM_REPO_URL: https://dl.bintray.com/fullstaq/fullstaq-ruby-yum-ci-${{ env.CI_ARTIFACTS_RUN_NUMBER }}
+          APT_REPO_URL: https://storage.googleapis.com/${{ env.CI_ARTIFACTS_BUCKET }}/${{ env.CI_ARTIFACTS_RUN_NUMBER }}/apt-repo/versions/singleton/public
+          YUM_REPO_URL: https://storage.googleapis.com/${{ env.CI_ARTIFACTS_BUCKET }}/${{ env.CI_ARTIFACTS_RUN_NUMBER }}/yum-repo/versions/singleton/public
 
       - name: Create mark file
         run: mkdir mark-jemalloc && touch mark-jemalloc/done.txt
@@ -2092,8 +2065,8 @@ jobs:
           VARIANT_NAME: "malloctrim"
           VARIANT_PACKAGE_SUFFIX: "-malloctrim"
           TEST_IMAGE_NAME: "debian:9"
-          APT_REPO_URL: https://dl.bintray.com/fullstaq/fullstaq-ruby-apt-ci-${{ env.CI_ARTIFACTS_RUN_NUMBER }}
-          YUM_REPO_URL: https://dl.bintray.com/fullstaq/fullstaq-ruby-yum-ci-${{ env.CI_ARTIFACTS_RUN_NUMBER }}
+          APT_REPO_URL: https://storage.googleapis.com/${{ env.CI_ARTIFACTS_BUCKET }}/${{ env.CI_ARTIFACTS_RUN_NUMBER }}/apt-repo/versions/singleton/public
+          YUM_REPO_URL: https://storage.googleapis.com/${{ env.CI_ARTIFACTS_BUCKET }}/${{ env.CI_ARTIFACTS_RUN_NUMBER }}/yum-repo/versions/singleton/public
 
       - name: Create mark file
         run: mkdir mark-malloctrim && touch mark-malloctrim/done.txt
@@ -2126,8 +2099,8 @@ jobs:
           VARIANT_NAME: "normal"
           VARIANT_PACKAGE_SUFFIX: ""
           TEST_IMAGE_NAME: "debian:9"
-          APT_REPO_URL: https://dl.bintray.com/fullstaq/fullstaq-ruby-apt-ci-${{ env.CI_ARTIFACTS_RUN_NUMBER }}
-          YUM_REPO_URL: https://dl.bintray.com/fullstaq/fullstaq-ruby-yum-ci-${{ env.CI_ARTIFACTS_RUN_NUMBER }}
+          APT_REPO_URL: https://storage.googleapis.com/${{ env.CI_ARTIFACTS_BUCKET }}/${{ env.CI_ARTIFACTS_RUN_NUMBER }}/apt-repo/versions/singleton/public
+          YUM_REPO_URL: https://storage.googleapis.com/${{ env.CI_ARTIFACTS_BUCKET }}/${{ env.CI_ARTIFACTS_RUN_NUMBER }}/yum-repo/versions/singleton/public
 
       - name: Create mark file
         run: mkdir mark-normal && touch mark-normal/done.txt
@@ -2160,8 +2133,8 @@ jobs:
           VARIANT_NAME: "jemalloc"
           VARIANT_PACKAGE_SUFFIX: "-jemalloc"
           TEST_IMAGE_NAME: "debian:9"
-          APT_REPO_URL: https://dl.bintray.com/fullstaq/fullstaq-ruby-apt-ci-${{ env.CI_ARTIFACTS_RUN_NUMBER }}
-          YUM_REPO_URL: https://dl.bintray.com/fullstaq/fullstaq-ruby-yum-ci-${{ env.CI_ARTIFACTS_RUN_NUMBER }}
+          APT_REPO_URL: https://storage.googleapis.com/${{ env.CI_ARTIFACTS_BUCKET }}/${{ env.CI_ARTIFACTS_RUN_NUMBER }}/apt-repo/versions/singleton/public
+          YUM_REPO_URL: https://storage.googleapis.com/${{ env.CI_ARTIFACTS_BUCKET }}/${{ env.CI_ARTIFACTS_RUN_NUMBER }}/yum-repo/versions/singleton/public
 
       - name: Create mark file
         run: mkdir mark-jemalloc && touch mark-jemalloc/done.txt
@@ -2194,8 +2167,8 @@ jobs:
           VARIANT_NAME: "malloctrim"
           VARIANT_PACKAGE_SUFFIX: "-malloctrim"
           TEST_IMAGE_NAME: "debian:9"
-          APT_REPO_URL: https://dl.bintray.com/fullstaq/fullstaq-ruby-apt-ci-${{ env.CI_ARTIFACTS_RUN_NUMBER }}
-          YUM_REPO_URL: https://dl.bintray.com/fullstaq/fullstaq-ruby-yum-ci-${{ env.CI_ARTIFACTS_RUN_NUMBER }}
+          APT_REPO_URL: https://storage.googleapis.com/${{ env.CI_ARTIFACTS_BUCKET }}/${{ env.CI_ARTIFACTS_RUN_NUMBER }}/apt-repo/versions/singleton/public
+          YUM_REPO_URL: https://storage.googleapis.com/${{ env.CI_ARTIFACTS_BUCKET }}/${{ env.CI_ARTIFACTS_RUN_NUMBER }}/yum-repo/versions/singleton/public
 
       - name: Create mark file
         run: mkdir mark-malloctrim && touch mark-malloctrim/done.txt
@@ -2228,8 +2201,8 @@ jobs:
           VARIANT_NAME: "normal"
           VARIANT_PACKAGE_SUFFIX: ""
           TEST_IMAGE_NAME: "debian:9"
-          APT_REPO_URL: https://dl.bintray.com/fullstaq/fullstaq-ruby-apt-ci-${{ env.CI_ARTIFACTS_RUN_NUMBER }}
-          YUM_REPO_URL: https://dl.bintray.com/fullstaq/fullstaq-ruby-yum-ci-${{ env.CI_ARTIFACTS_RUN_NUMBER }}
+          APT_REPO_URL: https://storage.googleapis.com/${{ env.CI_ARTIFACTS_BUCKET }}/${{ env.CI_ARTIFACTS_RUN_NUMBER }}/apt-repo/versions/singleton/public
+          YUM_REPO_URL: https://storage.googleapis.com/${{ env.CI_ARTIFACTS_BUCKET }}/${{ env.CI_ARTIFACTS_RUN_NUMBER }}/yum-repo/versions/singleton/public
 
       - name: Create mark file
         run: mkdir mark-normal && touch mark-normal/done.txt
@@ -2262,8 +2235,8 @@ jobs:
           VARIANT_NAME: "jemalloc"
           VARIANT_PACKAGE_SUFFIX: "-jemalloc"
           TEST_IMAGE_NAME: "debian:9"
-          APT_REPO_URL: https://dl.bintray.com/fullstaq/fullstaq-ruby-apt-ci-${{ env.CI_ARTIFACTS_RUN_NUMBER }}
-          YUM_REPO_URL: https://dl.bintray.com/fullstaq/fullstaq-ruby-yum-ci-${{ env.CI_ARTIFACTS_RUN_NUMBER }}
+          APT_REPO_URL: https://storage.googleapis.com/${{ env.CI_ARTIFACTS_BUCKET }}/${{ env.CI_ARTIFACTS_RUN_NUMBER }}/apt-repo/versions/singleton/public
+          YUM_REPO_URL: https://storage.googleapis.com/${{ env.CI_ARTIFACTS_BUCKET }}/${{ env.CI_ARTIFACTS_RUN_NUMBER }}/yum-repo/versions/singleton/public
 
       - name: Create mark file
         run: mkdir mark-jemalloc && touch mark-jemalloc/done.txt
@@ -2296,8 +2269,8 @@ jobs:
           VARIANT_NAME: "malloctrim"
           VARIANT_PACKAGE_SUFFIX: "-malloctrim"
           TEST_IMAGE_NAME: "debian:9"
-          APT_REPO_URL: https://dl.bintray.com/fullstaq/fullstaq-ruby-apt-ci-${{ env.CI_ARTIFACTS_RUN_NUMBER }}
-          YUM_REPO_URL: https://dl.bintray.com/fullstaq/fullstaq-ruby-yum-ci-${{ env.CI_ARTIFACTS_RUN_NUMBER }}
+          APT_REPO_URL: https://storage.googleapis.com/${{ env.CI_ARTIFACTS_BUCKET }}/${{ env.CI_ARTIFACTS_RUN_NUMBER }}/apt-repo/versions/singleton/public
+          YUM_REPO_URL: https://storage.googleapis.com/${{ env.CI_ARTIFACTS_BUCKET }}/${{ env.CI_ARTIFACTS_RUN_NUMBER }}/yum-repo/versions/singleton/public
 
       - name: Create mark file
         run: mkdir mark-malloctrim && touch mark-malloctrim/done.txt
@@ -2330,8 +2303,8 @@ jobs:
           VARIANT_NAME: "normal"
           VARIANT_PACKAGE_SUFFIX: ""
           TEST_IMAGE_NAME: "debian:9"
-          APT_REPO_URL: https://dl.bintray.com/fullstaq/fullstaq-ruby-apt-ci-${{ env.CI_ARTIFACTS_RUN_NUMBER }}
-          YUM_REPO_URL: https://dl.bintray.com/fullstaq/fullstaq-ruby-yum-ci-${{ env.CI_ARTIFACTS_RUN_NUMBER }}
+          APT_REPO_URL: https://storage.googleapis.com/${{ env.CI_ARTIFACTS_BUCKET }}/${{ env.CI_ARTIFACTS_RUN_NUMBER }}/apt-repo/versions/singleton/public
+          YUM_REPO_URL: https://storage.googleapis.com/${{ env.CI_ARTIFACTS_BUCKET }}/${{ env.CI_ARTIFACTS_RUN_NUMBER }}/yum-repo/versions/singleton/public
 
       - name: Create mark file
         run: mkdir mark-normal && touch mark-normal/done.txt
@@ -2364,8 +2337,8 @@ jobs:
           VARIANT_NAME: "jemalloc"
           VARIANT_PACKAGE_SUFFIX: "-jemalloc"
           TEST_IMAGE_NAME: "debian:9"
-          APT_REPO_URL: https://dl.bintray.com/fullstaq/fullstaq-ruby-apt-ci-${{ env.CI_ARTIFACTS_RUN_NUMBER }}
-          YUM_REPO_URL: https://dl.bintray.com/fullstaq/fullstaq-ruby-yum-ci-${{ env.CI_ARTIFACTS_RUN_NUMBER }}
+          APT_REPO_URL: https://storage.googleapis.com/${{ env.CI_ARTIFACTS_BUCKET }}/${{ env.CI_ARTIFACTS_RUN_NUMBER }}/apt-repo/versions/singleton/public
+          YUM_REPO_URL: https://storage.googleapis.com/${{ env.CI_ARTIFACTS_BUCKET }}/${{ env.CI_ARTIFACTS_RUN_NUMBER }}/yum-repo/versions/singleton/public
 
       - name: Create mark file
         run: mkdir mark-jemalloc && touch mark-jemalloc/done.txt
@@ -2398,8 +2371,8 @@ jobs:
           VARIANT_NAME: "malloctrim"
           VARIANT_PACKAGE_SUFFIX: "-malloctrim"
           TEST_IMAGE_NAME: "debian:9"
-          APT_REPO_URL: https://dl.bintray.com/fullstaq/fullstaq-ruby-apt-ci-${{ env.CI_ARTIFACTS_RUN_NUMBER }}
-          YUM_REPO_URL: https://dl.bintray.com/fullstaq/fullstaq-ruby-yum-ci-${{ env.CI_ARTIFACTS_RUN_NUMBER }}
+          APT_REPO_URL: https://storage.googleapis.com/${{ env.CI_ARTIFACTS_BUCKET }}/${{ env.CI_ARTIFACTS_RUN_NUMBER }}/apt-repo/versions/singleton/public
+          YUM_REPO_URL: https://storage.googleapis.com/${{ env.CI_ARTIFACTS_BUCKET }}/${{ env.CI_ARTIFACTS_RUN_NUMBER }}/yum-repo/versions/singleton/public
 
       - name: Create mark file
         run: mkdir mark-malloctrim && touch mark-malloctrim/done.txt
@@ -2432,8 +2405,8 @@ jobs:
           VARIANT_NAME: "normal"
           VARIANT_PACKAGE_SUFFIX: ""
           TEST_IMAGE_NAME: "debian:9"
-          APT_REPO_URL: https://dl.bintray.com/fullstaq/fullstaq-ruby-apt-ci-${{ env.CI_ARTIFACTS_RUN_NUMBER }}
-          YUM_REPO_URL: https://dl.bintray.com/fullstaq/fullstaq-ruby-yum-ci-${{ env.CI_ARTIFACTS_RUN_NUMBER }}
+          APT_REPO_URL: https://storage.googleapis.com/${{ env.CI_ARTIFACTS_BUCKET }}/${{ env.CI_ARTIFACTS_RUN_NUMBER }}/apt-repo/versions/singleton/public
+          YUM_REPO_URL: https://storage.googleapis.com/${{ env.CI_ARTIFACTS_BUCKET }}/${{ env.CI_ARTIFACTS_RUN_NUMBER }}/yum-repo/versions/singleton/public
 
       - name: Create mark file
         run: mkdir mark-normal && touch mark-normal/done.txt
@@ -2466,8 +2439,8 @@ jobs:
           VARIANT_NAME: "jemalloc"
           VARIANT_PACKAGE_SUFFIX: "-jemalloc"
           TEST_IMAGE_NAME: "debian:9"
-          APT_REPO_URL: https://dl.bintray.com/fullstaq/fullstaq-ruby-apt-ci-${{ env.CI_ARTIFACTS_RUN_NUMBER }}
-          YUM_REPO_URL: https://dl.bintray.com/fullstaq/fullstaq-ruby-yum-ci-${{ env.CI_ARTIFACTS_RUN_NUMBER }}
+          APT_REPO_URL: https://storage.googleapis.com/${{ env.CI_ARTIFACTS_BUCKET }}/${{ env.CI_ARTIFACTS_RUN_NUMBER }}/apt-repo/versions/singleton/public
+          YUM_REPO_URL: https://storage.googleapis.com/${{ env.CI_ARTIFACTS_BUCKET }}/${{ env.CI_ARTIFACTS_RUN_NUMBER }}/yum-repo/versions/singleton/public
 
       - name: Create mark file
         run: mkdir mark-jemalloc && touch mark-jemalloc/done.txt
@@ -2500,8 +2473,8 @@ jobs:
           VARIANT_NAME: "malloctrim"
           VARIANT_PACKAGE_SUFFIX: "-malloctrim"
           TEST_IMAGE_NAME: "debian:9"
-          APT_REPO_URL: https://dl.bintray.com/fullstaq/fullstaq-ruby-apt-ci-${{ env.CI_ARTIFACTS_RUN_NUMBER }}
-          YUM_REPO_URL: https://dl.bintray.com/fullstaq/fullstaq-ruby-yum-ci-${{ env.CI_ARTIFACTS_RUN_NUMBER }}
+          APT_REPO_URL: https://storage.googleapis.com/${{ env.CI_ARTIFACTS_BUCKET }}/${{ env.CI_ARTIFACTS_RUN_NUMBER }}/apt-repo/versions/singleton/public
+          YUM_REPO_URL: https://storage.googleapis.com/${{ env.CI_ARTIFACTS_BUCKET }}/${{ env.CI_ARTIFACTS_RUN_NUMBER }}/yum-repo/versions/singleton/public
 
       - name: Create mark file
         run: mkdir mark-malloctrim && touch mark-malloctrim/done.txt
@@ -2534,8 +2507,8 @@ jobs:
           VARIANT_NAME: "normal"
           VARIANT_PACKAGE_SUFFIX: ""
           TEST_IMAGE_NAME: "debian:9"
-          APT_REPO_URL: https://dl.bintray.com/fullstaq/fullstaq-ruby-apt-ci-${{ env.CI_ARTIFACTS_RUN_NUMBER }}
-          YUM_REPO_URL: https://dl.bintray.com/fullstaq/fullstaq-ruby-yum-ci-${{ env.CI_ARTIFACTS_RUN_NUMBER }}
+          APT_REPO_URL: https://storage.googleapis.com/${{ env.CI_ARTIFACTS_BUCKET }}/${{ env.CI_ARTIFACTS_RUN_NUMBER }}/apt-repo/versions/singleton/public
+          YUM_REPO_URL: https://storage.googleapis.com/${{ env.CI_ARTIFACTS_BUCKET }}/${{ env.CI_ARTIFACTS_RUN_NUMBER }}/yum-repo/versions/singleton/public
 
       - name: Create mark file
         run: mkdir mark-normal && touch mark-normal/done.txt
@@ -2568,8 +2541,8 @@ jobs:
           VARIANT_NAME: "jemalloc"
           VARIANT_PACKAGE_SUFFIX: "-jemalloc"
           TEST_IMAGE_NAME: "debian:9"
-          APT_REPO_URL: https://dl.bintray.com/fullstaq/fullstaq-ruby-apt-ci-${{ env.CI_ARTIFACTS_RUN_NUMBER }}
-          YUM_REPO_URL: https://dl.bintray.com/fullstaq/fullstaq-ruby-yum-ci-${{ env.CI_ARTIFACTS_RUN_NUMBER }}
+          APT_REPO_URL: https://storage.googleapis.com/${{ env.CI_ARTIFACTS_BUCKET }}/${{ env.CI_ARTIFACTS_RUN_NUMBER }}/apt-repo/versions/singleton/public
+          YUM_REPO_URL: https://storage.googleapis.com/${{ env.CI_ARTIFACTS_BUCKET }}/${{ env.CI_ARTIFACTS_RUN_NUMBER }}/yum-repo/versions/singleton/public
 
       - name: Create mark file
         run: mkdir mark-jemalloc && touch mark-jemalloc/done.txt
@@ -2602,8 +2575,8 @@ jobs:
           VARIANT_NAME: "malloctrim"
           VARIANT_PACKAGE_SUFFIX: "-malloctrim"
           TEST_IMAGE_NAME: "debian:9"
-          APT_REPO_URL: https://dl.bintray.com/fullstaq/fullstaq-ruby-apt-ci-${{ env.CI_ARTIFACTS_RUN_NUMBER }}
-          YUM_REPO_URL: https://dl.bintray.com/fullstaq/fullstaq-ruby-yum-ci-${{ env.CI_ARTIFACTS_RUN_NUMBER }}
+          APT_REPO_URL: https://storage.googleapis.com/${{ env.CI_ARTIFACTS_BUCKET }}/${{ env.CI_ARTIFACTS_RUN_NUMBER }}/apt-repo/versions/singleton/public
+          YUM_REPO_URL: https://storage.googleapis.com/${{ env.CI_ARTIFACTS_BUCKET }}/${{ env.CI_ARTIFACTS_RUN_NUMBER }}/yum-repo/versions/singleton/public
 
       - name: Create mark file
         run: mkdir mark-malloctrim && touch mark-malloctrim/done.txt
@@ -2637,8 +2610,8 @@ jobs:
           VARIANT_NAME: "normal"
           VARIANT_PACKAGE_SUFFIX: ""
           TEST_IMAGE_NAME: "ubuntu:18.04"
-          APT_REPO_URL: https://dl.bintray.com/fullstaq/fullstaq-ruby-apt-ci-${{ env.CI_ARTIFACTS_RUN_NUMBER }}
-          YUM_REPO_URL: https://dl.bintray.com/fullstaq/fullstaq-ruby-yum-ci-${{ env.CI_ARTIFACTS_RUN_NUMBER }}
+          APT_REPO_URL: https://storage.googleapis.com/${{ env.CI_ARTIFACTS_BUCKET }}/${{ env.CI_ARTIFACTS_RUN_NUMBER }}/apt-repo/versions/singleton/public
+          YUM_REPO_URL: https://storage.googleapis.com/${{ env.CI_ARTIFACTS_BUCKET }}/${{ env.CI_ARTIFACTS_RUN_NUMBER }}/yum-repo/versions/singleton/public
 
       - name: Create mark file
         run: mkdir mark-normal && touch mark-normal/done.txt
@@ -2671,8 +2644,8 @@ jobs:
           VARIANT_NAME: "jemalloc"
           VARIANT_PACKAGE_SUFFIX: "-jemalloc"
           TEST_IMAGE_NAME: "ubuntu:18.04"
-          APT_REPO_URL: https://dl.bintray.com/fullstaq/fullstaq-ruby-apt-ci-${{ env.CI_ARTIFACTS_RUN_NUMBER }}
-          YUM_REPO_URL: https://dl.bintray.com/fullstaq/fullstaq-ruby-yum-ci-${{ env.CI_ARTIFACTS_RUN_NUMBER }}
+          APT_REPO_URL: https://storage.googleapis.com/${{ env.CI_ARTIFACTS_BUCKET }}/${{ env.CI_ARTIFACTS_RUN_NUMBER }}/apt-repo/versions/singleton/public
+          YUM_REPO_URL: https://storage.googleapis.com/${{ env.CI_ARTIFACTS_BUCKET }}/${{ env.CI_ARTIFACTS_RUN_NUMBER }}/yum-repo/versions/singleton/public
 
       - name: Create mark file
         run: mkdir mark-jemalloc && touch mark-jemalloc/done.txt
@@ -2705,8 +2678,8 @@ jobs:
           VARIANT_NAME: "malloctrim"
           VARIANT_PACKAGE_SUFFIX: "-malloctrim"
           TEST_IMAGE_NAME: "ubuntu:18.04"
-          APT_REPO_URL: https://dl.bintray.com/fullstaq/fullstaq-ruby-apt-ci-${{ env.CI_ARTIFACTS_RUN_NUMBER }}
-          YUM_REPO_URL: https://dl.bintray.com/fullstaq/fullstaq-ruby-yum-ci-${{ env.CI_ARTIFACTS_RUN_NUMBER }}
+          APT_REPO_URL: https://storage.googleapis.com/${{ env.CI_ARTIFACTS_BUCKET }}/${{ env.CI_ARTIFACTS_RUN_NUMBER }}/apt-repo/versions/singleton/public
+          YUM_REPO_URL: https://storage.googleapis.com/${{ env.CI_ARTIFACTS_BUCKET }}/${{ env.CI_ARTIFACTS_RUN_NUMBER }}/yum-repo/versions/singleton/public
 
       - name: Create mark file
         run: mkdir mark-malloctrim && touch mark-malloctrim/done.txt
@@ -2739,8 +2712,8 @@ jobs:
           VARIANT_NAME: "normal"
           VARIANT_PACKAGE_SUFFIX: ""
           TEST_IMAGE_NAME: "ubuntu:18.04"
-          APT_REPO_URL: https://dl.bintray.com/fullstaq/fullstaq-ruby-apt-ci-${{ env.CI_ARTIFACTS_RUN_NUMBER }}
-          YUM_REPO_URL: https://dl.bintray.com/fullstaq/fullstaq-ruby-yum-ci-${{ env.CI_ARTIFACTS_RUN_NUMBER }}
+          APT_REPO_URL: https://storage.googleapis.com/${{ env.CI_ARTIFACTS_BUCKET }}/${{ env.CI_ARTIFACTS_RUN_NUMBER }}/apt-repo/versions/singleton/public
+          YUM_REPO_URL: https://storage.googleapis.com/${{ env.CI_ARTIFACTS_BUCKET }}/${{ env.CI_ARTIFACTS_RUN_NUMBER }}/yum-repo/versions/singleton/public
 
       - name: Create mark file
         run: mkdir mark-normal && touch mark-normal/done.txt
@@ -2773,8 +2746,8 @@ jobs:
           VARIANT_NAME: "jemalloc"
           VARIANT_PACKAGE_SUFFIX: "-jemalloc"
           TEST_IMAGE_NAME: "ubuntu:18.04"
-          APT_REPO_URL: https://dl.bintray.com/fullstaq/fullstaq-ruby-apt-ci-${{ env.CI_ARTIFACTS_RUN_NUMBER }}
-          YUM_REPO_URL: https://dl.bintray.com/fullstaq/fullstaq-ruby-yum-ci-${{ env.CI_ARTIFACTS_RUN_NUMBER }}
+          APT_REPO_URL: https://storage.googleapis.com/${{ env.CI_ARTIFACTS_BUCKET }}/${{ env.CI_ARTIFACTS_RUN_NUMBER }}/apt-repo/versions/singleton/public
+          YUM_REPO_URL: https://storage.googleapis.com/${{ env.CI_ARTIFACTS_BUCKET }}/${{ env.CI_ARTIFACTS_RUN_NUMBER }}/yum-repo/versions/singleton/public
 
       - name: Create mark file
         run: mkdir mark-jemalloc && touch mark-jemalloc/done.txt
@@ -2807,8 +2780,8 @@ jobs:
           VARIANT_NAME: "malloctrim"
           VARIANT_PACKAGE_SUFFIX: "-malloctrim"
           TEST_IMAGE_NAME: "ubuntu:18.04"
-          APT_REPO_URL: https://dl.bintray.com/fullstaq/fullstaq-ruby-apt-ci-${{ env.CI_ARTIFACTS_RUN_NUMBER }}
-          YUM_REPO_URL: https://dl.bintray.com/fullstaq/fullstaq-ruby-yum-ci-${{ env.CI_ARTIFACTS_RUN_NUMBER }}
+          APT_REPO_URL: https://storage.googleapis.com/${{ env.CI_ARTIFACTS_BUCKET }}/${{ env.CI_ARTIFACTS_RUN_NUMBER }}/apt-repo/versions/singleton/public
+          YUM_REPO_URL: https://storage.googleapis.com/${{ env.CI_ARTIFACTS_BUCKET }}/${{ env.CI_ARTIFACTS_RUN_NUMBER }}/yum-repo/versions/singleton/public
 
       - name: Create mark file
         run: mkdir mark-malloctrim && touch mark-malloctrim/done.txt
@@ -2841,8 +2814,8 @@ jobs:
           VARIANT_NAME: "normal"
           VARIANT_PACKAGE_SUFFIX: ""
           TEST_IMAGE_NAME: "ubuntu:18.04"
-          APT_REPO_URL: https://dl.bintray.com/fullstaq/fullstaq-ruby-apt-ci-${{ env.CI_ARTIFACTS_RUN_NUMBER }}
-          YUM_REPO_URL: https://dl.bintray.com/fullstaq/fullstaq-ruby-yum-ci-${{ env.CI_ARTIFACTS_RUN_NUMBER }}
+          APT_REPO_URL: https://storage.googleapis.com/${{ env.CI_ARTIFACTS_BUCKET }}/${{ env.CI_ARTIFACTS_RUN_NUMBER }}/apt-repo/versions/singleton/public
+          YUM_REPO_URL: https://storage.googleapis.com/${{ env.CI_ARTIFACTS_BUCKET }}/${{ env.CI_ARTIFACTS_RUN_NUMBER }}/yum-repo/versions/singleton/public
 
       - name: Create mark file
         run: mkdir mark-normal && touch mark-normal/done.txt
@@ -2875,8 +2848,8 @@ jobs:
           VARIANT_NAME: "jemalloc"
           VARIANT_PACKAGE_SUFFIX: "-jemalloc"
           TEST_IMAGE_NAME: "ubuntu:18.04"
-          APT_REPO_URL: https://dl.bintray.com/fullstaq/fullstaq-ruby-apt-ci-${{ env.CI_ARTIFACTS_RUN_NUMBER }}
-          YUM_REPO_URL: https://dl.bintray.com/fullstaq/fullstaq-ruby-yum-ci-${{ env.CI_ARTIFACTS_RUN_NUMBER }}
+          APT_REPO_URL: https://storage.googleapis.com/${{ env.CI_ARTIFACTS_BUCKET }}/${{ env.CI_ARTIFACTS_RUN_NUMBER }}/apt-repo/versions/singleton/public
+          YUM_REPO_URL: https://storage.googleapis.com/${{ env.CI_ARTIFACTS_BUCKET }}/${{ env.CI_ARTIFACTS_RUN_NUMBER }}/yum-repo/versions/singleton/public
 
       - name: Create mark file
         run: mkdir mark-jemalloc && touch mark-jemalloc/done.txt
@@ -2909,8 +2882,8 @@ jobs:
           VARIANT_NAME: "malloctrim"
           VARIANT_PACKAGE_SUFFIX: "-malloctrim"
           TEST_IMAGE_NAME: "ubuntu:18.04"
-          APT_REPO_URL: https://dl.bintray.com/fullstaq/fullstaq-ruby-apt-ci-${{ env.CI_ARTIFACTS_RUN_NUMBER }}
-          YUM_REPO_URL: https://dl.bintray.com/fullstaq/fullstaq-ruby-yum-ci-${{ env.CI_ARTIFACTS_RUN_NUMBER }}
+          APT_REPO_URL: https://storage.googleapis.com/${{ env.CI_ARTIFACTS_BUCKET }}/${{ env.CI_ARTIFACTS_RUN_NUMBER }}/apt-repo/versions/singleton/public
+          YUM_REPO_URL: https://storage.googleapis.com/${{ env.CI_ARTIFACTS_BUCKET }}/${{ env.CI_ARTIFACTS_RUN_NUMBER }}/yum-repo/versions/singleton/public
 
       - name: Create mark file
         run: mkdir mark-malloctrim && touch mark-malloctrim/done.txt
@@ -2943,8 +2916,8 @@ jobs:
           VARIANT_NAME: "normal"
           VARIANT_PACKAGE_SUFFIX: ""
           TEST_IMAGE_NAME: "ubuntu:18.04"
-          APT_REPO_URL: https://dl.bintray.com/fullstaq/fullstaq-ruby-apt-ci-${{ env.CI_ARTIFACTS_RUN_NUMBER }}
-          YUM_REPO_URL: https://dl.bintray.com/fullstaq/fullstaq-ruby-yum-ci-${{ env.CI_ARTIFACTS_RUN_NUMBER }}
+          APT_REPO_URL: https://storage.googleapis.com/${{ env.CI_ARTIFACTS_BUCKET }}/${{ env.CI_ARTIFACTS_RUN_NUMBER }}/apt-repo/versions/singleton/public
+          YUM_REPO_URL: https://storage.googleapis.com/${{ env.CI_ARTIFACTS_BUCKET }}/${{ env.CI_ARTIFACTS_RUN_NUMBER }}/yum-repo/versions/singleton/public
 
       - name: Create mark file
         run: mkdir mark-normal && touch mark-normal/done.txt
@@ -2977,8 +2950,8 @@ jobs:
           VARIANT_NAME: "jemalloc"
           VARIANT_PACKAGE_SUFFIX: "-jemalloc"
           TEST_IMAGE_NAME: "ubuntu:18.04"
-          APT_REPO_URL: https://dl.bintray.com/fullstaq/fullstaq-ruby-apt-ci-${{ env.CI_ARTIFACTS_RUN_NUMBER }}
-          YUM_REPO_URL: https://dl.bintray.com/fullstaq/fullstaq-ruby-yum-ci-${{ env.CI_ARTIFACTS_RUN_NUMBER }}
+          APT_REPO_URL: https://storage.googleapis.com/${{ env.CI_ARTIFACTS_BUCKET }}/${{ env.CI_ARTIFACTS_RUN_NUMBER }}/apt-repo/versions/singleton/public
+          YUM_REPO_URL: https://storage.googleapis.com/${{ env.CI_ARTIFACTS_BUCKET }}/${{ env.CI_ARTIFACTS_RUN_NUMBER }}/yum-repo/versions/singleton/public
 
       - name: Create mark file
         run: mkdir mark-jemalloc && touch mark-jemalloc/done.txt
@@ -3011,8 +2984,8 @@ jobs:
           VARIANT_NAME: "malloctrim"
           VARIANT_PACKAGE_SUFFIX: "-malloctrim"
           TEST_IMAGE_NAME: "ubuntu:18.04"
-          APT_REPO_URL: https://dl.bintray.com/fullstaq/fullstaq-ruby-apt-ci-${{ env.CI_ARTIFACTS_RUN_NUMBER }}
-          YUM_REPO_URL: https://dl.bintray.com/fullstaq/fullstaq-ruby-yum-ci-${{ env.CI_ARTIFACTS_RUN_NUMBER }}
+          APT_REPO_URL: https://storage.googleapis.com/${{ env.CI_ARTIFACTS_BUCKET }}/${{ env.CI_ARTIFACTS_RUN_NUMBER }}/apt-repo/versions/singleton/public
+          YUM_REPO_URL: https://storage.googleapis.com/${{ env.CI_ARTIFACTS_BUCKET }}/${{ env.CI_ARTIFACTS_RUN_NUMBER }}/yum-repo/versions/singleton/public
 
       - name: Create mark file
         run: mkdir mark-malloctrim && touch mark-malloctrim/done.txt
@@ -3045,8 +3018,8 @@ jobs:
           VARIANT_NAME: "normal"
           VARIANT_PACKAGE_SUFFIX: ""
           TEST_IMAGE_NAME: "ubuntu:18.04"
-          APT_REPO_URL: https://dl.bintray.com/fullstaq/fullstaq-ruby-apt-ci-${{ env.CI_ARTIFACTS_RUN_NUMBER }}
-          YUM_REPO_URL: https://dl.bintray.com/fullstaq/fullstaq-ruby-yum-ci-${{ env.CI_ARTIFACTS_RUN_NUMBER }}
+          APT_REPO_URL: https://storage.googleapis.com/${{ env.CI_ARTIFACTS_BUCKET }}/${{ env.CI_ARTIFACTS_RUN_NUMBER }}/apt-repo/versions/singleton/public
+          YUM_REPO_URL: https://storage.googleapis.com/${{ env.CI_ARTIFACTS_BUCKET }}/${{ env.CI_ARTIFACTS_RUN_NUMBER }}/yum-repo/versions/singleton/public
 
       - name: Create mark file
         run: mkdir mark-normal && touch mark-normal/done.txt
@@ -3079,8 +3052,8 @@ jobs:
           VARIANT_NAME: "jemalloc"
           VARIANT_PACKAGE_SUFFIX: "-jemalloc"
           TEST_IMAGE_NAME: "ubuntu:18.04"
-          APT_REPO_URL: https://dl.bintray.com/fullstaq/fullstaq-ruby-apt-ci-${{ env.CI_ARTIFACTS_RUN_NUMBER }}
-          YUM_REPO_URL: https://dl.bintray.com/fullstaq/fullstaq-ruby-yum-ci-${{ env.CI_ARTIFACTS_RUN_NUMBER }}
+          APT_REPO_URL: https://storage.googleapis.com/${{ env.CI_ARTIFACTS_BUCKET }}/${{ env.CI_ARTIFACTS_RUN_NUMBER }}/apt-repo/versions/singleton/public
+          YUM_REPO_URL: https://storage.googleapis.com/${{ env.CI_ARTIFACTS_BUCKET }}/${{ env.CI_ARTIFACTS_RUN_NUMBER }}/yum-repo/versions/singleton/public
 
       - name: Create mark file
         run: mkdir mark-jemalloc && touch mark-jemalloc/done.txt
@@ -3113,8 +3086,8 @@ jobs:
           VARIANT_NAME: "malloctrim"
           VARIANT_PACKAGE_SUFFIX: "-malloctrim"
           TEST_IMAGE_NAME: "ubuntu:18.04"
-          APT_REPO_URL: https://dl.bintray.com/fullstaq/fullstaq-ruby-apt-ci-${{ env.CI_ARTIFACTS_RUN_NUMBER }}
-          YUM_REPO_URL: https://dl.bintray.com/fullstaq/fullstaq-ruby-yum-ci-${{ env.CI_ARTIFACTS_RUN_NUMBER }}
+          APT_REPO_URL: https://storage.googleapis.com/${{ env.CI_ARTIFACTS_BUCKET }}/${{ env.CI_ARTIFACTS_RUN_NUMBER }}/apt-repo/versions/singleton/public
+          YUM_REPO_URL: https://storage.googleapis.com/${{ env.CI_ARTIFACTS_BUCKET }}/${{ env.CI_ARTIFACTS_RUN_NUMBER }}/yum-repo/versions/singleton/public
 
       - name: Create mark file
         run: mkdir mark-malloctrim && touch mark-malloctrim/done.txt
@@ -3147,8 +3120,8 @@ jobs:
           VARIANT_NAME: "normal"
           VARIANT_PACKAGE_SUFFIX: ""
           TEST_IMAGE_NAME: "ubuntu:18.04"
-          APT_REPO_URL: https://dl.bintray.com/fullstaq/fullstaq-ruby-apt-ci-${{ env.CI_ARTIFACTS_RUN_NUMBER }}
-          YUM_REPO_URL: https://dl.bintray.com/fullstaq/fullstaq-ruby-yum-ci-${{ env.CI_ARTIFACTS_RUN_NUMBER }}
+          APT_REPO_URL: https://storage.googleapis.com/${{ env.CI_ARTIFACTS_BUCKET }}/${{ env.CI_ARTIFACTS_RUN_NUMBER }}/apt-repo/versions/singleton/public
+          YUM_REPO_URL: https://storage.googleapis.com/${{ env.CI_ARTIFACTS_BUCKET }}/${{ env.CI_ARTIFACTS_RUN_NUMBER }}/yum-repo/versions/singleton/public
 
       - name: Create mark file
         run: mkdir mark-normal && touch mark-normal/done.txt
@@ -3181,8 +3154,8 @@ jobs:
           VARIANT_NAME: "jemalloc"
           VARIANT_PACKAGE_SUFFIX: "-jemalloc"
           TEST_IMAGE_NAME: "ubuntu:18.04"
-          APT_REPO_URL: https://dl.bintray.com/fullstaq/fullstaq-ruby-apt-ci-${{ env.CI_ARTIFACTS_RUN_NUMBER }}
-          YUM_REPO_URL: https://dl.bintray.com/fullstaq/fullstaq-ruby-yum-ci-${{ env.CI_ARTIFACTS_RUN_NUMBER }}
+          APT_REPO_URL: https://storage.googleapis.com/${{ env.CI_ARTIFACTS_BUCKET }}/${{ env.CI_ARTIFACTS_RUN_NUMBER }}/apt-repo/versions/singleton/public
+          YUM_REPO_URL: https://storage.googleapis.com/${{ env.CI_ARTIFACTS_BUCKET }}/${{ env.CI_ARTIFACTS_RUN_NUMBER }}/yum-repo/versions/singleton/public
 
       - name: Create mark file
         run: mkdir mark-jemalloc && touch mark-jemalloc/done.txt
@@ -3215,8 +3188,8 @@ jobs:
           VARIANT_NAME: "malloctrim"
           VARIANT_PACKAGE_SUFFIX: "-malloctrim"
           TEST_IMAGE_NAME: "ubuntu:18.04"
-          APT_REPO_URL: https://dl.bintray.com/fullstaq/fullstaq-ruby-apt-ci-${{ env.CI_ARTIFACTS_RUN_NUMBER }}
-          YUM_REPO_URL: https://dl.bintray.com/fullstaq/fullstaq-ruby-yum-ci-${{ env.CI_ARTIFACTS_RUN_NUMBER }}
+          APT_REPO_URL: https://storage.googleapis.com/${{ env.CI_ARTIFACTS_BUCKET }}/${{ env.CI_ARTIFACTS_RUN_NUMBER }}/apt-repo/versions/singleton/public
+          YUM_REPO_URL: https://storage.googleapis.com/${{ env.CI_ARTIFACTS_BUCKET }}/${{ env.CI_ARTIFACTS_RUN_NUMBER }}/yum-repo/versions/singleton/public
 
       - name: Create mark file
         run: mkdir mark-malloctrim && touch mark-malloctrim/done.txt
@@ -3250,8 +3223,8 @@ jobs:
           VARIANT_NAME: "normal"
           VARIANT_PACKAGE_SUFFIX: ""
           TEST_IMAGE_NAME: "ubuntu:20.04"
-          APT_REPO_URL: https://dl.bintray.com/fullstaq/fullstaq-ruby-apt-ci-${{ env.CI_ARTIFACTS_RUN_NUMBER }}
-          YUM_REPO_URL: https://dl.bintray.com/fullstaq/fullstaq-ruby-yum-ci-${{ env.CI_ARTIFACTS_RUN_NUMBER }}
+          APT_REPO_URL: https://storage.googleapis.com/${{ env.CI_ARTIFACTS_BUCKET }}/${{ env.CI_ARTIFACTS_RUN_NUMBER }}/apt-repo/versions/singleton/public
+          YUM_REPO_URL: https://storage.googleapis.com/${{ env.CI_ARTIFACTS_BUCKET }}/${{ env.CI_ARTIFACTS_RUN_NUMBER }}/yum-repo/versions/singleton/public
 
       - name: Create mark file
         run: mkdir mark-normal && touch mark-normal/done.txt
@@ -3284,8 +3257,8 @@ jobs:
           VARIANT_NAME: "jemalloc"
           VARIANT_PACKAGE_SUFFIX: "-jemalloc"
           TEST_IMAGE_NAME: "ubuntu:20.04"
-          APT_REPO_URL: https://dl.bintray.com/fullstaq/fullstaq-ruby-apt-ci-${{ env.CI_ARTIFACTS_RUN_NUMBER }}
-          YUM_REPO_URL: https://dl.bintray.com/fullstaq/fullstaq-ruby-yum-ci-${{ env.CI_ARTIFACTS_RUN_NUMBER }}
+          APT_REPO_URL: https://storage.googleapis.com/${{ env.CI_ARTIFACTS_BUCKET }}/${{ env.CI_ARTIFACTS_RUN_NUMBER }}/apt-repo/versions/singleton/public
+          YUM_REPO_URL: https://storage.googleapis.com/${{ env.CI_ARTIFACTS_BUCKET }}/${{ env.CI_ARTIFACTS_RUN_NUMBER }}/yum-repo/versions/singleton/public
 
       - name: Create mark file
         run: mkdir mark-jemalloc && touch mark-jemalloc/done.txt
@@ -3318,8 +3291,8 @@ jobs:
           VARIANT_NAME: "malloctrim"
           VARIANT_PACKAGE_SUFFIX: "-malloctrim"
           TEST_IMAGE_NAME: "ubuntu:20.04"
-          APT_REPO_URL: https://dl.bintray.com/fullstaq/fullstaq-ruby-apt-ci-${{ env.CI_ARTIFACTS_RUN_NUMBER }}
-          YUM_REPO_URL: https://dl.bintray.com/fullstaq/fullstaq-ruby-yum-ci-${{ env.CI_ARTIFACTS_RUN_NUMBER }}
+          APT_REPO_URL: https://storage.googleapis.com/${{ env.CI_ARTIFACTS_BUCKET }}/${{ env.CI_ARTIFACTS_RUN_NUMBER }}/apt-repo/versions/singleton/public
+          YUM_REPO_URL: https://storage.googleapis.com/${{ env.CI_ARTIFACTS_BUCKET }}/${{ env.CI_ARTIFACTS_RUN_NUMBER }}/yum-repo/versions/singleton/public
 
       - name: Create mark file
         run: mkdir mark-malloctrim && touch mark-malloctrim/done.txt
@@ -3352,8 +3325,8 @@ jobs:
           VARIANT_NAME: "normal"
           VARIANT_PACKAGE_SUFFIX: ""
           TEST_IMAGE_NAME: "ubuntu:20.04"
-          APT_REPO_URL: https://dl.bintray.com/fullstaq/fullstaq-ruby-apt-ci-${{ env.CI_ARTIFACTS_RUN_NUMBER }}
-          YUM_REPO_URL: https://dl.bintray.com/fullstaq/fullstaq-ruby-yum-ci-${{ env.CI_ARTIFACTS_RUN_NUMBER }}
+          APT_REPO_URL: https://storage.googleapis.com/${{ env.CI_ARTIFACTS_BUCKET }}/${{ env.CI_ARTIFACTS_RUN_NUMBER }}/apt-repo/versions/singleton/public
+          YUM_REPO_URL: https://storage.googleapis.com/${{ env.CI_ARTIFACTS_BUCKET }}/${{ env.CI_ARTIFACTS_RUN_NUMBER }}/yum-repo/versions/singleton/public
 
       - name: Create mark file
         run: mkdir mark-normal && touch mark-normal/done.txt
@@ -3386,8 +3359,8 @@ jobs:
           VARIANT_NAME: "jemalloc"
           VARIANT_PACKAGE_SUFFIX: "-jemalloc"
           TEST_IMAGE_NAME: "ubuntu:20.04"
-          APT_REPO_URL: https://dl.bintray.com/fullstaq/fullstaq-ruby-apt-ci-${{ env.CI_ARTIFACTS_RUN_NUMBER }}
-          YUM_REPO_URL: https://dl.bintray.com/fullstaq/fullstaq-ruby-yum-ci-${{ env.CI_ARTIFACTS_RUN_NUMBER }}
+          APT_REPO_URL: https://storage.googleapis.com/${{ env.CI_ARTIFACTS_BUCKET }}/${{ env.CI_ARTIFACTS_RUN_NUMBER }}/apt-repo/versions/singleton/public
+          YUM_REPO_URL: https://storage.googleapis.com/${{ env.CI_ARTIFACTS_BUCKET }}/${{ env.CI_ARTIFACTS_RUN_NUMBER }}/yum-repo/versions/singleton/public
 
       - name: Create mark file
         run: mkdir mark-jemalloc && touch mark-jemalloc/done.txt
@@ -3420,8 +3393,8 @@ jobs:
           VARIANT_NAME: "malloctrim"
           VARIANT_PACKAGE_SUFFIX: "-malloctrim"
           TEST_IMAGE_NAME: "ubuntu:20.04"
-          APT_REPO_URL: https://dl.bintray.com/fullstaq/fullstaq-ruby-apt-ci-${{ env.CI_ARTIFACTS_RUN_NUMBER }}
-          YUM_REPO_URL: https://dl.bintray.com/fullstaq/fullstaq-ruby-yum-ci-${{ env.CI_ARTIFACTS_RUN_NUMBER }}
+          APT_REPO_URL: https://storage.googleapis.com/${{ env.CI_ARTIFACTS_BUCKET }}/${{ env.CI_ARTIFACTS_RUN_NUMBER }}/apt-repo/versions/singleton/public
+          YUM_REPO_URL: https://storage.googleapis.com/${{ env.CI_ARTIFACTS_BUCKET }}/${{ env.CI_ARTIFACTS_RUN_NUMBER }}/yum-repo/versions/singleton/public
 
       - name: Create mark file
         run: mkdir mark-malloctrim && touch mark-malloctrim/done.txt
@@ -3454,8 +3427,8 @@ jobs:
           VARIANT_NAME: "normal"
           VARIANT_PACKAGE_SUFFIX: ""
           TEST_IMAGE_NAME: "ubuntu:20.04"
-          APT_REPO_URL: https://dl.bintray.com/fullstaq/fullstaq-ruby-apt-ci-${{ env.CI_ARTIFACTS_RUN_NUMBER }}
-          YUM_REPO_URL: https://dl.bintray.com/fullstaq/fullstaq-ruby-yum-ci-${{ env.CI_ARTIFACTS_RUN_NUMBER }}
+          APT_REPO_URL: https://storage.googleapis.com/${{ env.CI_ARTIFACTS_BUCKET }}/${{ env.CI_ARTIFACTS_RUN_NUMBER }}/apt-repo/versions/singleton/public
+          YUM_REPO_URL: https://storage.googleapis.com/${{ env.CI_ARTIFACTS_BUCKET }}/${{ env.CI_ARTIFACTS_RUN_NUMBER }}/yum-repo/versions/singleton/public
 
       - name: Create mark file
         run: mkdir mark-normal && touch mark-normal/done.txt
@@ -3488,8 +3461,8 @@ jobs:
           VARIANT_NAME: "jemalloc"
           VARIANT_PACKAGE_SUFFIX: "-jemalloc"
           TEST_IMAGE_NAME: "ubuntu:20.04"
-          APT_REPO_URL: https://dl.bintray.com/fullstaq/fullstaq-ruby-apt-ci-${{ env.CI_ARTIFACTS_RUN_NUMBER }}
-          YUM_REPO_URL: https://dl.bintray.com/fullstaq/fullstaq-ruby-yum-ci-${{ env.CI_ARTIFACTS_RUN_NUMBER }}
+          APT_REPO_URL: https://storage.googleapis.com/${{ env.CI_ARTIFACTS_BUCKET }}/${{ env.CI_ARTIFACTS_RUN_NUMBER }}/apt-repo/versions/singleton/public
+          YUM_REPO_URL: https://storage.googleapis.com/${{ env.CI_ARTIFACTS_BUCKET }}/${{ env.CI_ARTIFACTS_RUN_NUMBER }}/yum-repo/versions/singleton/public
 
       - name: Create mark file
         run: mkdir mark-jemalloc && touch mark-jemalloc/done.txt
@@ -3522,8 +3495,8 @@ jobs:
           VARIANT_NAME: "malloctrim"
           VARIANT_PACKAGE_SUFFIX: "-malloctrim"
           TEST_IMAGE_NAME: "ubuntu:20.04"
-          APT_REPO_URL: https://dl.bintray.com/fullstaq/fullstaq-ruby-apt-ci-${{ env.CI_ARTIFACTS_RUN_NUMBER }}
-          YUM_REPO_URL: https://dl.bintray.com/fullstaq/fullstaq-ruby-yum-ci-${{ env.CI_ARTIFACTS_RUN_NUMBER }}
+          APT_REPO_URL: https://storage.googleapis.com/${{ env.CI_ARTIFACTS_BUCKET }}/${{ env.CI_ARTIFACTS_RUN_NUMBER }}/apt-repo/versions/singleton/public
+          YUM_REPO_URL: https://storage.googleapis.com/${{ env.CI_ARTIFACTS_BUCKET }}/${{ env.CI_ARTIFACTS_RUN_NUMBER }}/yum-repo/versions/singleton/public
 
       - name: Create mark file
         run: mkdir mark-malloctrim && touch mark-malloctrim/done.txt
@@ -3556,8 +3529,8 @@ jobs:
           VARIANT_NAME: "normal"
           VARIANT_PACKAGE_SUFFIX: ""
           TEST_IMAGE_NAME: "ubuntu:20.04"
-          APT_REPO_URL: https://dl.bintray.com/fullstaq/fullstaq-ruby-apt-ci-${{ env.CI_ARTIFACTS_RUN_NUMBER }}
-          YUM_REPO_URL: https://dl.bintray.com/fullstaq/fullstaq-ruby-yum-ci-${{ env.CI_ARTIFACTS_RUN_NUMBER }}
+          APT_REPO_URL: https://storage.googleapis.com/${{ env.CI_ARTIFACTS_BUCKET }}/${{ env.CI_ARTIFACTS_RUN_NUMBER }}/apt-repo/versions/singleton/public
+          YUM_REPO_URL: https://storage.googleapis.com/${{ env.CI_ARTIFACTS_BUCKET }}/${{ env.CI_ARTIFACTS_RUN_NUMBER }}/yum-repo/versions/singleton/public
 
       - name: Create mark file
         run: mkdir mark-normal && touch mark-normal/done.txt
@@ -3590,8 +3563,8 @@ jobs:
           VARIANT_NAME: "jemalloc"
           VARIANT_PACKAGE_SUFFIX: "-jemalloc"
           TEST_IMAGE_NAME: "ubuntu:20.04"
-          APT_REPO_URL: https://dl.bintray.com/fullstaq/fullstaq-ruby-apt-ci-${{ env.CI_ARTIFACTS_RUN_NUMBER }}
-          YUM_REPO_URL: https://dl.bintray.com/fullstaq/fullstaq-ruby-yum-ci-${{ env.CI_ARTIFACTS_RUN_NUMBER }}
+          APT_REPO_URL: https://storage.googleapis.com/${{ env.CI_ARTIFACTS_BUCKET }}/${{ env.CI_ARTIFACTS_RUN_NUMBER }}/apt-repo/versions/singleton/public
+          YUM_REPO_URL: https://storage.googleapis.com/${{ env.CI_ARTIFACTS_BUCKET }}/${{ env.CI_ARTIFACTS_RUN_NUMBER }}/yum-repo/versions/singleton/public
 
       - name: Create mark file
         run: mkdir mark-jemalloc && touch mark-jemalloc/done.txt
@@ -3624,8 +3597,8 @@ jobs:
           VARIANT_NAME: "malloctrim"
           VARIANT_PACKAGE_SUFFIX: "-malloctrim"
           TEST_IMAGE_NAME: "ubuntu:20.04"
-          APT_REPO_URL: https://dl.bintray.com/fullstaq/fullstaq-ruby-apt-ci-${{ env.CI_ARTIFACTS_RUN_NUMBER }}
-          YUM_REPO_URL: https://dl.bintray.com/fullstaq/fullstaq-ruby-yum-ci-${{ env.CI_ARTIFACTS_RUN_NUMBER }}
+          APT_REPO_URL: https://storage.googleapis.com/${{ env.CI_ARTIFACTS_BUCKET }}/${{ env.CI_ARTIFACTS_RUN_NUMBER }}/apt-repo/versions/singleton/public
+          YUM_REPO_URL: https://storage.googleapis.com/${{ env.CI_ARTIFACTS_BUCKET }}/${{ env.CI_ARTIFACTS_RUN_NUMBER }}/yum-repo/versions/singleton/public
 
       - name: Create mark file
         run: mkdir mark-malloctrim && touch mark-malloctrim/done.txt
@@ -3658,8 +3631,8 @@ jobs:
           VARIANT_NAME: "normal"
           VARIANT_PACKAGE_SUFFIX: ""
           TEST_IMAGE_NAME: "ubuntu:20.04"
-          APT_REPO_URL: https://dl.bintray.com/fullstaq/fullstaq-ruby-apt-ci-${{ env.CI_ARTIFACTS_RUN_NUMBER }}
-          YUM_REPO_URL: https://dl.bintray.com/fullstaq/fullstaq-ruby-yum-ci-${{ env.CI_ARTIFACTS_RUN_NUMBER }}
+          APT_REPO_URL: https://storage.googleapis.com/${{ env.CI_ARTIFACTS_BUCKET }}/${{ env.CI_ARTIFACTS_RUN_NUMBER }}/apt-repo/versions/singleton/public
+          YUM_REPO_URL: https://storage.googleapis.com/${{ env.CI_ARTIFACTS_BUCKET }}/${{ env.CI_ARTIFACTS_RUN_NUMBER }}/yum-repo/versions/singleton/public
 
       - name: Create mark file
         run: mkdir mark-normal && touch mark-normal/done.txt
@@ -3692,8 +3665,8 @@ jobs:
           VARIANT_NAME: "jemalloc"
           VARIANT_PACKAGE_SUFFIX: "-jemalloc"
           TEST_IMAGE_NAME: "ubuntu:20.04"
-          APT_REPO_URL: https://dl.bintray.com/fullstaq/fullstaq-ruby-apt-ci-${{ env.CI_ARTIFACTS_RUN_NUMBER }}
-          YUM_REPO_URL: https://dl.bintray.com/fullstaq/fullstaq-ruby-yum-ci-${{ env.CI_ARTIFACTS_RUN_NUMBER }}
+          APT_REPO_URL: https://storage.googleapis.com/${{ env.CI_ARTIFACTS_BUCKET }}/${{ env.CI_ARTIFACTS_RUN_NUMBER }}/apt-repo/versions/singleton/public
+          YUM_REPO_URL: https://storage.googleapis.com/${{ env.CI_ARTIFACTS_BUCKET }}/${{ env.CI_ARTIFACTS_RUN_NUMBER }}/yum-repo/versions/singleton/public
 
       - name: Create mark file
         run: mkdir mark-jemalloc && touch mark-jemalloc/done.txt
@@ -3726,8 +3699,8 @@ jobs:
           VARIANT_NAME: "malloctrim"
           VARIANT_PACKAGE_SUFFIX: "-malloctrim"
           TEST_IMAGE_NAME: "ubuntu:20.04"
-          APT_REPO_URL: https://dl.bintray.com/fullstaq/fullstaq-ruby-apt-ci-${{ env.CI_ARTIFACTS_RUN_NUMBER }}
-          YUM_REPO_URL: https://dl.bintray.com/fullstaq/fullstaq-ruby-yum-ci-${{ env.CI_ARTIFACTS_RUN_NUMBER }}
+          APT_REPO_URL: https://storage.googleapis.com/${{ env.CI_ARTIFACTS_BUCKET }}/${{ env.CI_ARTIFACTS_RUN_NUMBER }}/apt-repo/versions/singleton/public
+          YUM_REPO_URL: https://storage.googleapis.com/${{ env.CI_ARTIFACTS_BUCKET }}/${{ env.CI_ARTIFACTS_RUN_NUMBER }}/yum-repo/versions/singleton/public
 
       - name: Create mark file
         run: mkdir mark-malloctrim && touch mark-malloctrim/done.txt
@@ -3760,8 +3733,8 @@ jobs:
           VARIANT_NAME: "normal"
           VARIANT_PACKAGE_SUFFIX: ""
           TEST_IMAGE_NAME: "ubuntu:20.04"
-          APT_REPO_URL: https://dl.bintray.com/fullstaq/fullstaq-ruby-apt-ci-${{ env.CI_ARTIFACTS_RUN_NUMBER }}
-          YUM_REPO_URL: https://dl.bintray.com/fullstaq/fullstaq-ruby-yum-ci-${{ env.CI_ARTIFACTS_RUN_NUMBER }}
+          APT_REPO_URL: https://storage.googleapis.com/${{ env.CI_ARTIFACTS_BUCKET }}/${{ env.CI_ARTIFACTS_RUN_NUMBER }}/apt-repo/versions/singleton/public
+          YUM_REPO_URL: https://storage.googleapis.com/${{ env.CI_ARTIFACTS_BUCKET }}/${{ env.CI_ARTIFACTS_RUN_NUMBER }}/yum-repo/versions/singleton/public
 
       - name: Create mark file
         run: mkdir mark-normal && touch mark-normal/done.txt
@@ -3794,8 +3767,8 @@ jobs:
           VARIANT_NAME: "jemalloc"
           VARIANT_PACKAGE_SUFFIX: "-jemalloc"
           TEST_IMAGE_NAME: "ubuntu:20.04"
-          APT_REPO_URL: https://dl.bintray.com/fullstaq/fullstaq-ruby-apt-ci-${{ env.CI_ARTIFACTS_RUN_NUMBER }}
-          YUM_REPO_URL: https://dl.bintray.com/fullstaq/fullstaq-ruby-yum-ci-${{ env.CI_ARTIFACTS_RUN_NUMBER }}
+          APT_REPO_URL: https://storage.googleapis.com/${{ env.CI_ARTIFACTS_BUCKET }}/${{ env.CI_ARTIFACTS_RUN_NUMBER }}/apt-repo/versions/singleton/public
+          YUM_REPO_URL: https://storage.googleapis.com/${{ env.CI_ARTIFACTS_BUCKET }}/${{ env.CI_ARTIFACTS_RUN_NUMBER }}/yum-repo/versions/singleton/public
 
       - name: Create mark file
         run: mkdir mark-jemalloc && touch mark-jemalloc/done.txt
@@ -3828,8 +3801,8 @@ jobs:
           VARIANT_NAME: "malloctrim"
           VARIANT_PACKAGE_SUFFIX: "-malloctrim"
           TEST_IMAGE_NAME: "ubuntu:20.04"
-          APT_REPO_URL: https://dl.bintray.com/fullstaq/fullstaq-ruby-apt-ci-${{ env.CI_ARTIFACTS_RUN_NUMBER }}
-          YUM_REPO_URL: https://dl.bintray.com/fullstaq/fullstaq-ruby-yum-ci-${{ env.CI_ARTIFACTS_RUN_NUMBER }}
+          APT_REPO_URL: https://storage.googleapis.com/${{ env.CI_ARTIFACTS_BUCKET }}/${{ env.CI_ARTIFACTS_RUN_NUMBER }}/apt-repo/versions/singleton/public
+          YUM_REPO_URL: https://storage.googleapis.com/${{ env.CI_ARTIFACTS_BUCKET }}/${{ env.CI_ARTIFACTS_RUN_NUMBER }}/yum-repo/versions/singleton/public
 
       - name: Create mark file
         run: mkdir mark-malloctrim && touch mark-malloctrim/done.txt

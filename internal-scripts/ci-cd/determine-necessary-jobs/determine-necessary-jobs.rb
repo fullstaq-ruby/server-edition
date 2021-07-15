@@ -2,10 +2,12 @@
 require 'set'
 require 'net/http'
 require_relative '../../../lib/build_all_packages_support'
+require_relative '../../../lib/general_support'
 require_relative '../../../lib/ci_workflow_support'
 
 class App
   include Support
+  include GeneralSupport
   include CiWorkflowSupport
 
   def initialize(existing_artifacts_list_path)

@@ -1,6 +1,7 @@
 #!/usr/bin/env ruby
 require 'erb'
 require_relative '../lib/build_all_packages_support'
+require_relative '../lib/general_support'
 require_relative '../lib/ci_workflow_support'
 
 module CiCdYamlGenerationApp
@@ -9,6 +10,7 @@ module CiCdYamlGenerationApp
   WORKFLOWS_SUBPATH = ".github/workflows"
 
   extend Support
+  extend GeneralSupport
   extend CiWorkflowSupport
 
   def self.generate_yaml_file_from_template(name)

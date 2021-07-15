@@ -841,11 +841,6 @@ private
     nil
   end
 
-  def getenv_boolean(name)
-    value = ENV[name].to_s.downcase
-    ['true', 't', 'yes', 'y', '1', 'on'].include?(value)
-  end
-
   def write_progress_summary_logs
     buf_colorized = StringIO.new
     buf_nocolor = StringIO.new

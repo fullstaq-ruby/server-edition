@@ -44,8 +44,7 @@ else
     echo "+ Detected package version (without variant suffix): $RUBY_PACKAGE_VERSION_WITHOUT_VARIANT_SUFFIX"
     echo "+ Detected variant: $VARIANT"
 
-    # Bintray could sometimes be flaky, so we retry on failure.
-    run_with_retries apt install -y fullstaq-ruby-"$RUBY_PACKAGE_VERSION" fullstaq-ruby-common
+    run apt install -y fullstaq-ruby-"$RUBY_PACKAGE_VERSION" fullstaq-ruby-common
 fi
 
 echo
