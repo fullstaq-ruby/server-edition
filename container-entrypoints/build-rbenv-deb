@@ -15,6 +15,7 @@ OUTPUT_PATH=/output/rbenv.deb
 
 require_container_mount "$INPUT_PATH"
 require_container_mount "$OUTPUT_PATH"
+require_container_envvar VERSION
 require_container_envvar REVISION
 
 
@@ -23,7 +24,6 @@ run mkdir "$WORK_DIR"
 echo "+ cd $WORK_DIR"
 cd "$WORK_DIR"
 run cp -dpR "$INPUT_PATH"/{bin,completions,libexec,rbenv.d} ./
-VERSION=$(./bin/rbenv --version | awk '{ print $2 }')
 run mkdir system
 run mkdir system/bin
 run ln -s /usr/lib/rbenv/libexec/rbenv system/bin/rbenv

@@ -7,6 +7,7 @@ ROOTDIR=$(cd "$SELFDIR/../../.." && pwd)
 source "$ROOTDIR/lib/library.sh"
 
 require_envvar PACKAGE_BASENAME
+require_envvar VERSION
 require_envvar REVISION
 
 
@@ -23,6 +24,7 @@ exec docker run --rm --init \
   -v "$ROOTDIR:/system:ro" \
   -v "$(pwd)/rbenv:/input/rbenv:ro" \
   -v "$(pwd)/output/$PACKAGE_BASENAME:/output/rbenv.rpm" \
+  -e "VERSION=$VERSION" \
   -e "REVISION=$REVISION" \
   --user "$(id -u):$(id -g)" \
   "$UTILITY_IMAGE_NAME:$UTILITY_IMAGE_TAG" \

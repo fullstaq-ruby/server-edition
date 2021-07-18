@@ -15,9 +15,13 @@ function usage()
     echo "Usage: ./build-rbenv-deb <OPTIONS>"
     echo "Build an Rbenv Debian package."
     echo
+    echo "To find out the right value for -n:"
+    echo "  bin/rbenv --version | awk '{ print \$2 }' | sed -E 's/(.+)-.*/\1/'"
+    echo
     echo "Required options:"
     echo "  -s PATH     Path to Rbenv source tree"
     echo "  -o PATH     Path to output package file"
+    echo "  -n VERSION  Rbenv version number without commit hash suffix"
     echo
     echo "Optional options:"
     echo "  -r REVISION Package revision number (default: $REVISION)"
@@ -29,13 +33,16 @@ function parse_options()
     local OPTIND=1
     local ORIG_ARGV
     local opt
-    while getopts "s:o:r:h" opt; do
+    while getopts "s:o:n:r:h" opt; do
         case "$opt" in
         s)
             SOURCE_PATH=$(absolute_path "$OPTARG")
             ;;
         o)
             OUTPUT_PATH=$(absolute_path "$OPTARG")
+            ;;
+        n)
+            VERSION="$OPTARG"
             ;;
         r)
             REVISION="$OPTARG"
@@ -66,6 +73,10 @@ function parse_options()
         echo 'ERROR: please specify an output package path with -o.' >&2
         exit 1
     fi
+    if [[ "$VERSION" = "" ]]; then
+        echo 'ERROR: please specify an Rbenv version with -n.' >&2
+        exit 1
+    fi
 }
 
 parse_options "$@"
@@ -92,6 +103,7 @@ verbose_run docker run --rm --init "${TTY_ARGS[@]}" \
     -v "$SELFDIR:/system:ro" \
     -v "$SOURCE_PATH:/input/rbenv:ro" \
     -v "$OUTPUT_TEMP_PATH:/output/rbenv.deb" \
+    -e "VERSION=$VERSION" \
     -e "REVISION=$REVISION" \
     --user "$(id -u):$(id -g)" \
     "fullstaq/ruby-build-env-utility:$IMAGE_VERSION" \

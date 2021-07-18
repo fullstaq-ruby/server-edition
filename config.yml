@@ -75,7 +75,7 @@ rbenv:
 
   ## (Required)
   ## Package revision number.
-  package_revision: 0
+  package_revision: 1
 
 ## (Required)
 ## fullstaq-ruby-common package parameters.

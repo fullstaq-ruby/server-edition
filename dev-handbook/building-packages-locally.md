@@ -172,13 +172,15 @@ Run the `build-rbenv-deb` script. Example invocation:
 ~~~bash
 ./build-rbenv-deb \
   -s fullstaq-rbenv \
-  -o fullstaq-rbenv_1.1.2-16-0_all.deb
+  -o fullstaq-rbenv_1.1.2-16-0_all.deb \
+  -n 1.1.2-16
 ~~~
 
 What the parameters mean:
 
  * `-s` — path to the fullstaq-rbenv source directory, as cloned in step 1.
  * `-o` — path to write the resulting .deb to. You should modify the filename according to the actual fullstaq-rbenv version number.
+ * `-n` — Rbenv version number without commit suffix. Find out by running: `/path-to-rbenv-source/bin/rbenv --version | awk '{ print $2 }' | sed -E 's/(.+)-.*/\1/'`
 
 ### Producing an RPM package
 
@@ -187,13 +189,15 @@ Run the `build-rbenv-rpm` script. Example invocation:
 ~~~bash
 ./build-rbenv-rpm \
   -s fullstaq-rbenv \
-  -o fullstaq-rbenv-1.1.2-16-0.noarch.rpm
+  -o fullstaq-rbenv-1.1.2-16-0.noarch.rpm \
+  -n 1.1.2-16
 ~~~
 
 What the parameters mean:
 
  * `-s` — path to the fullstaq-rbenv source directory, as cloned in step 1.
  * `-o` — path to write the resulting RPM to. You should modify the filename according to the actual fullstaq-rbenv version number.
+ * `-n` — Rbenv version number without commit suffix. Find out by running: `/path-to-rbenv-source/bin/rbenv --version | awk '{ print $2 }' | sed -E 's/(.+)-.*/\1/'`
 
 ## Step 6: Build 'common' package
 
