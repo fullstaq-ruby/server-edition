@@ -193,6 +193,10 @@ jobs:
         run: 'false'
         if: needs.determine_necessary_jobs.result != 'success'
 
+      - name: Check whether 'Publish packages' succeeded
+        run: 'false'
+        if: needs.publish.result != 'success'
+
       <%- distributions_with_test_image_info.each do |distribution| -%>
       <%- ruby_package_versions.each do |ruby_package_version| -%>
       <%- variants.each do |variant| -%>
