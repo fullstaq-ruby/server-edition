@@ -383,9 +383,12 @@ private
     log_notice 'Compacting state'
 
     run_command(
-      'aptly', 'db', 'cleanup', "-config=#{@aptly_config_path}",
+      'aptly', 'db', 'cleanup',
+      "-config=#{@aptly_config_path}",
+      '-verbose',
       log_invocation: true,
-      check_error: true
+      check_error: true,
+      passthru_output: true
     )
   end
 
