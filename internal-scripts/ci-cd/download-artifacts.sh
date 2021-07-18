@@ -40,7 +40,7 @@ echo
 echo "--> Downloading artifacts"
 WORK_DIR=$(mktemp -d "$TMPDIR/XXXXXX")
 mkdir -p "$ARTIFACT_PATH"
-gsutil cp "${URLS[@]}" "$WORK_DIR/"
+gsutil -m cp "${URLS[@]}" "$WORK_DIR/"
 echo
 
 echo "--> Extracting artifacts"
