@@ -515,6 +515,22 @@ private
   def save_repo(version)
     log_notice "Saving repository (as version #{version})"
 
+    if !testing? && version != 0
+      log_info "Copying over version #{version - 1}"
+      run_command(
+        'gsutil', '-m',
+        '-h', "Cache-Control:#{cache_control_policy}",
+        'rsync', '-r', '-d',
+        remote_repo_url(version - 1),
+        remote_repo_url(version),
+        log_invocation: true,
+        check_error: true,
+        passthru_output: true
+      )
+
+      log_info "Uploading version #{version}"
+    end
+
     run_command(
       'gsutil', '-m',
       '-h', "Cache-Control:#{cache_control_policy}",
