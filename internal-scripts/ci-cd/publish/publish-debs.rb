@@ -38,12 +38,19 @@ class PublishDebs
     fetch_and_import_signing_key
 
     version = nil
+    imported = nil
+    skipped = nil
+
     synchronize do
       version = @orig_version = get_latest_production_repo_version
       fetch_state(version) if version != 0
 
       print_header 'Modifying repository state'
-      import_packages_into_state
+      imported, skipped = import_packages_into_state
+      if imported == 0
+        log_notice 'No packages imported'
+        exit
+      end
       compact_state
       archive_state
       check_lock_health
@@ -65,8 +72,11 @@ class PublishDebs
       end
     end
 
-    if !dry_run?
-      print_header 'Success!'
+    print_header 'Success!'
+    print_stats(imported, skipped)
+    if dry_run?
+      log_notice 'Dry running, so not uploading changes'
+    else
       print_conclusion(version + 1)
     end
   end
@@ -317,9 +327,14 @@ private
   end
 
   def import_packages_into_state
+    imported = 0
+    skipped = 0
     @packages_by_distro.each_pair do |distro, packages|
-      import_packages_into_state_for_distro(distro, packages)
+      imported2, skipped2 = import_packages_into_state_for_distro(distro, packages)
+      imported += imported2
+      skipped += skipped2
     end
+    [imported, skipped]
   end
 
   def import_packages_into_state_for_distro(distro, packages)
@@ -332,9 +347,13 @@ private
     if getenv_boolean('OVERWRITE_EXISTING')
       args = ['-force-replace']
       package_paths = packages.map { |p| p[:path] }
+      imported = package_paths.size
+      skipped = 0
     else
       args = []
       package_paths = filter_existing_packages(distro, packages)
+      imported = package_paths.size
+      skipped = packages.size - package_paths.size
     end
 
     if package_paths.any?
@@ -347,6 +366,8 @@ private
         check_error: true,
       )
     end
+
+    [imported, skipped]
   end
 
   def filter_existing_packages(distro, packages)
@@ -355,9 +376,9 @@ private
 
     packages.each do |package|
       if existing_packages.include?(package[:canonical_name])
-        log_info "     SKIP #{package[:path]}: package already in repository"
+        log_info "     #{YELLOW}SKIP#{RESET} #{package[:path]}: package already in repository"
       else
-        log_info "  INCLUDE #{package[:path]}"
+        log_info "  #{GREEN}INCLUDE#{RESET} #{package[:path]}"
         result << package[:path]
       end
     end
@@ -540,6 +561,12 @@ private
       check_error: true,
       pipefail: false
     )
+  end
+
+  def print_stats(imported, skipped)
+    log_notice "Statistics"
+    log_info "Packages imported: #{imported}"
+    log_info "Packages skipped : #{skipped}"
   end
 
   def print_conclusion(version)
