@@ -111,14 +111,14 @@ jobs:
           PRODUCTION_REPO_BUCKET_NAME: fullstaq-ruby-server-edition-apt-repo
           CI_ARTIFACTS_BUCKET_NAME: ${{ env.CI_ARTIFACTS_BUCKET }}
           TESTING: true
-          OVERWRITE_EXISTING: true
+          OVERWRITE_EXISTING: false
       - name: Upload RPMs to repo
         run: ./internal-scripts/ci-cd/publish/publish-rpms.rb pkgs/*/*.rpm
         env:
           PRODUCTION_REPO_BUCKET_NAME: fullstaq-ruby-server-edition-yum-repo
           CI_ARTIFACTS_BUCKET_NAME: ${{ env.CI_ARTIFACTS_BUCKET }}
           TESTING: true
-          OVERWRITE_EXISTING: true
+          OVERWRITE_EXISTING: false
 
 
   ### Run tests ###
