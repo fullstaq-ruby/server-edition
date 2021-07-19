@@ -30,19 +30,26 @@ class PublishRpms
 
     print_header 'Initializing'
     Support.load_config
-    group_packages_by_distro_and_arch
+    group_packages_by_distro_and_arch_and_canonicalize_names
     create_temp_dirs
     pull_utility_image_if_not_exists
     initialize_locking
     fetch_and_import_signing_key
 
     version = nil
+    imported = nil
+    skipped = nil
+
     synchronize do
       version = @orig_version = get_latest_production_repo_version
       fetch_repo(version) if version != 0
 
       print_header 'Updating repository'
-      import_packages
+      imported, skipped = import_packages
+      if imported == 0
+        log_notice 'No packages imported'
+        exit
+      end
       regenerate_repo_metadata
       check_lock_health
 
@@ -58,8 +65,11 @@ class PublishRpms
       end
     end
 
-    if !dry_run?
-      print_header 'Success!'
+    print_header 'Success!'
+    print_stats(imported, skipped)
+    if dry_run?
+      log_notice 'Dry running, so not uploading changes'
+    else
       print_conclusion(version + 1)
     end
   end
@@ -73,35 +83,38 @@ private
     getenv_boolean('DRY_RUN')
   end
 
-  def group_packages_by_distro_and_arch
+  def group_packages_by_distro_and_arch_and_canonicalize_names
     @packages_by_distro_and_arch = {}
     @package_paths.each do |path|
-      distro, arch = infer_package_distro_and_arch(path)
+      distro, arch, canonical_name = infer_package_distro_and_arch_and_canonical_name(path)
       if distro
-        archs = (@packages_by_distro_and_arch[distro] ||= {})
-        paths = (archs[arch] ||= [])
-        paths << path
+        distros = [distro]
       else
-        all_supported_distros.each do |distro|
-          archs = (@packages_by_distro_and_arch[distro] ||= {})
-          paths = (archs[arch] ||= [])
-          paths << path
-        end
+        distros = all_supported_distros
+      end
+
+      distros.each do |distro|
+        archs = (@packages_by_distro_and_arch[distro] ||= {})
+        packages = (archs[arch] ||= [])
+        packages << {
+          path: path,
+          canonical_name: canonical_name
+        }
       end
     end
 
     log_notice "Grouped #{@package_paths.size} packages into #{@packages_by_distro_and_arch.size} distributions"
     @packages_by_distro_and_arch.each_pair do |distro, archs|
-      archs.each_pair do |arch, paths|
+      archs.each_pair do |arch, packages|
         log_info "#{distro} #{arch}:"
-        paths.sort.each do |path|
+        packages.map{ |p| p[:path] }.sort.each do |path|
           log_info " - #{path}"
         end
       end
     end
   end
 
-  def infer_package_distro_and_arch(path)
+  def infer_package_distro_and_arch_and_canonical_name(path)
     stdout_output, stderr_output, status = run_command_capture_output(
       'rpm', '-qip', path,
       log_invocation: false,
@@ -112,18 +125,33 @@ private
       abort "Error inspecting #{path}: #{stderr_output.chomp}"
     end
 
+    if stdout_output !~ /^Name *: (.+)/
+      abort "Error inspecting #{path}: could not infer package name"
+    end
+    name = $1
+
+    if stdout_output !~ /^Version *: (.+)/
+      abort "Error inspecting #{path}: could not infer package version"
+    end
+    version = $1
+
+    if stdout_output !~ /^Release *: (.+)/
+      abort "Error inspecting #{path}: could not infer package release"
+    end
+    release = $1
+
+    if stdout_output !~ /^Architecture *: (.+)/
+      abort "Error inspecting #{path}: could not infer package architecture"
+    end
+    arch = $1
+
     if stdout_output =~ /^Distribution: (.+)/
       distro = $1
     else
       distro = nil
     end
 
-    if stdout_output !~ /^Architecture *: (.+)/
-      abort "Error inspecting #{path}: could not infer architecture"
-    end
-    arch = $1
-
-    [distro, arch]
+    [distro, arch, "#{name}-#{version}-#{release}.#{arch}.rpm"]
   end
 
   def all_supported_distros
@@ -229,28 +257,46 @@ private
   end
 
   def import_packages
+    imported = 0
+    skipped = 0
+
     @packages_by_distro_and_arch.each_pair do |distro, archs|
-      archs.each_pair do |arch, package_paths|
-        import_packages_for_distro_and_arch(distro, arch, package_paths)
+      archs.each_pair do |arch, packages|
+        imported2, skipped2 = import_packages_for_distro_and_arch(distro, arch, packages)
+        imported += imported2
+        skipped += skipped2
       end
 
       real_arch_names = archs.keys - ['noarch', 'src']
       import_arch_independent_packages_into_arch_dependent_subdirs(distro, real_arch_names, 'noarch')
       import_arch_independent_packages_into_arch_dependent_subdirs(distro, real_arch_names, 'src')
     end
+
+    [imported, skipped]
   end
 
-  def import_packages_for_distro_and_arch(distro, arch, package_paths)
-    log_notice "[#{distro}] Importing #{package_paths.size} packages for #{arch}"
+  def import_packages_for_distro_and_arch(distro, arch, packages)
+    log_notice "[#{distro}] Importing #{packages.size} packages for #{arch}"
 
     target_dir = "#{@local_repo_path}/#{distro}/#{arch}"
     FileUtils.mkdir_p(target_dir) if !File.exist?(target_dir)
 
-    if !getenv_boolean('OVERWRITE_EXISTING')
-      package_paths = filter_existing_packages(distro, arch, package_paths)
+    if getenv_boolean('OVERWRITE_EXISTING')
+      imported = packages.size
+      skipped = 0
+    else
+      orig_packages_size = packages.size
+      packages = filter_existing_packages(distro, arch, packages)
+      imported = packages.size
+      skipped = orig_packages_size - packages.size
     end
 
-    hardlink_or_copy_files(package_paths, target_dir, log_cp_invocation: false)
+    packages.each do |package|
+      target_path = "#{@local_repo_path}/#{distro}/#{arch}/#{package[:canonical_name]}"
+      hardlink_or_copy_file(package[:path], target_path)
+    end
+
+    [imported, skipped]
   end
 
   def import_arch_independent_packages_into_arch_dependent_subdirs(distro, real_arch_names, independent_arch_name)
@@ -263,21 +309,24 @@ private
     real_arch_names.each do |arch|
       target_dir = "#{@local_repo_path}/#{distro}/#{arch}"
       delete_files(glob: "#{target_dir}/*.#{independent_arch_name}.rpm")
-      hardlink_or_copy_files(package_paths, target_dir, log_cp_invocation: false)
+      hardlink_or_copy_files(package_paths, target_dir)
     end
   end
 
-  def filter_existing_packages(distro, arch, package_paths)
-    package_paths.find_all do |path|
-      target_path = "#{@local_repo_path}/#{distro}/#{arch}/#{File.basename(path)}"
+  def filter_existing_packages(distro, arch, packages)
+    result = []
+
+    packages.each do |package|
+      target_path = "#{@local_repo_path}/#{distro}/#{arch}/#{package[:canonical_name]}"
       if File.exist?(target_path)
-        log_info "     SKIP #{path}: package already in repository"
-        false
+        log_info "     #{YELLOW}SKIP#{RESET} #{package[:path]}: package already in repository"
       else
-        log_info "  INCLUDE #{path}"
-        true
+        log_info "  #{GREEN}INCLUDE#{RESET} #{package[:path]}"
+        result << package
       end
     end
+
+    result
   end
 
   def regenerate_repo_metadata
@@ -385,6 +434,12 @@ private
       check_error: true,
       pipefail: false
     )
+  end
+
+  def print_stats(imported, skipped)
+    log_notice "Statistics"
+    log_info "Packages imported: #{imported}"
+    log_info "Packages skipped : #{skipped}"
   end
 
   def print_conclusion(version)

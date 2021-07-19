@@ -189,7 +189,9 @@ module Support
     when :DEB
       "fullstaq-rbenv_#{rbenv_version}-#{rbenv_package_revision}_all.deb"
     when :RPM
-      "fullstaq-rbenv-#{rbenv_version}-#{rbenv_package_revision}.noarch.rpm"
+      version_str = rbenv_version.to_s.gsub('-', '_')
+      revision_str = rbenv_package_revision.to_s.gsub('-', '_')
+      "fullstaq-rbenv-#{version_str}-#{revision_str}.noarch.rpm"
     else
       raise "Unsupported package format: #{package_format.inspect}"
     end

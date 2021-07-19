@@ -8,6 +8,7 @@ private
   RESET = "\033[0m"
   BOLD = "\033[1m"
   BLUE_BG = "\033[44m"
+  GREEN = "\033[32m"
   YELLOW = "\033[33m"
 
 
@@ -110,43 +111,38 @@ private
     end
   end
 
+  # @return [Boolean]
   # @raise [HardLinkError, SystemCallError]
-  def hardlink_files(paths, target_dir)
-    processed_paths = []
-
-    paths.each do |source_path|
-      target_path = "#{target_dir}/#{File.basename(source_path)}"
-      File.unlink(target_path) if File.exist?(target_path)
-      begin
-        File.link(source_path, target_path)
-      rescue Errno::EXDEV, Errno::EPERM
-        # These errors potentially indicate that hard linking is not supported.
-        break
-      rescue SystemCallError => e
-        raise HardLinkError.new(
-          "Error hard linking #{source_path} into #{target_path}: #{e}",
-          source_path,
-          target_path,
-          e
-        )
-      end
-      processed_paths << source_path
+  def create_hardlink(source_path, target_path)
+    File.unlink(target_path) if File.exist?(target_path)
+    begin
+      File.link(source_path, target_path)
+      true
+    rescue Errno::EXDEV, Errno::EPERM
+      # These errors potentially indicate that hard linking is not supported.
+      false
+    rescue SystemCallError => e
+      raise HardLinkError.new(
+        "Error hard linking #{source_path} into #{target_path}: #{e}",
+        source_path,
+        target_path,
+        e
+      )
     end
-
-    processed_paths
   end
 
   # @raise [HardLinkError, SystemCallError]
-  def hardlink_or_copy_files(paths, target_dir, log_cp_invocation:)
-    linked = hardlink_files(paths, target_dir)
+  def hardlink_or_copy_file(source_path, target_path)
+    if !create_hardlink(source_path, target_path)
+      FileUtils.cp(source_path, target_path, preserve: true)
+    end
+  end
 
-    paths = paths - linked
-    if paths.any?
-      run_command(
-        'cp', '-p', '--', *paths, target_dir,
-        log_invocation: log_cp_invocation,
-        check_error: true
-      )
+  # @raise [HardLinkError, SystemCallError]
+  def hardlink_or_copy_files(paths, target_dir)
+    paths.each do |source_path|
+      target_path = "#{target_dir}/#{File.basename(source_path)}"
+      hardlink_or_copy_file(source_path, target_path)
     end
   end
 

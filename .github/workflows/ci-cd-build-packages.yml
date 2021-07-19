@@ -518,7 +518,7 @@ jobs:
       - name: Build package
         run: ./internal-scripts/ci-cd/build-rbenv-rpm/build-package.sh
         env:
-          PACKAGE_BASENAME: "fullstaq-rbenv-1.1.2-16-1.noarch.rpm"
+          PACKAGE_BASENAME: "fullstaq-rbenv-1.1.2_16-1.noarch.rpm"
           VERSION: "1.1.2-16"
           REVISION: "1"
 
