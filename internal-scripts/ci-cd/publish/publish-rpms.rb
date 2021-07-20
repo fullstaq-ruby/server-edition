@@ -46,7 +46,9 @@ class PublishRpms
 
       print_header 'Updating repository'
       imported, skipped = import_packages
-      if imported == 0
+      # When testing, we always want to save the test repo because
+      # the tests depend on its existance.
+      if !testing? && imported == 0
         log_notice 'No packages imported'
         exit
       end

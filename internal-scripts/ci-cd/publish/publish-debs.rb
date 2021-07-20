@@ -47,7 +47,9 @@ class PublishDebs
 
       print_header 'Modifying repository state'
       imported, skipped = import_packages_into_state
-      if imported == 0
+      # When testing, we always want to save the test repo because
+      # the tests depend on its existance.
+      if !testing? && imported == 0
         log_notice 'No packages imported'
         exit
       end
