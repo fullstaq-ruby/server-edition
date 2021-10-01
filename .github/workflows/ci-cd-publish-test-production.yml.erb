@@ -23,6 +23,8 @@ jobs:
   determine_necessary_jobs:
     name: Determine necessary jobs
     runs-on: ubuntu-20.04
+    permissions:
+      checks: write
     outputs:
       necessary_jobs: ${{ steps.check.outputs.necessary_jobs }}
     steps:
@@ -32,7 +34,7 @@ jobs:
           INPUTS: ${{ toJSON(github.event.inputs) }}
 
       - name: Mark check as 'in progress'
-        uses: LouisBrunner/checks-action@v1.1.0
+        uses: LouisBrunner/checks-action@3d24d4813a797720cc4e2080a50bdafb3373aef1
         if: github.event.inputs.check_id
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
@@ -63,6 +65,7 @@ jobs:
   publish:
     name: Publish packages
     runs-on: ubuntu-20.04
+    environment: Production repos
     needs:
       - determine_necessary_jobs
     steps:
@@ -175,6 +178,10 @@ jobs:
   finalize:
     name: Finalize
     runs-on: ubuntu-20.04
+    environment: Github releases
+    permissions:
+      contents: write
+      checks: write
     needs:
       - determine_necessary_jobs
       - publish
@@ -235,7 +242,7 @@ jobs:
       ### Update own check status ###
 
       - name: Mark check as 'success'
-        uses: LouisBrunner/checks-action@v1.1.0
+        uses: LouisBrunner/checks-action@3d24d4813a797720cc4e2080a50bdafb3373aef1
         if: 'github.event.inputs.check_id && success()'
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
@@ -243,7 +250,7 @@ jobs:
           conclusion: success
 
       - name: Mark check as 'failure'
-        uses: LouisBrunner/checks-action@v1.1.0
+        uses: LouisBrunner/checks-action@3d24d4813a797720cc4e2080a50bdafb3373aef1
         if: 'github.event.inputs.check_id && failure()'
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
@@ -251,7 +258,7 @@ jobs:
           conclusion: failure
 
       - name: Mark check as 'cancelled'
-        uses: LouisBrunner/checks-action@v1.1.0
+        uses: LouisBrunner/checks-action@3d24d4813a797720cc4e2080a50bdafb3373aef1
         if: 'github.event.inputs.check_id && cancelled()'
         with:
           token: ${{ secrets.GITHUB_TOKEN }}

@@ -23,6 +23,8 @@ jobs:
   determine_necessary_jobs:
     name: Determine necessary jobs
     runs-on: ubuntu-20.04
+    permissions:
+      checks: write
     outputs:
       necessary_jobs: ${{ steps.check.outputs.necessary_jobs }}
     steps:
@@ -32,7 +34,7 @@ jobs:
           INPUTS: ${{ toJSON(github.event.inputs) }}
 
       - name: Mark check as 'in progress'
-        uses: LouisBrunner/checks-action@v1.1.0
+        uses: LouisBrunner/checks-action@3d24d4813a797720cc4e2080a50bdafb3373aef1
         if: github.event.inputs.check_id
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
@@ -170,6 +172,8 @@ jobs:
 
   finalize:
     name: Finalize
+    permissions:
+      checks: write
     needs:
       - determine_necessary_jobs
       - publish
@@ -214,7 +218,7 @@ jobs:
       ### Trigger next workflow ###
 
       - name: Create check for 'Publish & test against production repos'
-        uses: LouisBrunner/checks-action@v1.1.0
+        uses: LouisBrunner/checks-action@3d24d4813a797720cc4e2080a50bdafb3373aef1
         id: create_check
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
@@ -222,7 +226,7 @@ jobs:
           status: queued
 
       - name: Trigger workflow for 'Publish & test against production repos'
-        uses: benc-uk/workflow-dispatch@v1.1
+        uses: benc-uk/workflow-dispatch@4c044c1613fabbe5250deadc65452d54c4ad4fc7
         with:
           workflow: 'CI/CD: publish & test against production repos'
           token: ${{ secrets.WORKFLOW_DISPATCH_TOKEN }}
@@ -236,7 +240,7 @@ jobs:
       ### Update own check status ###
 
       - name: Mark check as 'success'
-        uses: LouisBrunner/checks-action@v1.1.0
+        uses: LouisBrunner/checks-action@3d24d4813a797720cc4e2080a50bdafb3373aef1
         if: 'github.event.inputs.check_id && success()'
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
@@ -244,7 +248,7 @@ jobs:
           conclusion: success
 
       - name: Mark check as 'failure'
-        uses: LouisBrunner/checks-action@v1.1.0
+        uses: LouisBrunner/checks-action@3d24d4813a797720cc4e2080a50bdafb3373aef1
         if: 'github.event.inputs.check_id && failure()'
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
@@ -252,7 +256,7 @@ jobs:
           conclusion: failure
 
       - name: Mark check as 'cancelled'
-        uses: LouisBrunner/checks-action@v1.1.0
+        uses: LouisBrunner/checks-action@3d24d4813a797720cc4e2080a50bdafb3373aef1
         if: 'github.event.inputs.check_id && cancelled()'
         with:
           token: ${{ secrets.GITHUB_TOKEN }}

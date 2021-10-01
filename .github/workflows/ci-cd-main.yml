@@ -23,7 +23,6 @@ on:
       - 'dev-handbook/**'
 
 env:
-  BINTRAY_ORG: fullstaq
   CI_ARTIFACTS_BUCKET: fullstaq-ruby-server-edition-ci-artifacts
   ## Set the following variable to a specific number to make the
   ## Google Cloud artifact upload/download actions treat as
@@ -484,6 +483,8 @@ jobs:
 
   finalize:
     name: Finalize
+    permissions:
+      checks: write
     needs:
       - determine_necessary_jobs
       - check_workflow_uptodate
@@ -715,7 +716,7 @@ jobs:
       ### Trigger next workflow ###
 
       - name: Create check for 'Build packages'
-        uses: LouisBrunner/checks-action@v1.1.0
+        uses: LouisBrunner/checks-action@3d24d4813a797720cc4e2080a50bdafb3373aef1
         id: create_check
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
@@ -723,7 +724,7 @@ jobs:
           status: queued
 
       - name: Trigger workflow for 'Build packages'
-        uses: benc-uk/workflow-dispatch@v1.1
+        uses: benc-uk/workflow-dispatch@4c044c1613fabbe5250deadc65452d54c4ad4fc7
         with:
           workflow: 'CI/CD: build packages'
           token: ${{ secrets.WORKFLOW_DISPATCH_TOKEN }}
