@@ -85,13 +85,13 @@ jobs:
 
         - name: Download Docker image necessary for building
           run: ./internal-scripts/ci-cd/download-artifact.sh
-          if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Docker image <%= distribution[:name] %>;')
+          if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Use locally-built Docker image <%= distribution[:name] %>;')
           env:
-            ARTIFACT_NAME: 'docker-image-<%= distribution[:name] %>'
+            ARTIFACT_NAME: '<%= docker_image_artifact_name(distribution[:name]) %>'
             ARTIFACT_PATH: .
         - name: Load Docker image necessary for building
           run: ./internal-scripts/ci-cd/load-docker-image.sh
-          if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Docker image <%= distribution[:name] %>;')
+          if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Use locally-built Docker image <%= distribution[:name] %>;')
           env:
             TARBALL: image.tar.zst
 
@@ -131,13 +131,13 @@ jobs:
 
       - name: Download utility Docker image
         run: ./internal-scripts/ci-cd/download-artifact.sh
-        if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Docker image utility;')
+        if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Use locally-built Docker image utility;')
         env:
-          ARTIFACT_NAME: docker-image-utility
+          ARTIFACT_NAME: <%= docker_image_artifact_name('utility') %>
           ARTIFACT_PATH: .
       - name: Load utility Docker image
         run: ./internal-scripts/ci-cd/load-docker-image.sh
-        if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Docker image utility;')
+        if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Use locally-built Docker image utility;')
         env:
           TARBALL: image.tar.zst
 
@@ -170,13 +170,13 @@ jobs:
 
       - name: Download utility Docker image
         run: ./internal-scripts/ci-cd/download-artifact.sh
-        if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Docker image utility;')
+        if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Use locally-built Docker image utility;')
         env:
-          ARTIFACT_NAME: docker-image-utility
+          ARTIFACT_NAME: <%= docker_image_artifact_name('utility') %>
           ARTIFACT_PATH: .
       - name: Load utility Docker image
         run: ./internal-scripts/ci-cd/load-docker-image.sh
-        if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Docker image utility;')
+        if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Use locally-built Docker image utility;')
         env:
           TARBALL: image.tar.zst
 
@@ -218,13 +218,13 @@ jobs:
 
       - name: Download utility Docker image
         run: ./internal-scripts/ci-cd/download-artifact.sh
-        if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Docker image utility;')
+        if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Use locally-built Docker image utility;')
         env:
-          ARTIFACT_NAME: docker-image-utility
+          ARTIFACT_NAME: <%= docker_image_artifact_name('utility') %>
           ARTIFACT_PATH: .
       - name: Load utility Docker image
         run: ./internal-scripts/ci-cd/load-docker-image.sh
-        if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Docker image utility;')
+        if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Use locally-built Docker image utility;')
         env:
           TARBALL: image.tar.zst
 
@@ -264,13 +264,13 @@ jobs:
 
       - name: Download utility Docker image
         run: ./internal-scripts/ci-cd/download-artifact.sh
-        if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Docker image utility;')
+        if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Use locally-built Docker image utility;')
         env:
-          ARTIFACT_NAME: docker-image-utility
+          ARTIFACT_NAME: <%= docker_image_artifact_name('utility') %>
           ARTIFACT_PATH: .
       - name: Load utility Docker image
         run: ./internal-scripts/ci-cd/load-docker-image.sh
-        if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Docker image utility;')
+        if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Use locally-built Docker image utility;')
         env:
           TARBALL: image.tar.zst
 
@@ -324,25 +324,25 @@ jobs:
 
         - name: Download Docker image necessary for building
           run: ./internal-scripts/ci-cd/download-artifact.sh
-          if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Docker image <%= distribution[:name] %>;')
+          if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Use locally-built Docker image <%= distribution[:name] %>;')
           env:
-            ARTIFACT_NAME: 'docker-image-<%= distribution[:name] %>'
+            ARTIFACT_NAME: '<%= docker_image_artifact_name(distribution[:name]) %>'
             ARTIFACT_PATH: .
         - name: Load Docker image necessary for building
           run: ./internal-scripts/ci-cd/load-docker-image.sh
-          if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Docker image <%= distribution[:name] %>;')
+          if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Use locally-built Docker image <%= distribution[:name] %>;')
           env:
             TARBALL: image.tar.zst
 
         - name: Download Docker image necessary for packaging
           run: ./internal-scripts/ci-cd/download-artifact.sh
-          if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Docker image utility;')
+          if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Use locally-built Docker image utility;')
           env:
-            ARTIFACT_NAME: docker-image-utility
+            ARTIFACT_NAME: <%= docker_image_artifact_name('utility') %>
             ARTIFACT_PATH: .
         - name: Load Docker image necessary for packaging
           run: ./internal-scripts/ci-cd/load-docker-image.sh
-          if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Docker image utility;')
+          if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Use locally-built Docker image utility;')
           env:
             TARBALL: image.tar.zst
 
