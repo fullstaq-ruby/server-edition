@@ -332,14 +332,14 @@ jobs:
         run: ./internal-scripts/ci-cd/build-docker-images/build.sh
         env:
           IMAGE_NAME: 'fullstaq/ruby-build-env-utility'
-          IMAGE_TAG: '3'
+          IMAGE_TAG: '4'
           SOURCE_DIR: 'environments/utility'
 
       - name: Dump image
         run: ./internal-scripts/ci-cd/build-docker-images/dump-image.sh
         env:
           IMAGE_NAME: 'fullstaq/ruby-build-env-utility'
-          IMAGE_TAG: '3'
+          IMAGE_TAG: '4'
       - name: Archive artifact
         run: ./internal-scripts/ci-cd/upload-artifact.sh
         env:
