@@ -25,6 +25,12 @@ class App
         docker_image_absent_in_registry?(image[:name], image[:tag])
       end
     end
+    docker_images.each do |image|
+      determine_necessary_job("Use locally-built Docker image artifact #{image[:id]}") do
+        docker_image_absent_in_registry?(image[:name], image[:tag]) &&
+          artifact_absent?(docker_image_artifact_name(image[:id]))
+      end
+    end
 
 
     ruby_source_versions.each do |ruby_version|

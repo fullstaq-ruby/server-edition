@@ -54,6 +54,10 @@ module CiWorkflowSupport
     end
   end
 
+  def docker_image_artifact_name(distribution_name)
+    "docker-image-#{distribution_name}"
+  end
+
   def ruby_source_artifact_name(ruby_version)
     "ruby-src-#{ruby_version}"
   end
