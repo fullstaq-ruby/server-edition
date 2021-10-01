@@ -257,6 +257,37 @@ jobs:
           ARTIFACT_NAME: 'docker-image-debian-10'
           ARTIFACT_PATH: output
 
+  build_docker_image_debian_11:
+    name: 'Build Docker image [debian-11]'
+    runs-on: ubuntu-18.04
+    needs:
+      - determine_necessary_jobs
+    if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Docker image debian-11;')
+    steps:
+      - uses: actions/checkout@v2
+      - name: Login to Google Cloud
+        uses: ./.github/actions/gcloud-login
+        with:
+          private_key: ${{ secrets.GCLOUD_KEY }}
+
+      - name: Build
+        run: ./internal-scripts/ci-cd/build-docker-images/build.sh
+        env:
+          IMAGE_NAME: 'fullstaq/ruby-build-env-debian-11'
+          IMAGE_TAG: '1'
+          SOURCE_DIR: 'environments/debian-11'
+
+      - name: Dump image
+        run: ./internal-scripts/ci-cd/build-docker-images/dump-image.sh
+        env:
+          IMAGE_NAME: 'fullstaq/ruby-build-env-debian-11'
+          IMAGE_TAG: '1'
+      - name: Archive artifact
+        run: ./internal-scripts/ci-cd/upload-artifact.sh
+        env:
+          ARTIFACT_NAME: 'docker-image-debian-11'
+          ARTIFACT_PATH: output
+
   build_docker_image_debian_9:
     name: 'Build Docker image [debian-9]'
     runs-on: ubuntu-18.04
@@ -706,6 +737,7 @@ jobs:
       - build_docker_image_centos_7
       - build_docker_image_centos_8
       - build_docker_image_debian_10
+      - build_docker_image_debian_11
       - build_docker_image_debian_9
       - build_docker_image_ubuntu_18_04
       - build_docker_image_ubuntu_20_04
@@ -797,6 +829,19 @@ jobs:
         if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Docker image debian-10;')
         with:
           name: 'docker-image-debian-10'
+          path: artifacts
+      - name: Download Docker image artifact [debian-11] from Google Cloud
+        run: ./internal-scripts/ci-cd/download-artifact.sh
+        if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Docker image debian-11;')
+        env:
+          ARTIFACT_NAME: 'docker-image-debian-11'
+          ARTIFACT_PATH: artifacts
+          CLEAR: true
+      - name: Archive Docker image artifact [debian-11] to Github
+        uses: actions/upload-artifact@v2
+        if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Docker image debian-11;')
+        with:
+          name: 'docker-image-debian-11'
           path: artifacts
       - name: Download Docker image artifact [debian-9] from Google Cloud
         run: ./internal-scripts/ci-cd/download-artifact.sh
@@ -972,6 +1017,9 @@ jobs:
             || (needs.build_docker_image_debian_10.result != 'success'
               && (needs.build_docker_image_debian_10.result != 'skipped'
                 || contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Docker image debian-10;')))
+            || (needs.build_docker_image_debian_11.result != 'success'
+              && (needs.build_docker_image_debian_11.result != 'skipped'
+                || contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Docker image debian-11;')))
             || (needs.build_docker_image_debian_9.result != 'success'
               && (needs.build_docker_image_debian_9.result != 'skipped'
                 || contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Docker image debian-9;')))
