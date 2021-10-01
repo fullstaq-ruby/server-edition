@@ -337,7 +337,7 @@ jobs:
           run: ./internal-scripts/ci-cd/download-artifact.sh
           if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Docker image utility;')
           env:
-            ARTIFACT_NAME: 'docker-image-<%= distribution[:name] %>'
+            ARTIFACT_NAME: docker-image-utility
             ARTIFACT_PATH: .
         - name: Load Docker image necessary for packaging
           run: ./internal-scripts/ci-cd/load-docker-image.sh
