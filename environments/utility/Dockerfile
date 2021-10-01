@@ -22,13 +22,6 @@ RUN set -x && \
     mkdir /etc/activatecontaineruid && \
     echo 'app_account: utility' > /etc/activatecontaineruid/config.yml && \
     \
-    # Makes the Docker image's environment consistent with a VM's environment. \
-    # See https://github.com/fullstaq-labs/fullstaq-ruby-server-edition/issues/80 \
-    # and https://github.com/fullstaq-labs/fullstaq-ruby-server-edition/pull/82 \
-    cp /bin/mkdir /bin/mkdir2 && \
-    rm -f /usr/bin/mkdir && \
-    mv /bin/mkdir2 /bin/mkdir && \
-    \
     gem install bundler --no-document -v 2.2.28 && \
     addgroup --gid 9999 utility && \
     adduser --uid 9999 --gid 9999 --disabled-password --gecos Utility utility && \
