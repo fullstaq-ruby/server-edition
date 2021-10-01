@@ -28,22 +28,12 @@ ruby:
     - minor_version: 3.0
       full_version: 3.0.2
       package_revision: 3
-    - minor_version: 2.7
-      full_version: 2.7.4
-      package_revision: 5
-    - minor_version: 2.6
-      full_version: 2.6.8
-      package_revision: 8
 
   ## (Optional)
   ## Which tiny Ruby version packages to build.
   tiny_version_packages:
     - full_version: 3.0.2
       package_revision: 3
-    - full_version: 2.7.4
-      package_revision: 4
-    - full_version: 2.6.8
-      package_revision: 4
 
 ## (Required)
 ## Which Rbenv version to package.
@@ -94,8 +84,8 @@ common:
 ## Which variants to build.
 variants:
   normal: true
-  jemalloc: true
-  malloctrim: true
+  jemalloc: false
+  malloctrim: false
 
 ## (Required if variants.jemalloc is true)
 ## Version of Jemalloc to compile against.
@@ -107,7 +97,7 @@ jemalloc_version: 3.6.0
 ## (Required)
 ## Specify which distributions to build packages for.
 ## When set to 'all', will build for all supported distributions.
-distributions: all
+distributions: [ubuntu-20.04]
 ## You can also set it to a list of distribution names.
 ## The names must match the folder names found in the environments/
 ## directory in this project.
