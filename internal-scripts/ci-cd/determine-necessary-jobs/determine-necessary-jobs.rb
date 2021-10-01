@@ -22,13 +22,13 @@ class App
   def execute
     docker_images.each do |image|
       determine_necessary_job("Build Docker image #{image[:id]}") do
-        docker_image_absent_in_registry?(image[:name], image[:tag])
+        docker_image_absent_in_registry?(image[:name], image[:tag]) &&
+          artifact_absent?(docker_image_artifact_name(image[:id]))
       end
     end
     docker_images.each do |image|
-      determine_necessary_job("Use locally-built Docker image artifact #{image[:id]}") do
-        docker_image_absent_in_registry?(image[:name], image[:tag]) &&
-          artifact_absent?(docker_image_artifact_name(image[:id]))
+      determine_necessary_job("Docker image absent in registry #{image[:id]}") do
+        docker_image_absent_in_registry?(image[:name], image[:tag])
       end
     end
 

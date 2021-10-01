@@ -94,13 +94,13 @@ jobs:
 
       - name: Download Docker image necessary for building
         run: ./internal-scripts/ci-cd/download-artifact.sh
-        if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Use locally-built Docker image artifact centos-8;')
+        if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Docker image absent in registry centos-8;')
         env:
           ARTIFACT_NAME: 'docker-image-centos-8'
           ARTIFACT_PATH: .
       - name: Load Docker image necessary for building
         run: ./internal-scripts/ci-cd/load-docker-image.sh
-        if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Use locally-built Docker image artifact centos-8;')
+        if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Docker image absent in registry centos-8;')
         env:
           TARBALL: image.tar.zst
 
@@ -141,13 +141,13 @@ jobs:
 
       - name: Download Docker image necessary for building
         run: ./internal-scripts/ci-cd/download-artifact.sh
-        if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Use locally-built Docker image artifact ubuntu-20.04;')
+        if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Docker image absent in registry ubuntu-20.04;')
         env:
           ARTIFACT_NAME: 'docker-image-ubuntu-20.04'
           ARTIFACT_PATH: .
       - name: Load Docker image necessary for building
         run: ./internal-scripts/ci-cd/load-docker-image.sh
-        if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Use locally-built Docker image artifact ubuntu-20.04;')
+        if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Docker image absent in registry ubuntu-20.04;')
         env:
           TARBALL: image.tar.zst
 
@@ -185,13 +185,13 @@ jobs:
 
       - name: Download utility Docker image
         run: ./internal-scripts/ci-cd/download-artifact.sh
-        if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Use locally-built Docker image artifact utility;')
+        if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Docker image absent in registry utility;')
         env:
           ARTIFACT_NAME: docker-image-utility
           ARTIFACT_PATH: .
       - name: Load utility Docker image
         run: ./internal-scripts/ci-cd/load-docker-image.sh
-        if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Use locally-built Docker image artifact utility;')
+        if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Docker image absent in registry utility;')
         env:
           TARBALL: image.tar.zst
 
@@ -224,13 +224,13 @@ jobs:
 
       - name: Download utility Docker image
         run: ./internal-scripts/ci-cd/download-artifact.sh
-        if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Use locally-built Docker image artifact utility;')
+        if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Docker image absent in registry utility;')
         env:
           ARTIFACT_NAME: docker-image-utility
           ARTIFACT_PATH: .
       - name: Load utility Docker image
         run: ./internal-scripts/ci-cd/load-docker-image.sh
-        if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Use locally-built Docker image artifact utility;')
+        if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Docker image absent in registry utility;')
         env:
           TARBALL: image.tar.zst
 
@@ -272,13 +272,13 @@ jobs:
 
       - name: Download utility Docker image
         run: ./internal-scripts/ci-cd/download-artifact.sh
-        if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Use locally-built Docker image artifact utility;')
+        if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Docker image absent in registry utility;')
         env:
           ARTIFACT_NAME: docker-image-utility
           ARTIFACT_PATH: .
       - name: Load utility Docker image
         run: ./internal-scripts/ci-cd/load-docker-image.sh
-        if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Use locally-built Docker image artifact utility;')
+        if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Docker image absent in registry utility;')
         env:
           TARBALL: image.tar.zst
 
@@ -318,13 +318,13 @@ jobs:
 
       - name: Download utility Docker image
         run: ./internal-scripts/ci-cd/download-artifact.sh
-        if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Use locally-built Docker image artifact utility;')
+        if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Docker image absent in registry utility;')
         env:
           ARTIFACT_NAME: docker-image-utility
           ARTIFACT_PATH: .
       - name: Load utility Docker image
         run: ./internal-scripts/ci-cd/load-docker-image.sh
-        if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Use locally-built Docker image artifact utility;')
+        if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Docker image absent in registry utility;')
         env:
           TARBALL: image.tar.zst
 
@@ -376,25 +376,25 @@ jobs:
 
       - name: Download Docker image necessary for building
         run: ./internal-scripts/ci-cd/download-artifact.sh
-        if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Use locally-built Docker image artifact centos-8;')
+        if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Docker image absent in registry centos-8;')
         env:
           ARTIFACT_NAME: 'docker-image-centos-8'
           ARTIFACT_PATH: .
       - name: Load Docker image necessary for building
         run: ./internal-scripts/ci-cd/load-docker-image.sh
-        if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Use locally-built Docker image artifact centos-8;')
+        if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Docker image absent in registry centos-8;')
         env:
           TARBALL: image.tar.zst
 
       - name: Download Docker image necessary for packaging
         run: ./internal-scripts/ci-cd/download-artifact.sh
-        if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Use locally-built Docker image artifact utility;')
+        if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Docker image absent in registry utility;')
         env:
           ARTIFACT_NAME: docker-image-utility
           ARTIFACT_PATH: .
       - name: Load Docker image necessary for packaging
         run: ./internal-scripts/ci-cd/load-docker-image.sh
-        if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Use locally-built Docker image artifact utility;')
+        if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Docker image absent in registry utility;')
         env:
           TARBALL: image.tar.zst
 
@@ -461,25 +461,25 @@ jobs:
 
       - name: Download Docker image necessary for building
         run: ./internal-scripts/ci-cd/download-artifact.sh
-        if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Use locally-built Docker image artifact centos-8;')
+        if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Docker image absent in registry centos-8;')
         env:
           ARTIFACT_NAME: 'docker-image-centos-8'
           ARTIFACT_PATH: .
       - name: Load Docker image necessary for building
         run: ./internal-scripts/ci-cd/load-docker-image.sh
-        if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Use locally-built Docker image artifact centos-8;')
+        if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Docker image absent in registry centos-8;')
         env:
           TARBALL: image.tar.zst
 
       - name: Download Docker image necessary for packaging
         run: ./internal-scripts/ci-cd/download-artifact.sh
-        if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Use locally-built Docker image artifact utility;')
+        if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Docker image absent in registry utility;')
         env:
           ARTIFACT_NAME: docker-image-utility
           ARTIFACT_PATH: .
       - name: Load Docker image necessary for packaging
         run: ./internal-scripts/ci-cd/load-docker-image.sh
-        if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Use locally-built Docker image artifact utility;')
+        if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Docker image absent in registry utility;')
         env:
           TARBALL: image.tar.zst
 
@@ -547,25 +547,25 @@ jobs:
 
       - name: Download Docker image necessary for building
         run: ./internal-scripts/ci-cd/download-artifact.sh
-        if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Use locally-built Docker image artifact ubuntu-20.04;')
+        if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Docker image absent in registry ubuntu-20.04;')
         env:
           ARTIFACT_NAME: 'docker-image-ubuntu-20.04'
           ARTIFACT_PATH: .
       - name: Load Docker image necessary for building
         run: ./internal-scripts/ci-cd/load-docker-image.sh
-        if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Use locally-built Docker image artifact ubuntu-20.04;')
+        if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Docker image absent in registry ubuntu-20.04;')
         env:
           TARBALL: image.tar.zst
 
       - name: Download Docker image necessary for packaging
         run: ./internal-scripts/ci-cd/download-artifact.sh
-        if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Use locally-built Docker image artifact utility;')
+        if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Docker image absent in registry utility;')
         env:
           ARTIFACT_NAME: docker-image-utility
           ARTIFACT_PATH: .
       - name: Load Docker image necessary for packaging
         run: ./internal-scripts/ci-cd/load-docker-image.sh
-        if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Use locally-built Docker image artifact utility;')
+        if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Docker image absent in registry utility;')
         env:
           TARBALL: image.tar.zst
 
@@ -632,25 +632,25 @@ jobs:
 
       - name: Download Docker image necessary for building
         run: ./internal-scripts/ci-cd/download-artifact.sh
-        if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Use locally-built Docker image artifact ubuntu-20.04;')
+        if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Docker image absent in registry ubuntu-20.04;')
         env:
           ARTIFACT_NAME: 'docker-image-ubuntu-20.04'
           ARTIFACT_PATH: .
       - name: Load Docker image necessary for building
         run: ./internal-scripts/ci-cd/load-docker-image.sh
-        if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Use locally-built Docker image artifact ubuntu-20.04;')
+        if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Docker image absent in registry ubuntu-20.04;')
         env:
           TARBALL: image.tar.zst
 
       - name: Download Docker image necessary for packaging
         run: ./internal-scripts/ci-cd/download-artifact.sh
-        if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Use locally-built Docker image artifact utility;')
+        if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Docker image absent in registry utility;')
         env:
           ARTIFACT_NAME: docker-image-utility
           ARTIFACT_PATH: .
       - name: Load Docker image necessary for packaging
         run: ./internal-scripts/ci-cd/load-docker-image.sh
-        if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Use locally-built Docker image artifact utility;')
+        if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Docker image absent in registry utility;')
         env:
           TARBALL: image.tar.zst
 

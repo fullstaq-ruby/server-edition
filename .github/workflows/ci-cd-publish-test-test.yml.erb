@@ -91,13 +91,13 @@ jobs:
 
       - name: Download Docker image necessary for publishing
         run: ./internal-scripts/ci-cd/download-artifact.sh
-        if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Use locally-built Docker image artifact utility;')
+        if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Docker image absent in registry utility;')
         env:
           ARTIFACT_NAME: <%= docker_image_artifact_name('utility') %>
           ARTIFACT_PATH: .
       - name: Load Docker image necessary for publishing
         run: ./internal-scripts/ci-cd/load-docker-image.sh
-        if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Use locally-built Docker image artifact utility;')
+        if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Docker image absent in registry utility;')
         env:
           TARBALL: image.tar.zst
       - name: Install Aptly
