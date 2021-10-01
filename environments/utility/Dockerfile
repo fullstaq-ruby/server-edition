@@ -1,6 +1,6 @@
 FROM ubuntu:18.04
 
-# Used to link container image to the repo: 
+# Used to link container image to the repo:
 # https://docs.github.com/en/free-pro-team@latest/packages/managing-container-images-with-github-container-registry/connecting-a-repository-to-a-container-image#connecting-a-repository-to-a-container-image-on-the-command-line
 LABEL org.opencontainers.image.source https://github.com/fullstaq-labs/fullstaq-ruby-server-edition
 
@@ -22,7 +22,7 @@ RUN set -x && \
     mkdir /etc/activatecontaineruid && \
     echo 'app_account: utility' > /etc/activatecontaineruid/config.yml && \
     \
-    gem install bundler --no-document -v 1.17.3 && \
+    gem install bundler --no-document -v 2.2.28 && \
     addgroup --gid 9999 utility && \
     adduser --uid 9999 --gid 9999 --disabled-password --gecos Utility utility && \
     usermod -L utility && \
