@@ -1,6 +1,6 @@
 FROM ubuntu:20.04
 
-# Used to link container image to the repo: 
+# Used to link container image to the repo:
 # https://docs.github.com/en/free-pro-team@latest/packages/managing-container-images-with-github-container-registry/connecting-a-repository-to-a-container-image#connecting-a-repository-to-a-container-image-on-the-command-line
 LABEL org.opencontainers.image.source https://github.com/fullstaq-labs/fullstaq-ruby-server-edition
 
@@ -26,6 +26,9 @@ RUN set -x && \
     usermod -L builder && \
     apt clean && \
     rm -rf /tmp/* /var/tmp/* /var/lib/apt/lists/*
+
+# https://github.com/fullstaq-labs/fullstaq-ruby-server-edition/issues/80
+RUN rm /usr/bin/mkdir
 
 USER builder
 ENTRYPOINT ["/sbin/activatecontaineruid"]
