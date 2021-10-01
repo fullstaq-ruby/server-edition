@@ -29,7 +29,7 @@ RUN set -x && \
     rm -f /usr/bin/mkdir && \
     mv /bin/mkdir2 /bin/mkdir && \
     \
-    gem install bundler --no-document -v 1.17.3 && \
+    gem install bundler --no-document -v 2.2.28 && \
     addgroup --gid 9999 utility && \
     adduser --uid 9999 --gid 9999 --disabled-password --gecos Utility utility && \
     usermod -L utility && \
