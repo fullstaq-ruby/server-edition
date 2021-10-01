@@ -24,11 +24,15 @@ RUN set -x && \
     addgroup --gid 9999 builder && \
     adduser --uid 9999 --gid 9999 --disabled-password --gecos Builder builder && \
     usermod -L builder && \
+    \
+    # Fixes https://github.com/fullstaq-labs/fullstaq-ruby-server-edition/issues/80 \
+    # Problem summary: https://github.com/fullstaq-labs/fullstaq-ruby-server-edition/pull/82 \
+    cp /bin/mkdir /bin/mkdir2 && \
+    rm -f /usr/bin/mkdir && \
+    mv /bin/mkdir2 /bin/mkdir && \
+    \
     apt clean && \
     rm -rf /tmp/* /var/tmp/* /var/lib/apt/lists/*
-
-# https://github.com/fullstaq-labs/fullstaq-ruby-server-edition/issues/80
-RUN rm /usr/bin/mkdir
 
 USER builder
 ENTRYPOINT ["/sbin/activatecontaineruid"]
