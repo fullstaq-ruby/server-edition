@@ -2,6 +2,10 @@
 
 All packages are built within [build environments](build-environments.md): Docker containers that are based on the distribution that we want to package for, and that contains all the tooling (such as compilers) that we need. So adding support for a new distribution involves creating a new build environment for that distribution.
 
+## Before you begin
+
+Follow the [Development environment setup](dev-environment-setup.md) instructions. In particular, be sure to setup the Git hooks.
+
 ## Step 1: Creating the build environment
 
 Create a new directory `environments/<DISTRO NAME>-<DISTRO VERSION>` (for example `environments/centos-16`). This directory should contain:
@@ -39,6 +43,10 @@ Test this build environment by:
  1. [Building packages with it.](building-packages-locally.md)
  2. [Testing the built packages](testing-packages-locally.md).
 
-## Step 4: Commit and push your changes
+## Step 4: Update docs
+
+In README.md under "Installation", add instructions for this new distribution.
+
+## Step 5: Commit and push your changes
 
 Commit and push your changes to the Git repo.
