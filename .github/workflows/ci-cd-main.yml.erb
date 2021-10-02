@@ -7,6 +7,10 @@ on:
     inputs:
       ci_artifacts_run_number:
         required: false
+  pull_request:
+    paths-ignore:
+      - '**.md'
+      - 'dev-handbook/**'
   push:
     paths-ignore:
       - '**.md'
