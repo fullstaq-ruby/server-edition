@@ -70,7 +70,7 @@ private
   end
 
   def utility_image_version
-    read_single_value_file("#{Support::ROOT}/environments/utility/image_tag")
+    read_single_value_file("#{GeneralSupport::ROOT}/environments/utility/image_tag")
   end
 
 

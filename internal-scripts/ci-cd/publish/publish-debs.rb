@@ -2,7 +2,7 @@
 # frozen_string_literal: true
 
 require_relative '../../../lib/gcloud_storage_lock'
-require_relative '../../../lib/build_all_packages_support'
+require_relative '../../../lib/ci_workflow_support'
 require_relative '../../../lib/shell_scripting_support'
 require_relative '../../../lib/publishing_support'
 require 'json'
@@ -11,6 +11,7 @@ require 'tmpdir'
 require 'set'
 
 class PublishDebs
+  include CiWorkflowSupport
   include ShellScriptingSupport
   include PublishingSupport
 
@@ -28,7 +29,7 @@ class PublishDebs
     @package_paths = ARGV
 
     print_header 'Initializing'
-    Support.load_config
+    load_config
     group_packages_by_distro_and_canonicalize_names
     create_temp_dirs
     ensure_gpg_state_isolated
@@ -156,7 +157,7 @@ private
   end
 
   def all_supported_distros
-    Support.distributions.find_all{ |d| d[:package_format] == :DEB }.map{ |d| d[:name] }
+    distributions.find_all{ |d| d[:package_format] == :DEB }.map{ |d| d[:name] }
   end
 
   def create_temp_dirs

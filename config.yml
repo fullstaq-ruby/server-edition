@@ -1,19 +1,5 @@
-## This is the configuration file for ./build-all-packages
-## and ./publish-all-packages.
-
-## (Required)
-## Where to store output packages. This directory will be automatically
-## created.
-output_dir: ./output
-
-## (Required)
-## Where to store build logs to.
-logs_dir: ./logs
-
-## (Required)
-## Where to store cache files, to speed up future invocations of
-## ./build-all-packages. This directory will be automatically created.
-cache_dir: ./cache
+## This is the configuration file for the CI/CD system, and dictates
+## which Ruby versions, variants and distributions we build.
 
 ## (Required)
 ## Ruby package settings.

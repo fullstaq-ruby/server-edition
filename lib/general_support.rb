@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 module GeneralSupport
+  ROOT = File.absolute_path(File.dirname(__FILE__) + '/..')
+
   def unindent(amount, &block)
     indentation = /^#{' ' * amount}/
     lines = capture(&block).split("\n")
