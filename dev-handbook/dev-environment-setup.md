@@ -6,7 +6,7 @@ You can develop Fullstaq Ruby on Linux, macOS, or Windows with WSL2. You just ne
 
  * Bash
  * Docker
- * Ruby (any version >= 2.6)
+ * Ruby (any version >= 2.7)
 
 The small number of dependencies is [intentional](minimal-dependencies-principle.md).
 

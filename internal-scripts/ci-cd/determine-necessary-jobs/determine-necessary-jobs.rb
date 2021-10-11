@@ -49,6 +49,9 @@ class App
     end
 
 
+    determine_necessary_job('Install gem bundle') do
+      artifact_absent?('gem-bundle')
+    end
     determine_necessary_job('Build common DEB') do
       artifact_absent?(common_deb_artifact_name)
     end

@@ -3,6 +3,10 @@
 module GeneralSupport
   ROOT = File.absolute_path(File.dirname(__FILE__) + '/..')
 
+  # Make instance methods available as class methods
+  extend self
+
+
   def unindent(amount, &block)
     indentation = /^#{' ' * amount}/
     lines = capture(&block).split("\n")
@@ -20,5 +24,25 @@ module GeneralSupport
   def read_single_value_file(path)
     contents = File.read(path, mode: 'r:utf-8')
     contents.split("\n").grep_v(/^#/).first.strip
+  end
+
+  # Puts an array's elements into at most N buckets. For example:
+  #
+  #   bucketize([:a, :b, :c, :d, :e], 3)
+  #
+  # Outputs:
+  #
+  #   [
+  #     [:a, :d],
+  #     [:b, :e],
+  #     [:c],
+  #   ]
+  def bucketize(ary, n)
+    result = []
+    ary.each_with_index do |elem, i|
+      bucket = (result[i % n] ||= [])
+      bucket << elem
+    end
+    result
   end
 end

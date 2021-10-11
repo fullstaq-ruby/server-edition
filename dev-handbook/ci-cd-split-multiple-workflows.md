@@ -23,7 +23,7 @@ Triggering the next workflow works via the [Github Actions workflow dispatch API
 
 When triggering the next workflow, we pass along the "Main" workflow's CI run number. This allows all workflows to share CI artifacts with each other. After all, CI artifacts are [stored in Google Cloud Storage](ci-cd-resumption.md) and are namespaced by the CI run number.
 
-## Caveats
+## Special considerations
 
 ### Additional checks & correlating workflow runs
 
@@ -38,6 +38,49 @@ You can see these checks in the Github Actions UI in the left sidebar:
 When you view a "Main" workflow run, you can see that it has created checks for the "Build packages" and the "Publish & test" workflows.
 
 When you view the details of that check, it links to the actual workflow run that's associated with that checks.
+
+### "CI/CD: build packages" being too big
+
+The "CI/CD: build packages" stage — even on its own — can grow so quickly that a single "CI/CD: build packages" workflow file can easily exceed the Github Actions size limit. So we split this stage further into a fixed number of subparts (`ci-cd-build-packages-X.yml`). Each subpart builds only for a subset of all supported distributions.
+
+All subparts run concurrently. The last subpart that finishes, triggers the next stage ("CI/CD: publish & test against test repos"). This works by having each subpart's "Finalize" job atomically increment a counter. The subpart that succeeds in incrementing the counter to a value that's >= the number of subparts, recognizes itself as the last subpart that has finished.
+
+### New `workflow_dispatch` workflows introduced into a non-main branch, aren't immediately recognized by Github Actions
+
+If we introduce new workflows that are only triggered through the `workflow_dispatch` event, then those workflows are only immediately recognized by Github Actions if we push them to the main branch. This causes some headache when we want to test new workflows outside the main branch, because new workflows can't be triggered yet (neither through the UI nor through the API).
+
+We work around this problem as follows:
+
+ 1. We allow all `workflow_dispatch`-able workflows to be triggered through `push` events as well, but only when pushing to the `fix/cicd-new-workflows` branch.
+
+   ~~~yaml
+   on:
+   workflow_dispatch:
+     ...
+   push:
+     branches:
+       - fix/cicd-new-workflows
+   ~~~
+
+ 2. We force Github Actions to detect new workflows, by pushing our work to the `fix/cicd-new-workflows` branch.
+
+ 3. Github Actions will trigger all workflows simultaneously. They will also abort early, which is okay: we ignore these errors.
+
+    The `fix/cicd-new-workflows` branch's only purpose is to force Github Actions to detect new workflows: it's not supposed to do anything else. Therefore the workflows contain a step that abort the workflow upon detecting that it's running on the `fix/cicd-new-workflows` branch:
+
+    ~~~yaml
+    jobs:
+      determine_necessary_jobs:
+        ...
+        steps:
+          - name: Workaround for detecting new workflows in branches
+            run: |
+              echo 'New workflow detected. Please delete the fix/cicd-new-workflows branch now.'
+              exit 1
+            if: github.event_name == 'push'
+    ~~~
+
+    After Github Actions has detected the new workflows, we can delete the `fix/cicd-new-workflows` branch.
 
 ### Re-running a workflow run that's no longer the branch head
 

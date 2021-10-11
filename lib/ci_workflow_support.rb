@@ -7,6 +7,8 @@ module CiWorkflowSupport
   # Make instance methods available as class methods
   extend self
 
+  DISTRIBUTIONS_BUCKETS_MAX_NUM = 4
+
   @@config = nil
 
 
@@ -72,18 +74,16 @@ module CiWorkflowSupport
       names.map do |name|
         {
           name: name,
-          package_format: autodetect_package_format(name)
+          package_format: autodetect_package_format(name),
+          test_image: determine_test_image_for(name),
         }
       end
     end
   end
 
-  def distributions_with_test_image_info
-    distributions.map do |distro|
-      distro.merge(
-        test_image: determine_test_image_for(distro)
-      )
-    end
+  def distribution_buckets
+    @distribution_buckets ||= GeneralSupport.bucketize(distributions,
+      DISTRIBUTIONS_BUCKETS_MAX_NUM)
   end
 
   def variants
@@ -332,8 +332,8 @@ private
     end
   end
 
-  def determine_test_image_for(distro)
-    dockerfile = File.read("#{GeneralSupport::ROOT}/environments/#{distro[:name]}/Dockerfile",
+  def determine_test_image_for(distro_name)
+    dockerfile = File.read("#{GeneralSupport::ROOT}/environments/#{distro_name}/Dockerfile",
       encoding: 'utf-8')
     dockerfile =~ /FROM (.+)/
     $1

@@ -2,4 +2,5 @@
 set -e
 exec 2>&1
 ./internal-scripts/generate-ci-cd-yaml.rb
+git add --update .github/workflows
 git add .github/workflows/ci-cd-*.yml

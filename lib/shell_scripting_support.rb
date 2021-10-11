@@ -18,6 +18,13 @@ private
     end
   end
 
+  def require_envvar_enum(name, values)
+    require_envvar(name)
+    if !values.include?(ENV[name])
+      abort "ERROR: the '#{name}' environment variable must be set to one of: #{values.join(', ')}"
+    end
+  end
+
   def optional_envvar(name)
     # Does nothing. Only exists to signal intent.
   end

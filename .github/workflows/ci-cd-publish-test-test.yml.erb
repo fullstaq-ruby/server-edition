@@ -125,7 +125,7 @@ jobs:
 
   ### Run tests ###
 
-  <%- distributions_with_test_image_info.each do |distribution| %>
+  <%- distributions.each do |distribution| %>
   <%- ruby_package_versions.each do |ruby_package_version| -%>
   <%- variants.each do |variant| -%>
   <%- unindent(2) do %>
@@ -177,7 +177,7 @@ jobs:
     needs:
       - determine_necessary_jobs
       - publish
-      <%- distributions_with_test_image_info.each do |distribution| -%>
+      <%- distributions.each do |distribution| -%>
       <%- ruby_package_versions.each do |ruby_package_version| -%>
       <%- variants.each do |variant| -%>
       - test_<%= slug(distribution[:name]) %>-<%= slug(ruby_package_version[:id]) %>-<%= slug(variant[:name]) %>
@@ -201,7 +201,7 @@ jobs:
         run: 'false'
         if: needs.publish.result != 'success'
 
-      <%- distributions_with_test_image_info.each do |distribution| -%>
+      <%- distributions.each do |distribution| -%>
       <%- ruby_package_versions.each do |ruby_package_version| -%>
       <%- variants.each do |variant| -%>
       - name: Check whether 'Test [<%= distribution[:name] %>/<%= ruby_package_version[:id] %>/<%= variant[:name] %>]' did not fail
