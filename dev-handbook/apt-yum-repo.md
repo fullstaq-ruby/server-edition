@@ -166,7 +166,7 @@ We create a temporary repository by copying over `gs://fullstaq-ruby-server-edit
 
 ## Locking
 
-We use a distributed lock to ensure that only one CI run can publish to production repositories at the same time. [The distributed locking algorithm is based on Google Cloud Storage](https://www.joyfulbikeshedding.com/blog/2021-05-19-robust-distributed-locking-algorithm-based-on-google-cloud-storage.html), and thus requires no extra infrastructure. The algorithm is robust enough automatically recovery from crashes, so the lock itself requires no maintenance.
+We use a distributed lock to ensure that only one CI run can publish to production repositories at the same time. [The distributed locking algorithm is based on Google Cloud Storage](https://www.joyfulbikeshedding.com/blog/2021-05-19-robust-distributed-locking-algorithm-based-on-google-cloud-storage.html), and thus requires no extra infrastructure. The algorithm is robust enough to automatically recovery from crashes, so the lock itself requires no maintenance.
 
 The algorithm that we use is slightly different from (and less sophisticated than) the one described in the article, because our implementation predates the article. But the base algorithm is still very similar.
 
