@@ -30,7 +30,8 @@ class PublishDebs
 
     print_header 'Initializing'
     load_config
-    group_packages_by_distro_and_canonicalize_names
+    analyze_packages
+    group_packages_by_distro
     create_temp_dirs
     ensure_gpg_state_isolated
     activate_wrappers_bin_dir
@@ -45,6 +46,7 @@ class PublishDebs
     synchronize do
       version = @orig_version = get_latest_production_repo_version
       fetch_state(version) if version != 0
+      analyze_existing_repositories
 
       print_header 'Modifying repository state'
       imported, skipped = import_packages_into_state
@@ -93,35 +95,14 @@ private
     getenv_boolean('DRY_RUN')
   end
 
-  def group_packages_by_distro_and_canonicalize_names
-    @packages_by_distro = {}
-    @package_paths.each do |path|
-      distro, canonical_name = infer_package_distro_and_canonical_name(path)
-      if distro
-        distros = [distro]
-      else
-        distros = all_supported_distros
-      end
-
-      distros.each do |distro|
-        packages = (@packages_by_distro[distro] ||= [])
-        packages << {
-          path: path,
-          canonical_name: canonical_name
-        }
-      end
-    end
-
-    log_notice "Grouped #{@package_paths.size} packages into #{@packages_by_distro.size} distributions"
-    @packages_by_distro.each_pair do |distro, packages|
-      log_info "#{distro}:"
-      packages.map{ |p| p[:path] }.sort.each do |path|
-        log_info " - #{path}"
-      end
+  def analyze_packages
+    log_notice 'Analyzing packages'
+    @package_details = @package_paths.map do |path|
+      analyze_package(path)
     end
   end
 
-  def infer_package_distro_and_canonical_name(path)
+  def analyze_package(path)
     stdout_output, stderr_output, status = run_command_capture_output(
       'dpkg', '-I', path,
       log_invocation: false,
@@ -153,7 +134,36 @@ private
     end
     arch = $1
 
-    [distro, "#{package_name}_#{version}_#{arch}"]
+    {
+      path: path,
+      distro: distro,
+      arch: arch,
+      canonical_name: "#{package_name}_#{version}_#{arch}",
+    }
+  end
+
+  def group_packages_by_distro
+    @packages_by_distro = {}
+    @package_details.each do |package|
+      if package[:distro]
+        distros = [package[:distro]]
+      else
+        distros = all_supported_distros
+      end
+
+      distros.each do |distro|
+        packages = (@packages_by_distro[distro] ||= [])
+        packages << package
+      end
+    end
+
+    log_notice "Grouped #{@package_details.size} packages into #{@packages_by_distro.size} distributions"
+    @packages_by_distro.each_pair do |distro, packages|
+      log_info "#{distro}:"
+      packages.map{ |p| p[:path] }.sort.each do |path|
+        log_info " - #{path}"
+      end
+    end
   end
 
   def all_supported_distros
@@ -329,6 +339,21 @@ private
     )
   end
 
+  def analyze_existing_repositories
+    log_notice "Analyzing existing repositories"
+    @existing_packages = {}
+    @packages_by_distro.each_key do |distro|
+      if aptly_repo_exists?(distro)
+        packages = Set.new(list_aptly_packages(distro))
+        @existing_packages[distro] = packages
+        log_info "#{distro}: found #{packages.size} packages"
+      else
+        @existing_packages[distro] = Set.new
+        log_info "#{distro}: found 0 packages (repository doesn't exist)"
+      end
+    end
+  end
+
   def import_packages_into_state
     imported = 0
     skipped = 0
@@ -348,20 +373,20 @@ private
     end
 
     if getenv_boolean('OVERWRITE_EXISTING')
-      args = ['-force-replace']
       package_paths = packages.map { |p| p[:path] }
       imported = package_paths.size
       skipped = 0
     else
-      args = []
-      package_paths = filter_existing_packages(distro, packages)
+      package_paths = find_eligible_packages_for_import(distro, packages)
       imported = package_paths.size
       skipped = packages.size - package_paths.size
     end
 
     if package_paths.any?
+      # We pass -force-replace even when OVERWRITE_EXISTING is false because
+      # #filter_eligible_packages may return packages that are already in the repo.
       run_command(
-        'aptly', 'repo', 'add', *args,
+        'aptly', 'repo', 'add', '-force-replace',
         "-config=#{@aptly_config_path}",
         aptly_repo_name(distro),
         *package_paths,
@@ -373,20 +398,43 @@ private
     [imported, skipped]
   end
 
-  def filter_existing_packages(distro, packages)
-    existing_packages = Set.new(list_aptly_packages(distro))
+  def find_eligible_packages_for_import(distro, packages)
     result = []
 
     packages.each do |package|
-      if existing_packages.include?(package[:canonical_name])
-        log_info "     #{YELLOW}SKIP#{RESET} #{package[:path]}: package already in repository"
+      if @existing_packages[distro].include?(package[:canonical_name])
+        # If an architecture-independent package will be imported into at least one repo,
+        # ensure that they'll be imported into all distros.
+        #
+        # This is because Aptly performs deduplication. When an architecture-independent repo
+        # is imported into some repos but not all of them, then the repos for which it's not
+        # imported will have outdated metadata.
+        #
+        # https://github.com/fullstaq-labs/fullstaq-ruby-server-edition/pull/85#issuecomment-940273331
+        if package_is_arch_independent?(package) && package_missing_in_one_distro?(package)
+          log_info "  #{CYAN}REINCLUDE#{RESET} #{package[:path]}: force regenerating package metadata"
+          result << package[:path]
+        else
+          log_info "       #{YELLOW}SKIP#{RESET} #{package[:path]}: package already in repository"
+        end
       else
-        log_info "  #{GREEN}INCLUDE#{RESET} #{package[:path]}"
+        log_info "    #{GREEN}INCLUDE#{RESET} #{package[:path]}"
         result << package[:path]
       end
     end
 
     result
+  end
+
+  def package_is_arch_independent?(package)
+    package[:arch] == 'all' || package[:arch] == 'any'
+  end
+
+  def package_missing_in_one_distro?(package)
+    @existing_packages.each_pair do |distro, canonical_names|
+      return true if !canonical_names.include?(package)
+    end
+    false
   end
 
   def list_aptly_packages(distro)

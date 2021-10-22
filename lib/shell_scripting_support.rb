@@ -9,6 +9,7 @@ private
   BOLD = "\033[1m"
   BLUE_BG = "\033[44m"
   GREEN = "\033[32m"
+  CYAN = "\033[36m"
   YELLOW = "\033[33m"
 
 
