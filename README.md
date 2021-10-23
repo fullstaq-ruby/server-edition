@@ -451,7 +451,7 @@ sudo yum install fullstaq-ruby-2.6.3
 
 ### Debian/Ubuntu
 
- * Supported Debian versions: 10 *(buster)*, 9 *(stretch)*
+ * Supported Debian versions: 11 *(bullseye)*, 10 *(buster)*, 9 *(stretch)*
  * Supported Ubuntu versions: 20.04, 18.04
  * Supported architectures: x86-64
 
@@ -469,6 +469,9 @@ deb https://apt.fullstaqruby.org ubuntu-20.04 main
 
 # Ubuntu 18.04
 deb https://apt.fullstaqruby.org ubuntu-18.04 main
+
+# Debian 11
+deb https://apt.fullstaqruby.org debian-11 main
 
 # Debian 10
 deb https://apt.fullstaqruby.org debian-10 main
