@@ -159,7 +159,7 @@ jobs:
       - name: Fetch Ruby source
         run: ./internal-scripts/ci-cd/download-artifact.sh
         env:
-          ARTIFACT_NAME: ruby-src-3.0.2
+          ARTIFACT_NAME: ruby-src-3.0.3
           ARTIFACT_PATH: .
 
       - name: Download Docker image necessary for building
@@ -211,7 +211,7 @@ jobs:
           VARIANT_PACKAGE_SUFFIX: ""
           PACKAGE_FORMAT: "DEB"
           RUBY_PACKAGE_VERSION_ID: "3.0"
-          RUBY_PACKAGE_REVISION: "4"
+          RUBY_PACKAGE_REVISION: "5"
 
       - name: Archive package artifact to Google Cloud
         run: ./internal-scripts/ci-cd/upload-artifact.sh
@@ -244,7 +244,7 @@ jobs:
       - name: Fetch Ruby source
         run: ./internal-scripts/ci-cd/download-artifact.sh
         env:
-          ARTIFACT_NAME: ruby-src-3.0.2
+          ARTIFACT_NAME: ruby-src-3.0.3
           ARTIFACT_PATH: .
 
       - name: Download Docker image necessary for building
@@ -301,7 +301,7 @@ jobs:
           VARIANT_PACKAGE_SUFFIX: "-jemalloc"
           PACKAGE_FORMAT: "DEB"
           RUBY_PACKAGE_VERSION_ID: "3.0"
-          RUBY_PACKAGE_REVISION: "4"
+          RUBY_PACKAGE_REVISION: "5"
 
       - name: Archive package artifact to Google Cloud
         run: ./internal-scripts/ci-cd/upload-artifact.sh
@@ -334,7 +334,7 @@ jobs:
       - name: Fetch Ruby source
         run: ./internal-scripts/ci-cd/download-artifact.sh
         env:
-          ARTIFACT_NAME: ruby-src-3.0.2
+          ARTIFACT_NAME: ruby-src-3.0.3
           ARTIFACT_PATH: .
 
       - name: Download Docker image necessary for building
@@ -386,7 +386,7 @@ jobs:
           VARIANT_PACKAGE_SUFFIX: "-malloctrim"
           PACKAGE_FORMAT: "DEB"
           RUBY_PACKAGE_VERSION_ID: "3.0"
-          RUBY_PACKAGE_REVISION: "4"
+          RUBY_PACKAGE_REVISION: "5"
 
       - name: Archive package artifact to Google Cloud
         run: ./internal-scripts/ci-cd/upload-artifact.sh
@@ -419,7 +419,7 @@ jobs:
       - name: Fetch Ruby source
         run: ./internal-scripts/ci-cd/download-artifact.sh
         env:
-          ARTIFACT_NAME: ruby-src-2.7.4
+          ARTIFACT_NAME: ruby-src-2.7.5
           ARTIFACT_PATH: .
 
       - name: Download Docker image necessary for building
@@ -471,7 +471,7 @@ jobs:
           VARIANT_PACKAGE_SUFFIX: ""
           PACKAGE_FORMAT: "DEB"
           RUBY_PACKAGE_VERSION_ID: "2.7"
-          RUBY_PACKAGE_REVISION: "6"
+          RUBY_PACKAGE_REVISION: "7"
 
       - name: Archive package artifact to Google Cloud
         run: ./internal-scripts/ci-cd/upload-artifact.sh
@@ -504,7 +504,7 @@ jobs:
       - name: Fetch Ruby source
         run: ./internal-scripts/ci-cd/download-artifact.sh
         env:
-          ARTIFACT_NAME: ruby-src-2.7.4
+          ARTIFACT_NAME: ruby-src-2.7.5
           ARTIFACT_PATH: .
 
       - name: Download Docker image necessary for building
@@ -561,7 +561,7 @@ jobs:
           VARIANT_PACKAGE_SUFFIX: "-jemalloc"
           PACKAGE_FORMAT: "DEB"
           RUBY_PACKAGE_VERSION_ID: "2.7"
-          RUBY_PACKAGE_REVISION: "6"
+          RUBY_PACKAGE_REVISION: "7"
 
       - name: Archive package artifact to Google Cloud
         run: ./internal-scripts/ci-cd/upload-artifact.sh
@@ -594,7 +594,7 @@ jobs:
       - name: Fetch Ruby source
         run: ./internal-scripts/ci-cd/download-artifact.sh
         env:
-          ARTIFACT_NAME: ruby-src-2.7.4
+          ARTIFACT_NAME: ruby-src-2.7.5
           ARTIFACT_PATH: .
 
       - name: Download Docker image necessary for building
@@ -646,7 +646,7 @@ jobs:
           VARIANT_PACKAGE_SUFFIX: "-malloctrim"
           PACKAGE_FORMAT: "DEB"
           RUBY_PACKAGE_VERSION_ID: "2.7"
-          RUBY_PACKAGE_REVISION: "6"
+          RUBY_PACKAGE_REVISION: "7"
 
       - name: Archive package artifact to Google Cloud
         run: ./internal-scripts/ci-cd/upload-artifact.sh
@@ -679,7 +679,7 @@ jobs:
       - name: Fetch Ruby source
         run: ./internal-scripts/ci-cd/download-artifact.sh
         env:
-          ARTIFACT_NAME: ruby-src-2.6.8
+          ARTIFACT_NAME: ruby-src-2.6.9
           ARTIFACT_PATH: .
 
       - name: Download Docker image necessary for building
@@ -731,7 +731,7 @@ jobs:
           VARIANT_PACKAGE_SUFFIX: ""
           PACKAGE_FORMAT: "DEB"
           RUBY_PACKAGE_VERSION_ID: "2.6"
-          RUBY_PACKAGE_REVISION: "9"
+          RUBY_PACKAGE_REVISION: "10"
 
       - name: Archive package artifact to Google Cloud
         run: ./internal-scripts/ci-cd/upload-artifact.sh
@@ -764,7 +764,7 @@ jobs:
       - name: Fetch Ruby source
         run: ./internal-scripts/ci-cd/download-artifact.sh
         env:
-          ARTIFACT_NAME: ruby-src-2.6.8
+          ARTIFACT_NAME: ruby-src-2.6.9
           ARTIFACT_PATH: .
 
       - name: Download Docker image necessary for building
@@ -821,7 +821,7 @@ jobs:
           VARIANT_PACKAGE_SUFFIX: "-jemalloc"
           PACKAGE_FORMAT: "DEB"
           RUBY_PACKAGE_VERSION_ID: "2.6"
-          RUBY_PACKAGE_REVISION: "9"
+          RUBY_PACKAGE_REVISION: "10"
 
       - name: Archive package artifact to Google Cloud
         run: ./internal-scripts/ci-cd/upload-artifact.sh
@@ -854,7 +854,7 @@ jobs:
       - name: Fetch Ruby source
         run: ./internal-scripts/ci-cd/download-artifact.sh
         env:
-          ARTIFACT_NAME: ruby-src-2.6.8
+          ARTIFACT_NAME: ruby-src-2.6.9
           ARTIFACT_PATH: .
 
       - name: Download Docker image necessary for building
@@ -906,7 +906,7 @@ jobs:
           VARIANT_PACKAGE_SUFFIX: "-malloctrim"
           PACKAGE_FORMAT: "DEB"
           RUBY_PACKAGE_VERSION_ID: "2.6"
-          RUBY_PACKAGE_REVISION: "9"
+          RUBY_PACKAGE_REVISION: "10"
 
       - name: Archive package artifact to Google Cloud
         run: ./internal-scripts/ci-cd/upload-artifact.sh
@@ -914,15 +914,15 @@ jobs:
           ARTIFACT_NAME: "ruby-pkg_2.6_debian-11_malloctrim"
           ARTIFACT_PATH: output-malloctrim
 
-  build_ruby_debian_11-3_0_2-normal:
-    name: 'Build Ruby [debian-11/3.0.2/normal]'
+  build_ruby_debian_11-3_0_3-normal:
+    name: 'Build Ruby [debian-11/3.0.3/normal]'
     runs-on: ubuntu-20.04
     needs:
       - determine_necessary_jobs
       - build_jemalloc_debian_11
     # Run even if a dependent job has been skipped
     if: |
-      contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Ruby [debian-11/3.0.2/normal];')
+      contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Ruby [debian-11/3.0.3/normal];')
       && !failure() && !cancelled()
     steps:
       - name: Check whether 'Build Jemalloc [debian-11]' did not fail
@@ -939,7 +939,7 @@ jobs:
       - name: Fetch Ruby source
         run: ./internal-scripts/ci-cd/download-artifact.sh
         env:
-          ARTIFACT_NAME: ruby-src-3.0.2
+          ARTIFACT_NAME: ruby-src-3.0.3
           ARTIFACT_PATH: .
 
       - name: Download Docker image necessary for building
@@ -974,14 +974,14 @@ jobs:
         uses: actions/cache@v2
         with:
           path: cache-normal
-          key: v2-ruby-bin-3.0.2-debian-11-normal
+          key: v2-ruby-bin-3.0.3-debian-11-normal
 
       - name: Build binaries
         run: ./internal-scripts/ci-cd/build-ruby-packages/build-binaries.sh
         env:
           ENVIRONMENT_NAME: "debian-11"
           VARIANT_NAME: "normal"
-          RUBY_PACKAGE_VERSION_ID: "3.0.2"
+          RUBY_PACKAGE_VERSION_ID: "3.0.3"
 
       - name: Build package
         run: ./internal-scripts/ci-cd/build-ruby-packages/build-package.sh
@@ -990,24 +990,24 @@ jobs:
           VARIANT_NAME: "normal"
           VARIANT_PACKAGE_SUFFIX: ""
           PACKAGE_FORMAT: "DEB"
-          RUBY_PACKAGE_VERSION_ID: "3.0.2"
-          RUBY_PACKAGE_REVISION: "4"
+          RUBY_PACKAGE_VERSION_ID: "3.0.3"
+          RUBY_PACKAGE_REVISION: "5"
 
       - name: Archive package artifact to Google Cloud
         run: ./internal-scripts/ci-cd/upload-artifact.sh
         env:
-          ARTIFACT_NAME: "ruby-pkg_3.0.2_debian-11_normal"
+          ARTIFACT_NAME: "ruby-pkg_3.0.3_debian-11_normal"
           ARTIFACT_PATH: output-normal
 
-  build_ruby_debian_11-3_0_2-jemalloc:
-    name: 'Build Ruby [debian-11/3.0.2/jemalloc]'
+  build_ruby_debian_11-3_0_3-jemalloc:
+    name: 'Build Ruby [debian-11/3.0.3/jemalloc]'
     runs-on: ubuntu-20.04
     needs:
       - determine_necessary_jobs
       - build_jemalloc_debian_11
     # Run even if a dependent job has been skipped
     if: |
-      contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Ruby [debian-11/3.0.2/jemalloc];')
+      contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Ruby [debian-11/3.0.3/jemalloc];')
       && !failure() && !cancelled()
     steps:
       - name: Check whether 'Build Jemalloc [debian-11]' did not fail
@@ -1024,7 +1024,7 @@ jobs:
       - name: Fetch Ruby source
         run: ./internal-scripts/ci-cd/download-artifact.sh
         env:
-          ARTIFACT_NAME: ruby-src-3.0.2
+          ARTIFACT_NAME: ruby-src-3.0.3
           ARTIFACT_PATH: .
 
       - name: Download Docker image necessary for building
@@ -1064,14 +1064,14 @@ jobs:
         uses: actions/cache@v2
         with:
           path: cache-jemalloc
-          key: v2-ruby-bin-3.0.2-debian-11-jemalloc
+          key: v2-ruby-bin-3.0.3-debian-11-jemalloc
 
       - name: Build binaries
         run: ./internal-scripts/ci-cd/build-ruby-packages/build-binaries.sh
         env:
           ENVIRONMENT_NAME: "debian-11"
           VARIANT_NAME: "jemalloc"
-          RUBY_PACKAGE_VERSION_ID: "3.0.2"
+          RUBY_PACKAGE_VERSION_ID: "3.0.3"
 
       - name: Build package
         run: ./internal-scripts/ci-cd/build-ruby-packages/build-package.sh
@@ -1080,24 +1080,24 @@ jobs:
           VARIANT_NAME: "jemalloc"
           VARIANT_PACKAGE_SUFFIX: "-jemalloc"
           PACKAGE_FORMAT: "DEB"
-          RUBY_PACKAGE_VERSION_ID: "3.0.2"
-          RUBY_PACKAGE_REVISION: "4"
+          RUBY_PACKAGE_VERSION_ID: "3.0.3"
+          RUBY_PACKAGE_REVISION: "5"
 
       - name: Archive package artifact to Google Cloud
         run: ./internal-scripts/ci-cd/upload-artifact.sh
         env:
-          ARTIFACT_NAME: "ruby-pkg_3.0.2_debian-11_jemalloc"
+          ARTIFACT_NAME: "ruby-pkg_3.0.3_debian-11_jemalloc"
           ARTIFACT_PATH: output-jemalloc
 
-  build_ruby_debian_11-3_0_2-malloctrim:
-    name: 'Build Ruby [debian-11/3.0.2/malloctrim]'
+  build_ruby_debian_11-3_0_3-malloctrim:
+    name: 'Build Ruby [debian-11/3.0.3/malloctrim]'
     runs-on: ubuntu-20.04
     needs:
       - determine_necessary_jobs
       - build_jemalloc_debian_11
     # Run even if a dependent job has been skipped
     if: |
-      contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Ruby [debian-11/3.0.2/malloctrim];')
+      contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Ruby [debian-11/3.0.3/malloctrim];')
       && !failure() && !cancelled()
     steps:
       - name: Check whether 'Build Jemalloc [debian-11]' did not fail
@@ -1114,7 +1114,7 @@ jobs:
       - name: Fetch Ruby source
         run: ./internal-scripts/ci-cd/download-artifact.sh
         env:
-          ARTIFACT_NAME: ruby-src-3.0.2
+          ARTIFACT_NAME: ruby-src-3.0.3
           ARTIFACT_PATH: .
 
       - name: Download Docker image necessary for building
@@ -1149,14 +1149,14 @@ jobs:
         uses: actions/cache@v2
         with:
           path: cache-malloctrim
-          key: v2-ruby-bin-3.0.2-debian-11-malloctrim
+          key: v2-ruby-bin-3.0.3-debian-11-malloctrim
 
       - name: Build binaries
         run: ./internal-scripts/ci-cd/build-ruby-packages/build-binaries.sh
         env:
           ENVIRONMENT_NAME: "debian-11"
           VARIANT_NAME: "malloctrim"
-          RUBY_PACKAGE_VERSION_ID: "3.0.2"
+          RUBY_PACKAGE_VERSION_ID: "3.0.3"
 
       - name: Build package
         run: ./internal-scripts/ci-cd/build-ruby-packages/build-package.sh
@@ -1165,24 +1165,24 @@ jobs:
           VARIANT_NAME: "malloctrim"
           VARIANT_PACKAGE_SUFFIX: "-malloctrim"
           PACKAGE_FORMAT: "DEB"
-          RUBY_PACKAGE_VERSION_ID: "3.0.2"
-          RUBY_PACKAGE_REVISION: "4"
+          RUBY_PACKAGE_VERSION_ID: "3.0.3"
+          RUBY_PACKAGE_REVISION: "5"
 
       - name: Archive package artifact to Google Cloud
         run: ./internal-scripts/ci-cd/upload-artifact.sh
         env:
-          ARTIFACT_NAME: "ruby-pkg_3.0.2_debian-11_malloctrim"
+          ARTIFACT_NAME: "ruby-pkg_3.0.3_debian-11_malloctrim"
           ARTIFACT_PATH: output-malloctrim
 
-  build_ruby_debian_11-2_7_4-normal:
-    name: 'Build Ruby [debian-11/2.7.4/normal]'
+  build_ruby_debian_11-2_7_5-normal:
+    name: 'Build Ruby [debian-11/2.7.5/normal]'
     runs-on: ubuntu-20.04
     needs:
       - determine_necessary_jobs
       - build_jemalloc_debian_11
     # Run even if a dependent job has been skipped
     if: |
-      contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Ruby [debian-11/2.7.4/normal];')
+      contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Ruby [debian-11/2.7.5/normal];')
       && !failure() && !cancelled()
     steps:
       - name: Check whether 'Build Jemalloc [debian-11]' did not fail
@@ -1199,7 +1199,7 @@ jobs:
       - name: Fetch Ruby source
         run: ./internal-scripts/ci-cd/download-artifact.sh
         env:
-          ARTIFACT_NAME: ruby-src-2.7.4
+          ARTIFACT_NAME: ruby-src-2.7.5
           ARTIFACT_PATH: .
 
       - name: Download Docker image necessary for building
@@ -1234,14 +1234,14 @@ jobs:
         uses: actions/cache@v2
         with:
           path: cache-normal
-          key: v2-ruby-bin-2.7.4-debian-11-normal
+          key: v2-ruby-bin-2.7.5-debian-11-normal
 
       - name: Build binaries
         run: ./internal-scripts/ci-cd/build-ruby-packages/build-binaries.sh
         env:
           ENVIRONMENT_NAME: "debian-11"
           VARIANT_NAME: "normal"
-          RUBY_PACKAGE_VERSION_ID: "2.7.4"
+          RUBY_PACKAGE_VERSION_ID: "2.7.5"
 
       - name: Build package
         run: ./internal-scripts/ci-cd/build-ruby-packages/build-package.sh
@@ -1250,24 +1250,24 @@ jobs:
           VARIANT_NAME: "normal"
           VARIANT_PACKAGE_SUFFIX: ""
           PACKAGE_FORMAT: "DEB"
-          RUBY_PACKAGE_VERSION_ID: "2.7.4"
-          RUBY_PACKAGE_REVISION: "5"
+          RUBY_PACKAGE_VERSION_ID: "2.7.5"
+          RUBY_PACKAGE_REVISION: "6"
 
       - name: Archive package artifact to Google Cloud
         run: ./internal-scripts/ci-cd/upload-artifact.sh
         env:
-          ARTIFACT_NAME: "ruby-pkg_2.7.4_debian-11_normal"
+          ARTIFACT_NAME: "ruby-pkg_2.7.5_debian-11_normal"
           ARTIFACT_PATH: output-normal
 
-  build_ruby_debian_11-2_7_4-jemalloc:
-    name: 'Build Ruby [debian-11/2.7.4/jemalloc]'
+  build_ruby_debian_11-2_7_5-jemalloc:
+    name: 'Build Ruby [debian-11/2.7.5/jemalloc]'
     runs-on: ubuntu-20.04
     needs:
       - determine_necessary_jobs
       - build_jemalloc_debian_11
     # Run even if a dependent job has been skipped
     if: |
-      contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Ruby [debian-11/2.7.4/jemalloc];')
+      contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Ruby [debian-11/2.7.5/jemalloc];')
       && !failure() && !cancelled()
     steps:
       - name: Check whether 'Build Jemalloc [debian-11]' did not fail
@@ -1284,7 +1284,7 @@ jobs:
       - name: Fetch Ruby source
         run: ./internal-scripts/ci-cd/download-artifact.sh
         env:
-          ARTIFACT_NAME: ruby-src-2.7.4
+          ARTIFACT_NAME: ruby-src-2.7.5
           ARTIFACT_PATH: .
 
       - name: Download Docker image necessary for building
@@ -1324,14 +1324,14 @@ jobs:
         uses: actions/cache@v2
         with:
           path: cache-jemalloc
-          key: v2-ruby-bin-2.7.4-debian-11-jemalloc
+          key: v2-ruby-bin-2.7.5-debian-11-jemalloc
 
       - name: Build binaries
         run: ./internal-scripts/ci-cd/build-ruby-packages/build-binaries.sh
         env:
           ENVIRONMENT_NAME: "debian-11"
           VARIANT_NAME: "jemalloc"
-          RUBY_PACKAGE_VERSION_ID: "2.7.4"
+          RUBY_PACKAGE_VERSION_ID: "2.7.5"
 
       - name: Build package
         run: ./internal-scripts/ci-cd/build-ruby-packages/build-package.sh
@@ -1340,24 +1340,24 @@ jobs:
           VARIANT_NAME: "jemalloc"
           VARIANT_PACKAGE_SUFFIX: "-jemalloc"
           PACKAGE_FORMAT: "DEB"
-          RUBY_PACKAGE_VERSION_ID: "2.7.4"
-          RUBY_PACKAGE_REVISION: "5"
+          RUBY_PACKAGE_VERSION_ID: "2.7.5"
+          RUBY_PACKAGE_REVISION: "6"
 
       - name: Archive package artifact to Google Cloud
         run: ./internal-scripts/ci-cd/upload-artifact.sh
         env:
-          ARTIFACT_NAME: "ruby-pkg_2.7.4_debian-11_jemalloc"
+          ARTIFACT_NAME: "ruby-pkg_2.7.5_debian-11_jemalloc"
           ARTIFACT_PATH: output-jemalloc
 
-  build_ruby_debian_11-2_7_4-malloctrim:
-    name: 'Build Ruby [debian-11/2.7.4/malloctrim]'
+  build_ruby_debian_11-2_7_5-malloctrim:
+    name: 'Build Ruby [debian-11/2.7.5/malloctrim]'
     runs-on: ubuntu-20.04
     needs:
       - determine_necessary_jobs
       - build_jemalloc_debian_11
     # Run even if a dependent job has been skipped
     if: |
-      contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Ruby [debian-11/2.7.4/malloctrim];')
+      contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Ruby [debian-11/2.7.5/malloctrim];')
       && !failure() && !cancelled()
     steps:
       - name: Check whether 'Build Jemalloc [debian-11]' did not fail
@@ -1374,7 +1374,7 @@ jobs:
       - name: Fetch Ruby source
         run: ./internal-scripts/ci-cd/download-artifact.sh
         env:
-          ARTIFACT_NAME: ruby-src-2.7.4
+          ARTIFACT_NAME: ruby-src-2.7.5
           ARTIFACT_PATH: .
 
       - name: Download Docker image necessary for building
@@ -1409,14 +1409,14 @@ jobs:
         uses: actions/cache@v2
         with:
           path: cache-malloctrim
-          key: v2-ruby-bin-2.7.4-debian-11-malloctrim
+          key: v2-ruby-bin-2.7.5-debian-11-malloctrim
 
       - name: Build binaries
         run: ./internal-scripts/ci-cd/build-ruby-packages/build-binaries.sh
         env:
           ENVIRONMENT_NAME: "debian-11"
           VARIANT_NAME: "malloctrim"
-          RUBY_PACKAGE_VERSION_ID: "2.7.4"
+          RUBY_PACKAGE_VERSION_ID: "2.7.5"
 
       - name: Build package
         run: ./internal-scripts/ci-cd/build-ruby-packages/build-package.sh
@@ -1425,24 +1425,24 @@ jobs:
           VARIANT_NAME: "malloctrim"
           VARIANT_PACKAGE_SUFFIX: "-malloctrim"
           PACKAGE_FORMAT: "DEB"
-          RUBY_PACKAGE_VERSION_ID: "2.7.4"
-          RUBY_PACKAGE_REVISION: "5"
+          RUBY_PACKAGE_VERSION_ID: "2.7.5"
+          RUBY_PACKAGE_REVISION: "6"
 
       - name: Archive package artifact to Google Cloud
         run: ./internal-scripts/ci-cd/upload-artifact.sh
         env:
-          ARTIFACT_NAME: "ruby-pkg_2.7.4_debian-11_malloctrim"
+          ARTIFACT_NAME: "ruby-pkg_2.7.5_debian-11_malloctrim"
           ARTIFACT_PATH: output-malloctrim
 
-  build_ruby_debian_11-2_6_8-normal:
-    name: 'Build Ruby [debian-11/2.6.8/normal]'
+  build_ruby_debian_11-2_6_9-normal:
+    name: 'Build Ruby [debian-11/2.6.9/normal]'
     runs-on: ubuntu-20.04
     needs:
       - determine_necessary_jobs
       - build_jemalloc_debian_11
     # Run even if a dependent job has been skipped
     if: |
-      contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Ruby [debian-11/2.6.8/normal];')
+      contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Ruby [debian-11/2.6.9/normal];')
       && !failure() && !cancelled()
     steps:
       - name: Check whether 'Build Jemalloc [debian-11]' did not fail
@@ -1459,7 +1459,7 @@ jobs:
       - name: Fetch Ruby source
         run: ./internal-scripts/ci-cd/download-artifact.sh
         env:
-          ARTIFACT_NAME: ruby-src-2.6.8
+          ARTIFACT_NAME: ruby-src-2.6.9
           ARTIFACT_PATH: .
 
       - name: Download Docker image necessary for building
@@ -1494,14 +1494,14 @@ jobs:
         uses: actions/cache@v2
         with:
           path: cache-normal
-          key: v2-ruby-bin-2.6.8-debian-11-normal
+          key: v2-ruby-bin-2.6.9-debian-11-normal
 
       - name: Build binaries
         run: ./internal-scripts/ci-cd/build-ruby-packages/build-binaries.sh
         env:
           ENVIRONMENT_NAME: "debian-11"
           VARIANT_NAME: "normal"
-          RUBY_PACKAGE_VERSION_ID: "2.6.8"
+          RUBY_PACKAGE_VERSION_ID: "2.6.9"
 
       - name: Build package
         run: ./internal-scripts/ci-cd/build-ruby-packages/build-package.sh
@@ -1510,24 +1510,24 @@ jobs:
           VARIANT_NAME: "normal"
           VARIANT_PACKAGE_SUFFIX: ""
           PACKAGE_FORMAT: "DEB"
-          RUBY_PACKAGE_VERSION_ID: "2.6.8"
-          RUBY_PACKAGE_REVISION: "6"
+          RUBY_PACKAGE_VERSION_ID: "2.6.9"
+          RUBY_PACKAGE_REVISION: "7"
 
       - name: Archive package artifact to Google Cloud
         run: ./internal-scripts/ci-cd/upload-artifact.sh
         env:
-          ARTIFACT_NAME: "ruby-pkg_2.6.8_debian-11_normal"
+          ARTIFACT_NAME: "ruby-pkg_2.6.9_debian-11_normal"
           ARTIFACT_PATH: output-normal
 
-  build_ruby_debian_11-2_6_8-jemalloc:
-    name: 'Build Ruby [debian-11/2.6.8/jemalloc]'
+  build_ruby_debian_11-2_6_9-jemalloc:
+    name: 'Build Ruby [debian-11/2.6.9/jemalloc]'
     runs-on: ubuntu-20.04
     needs:
       - determine_necessary_jobs
       - build_jemalloc_debian_11
     # Run even if a dependent job has been skipped
     if: |
-      contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Ruby [debian-11/2.6.8/jemalloc];')
+      contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Ruby [debian-11/2.6.9/jemalloc];')
       && !failure() && !cancelled()
     steps:
       - name: Check whether 'Build Jemalloc [debian-11]' did not fail
@@ -1544,7 +1544,7 @@ jobs:
       - name: Fetch Ruby source
         run: ./internal-scripts/ci-cd/download-artifact.sh
         env:
-          ARTIFACT_NAME: ruby-src-2.6.8
+          ARTIFACT_NAME: ruby-src-2.6.9
           ARTIFACT_PATH: .
 
       - name: Download Docker image necessary for building
@@ -1584,14 +1584,14 @@ jobs:
         uses: actions/cache@v2
         with:
           path: cache-jemalloc
-          key: v2-ruby-bin-2.6.8-debian-11-jemalloc
+          key: v2-ruby-bin-2.6.9-debian-11-jemalloc
 
       - name: Build binaries
         run: ./internal-scripts/ci-cd/build-ruby-packages/build-binaries.sh
         env:
           ENVIRONMENT_NAME: "debian-11"
           VARIANT_NAME: "jemalloc"
-          RUBY_PACKAGE_VERSION_ID: "2.6.8"
+          RUBY_PACKAGE_VERSION_ID: "2.6.9"
 
       - name: Build package
         run: ./internal-scripts/ci-cd/build-ruby-packages/build-package.sh
@@ -1600,24 +1600,24 @@ jobs:
           VARIANT_NAME: "jemalloc"
           VARIANT_PACKAGE_SUFFIX: "-jemalloc"
           PACKAGE_FORMAT: "DEB"
-          RUBY_PACKAGE_VERSION_ID: "2.6.8"
-          RUBY_PACKAGE_REVISION: "6"
+          RUBY_PACKAGE_VERSION_ID: "2.6.9"
+          RUBY_PACKAGE_REVISION: "7"
 
       - name: Archive package artifact to Google Cloud
         run: ./internal-scripts/ci-cd/upload-artifact.sh
         env:
-          ARTIFACT_NAME: "ruby-pkg_2.6.8_debian-11_jemalloc"
+          ARTIFACT_NAME: "ruby-pkg_2.6.9_debian-11_jemalloc"
           ARTIFACT_PATH: output-jemalloc
 
-  build_ruby_debian_11-2_6_8-malloctrim:
-    name: 'Build Ruby [debian-11/2.6.8/malloctrim]'
+  build_ruby_debian_11-2_6_9-malloctrim:
+    name: 'Build Ruby [debian-11/2.6.9/malloctrim]'
     runs-on: ubuntu-20.04
     needs:
       - determine_necessary_jobs
       - build_jemalloc_debian_11
     # Run even if a dependent job has been skipped
     if: |
-      contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Ruby [debian-11/2.6.8/malloctrim];')
+      contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Ruby [debian-11/2.6.9/malloctrim];')
       && !failure() && !cancelled()
     steps:
       - name: Check whether 'Build Jemalloc [debian-11]' did not fail
@@ -1634,7 +1634,7 @@ jobs:
       - name: Fetch Ruby source
         run: ./internal-scripts/ci-cd/download-artifact.sh
         env:
-          ARTIFACT_NAME: ruby-src-2.6.8
+          ARTIFACT_NAME: ruby-src-2.6.9
           ARTIFACT_PATH: .
 
       - name: Download Docker image necessary for building
@@ -1669,14 +1669,14 @@ jobs:
         uses: actions/cache@v2
         with:
           path: cache-malloctrim
-          key: v2-ruby-bin-2.6.8-debian-11-malloctrim
+          key: v2-ruby-bin-2.6.9-debian-11-malloctrim
 
       - name: Build binaries
         run: ./internal-scripts/ci-cd/build-ruby-packages/build-binaries.sh
         env:
           ENVIRONMENT_NAME: "debian-11"
           VARIANT_NAME: "malloctrim"
-          RUBY_PACKAGE_VERSION_ID: "2.6.8"
+          RUBY_PACKAGE_VERSION_ID: "2.6.9"
 
       - name: Build package
         run: ./internal-scripts/ci-cd/build-ruby-packages/build-package.sh
@@ -1685,13 +1685,13 @@ jobs:
           VARIANT_NAME: "malloctrim"
           VARIANT_PACKAGE_SUFFIX: "-malloctrim"
           PACKAGE_FORMAT: "DEB"
-          RUBY_PACKAGE_VERSION_ID: "2.6.8"
-          RUBY_PACKAGE_REVISION: "6"
+          RUBY_PACKAGE_VERSION_ID: "2.6.9"
+          RUBY_PACKAGE_REVISION: "7"
 
       - name: Archive package artifact to Google Cloud
         run: ./internal-scripts/ci-cd/upload-artifact.sh
         env:
-          ARTIFACT_NAME: "ruby-pkg_2.6.8_debian-11_malloctrim"
+          ARTIFACT_NAME: "ruby-pkg_2.6.9_debian-11_malloctrim"
           ARTIFACT_PATH: output-malloctrim
 
 
@@ -1719,17 +1719,17 @@ jobs:
       - build_ruby_debian_11-2_6-jemalloc
       - build_ruby_debian_11-2_6-malloctrim
 
-      - build_ruby_debian_11-3_0_2-normal
-      - build_ruby_debian_11-3_0_2-jemalloc
-      - build_ruby_debian_11-3_0_2-malloctrim
+      - build_ruby_debian_11-3_0_3-normal
+      - build_ruby_debian_11-3_0_3-jemalloc
+      - build_ruby_debian_11-3_0_3-malloctrim
 
-      - build_ruby_debian_11-2_7_4-normal
-      - build_ruby_debian_11-2_7_4-jemalloc
-      - build_ruby_debian_11-2_7_4-malloctrim
+      - build_ruby_debian_11-2_7_5-normal
+      - build_ruby_debian_11-2_7_5-jemalloc
+      - build_ruby_debian_11-2_7_5-malloctrim
 
-      - build_ruby_debian_11-2_6_8-normal
-      - build_ruby_debian_11-2_6_8-jemalloc
-      - build_ruby_debian_11-2_6_8-malloctrim
+      - build_ruby_debian_11-2_6_9-normal
+      - build_ruby_debian_11-2_6_9-jemalloc
+      - build_ruby_debian_11-2_6_9-malloctrim
     runs-on: ubuntu-20.04
     if: 'always()'
     steps:
@@ -1761,7 +1761,7 @@ jobs:
       - name: Download Ruby package artifacts from Google Cloud
         run: ./internal-scripts/ci-cd/download-artifacts.sh
         env:
-          ARTIFACT_NAMES: 'ruby-pkg_3.0_debian-11_normal ruby-pkg_3.0_debian-11_jemalloc ruby-pkg_3.0_debian-11_malloctrim ruby-pkg_2.7_debian-11_normal ruby-pkg_2.7_debian-11_jemalloc ruby-pkg_2.7_debian-11_malloctrim ruby-pkg_2.6_debian-11_normal ruby-pkg_2.6_debian-11_jemalloc ruby-pkg_2.6_debian-11_malloctrim ruby-pkg_3.0.2_debian-11_normal ruby-pkg_3.0.2_debian-11_jemalloc ruby-pkg_3.0.2_debian-11_malloctrim ruby-pkg_2.7.4_debian-11_normal ruby-pkg_2.7.4_debian-11_jemalloc ruby-pkg_2.7.4_debian-11_malloctrim ruby-pkg_2.6.8_debian-11_normal ruby-pkg_2.6.8_debian-11_jemalloc ruby-pkg_2.6.8_debian-11_malloctrim'
+          ARTIFACT_NAMES: 'ruby-pkg_3.0_debian-11_normal ruby-pkg_3.0_debian-11_jemalloc ruby-pkg_3.0_debian-11_malloctrim ruby-pkg_2.7_debian-11_normal ruby-pkg_2.7_debian-11_jemalloc ruby-pkg_2.7_debian-11_malloctrim ruby-pkg_2.6_debian-11_normal ruby-pkg_2.6_debian-11_jemalloc ruby-pkg_2.6_debian-11_malloctrim ruby-pkg_3.0.3_debian-11_normal ruby-pkg_3.0.3_debian-11_jemalloc ruby-pkg_3.0.3_debian-11_malloctrim ruby-pkg_2.7.5_debian-11_normal ruby-pkg_2.7.5_debian-11_jemalloc ruby-pkg_2.7.5_debian-11_malloctrim ruby-pkg_2.6.9_debian-11_normal ruby-pkg_2.6.9_debian-11_jemalloc ruby-pkg_2.6.9_debian-11_malloctrim'
           ARTIFACT_PATH: artifacts
           CLEAR: true
       - name: Archive Ruby package artifact [ruby-pkg_3.0_debian-11_normal] to Github
@@ -1809,51 +1809,51 @@ jobs:
         with:
           name: ruby-pkg_2.6_debian-11_malloctrim
           path: artifacts/ruby-pkg_2.6_debian-11_malloctrim
-      - name: Archive Ruby package artifact [ruby-pkg_3.0.2_debian-11_normal] to Github
+      - name: Archive Ruby package artifact [ruby-pkg_3.0.3_debian-11_normal] to Github
         uses: actions/upload-artifact@v2
         with:
-          name: ruby-pkg_3.0.2_debian-11_normal
-          path: artifacts/ruby-pkg_3.0.2_debian-11_normal
-      - name: Archive Ruby package artifact [ruby-pkg_3.0.2_debian-11_jemalloc] to Github
+          name: ruby-pkg_3.0.3_debian-11_normal
+          path: artifacts/ruby-pkg_3.0.3_debian-11_normal
+      - name: Archive Ruby package artifact [ruby-pkg_3.0.3_debian-11_jemalloc] to Github
         uses: actions/upload-artifact@v2
         with:
-          name: ruby-pkg_3.0.2_debian-11_jemalloc
-          path: artifacts/ruby-pkg_3.0.2_debian-11_jemalloc
-      - name: Archive Ruby package artifact [ruby-pkg_3.0.2_debian-11_malloctrim] to Github
+          name: ruby-pkg_3.0.3_debian-11_jemalloc
+          path: artifacts/ruby-pkg_3.0.3_debian-11_jemalloc
+      - name: Archive Ruby package artifact [ruby-pkg_3.0.3_debian-11_malloctrim] to Github
         uses: actions/upload-artifact@v2
         with:
-          name: ruby-pkg_3.0.2_debian-11_malloctrim
-          path: artifacts/ruby-pkg_3.0.2_debian-11_malloctrim
-      - name: Archive Ruby package artifact [ruby-pkg_2.7.4_debian-11_normal] to Github
+          name: ruby-pkg_3.0.3_debian-11_malloctrim
+          path: artifacts/ruby-pkg_3.0.3_debian-11_malloctrim
+      - name: Archive Ruby package artifact [ruby-pkg_2.7.5_debian-11_normal] to Github
         uses: actions/upload-artifact@v2
         with:
-          name: ruby-pkg_2.7.4_debian-11_normal
-          path: artifacts/ruby-pkg_2.7.4_debian-11_normal
-      - name: Archive Ruby package artifact [ruby-pkg_2.7.4_debian-11_jemalloc] to Github
+          name: ruby-pkg_2.7.5_debian-11_normal
+          path: artifacts/ruby-pkg_2.7.5_debian-11_normal
+      - name: Archive Ruby package artifact [ruby-pkg_2.7.5_debian-11_jemalloc] to Github
         uses: actions/upload-artifact@v2
         with:
-          name: ruby-pkg_2.7.4_debian-11_jemalloc
-          path: artifacts/ruby-pkg_2.7.4_debian-11_jemalloc
-      - name: Archive Ruby package artifact [ruby-pkg_2.7.4_debian-11_malloctrim] to Github
+          name: ruby-pkg_2.7.5_debian-11_jemalloc
+          path: artifacts/ruby-pkg_2.7.5_debian-11_jemalloc
+      - name: Archive Ruby package artifact [ruby-pkg_2.7.5_debian-11_malloctrim] to Github
         uses: actions/upload-artifact@v2
         with:
-          name: ruby-pkg_2.7.4_debian-11_malloctrim
-          path: artifacts/ruby-pkg_2.7.4_debian-11_malloctrim
-      - name: Archive Ruby package artifact [ruby-pkg_2.6.8_debian-11_normal] to Github
+          name: ruby-pkg_2.7.5_debian-11_malloctrim
+          path: artifacts/ruby-pkg_2.7.5_debian-11_malloctrim
+      - name: Archive Ruby package artifact [ruby-pkg_2.6.9_debian-11_normal] to Github
         uses: actions/upload-artifact@v2
         with:
-          name: ruby-pkg_2.6.8_debian-11_normal
-          path: artifacts/ruby-pkg_2.6.8_debian-11_normal
-      - name: Archive Ruby package artifact [ruby-pkg_2.6.8_debian-11_jemalloc] to Github
+          name: ruby-pkg_2.6.9_debian-11_normal
+          path: artifacts/ruby-pkg_2.6.9_debian-11_normal
+      - name: Archive Ruby package artifact [ruby-pkg_2.6.9_debian-11_jemalloc] to Github
         uses: actions/upload-artifact@v2
         with:
-          name: ruby-pkg_2.6.8_debian-11_jemalloc
-          path: artifacts/ruby-pkg_2.6.8_debian-11_jemalloc
-      - name: Archive Ruby package artifact [ruby-pkg_2.6.8_debian-11_malloctrim] to Github
+          name: ruby-pkg_2.6.9_debian-11_jemalloc
+          path: artifacts/ruby-pkg_2.6.9_debian-11_jemalloc
+      - name: Archive Ruby package artifact [ruby-pkg_2.6.9_debian-11_malloctrim] to Github
         uses: actions/upload-artifact@v2
         with:
-          name: ruby-pkg_2.6.8_debian-11_malloctrim
-          path: artifacts/ruby-pkg_2.6.8_debian-11_malloctrim
+          name: ruby-pkg_2.6.9_debian-11_malloctrim
+          path: artifacts/ruby-pkg_2.6.9_debian-11_malloctrim
 
 
       ### Check whether dependent jobs failed ###
@@ -1900,33 +1900,33 @@ jobs:
             || (needs.build_ruby_debian_11-2_6-malloctrim.result != 'success'
               && (needs.build_ruby_debian_11-2_6-malloctrim.result != 'skipped'
                 || contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Ruby [debian-11/2.6/malloctrim];')))
-            || (needs.build_ruby_debian_11-3_0_2-normal.result != 'success'
-              && (needs.build_ruby_debian_11-3_0_2-normal.result != 'skipped'
-                || contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Ruby [debian-11/3.0.2/normal];')))
-            || (needs.build_ruby_debian_11-3_0_2-jemalloc.result != 'success'
-              && (needs.build_ruby_debian_11-3_0_2-jemalloc.result != 'skipped'
-                || contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Ruby [debian-11/3.0.2/jemalloc];')))
-            || (needs.build_ruby_debian_11-3_0_2-malloctrim.result != 'success'
-              && (needs.build_ruby_debian_11-3_0_2-malloctrim.result != 'skipped'
-                || contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Ruby [debian-11/3.0.2/malloctrim];')))
-            || (needs.build_ruby_debian_11-2_7_4-normal.result != 'success'
-              && (needs.build_ruby_debian_11-2_7_4-normal.result != 'skipped'
-                || contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Ruby [debian-11/2.7.4/normal];')))
-            || (needs.build_ruby_debian_11-2_7_4-jemalloc.result != 'success'
-              && (needs.build_ruby_debian_11-2_7_4-jemalloc.result != 'skipped'
-                || contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Ruby [debian-11/2.7.4/jemalloc];')))
-            || (needs.build_ruby_debian_11-2_7_4-malloctrim.result != 'success'
-              && (needs.build_ruby_debian_11-2_7_4-malloctrim.result != 'skipped'
-                || contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Ruby [debian-11/2.7.4/malloctrim];')))
-            || (needs.build_ruby_debian_11-2_6_8-normal.result != 'success'
-              && (needs.build_ruby_debian_11-2_6_8-normal.result != 'skipped'
-                || contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Ruby [debian-11/2.6.8/normal];')))
-            || (needs.build_ruby_debian_11-2_6_8-jemalloc.result != 'success'
-              && (needs.build_ruby_debian_11-2_6_8-jemalloc.result != 'skipped'
-                || contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Ruby [debian-11/2.6.8/jemalloc];')))
-            || (needs.build_ruby_debian_11-2_6_8-malloctrim.result != 'success'
-              && (needs.build_ruby_debian_11-2_6_8-malloctrim.result != 'skipped'
-                || contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Ruby [debian-11/2.6.8/malloctrim];')))
+            || (needs.build_ruby_debian_11-3_0_3-normal.result != 'success'
+              && (needs.build_ruby_debian_11-3_0_3-normal.result != 'skipped'
+                || contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Ruby [debian-11/3.0.3/normal];')))
+            || (needs.build_ruby_debian_11-3_0_3-jemalloc.result != 'success'
+              && (needs.build_ruby_debian_11-3_0_3-jemalloc.result != 'skipped'
+                || contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Ruby [debian-11/3.0.3/jemalloc];')))
+            || (needs.build_ruby_debian_11-3_0_3-malloctrim.result != 'success'
+              && (needs.build_ruby_debian_11-3_0_3-malloctrim.result != 'skipped'
+                || contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Ruby [debian-11/3.0.3/malloctrim];')))
+            || (needs.build_ruby_debian_11-2_7_5-normal.result != 'success'
+              && (needs.build_ruby_debian_11-2_7_5-normal.result != 'skipped'
+                || contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Ruby [debian-11/2.7.5/normal];')))
+            || (needs.build_ruby_debian_11-2_7_5-jemalloc.result != 'success'
+              && (needs.build_ruby_debian_11-2_7_5-jemalloc.result != 'skipped'
+                || contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Ruby [debian-11/2.7.5/jemalloc];')))
+            || (needs.build_ruby_debian_11-2_7_5-malloctrim.result != 'success'
+              && (needs.build_ruby_debian_11-2_7_5-malloctrim.result != 'skipped'
+                || contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Ruby [debian-11/2.7.5/malloctrim];')))
+            || (needs.build_ruby_debian_11-2_6_9-normal.result != 'success'
+              && (needs.build_ruby_debian_11-2_6_9-normal.result != 'skipped'
+                || contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Ruby [debian-11/2.6.9/normal];')))
+            || (needs.build_ruby_debian_11-2_6_9-jemalloc.result != 'success'
+              && (needs.build_ruby_debian_11-2_6_9-jemalloc.result != 'skipped'
+                || contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Ruby [debian-11/2.6.9/jemalloc];')))
+            || (needs.build_ruby_debian_11-2_6_9-malloctrim.result != 'success'
+              && (needs.build_ruby_debian_11-2_6_9-malloctrim.result != 'skipped'
+                || contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Ruby [debian-11/2.6.9/malloctrim];')))
 
 
       ### Trigger next workflow ###
