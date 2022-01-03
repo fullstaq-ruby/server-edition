@@ -1,5 +1,6 @@
 #!/bin/bash
 set -e
+set -o pipefail
 
 SELFDIR=$(dirname "$0")
 SELFDIR=$(cd "$SELFDIR" && pwd)
@@ -240,11 +241,19 @@ echo
 
 
 header "Test installing gems"
+
+BUNDLER_VERSION=$(grep -A 1 'BUNDLED WITH' /system/resources/test-env/Gemfile.lock | tail -n 1 | awk '{ print $1 }')
+echo "+ resources/test-env/Gemfile.lock was bundled with Bundler version $BUNDLER_VERSION"
+
 run apt install -y build-essential
-run gem install bundler -v 2.1.4 --no-document
+run gem install bundler -v "$BUNDLER_VERSION" --no-document
 run sudo -u utility -H cp /system/resources/test-env/Gemfile* ~utility/
 run sudo -u utility -H env BUNDLE_GEMFILE=/home/utility/Gemfile \
-    rbenv exec bundle install --path=/home/utility/bundle -j 4
+    rbenv exec bundle config set --local path /home/utility/bundle
+run sudo -u utility -H env BUNDLE_GEMFILE=/home/utility/Gemfile \
+    rbenv exec bundle config set --local jobs 4
+run sudo -u utility -H env BUNDLE_GEMFILE=/home/utility/Gemfile \
+    rbenv exec bundle install
 run sudo -u utility -H env BUNDLE_GEMFILE=/home/utility/Gemfile \
     rbenv exec bundle exec rspec --version
 echo
