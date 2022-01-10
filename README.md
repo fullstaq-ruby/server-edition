@@ -132,7 +132,7 @@ Fullstaq Ruby came about for two reasons:
     + _RVM/Rbenv (whether compilation or precompiled binaries) drawbacks:_
 
         - Keeping Ruby security-patched is a hassle.
-        - Upgrading to a new Ruby tiny version (e.g. 2.5.0 -> 2.5.1) requires explicit intervention.
+        - Upgrading to a new Ruby tiny version (e.g. 3.1.0 -> 3.1.1) requires explicit intervention.
         - After upgrading the Ruby tiny version, you need to update all your application servers and deployment code to explicitly use that new version, and you need to reinstall all your gems.
 
    Fullstaq Ruby addresses all of these problems by combining native OS packages and Rbenv. See [How it works](#how-it-works)
@@ -156,11 +156,11 @@ The Fullstaq Ruby native OS packages allow you to install Rubies by adding our r
 
  * **We supply packages for each minor version.**
 
-   For example, there are packages for Ruby 2.5 and 2.6. These packages always contain the most recent tiny version. Learn more below in subsection [Minor version packages](#minor_version_packages).
+   For example, there are packages for Ruby 3.0 and 3.1. These packages always contain the most recent tiny version. Learn more below in subsection [Minor version packages](#minor_version_packages).
 
  * **We _also_ supply packages for each tiny version.**
 
-   If you require a very specific tiny version: we support that too! For example we have packages for 2.5.5 and 2.6.0.
+   If you require a very specific tiny version: we support that too! For example we have packages for 3.0.3 and 3.1.0.
 
  * **3 variants for each Ruby version: normal, jemalloc, malloctrim.**
 
@@ -186,20 +186,20 @@ The Fullstaq Ruby native OS packages allow you to install Rubies by adding our r
 
 > _See also: [Installation](#installation)_
 
-Let's say you're on Ubuntu (RHEL/CentOS packages use a different naming scheme). Let's pretend Fullstaq Ruby only packages Ruby 2.6.2 and Ruby 2.6.3 (and let's pretend the latter is also the latest release). You will be able to install the following packages:
+Let's say you're on Ubuntu (RHEL/CentOS packages use a different naming scheme). Let's pretend Fullstaq Ruby only packages Ruby 3.0.2 and Ruby 3.0.3 (and let's pretend the latter is also the latest release). You will be able to install the following packages:
 
- * Version 2.6:
-    - Normal variant: `apt install fullstaq-ruby-2.6`
-    - Jemalloc variant: `apt install fullstaq-ruby-2.6-jemalloc`
-    - Malloctrim variant: `apt install fullstaq-ruby-2.6-malloctrim`
- * Version 2.6.2:
-    - Normal variant: `apt install fullstaq-ruby-2.6.2`
-    - Jemalloc variant: `apt install fullstaq-ruby-2.6.2-jemalloc`
-    - Malloctrim variant: `apt install fullstaq-ruby-2.6.2-malloctrim`
- * Version 2.6.3:
-    - Normal variant: `apt install fullstaq-ruby-2.6.3`
-    - Jemalloc variant: `apt install fullstaq-ruby-2.6.3-jemalloc`
-    - Malloctrim variant: `apt install fullstaq-ruby-2.6.3-malloctrim`
+ * Version 3.0:
+    - Normal variant: `apt install fullstaq-ruby-3.0`
+    - Jemalloc variant: `apt install fullstaq-ruby-3.0-jemalloc`
+    - Malloctrim variant: `apt install fullstaq-ruby-3.0-malloctrim`
+ * Version 3.0.2:
+    - Normal variant: `apt install fullstaq-ruby-3.0.2`
+    - Jemalloc variant: `apt install fullstaq-ruby-3.0.2-jemalloc`
+    - Malloctrim variant: `apt install fullstaq-ruby-3.0.2-malloctrim`
+ * Version 3.0.3:
+    - Normal variant: `apt install fullstaq-ruby-3.0.3`
+    - Jemalloc variant: `apt install fullstaq-ruby-3.0.3-jemalloc`
+    - Malloctrim variant: `apt install fullstaq-ruby-3.0.3-malloctrim`
 
 All these packages can be installed in parallel. None of them conflict with each other, not even the variants.
 
@@ -207,64 +207,64 @@ All these packages can be installed in parallel. None of them conflict with each
 
 Suppose you install all packages listed in the [Package organization](#package-organization) example. That will register Rubies in the system-wide Rbenv versions directory:
 
- * /usr/lib/rbenv/versions/2.6
- * /usr/lib/rbenv/versions/2.6-jemalloc
- * /usr/lib/rbenv/versions/2.6-malloctrim
- * /usr/lib/rbenv/versions/2.6.2
- * /usr/lib/rbenv/versions/2.6.2-jemalloc
- * /usr/lib/rbenv/versions/2.6.2-malloctrim
- * /usr/lib/rbenv/versions/2.6.3
- * /usr/lib/rbenv/versions/2.6.3-jemalloc
- * /usr/lib/rbenv/versions/2.6.3-malloctrim
+ * /usr/lib/rbenv/versions/3.0
+ * /usr/lib/rbenv/versions/3.0-jemalloc
+ * /usr/lib/rbenv/versions/3.0-malloctrim
+ * /usr/lib/rbenv/versions/3.0.2
+ * /usr/lib/rbenv/versions/3.0.2-jemalloc
+ * /usr/lib/rbenv/versions/3.0.2-malloctrim
+ * /usr/lib/rbenv/versions/3.0.3
+ * /usr/lib/rbenv/versions/3.0.3-jemalloc
+ * /usr/lib/rbenv/versions/3.0.3-malloctrim
 
 These registrations are symlinks. The actual Ruby installation is in `/usr/lib/fullstaq-ruby`. So for example, one symlink looks like this:
 
-    /usr/lib/rbenv/versions/2.6 -> /usr/lib/fullstaq-ruby/versions/2.6
+    /usr/lib/rbenv/versions/3.0 -> /usr/lib/fullstaq-ruby/versions/3.0
 
 If you run `rbenv versions`, you'll see:
 
     $ rbenv versions
     * system (set by /home/hongli/.rbenv/version)
-      2.6
-      2.6-jemalloc
-      2.6-malloctrim
-      2.6.2
-      2.6.2-jemalloc
-      2.6.2-malloctrim
-      2.6.3
-      2.6.3-jemalloc
-      2.6.3-malloctrim
+      3.0
+      3.0-jemalloc
+      3.0-malloctrim
+      3.0.2
+      3.0.2-jemalloc
+      3.0.2-malloctrim
+      3.0.3
+      3.0.3-jemalloc
+      3.0.3-malloctrim
 
 Installed Fullstaq Rubies are available to all users on the system. They complement any Rubies that may be installed in `~/.rbenv/versions`.
 
 You activate a specific version by using regular Rbenv commands:
 
-     $ rbenv local 2.6.3
+     $ rbenv local 3.0.3
      $ rbenv exec ruby -v
-     ruby 2.6.3
+     ruby 3.0.3
 
-     $ rbenv local 2.6.3-jemalloc
+     $ rbenv local 3.0.3-jemalloc
      $ rbenv exec ruby -v
-     ruby 2.6.3 (jemalloc variant)
+     ruby 3.0.3 (jemalloc variant)
 
 
 <a name="minor_version_packages"></a>
 
 ### Minor version packages: a great way to keep Ruby security-patched
 
-`fullstaq-ruby-2.6.2` and `fullstaq-ruby-2.6.3` are **tiny version packages**. They package a specific tiny version.
+`fullstaq-ruby-3.0.2` and `fullstaq-ruby-3.0.3` are **tiny version packages**. They package a specific tiny version.
 
-`fullstaq-ruby-2.6` is a **minor version package**. It always contains the latest tiny version! If today the latest Ruby 2.6 version is 2.6.3, then `fullstaq-ruby-2.6` contains 2.6.3. If tomorrow 2.6.4 is released, then `fullstaq-ruby-2.6` will be updated to contain 2.6.4 instead.
+`fullstaq-ruby-3.0` is a **minor version package**. It always contains the latest tiny version! If today the latest Ruby 3.0 version is 3.0.3, then `fullstaq-ruby-3.0` contains 3.0.3. If tomorrow 3.0.4 is released, then `fullstaq-ruby-3.0` will be updated to contain 3.0.4 instead.
 
 **We recommend installing the minor version package/image over installing tiny version packages/images**:
 
  * No need to regularly check whether the Ruby developers have released a new tiny versions. The latest tiny version will be automatically installed as part of the regular OS package manager update process (e.g. `apt upgrade`/`yum update`). This is safe because Ruby follows semantic versioning.
  * No need to reinstall all your gems or update any configuration files after a tiny version update has been installed. A minor version package utilizes the same paths, regardless of the tiny version that it contains.
 
-   For example, the `fullstaq-ruby-2.6` package always contains the following, no matter which tiny version it actually is:
+   For example, the `fullstaq-ruby-3.0` package always contains the following, no matter which tiny version it actually is:
 
-    - /usr/lib/rbenv/versions/2.6/bin/ruby
-    - /usr/lib/rbenv/versions/2.6/lib/ruby/gems/2.6.0
+    - /usr/lib/rbenv/versions/3.0/bin/ruby
+    - /usr/lib/rbenv/versions/3.0/lib/ruby/gems/3.0.0
 
 ### About variants
 
@@ -272,7 +272,7 @@ So there are 3 variants: normal, jemalloc, malloctrim. What are the differences?
 
  - **Normal**: The original Ruby. No third-party patches applied.
 
-   Normal variant packages have no suffix, e.g.: `apt install fullstaq-ruby-2.6.2`
+   Normal variant packages have no suffix, e.g.: `apt install fullstaq-ruby-3.0.3`
 
  - **Jemalloc**: Ruby is linked to the Jemalloc memory allocator.
 
@@ -282,7 +282,7 @@ So there are 3 variants: normal, jemalloc, malloctrim. What are the differences?
 
    Learn more: [What is Jemalloc and how does it benefit me?](#what-is-jemalloc-and-how-does-it-benefit-me)
 
-   Jemalloc variant packages/images have the `-jemalloc` suffix, e.g.: `apt install fullstaq-ruby-2.6.2-jemalloc`
+   Jemalloc variant packages/images have the `-jemalloc` suffix, e.g.: `apt install fullstaq-ruby-3.0.3-jemalloc`
 
  - **Malloctrim**: Ruby is patched to make use of the `malloc_trim` API to reduce memory usage.
 
@@ -292,7 +292,7 @@ So there are 3 variants: normal, jemalloc, malloctrim. What are the differences?
 
    Learn more: [What is malloc_trim and how does it benefit me?](#what-is-malloc_trim-and-how-does-it-benefit-me)
 
-   Malloctrim variant packages/images have the `-malloctrim` suffix, e.g.: `apt install fullstaq-ruby-2.6.2-malloctrim`
+   Malloctrim variant packages/images have the `-malloctrim` suffix, e.g.: `apt install fullstaq-ruby-3.0.3-malloctrim`
 
 **Recommendation:** use the _jemalloc_ variant, unless you actually observe compatibility problems.
 
@@ -411,36 +411,36 @@ Ruby packages are now available as `fullstaq-ruby-<VERSION>`:
 
     $ sudo yum search fullstaq-ruby
     ...
-    fullstaq-ruby-2.5.x86_64 : Fullstaq Ruby 2.5
-    fullstaq-ruby-2.5-jemalloc.x86_64 : Fullstaq Ruby 2.5-jemalloc
-    fullstaq-ruby-2.5-malloctrim.x86_64 : Fullstaq Ruby 2.5-malloctrim
+    fullstaq-ruby-3.0.x86_64 : Fullstaq Ruby 3.0
+    fullstaq-ruby-3.0-jemalloc.x86_64 : Fullstaq Ruby 3.0-jemalloc
+    fullstaq-ruby-3.0-malloctrim.x86_64 : Fullstaq Ruby 3.0-malloctrim
     ...
-    fullstaq-ruby-2.6.x86_64 : Fullstaq Ruby 2.6
-    fullstaq-ruby-2.6-jemalloc.x86_64 : Fullstaq Ruby 2.6-jemalloc
-    fullstaq-ruby-2.6-malloctrim.x86_64 : Fullstaq Ruby 2.6-malloctrim
+    fullstaq-ruby-3.1.x86_64 : Fullstaq Ruby 3.1
+    fullstaq-ruby-3.1-jemalloc.x86_64 : Fullstaq Ruby 3.1-jemalloc
+    fullstaq-ruby-3.1-malloctrim.x86_64 : Fullstaq Ruby 3.1-malloctrim
     ...
 
 You can either install a specific tiny version....
 
 ~~~bash
-sudo yum install fullstaq-ruby-2.6.3
+sudo yum install fullstaq-ruby-3.0.3
 ~~~
 
-...or ([recommended!](#minor_version_packages)) you can install the latest tiny version of a minor release (e.g. the latest Ruby 2.6):
+...or ([recommended!](#minor_version_packages)) you can install the latest tiny version of a minor release (e.g. the latest Ruby 3.1):
 
 ~~~bash
 # This will auto-update to the latest tiny version when it's released
-sudo yum install fullstaq-ruby-2.6
+sudo yum install fullstaq-ruby-3.1
 ~~~
 
 You can even install multiple versions in parallel if you really want to:
 
 ~~~bash
-# Installs the latest 2.6
-sudo yum install fullstaq-ruby-2.6
+# Installs the latest 3.1
+sudo yum install fullstaq-ruby-3.1
 
-# In parallel, *also* install Ruby 2.6.3
-sudo yum install fullstaq-ruby-2.6.3
+# In parallel, *also* install Ruby 3.1.1
+sudo yum install fullstaq-ruby-3.1.1
 ~~~
 
 **Next steps:**
@@ -496,44 +496,44 @@ Ruby packages are now available as `fullstaq-ruby-<VERSION>`:
 
     $ sudo apt search fullstaq-ruby
     ...
-    fullstaq-ruby-2.5/ubuntu-18.04 1-ubuntu-18.04 amd64
-      Fullstaq Ruby 2.5
+    fullstaq-ruby-3.0/ubuntu-18.04 1-ubuntu-18.04 amd64
+      Fullstaq Ruby 3.0
 
-    fullstaq-ruby-2.5-jemalloc/ubuntu-18.04 1-ubuntu-18.04 amd64
-      Fullstaq Ruby 2.5-jemalloc
+    fullstaq-ruby-3.0-jemalloc/ubuntu-18.04 1-ubuntu-18.04 amd64
+      Fullstaq Ruby 3.0-jemalloc
 
-    fullstaq-ruby-2.5-malloctrim/ubuntu-18.04 1-ubuntu-18.04 amd64
-      Fullstaq Ruby 2.5-malloctrim
+    fullstaq-ruby-3.0-malloctrim/ubuntu-18.04 1-ubuntu-18.04 amd64
+      Fullstaq Ruby 3.0-malloctrim
     ...
-    fullstaq-ruby-2.6/ubuntu-18.04 1-ubuntu-18.04 amd64
-      Fullstaq Ruby 2.6
+    fullstaq-ruby-3.1/ubuntu-18.04 1-ubuntu-18.04 amd64
+      Fullstaq Ruby 3.1
 
-    fullstaq-ruby-2.6-jemalloc/ubuntu-18.04 1-ubuntu-18.04 amd64
-      Fullstaq Ruby 2.6-jemalloc
+    fullstaq-ruby-3.1-jemalloc/ubuntu-18.04 1-ubuntu-18.04 amd64
+      Fullstaq Ruby 3.1-jemalloc
 
-    fullstaq-ruby-2.6-malloctrim/ubuntu-18.04 1-ubuntu-18.04 amd64
-      Fullstaq Ruby 2.6-malloctrim
+    fullstaq-ruby-3.1-malloctrim/ubuntu-18.04 1-ubuntu-18.04 amd64
+      Fullstaq Ruby 3.1-malloctrim
     ...
 
 You can either install a specific tiny version....
 
-    sudo apt install fullstaq-ruby-2.6.3
+    sudo apt install fullstaq-ruby-3.1.1
 
-...or ([recommended!](#minor_version_packages)) you can install the latest tiny version of a minor release (e.g. the latest Ruby 2.6):
+...or ([recommended!](#minor_version_packages)) you can install the latest tiny version of a minor release (e.g. the latest Ruby 3.1):
 
 ~~~bash
 # This will auto-update to the latest tiny version when it's released
-sudo apt install fullstaq-ruby-2.6
+sudo apt install fullstaq-ruby-3.1
 ~~~
 
 You can even install multiple versions in parallel if you really want to:
 
 ~~~bash
-# Installs the latest 2.6
-sudo apt install fullstaq-ruby-2.6
+# Installs the latest 3.1
+sudo apt install fullstaq-ruby-3.1
 
-# In parallel, *also* install Ruby 2.6.3
-sudo apt install fullstaq-ruby-2.6.3
+# In parallel, *also* install Ruby 3.1.1
+sudo apt install fullstaq-ruby-3.1.1
 ~~~
 
 **Next steps:**
@@ -584,12 +584,12 @@ Adding to .bashrc/.bash_profile only activates the shell integration for that sp
 
 Ruby versions are installed to `/usr/lib/fullstaq-ruby/versions/<VERSION>`. Each such directory has a `bin` subdirectory which contains `ruby`, `irb`, `gem`, etc.
 
-Suppose you installed Ruby 2.6 (normal variant). You can execute it directly:
+Suppose you installed Ruby 3.1 (normal variant). You can execute it directly:
 
-    $ /usr/lib/fullstaq-ruby/versions/2.6/bin/ruby --version
-    ruby 2.6.3
+    $ /usr/lib/fullstaq-ruby/versions/3.1/bin/ruby --version
+    ruby 3.1.0
 
-    $ /usr/lib/fullstaq-ruby/versions/2.6/bin/gem install --no-document nokogiri
+    $ /usr/lib/fullstaq-ruby/versions/3.1/bin/gem install --no-document nokogiri
     ...
 
 But for convenience, it's better to add `/usr/lib/fullstaq-ruby/versions/<VERSION>/bin` to your PATH so that you don't have to specify the full path every time. See [Activate Rbenv shell integration (optional)](#activate-rbenv-shell-integration-optional).
@@ -598,19 +598,19 @@ But for convenience, it's better to add `/usr/lib/fullstaq-ruby/versions/<VERSIO
 
 The recommended way to use Fullstaq Ruby is through the Rbenv integration. You should [learn Rbenv](https://github.com/rbenv/rbenv#readme) if you are not familiar with it. Here is a handy [cheat sheet](https://devhints.io/rbenv).
 
-Suppose you installed Ruby 2.6 (normal variant). You can run that Ruby by setting `RBENV_VERSION` and prefixing yours commands with `rbenv exec`:
+Suppose you installed Ruby 3.1 (normal variant). You can run that Ruby by setting `RBENV_VERSION` and prefixing yours commands with `rbenv exec`:
 
-    $ export RBENV_VERSION=2.6
+    $ export RBENV_VERSION=3.1
     $ rbenv exec ruby --version
-    ruby 2.6.3
+    ruby 3.1.0
     $ rbenv exec gem env
     ...
 
 Or, if you've activated the Rbenv shell integration, just running `ruby`, `gem` and various other Ruby would also work, provided that you've activated a certain version and that there's an [Rbenv shim](https://github.com/rbenv/rbenv#understanding-shims) available:
 
-    $ rbenv local 2.6
+    $ rbenv local 3.1
     $ ruby --version
-    ruby 2.6.3
+    ruby 3.1.0
     $ gem env
     ...
 
@@ -689,7 +689,7 @@ After=network.target
 Type=simple
 User=app
 WorkingDirectory=<YOUR_APP_PATH>
-ExecStart=/home/app/.rbenv/versions/2.5.5/bin/ruby -S bundle exec puma -C puma.rb
+ExecStart=/home/app/.rbenv/versions/3.1.0/bin/ruby -S bundle exec puma -C puma.rb
 Restart=always
 
 [Install]
@@ -699,7 +699,7 @@ WantedBy=multi-user.target
 Make sure that your `ExecStart` command is prefixed by a call to `/full-path-to-ruby -S`, like this:
 
 ~~~ini
-ExecStart=/usr/lib/fullstaq-ruby/versions/2.6.3-jemalloc/bin/ruby -S bundle exec puma -C puma.rb
+ExecStart=/usr/lib/fullstaq-ruby/versions/3.1.0-jemalloc/bin/ruby -S bundle exec puma -C puma.rb
 ~~~
 
 > Don't forget the `-S`!
@@ -719,14 +719,14 @@ In your deploy/config.rb make sure you set `rbenv_type` to `:fullstaq`, and `rbe
 set :rbenv_type, :fullstaq
 
 
-# Use Ruby 2.6 (latest tiny version), normal variant
-set :rbenv_ruby, '2.6'
+# Use Ruby 3.1 (latest tiny version), normal variant
+set :rbenv_ruby, '3.1'
 
-# Use Ruby 2.6.3, normal variant
-set :rbenv_ruby, '2.6.3'
+# Use Ruby 3.1.1, normal variant
+set :rbenv_ruby, '3.1.1'
 
-# Use Ruby 2.6.3, jemalloc variant
-set :rbenv_ruby, '2.6.3-jemalloc'
+# Use Ruby 3.1.1, jemalloc variant
+set :rbenv_ruby, '3.1.1-jemalloc'
 ~~~
 
 ## FAQ
