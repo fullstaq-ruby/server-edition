@@ -13,7 +13,9 @@ OUTPUT_PATH=
 VARIANT=normal
 JEMALLOC_BIN_PATH=
 BUILD_CONCURRENCY=1
-CACHE_PATH=
+CACHE_CONNECTION_STRING_FILE=
+CACHE_CONTAINER=
+CACHE_KEY_PREFIX=
 
 function usage()
 {
@@ -21,27 +23,28 @@ function usage()
     echo "Build a Ruby binary tarball from its source tarball."
     echo
     echo "Required options:"
-    echo "  -n NAME     Name of environment to build in (one of: $(list_environment_names "$SELFDIR/environments"))"
-    echo "  -s PATH     Path to Ruby source tarball"
-    echo "  -v VERSION  Package version number"
-    echo "  -o PATH     Path to output tarball"
+    echo "  -n NAME      Name of environment to build in (one of: $(list_environment_names "$SELFDIR/environments"))"
+    echo "  -s PATH      Path to Ruby source tarball"
+    echo "  -v VERSION   Package version number"
+    echo "  -o PATH      Path to output tarball"
     echo
     echo "Build variant (pick at most one):"
-    echo "  -m PATH     Build with Jemalloc support, using this Jemalloc binary tarball (as built by ./build-jemalloc)"
-    echo "  -t          Build with malloc_trim support"
+    echo "  -m PATH      Build with Jemalloc support, using this Jemalloc binary tarball (as built by ./build-jemalloc)"
+    echo "  -t           Build with malloc_trim support"
     echo
     echo "Optional options:"
-    echo "  -j NUM      Build concurrency (default: $BUILD_CONCURRENCY)"
-    echo "  -c PATH     Use given directory as cache"
-    echo "  -h          Show usage"
+    echo "  -j NUM       Build concurrency (default: $BUILD_CONCURRENCY)"
+    echo "  -c PATH      Cache to Azure Blob Storage, use connection string in given file"
+    echo "  -r CONTAINER Use given Azure Blob Storage container"
+    echo "  -d NAME      Use given Azure Blob Storage key prefix"
+    echo "  -h           Show usage"
 }
 
 function parse_options()
 {
     local OPTIND=1
-    local ORIG_ARGV
     local opt
-    while getopts "n:s:v:o:m:tj:c:h" opt; do
+    while getopts "n:s:v:o:m:tj:c:r:d:h" opt; do
         case "$opt" in
         n)
             ENVIRONMENT_NAME="$OPTARG"
@@ -66,7 +69,13 @@ function parse_options()
             BUILD_CONCURRENCY="$OPTARG"
             ;;
         c)
-            CACHE_PATH=$(absolute_path "$OPTARG")
+            CACHE_CONNECTION_STRING_FILE=$(absolute_path "$OPTARG")
+            ;;
+        r)
+            CACHE_CONTAINER="$OPTARG"
+            ;;
+        d)
+            CACHE_KEY_PREFIX="$OPTARG"
             ;;
         h)
             usage
@@ -80,7 +89,6 @@ function parse_options()
 
     (( OPTIND -= 1 )) || true
     shift $OPTIND || true
-    ORIG_ARGV=("$@")
 
     if [[ "$ENVIRONMENT_NAME" = "" ]]; then
         echo 'ERROR: please specify an environment name with -n.' >&2
@@ -112,8 +120,8 @@ function parse_options()
         echo 'ERROR: please specify an output tarball path with -o.' >&2
         exit 1
     fi
-    if [[ "$CACHE_PATH" != "" && ! -e "$CACHE_PATH" ]]; then
-        echo "ERROR: $CACHE_PATH does not exist." >&2
+    if [[ -n "$CACHE_CONNECTION_STRING_FILE" && -z "$CACHE_CONTAINER" ]]; then
+        echo "ERROR: if a cache connection string file is given, then an Azure Blob Storage container name must also be given." >&2
         exit 1
     fi
 }
@@ -129,8 +137,8 @@ MOUNT_ARGS=()
 if [[ "$VARIANT" = jemalloc ]]; then
     MOUNT_ARGS+=(-v "$JEMALLOC_BIN_PATH:/input/jemalloc-bin.tar.gz:ro")
 fi
-if [[ "$CACHE_PATH" != "" ]]; then
-    MOUNT_ARGS+=(-v "$CACHE_PATH:/cache:delegated")
+if [[ -n "$CACHE_CONNECTION_STRING_FILE" ]]; then
+    MOUNT_ARGS+=(-v "$CACHE_CONNECTION_STRING_FILE:/azure-connection-string.txt:ro")
 fi
 
 IMAGE_VERSION=$(read_single_value_file "$SELFDIR/environments/$ENVIRONMENT_NAME/image_tag")
@@ -154,6 +162,8 @@ verbose_run docker run --rm --init "${TTY_ARGS[@]}" \
     -e "BUILD_CONCURRENCY=$BUILD_CONCURRENCY" \
     -e "PACKAGE_VERSION=$PACKAGE_VERSION" \
     -e "ENVIRONMENT_NAME=$ENVIRONMENT_NAME" \
+    -e "CACHE_CONTAINER=$CACHE_CONTAINER" \
+    -e "CACHE_KEY_PREFIX=$CACHE_KEY_PREFIX" \
     --user "$(id -u):$(id -g)" \
     "fullstaq/ruby-build-env-$ENVIRONMENT_NAME:$IMAGE_VERSION" \
     /system/container-entrypoints/build-ruby

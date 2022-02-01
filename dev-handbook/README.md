@@ -15,6 +15,7 @@
 
  * [CI/CD system resumption support](ci-cd-resumption.md)
  * [CI/CD system and splitting into multiple workflows](ci-cd-split-multiple-workflows.md)
+ * [CI/CD caching](ci-cd-caching.md)
  * [APT and YUM repository setup](apt-yum-repo.md)
 
 ## Tutorials & tasks

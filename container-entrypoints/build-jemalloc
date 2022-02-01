@@ -19,14 +19,19 @@ BUILD_CONCURRENCY="${BUILD_CONCURRENCY:-1}"
 
 
 header "Setting up..."
-if [[ -e /cache ]]; then
-    echo "+ /cache is mounted in container, using it for ccache."
-    export CCACHE_DIR=/cache/ccache
-    export PATH="/usr/lib/ccache:$PATH"
-    echo "+ Activating ccache compilers in /usr/lib/ccache."
-    run mkdir -p "$CCACHE_DIR"
+if [[ -n "$CACHE_CONTAINER" ]]; then
+    echo "+ Caching enabled, will cache to Azure Blob Storage container $CACHE_CONTAINER."
+    require_container_mount /azure-connection-string.txt
+    SCCACHE_AZURE_CONNECTION_STRING=$(cat /azure-connection-string.txt)
+    export SCCACHE_AZURE_CONNECTION_STRING
+    export SCCACHE_AZURE_BLOB_CONTAINER="$CACHE_CONTAINER"
+    export SCCACHE_AZURE_KEY_PREFIX="$CACHE_KEY_PREFIX"
+    export SCCACHE_ERROR_LOG=/proc/$$/fd/2
+    SCCACHE_START_SERVER=1 sccache
+    export PATH="/usr/local/lib/sccache:$PATH"
+    echo "+ Activating ccache compilers in /usr/local/lib/sccache."
 else
-    echo "+ /cache is not mounted in the container, not using ccache."
+    echo "+ Caching disabled, not using sccache."
 fi
 echo
 
@@ -62,3 +67,6 @@ header "Packaging up..."
 echo "+ echo $ENVIRONMENT_NAME > $INSTALL_PREFIX/ENVIRONMENT"
 echo "$ENVIRONMENT_NAME" > "$INSTALL_PREFIX/ENVIRONMENT"
 run tar -czf "$OUTPUT_PATH" -C "$INSTALL_PREFIX" ENVIRONMENT include lib
+if [[ -n "$CACHE_CONTAINER" ]]; then
+    run sccache --stop-server
+fi

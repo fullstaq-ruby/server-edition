@@ -4,8 +4,17 @@ inputs:
   private_key:
     description: The service account private key, in JSON format, base64-encoded
     required: true
+  write_keyfile_to:
+    description: Write the keyfile to the given path
+    required: false
 runs:
   using: composite
   steps:
     - run: gcloud auth activate-service-account --key-file <(base64 -d <<< "${{ inputs.private_key }}")
       shell: bash
+    - run: base64 -d <<< "$PRIVATE_KEY" > "$OUTPUT"
+      shell: bash
+      if: inputs.write_keyfile_to != ''
+      env:
+        PRIVATE_KEY: ${{ inputs.private_key }}
+        OUTPUT: ${{ inputs.write_keyfile_to }}

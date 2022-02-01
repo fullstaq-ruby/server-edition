@@ -15,7 +15,7 @@ Create a new directory `environments/<DISTRO NAME>-<DISTRO VERSION>` (for exampl
     - Ensure its `FROM` is set to an appropriate image that corresponds to the distribution and version you want to support. For example `FROM centos:16`.
     - Ensure it has a user account named `builder`, and that the Dockerfile's `USER` directive is set to that account.
     - Ensure a C and C++ compiler toolchain is installed.
-    - Ensure ccache is installed and configured.
+    - Ensure [sccache](https://github.com/mozilla/sccache) is installed and configured.
     - Ensure development headers for OpenSSL, zlib, FFI, readline, ncurses and GDBM are installed.
 
  * An `image_tag`. This file is used for [versioning](build-environments.md#versioning). Since this is a new file, set its contents to `1`.

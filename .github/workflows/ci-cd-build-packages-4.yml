@@ -26,6 +26,7 @@ on:
 env:
   CI_ARTIFACTS_BUCKET: fullstaq-ruby-server-edition-ci-artifacts
   CI_ARTIFACTS_RUN_NUMBER: ${{ github.event.inputs.ci_artifacts_run_number || github.run_number }}
+  CACHE_CONTAINER: server-edition-ci-cache
 
 jobs:
   # Determines which jobs should be run, or (in case this is a re-run)
@@ -93,13 +94,11 @@ jobs:
         uses: ./.github/actions/gcloud-login
         with:
           private_key: ${{ secrets.GCLOUD_KEY }}
-      - name: Fetch cache
-        uses: actions/cache@v1
-        with:
-          path: cache
-          key: 'jemalloc-bin-debian-11-3.6.0'
-      - name: Create cache dir
-        run: mkdir -p cache
+          write_keyfile_to: gcloud-credentials.json
+      - name: Dump Azure connection string
+        run: echo -n "$CONNECTION_STRING" > azure-connection-string.txt
+        env:
+          CONNECTION_STRING: ${{ secrets.AZURE_CI1_STORAGE_CONNECTION_STRING }}
 
       - name: Download Docker image necessary for building
         run: ./internal-scripts/ci-cd/download-artifact.sh
@@ -113,6 +112,8 @@ jobs:
         env:
           TARBALL: image.tar.zst
 
+      - run: mkdir cache
+
       - name: Download source
         run: ./internal-scripts/ci-cd/build-jemalloc-binaries/download-source.sh
         env:
@@ -122,6 +123,7 @@ jobs:
         run: ./internal-scripts/ci-cd/build-jemalloc-binaries/build.sh
         env:
           ENVIRONMENT_NAME: 'debian-11'
+          CACHE_KEY_PREFIX: 'sccache/debian-11'
 
       - name: Archive artifact
         run: ./internal-scripts/ci-cd/upload-artifact.sh
@@ -156,6 +158,11 @@ jobs:
         uses: ./.github/actions/gcloud-login
         with:
           private_key: ${{ secrets.GCLOUD_KEY }}
+          write_keyfile_to: gcloud-credentials.json
+      - name: Dump Azure connection string
+        run: echo -n "$CONNECTION_STRING" > azure-connection-string.txt
+        env:
+          CONNECTION_STRING: ${{ secrets.AZURE_CI1_STORAGE_CONNECTION_STRING }}
       - name: Fetch Ruby source
         run: ./internal-scripts/ci-cd/download-artifact.sh
         env:
@@ -188,20 +195,13 @@ jobs:
 
       
 
-      - name: Reset & prepare workspace
-        run: mkdir cache-normal
-      - name: "[normal] Fetch cache"
-        uses: actions/cache@v2
-        with:
-          path: cache-normal
-          key: v2-ruby-bin-3.1-debian-11-normal
-
       - name: Build binaries
         run: ./internal-scripts/ci-cd/build-ruby-packages/build-binaries.sh
         env:
           ENVIRONMENT_NAME: "debian-11"
           VARIANT_NAME: "normal"
           RUBY_PACKAGE_VERSION_ID: "3.1"
+          CACHE_KEY_PREFIX: "sccache/debian-11"
 
       - name: Build package
         run: ./internal-scripts/ci-cd/build-ruby-packages/build-package.sh
@@ -241,6 +241,11 @@ jobs:
         uses: ./.github/actions/gcloud-login
         with:
           private_key: ${{ secrets.GCLOUD_KEY }}
+          write_keyfile_to: gcloud-credentials.json
+      - name: Dump Azure connection string
+        run: echo -n "$CONNECTION_STRING" > azure-connection-string.txt
+        env:
+          CONNECTION_STRING: ${{ secrets.AZURE_CI1_STORAGE_CONNECTION_STRING }}
       - name: Fetch Ruby source
         run: ./internal-scripts/ci-cd/download-artifact.sh
         env:
@@ -278,20 +283,13 @@ jobs:
           ARTIFACT_NAME: jemalloc-bin-debian-11
           ARTIFACT_PATH: .        
 
-      - name: Reset & prepare workspace
-        run: mkdir cache-jemalloc
-      - name: "[jemalloc] Fetch cache"
-        uses: actions/cache@v2
-        with:
-          path: cache-jemalloc
-          key: v2-ruby-bin-3.1-debian-11-jemalloc
-
       - name: Build binaries
         run: ./internal-scripts/ci-cd/build-ruby-packages/build-binaries.sh
         env:
           ENVIRONMENT_NAME: "debian-11"
           VARIANT_NAME: "jemalloc"
           RUBY_PACKAGE_VERSION_ID: "3.1"
+          CACHE_KEY_PREFIX: "sccache/debian-11"
 
       - name: Build package
         run: ./internal-scripts/ci-cd/build-ruby-packages/build-package.sh
@@ -331,6 +329,11 @@ jobs:
         uses: ./.github/actions/gcloud-login
         with:
           private_key: ${{ secrets.GCLOUD_KEY }}
+          write_keyfile_to: gcloud-credentials.json
+      - name: Dump Azure connection string
+        run: echo -n "$CONNECTION_STRING" > azure-connection-string.txt
+        env:
+          CONNECTION_STRING: ${{ secrets.AZURE_CI1_STORAGE_CONNECTION_STRING }}
       - name: Fetch Ruby source
         run: ./internal-scripts/ci-cd/download-artifact.sh
         env:
@@ -363,20 +366,13 @@ jobs:
 
       
 
-      - name: Reset & prepare workspace
-        run: mkdir cache-malloctrim
-      - name: "[malloctrim] Fetch cache"
-        uses: actions/cache@v2
-        with:
-          path: cache-malloctrim
-          key: v2-ruby-bin-3.1-debian-11-malloctrim
-
       - name: Build binaries
         run: ./internal-scripts/ci-cd/build-ruby-packages/build-binaries.sh
         env:
           ENVIRONMENT_NAME: "debian-11"
           VARIANT_NAME: "malloctrim"
           RUBY_PACKAGE_VERSION_ID: "3.1"
+          CACHE_KEY_PREFIX: "sccache/debian-11"
 
       - name: Build package
         run: ./internal-scripts/ci-cd/build-ruby-packages/build-package.sh
@@ -416,6 +412,11 @@ jobs:
         uses: ./.github/actions/gcloud-login
         with:
           private_key: ${{ secrets.GCLOUD_KEY }}
+          write_keyfile_to: gcloud-credentials.json
+      - name: Dump Azure connection string
+        run: echo -n "$CONNECTION_STRING" > azure-connection-string.txt
+        env:
+          CONNECTION_STRING: ${{ secrets.AZURE_CI1_STORAGE_CONNECTION_STRING }}
       - name: Fetch Ruby source
         run: ./internal-scripts/ci-cd/download-artifact.sh
         env:
@@ -448,20 +449,13 @@ jobs:
 
       
 
-      - name: Reset & prepare workspace
-        run: mkdir cache-normal
-      - name: "[normal] Fetch cache"
-        uses: actions/cache@v2
-        with:
-          path: cache-normal
-          key: v2-ruby-bin-3.0-debian-11-normal
-
       - name: Build binaries
         run: ./internal-scripts/ci-cd/build-ruby-packages/build-binaries.sh
         env:
           ENVIRONMENT_NAME: "debian-11"
           VARIANT_NAME: "normal"
           RUBY_PACKAGE_VERSION_ID: "3.0"
+          CACHE_KEY_PREFIX: "sccache/debian-11"
 
       - name: Build package
         run: ./internal-scripts/ci-cd/build-ruby-packages/build-package.sh
@@ -501,6 +495,11 @@ jobs:
         uses: ./.github/actions/gcloud-login
         with:
           private_key: ${{ secrets.GCLOUD_KEY }}
+          write_keyfile_to: gcloud-credentials.json
+      - name: Dump Azure connection string
+        run: echo -n "$CONNECTION_STRING" > azure-connection-string.txt
+        env:
+          CONNECTION_STRING: ${{ secrets.AZURE_CI1_STORAGE_CONNECTION_STRING }}
       - name: Fetch Ruby source
         run: ./internal-scripts/ci-cd/download-artifact.sh
         env:
@@ -538,20 +537,13 @@ jobs:
           ARTIFACT_NAME: jemalloc-bin-debian-11
           ARTIFACT_PATH: .        
 
-      - name: Reset & prepare workspace
-        run: mkdir cache-jemalloc
-      - name: "[jemalloc] Fetch cache"
-        uses: actions/cache@v2
-        with:
-          path: cache-jemalloc
-          key: v2-ruby-bin-3.0-debian-11-jemalloc
-
       - name: Build binaries
         run: ./internal-scripts/ci-cd/build-ruby-packages/build-binaries.sh
         env:
           ENVIRONMENT_NAME: "debian-11"
           VARIANT_NAME: "jemalloc"
           RUBY_PACKAGE_VERSION_ID: "3.0"
+          CACHE_KEY_PREFIX: "sccache/debian-11"
 
       - name: Build package
         run: ./internal-scripts/ci-cd/build-ruby-packages/build-package.sh
@@ -591,6 +583,11 @@ jobs:
         uses: ./.github/actions/gcloud-login
         with:
           private_key: ${{ secrets.GCLOUD_KEY }}
+          write_keyfile_to: gcloud-credentials.json
+      - name: Dump Azure connection string
+        run: echo -n "$CONNECTION_STRING" > azure-connection-string.txt
+        env:
+          CONNECTION_STRING: ${{ secrets.AZURE_CI1_STORAGE_CONNECTION_STRING }}
       - name: Fetch Ruby source
         run: ./internal-scripts/ci-cd/download-artifact.sh
         env:
@@ -623,20 +620,13 @@ jobs:
 
       
 
-      - name: Reset & prepare workspace
-        run: mkdir cache-malloctrim
-      - name: "[malloctrim] Fetch cache"
-        uses: actions/cache@v2
-        with:
-          path: cache-malloctrim
-          key: v2-ruby-bin-3.0-debian-11-malloctrim
-
       - name: Build binaries
         run: ./internal-scripts/ci-cd/build-ruby-packages/build-binaries.sh
         env:
           ENVIRONMENT_NAME: "debian-11"
           VARIANT_NAME: "malloctrim"
           RUBY_PACKAGE_VERSION_ID: "3.0"
+          CACHE_KEY_PREFIX: "sccache/debian-11"
 
       - name: Build package
         run: ./internal-scripts/ci-cd/build-ruby-packages/build-package.sh
@@ -676,6 +666,11 @@ jobs:
         uses: ./.github/actions/gcloud-login
         with:
           private_key: ${{ secrets.GCLOUD_KEY }}
+          write_keyfile_to: gcloud-credentials.json
+      - name: Dump Azure connection string
+        run: echo -n "$CONNECTION_STRING" > azure-connection-string.txt
+        env:
+          CONNECTION_STRING: ${{ secrets.AZURE_CI1_STORAGE_CONNECTION_STRING }}
       - name: Fetch Ruby source
         run: ./internal-scripts/ci-cd/download-artifact.sh
         env:
@@ -708,20 +703,13 @@ jobs:
 
       
 
-      - name: Reset & prepare workspace
-        run: mkdir cache-normal
-      - name: "[normal] Fetch cache"
-        uses: actions/cache@v2
-        with:
-          path: cache-normal
-          key: v2-ruby-bin-2.7-debian-11-normal
-
       - name: Build binaries
         run: ./internal-scripts/ci-cd/build-ruby-packages/build-binaries.sh
         env:
           ENVIRONMENT_NAME: "debian-11"
           VARIANT_NAME: "normal"
           RUBY_PACKAGE_VERSION_ID: "2.7"
+          CACHE_KEY_PREFIX: "sccache/debian-11"
 
       - name: Build package
         run: ./internal-scripts/ci-cd/build-ruby-packages/build-package.sh
@@ -761,6 +749,11 @@ jobs:
         uses: ./.github/actions/gcloud-login
         with:
           private_key: ${{ secrets.GCLOUD_KEY }}
+          write_keyfile_to: gcloud-credentials.json
+      - name: Dump Azure connection string
+        run: echo -n "$CONNECTION_STRING" > azure-connection-string.txt
+        env:
+          CONNECTION_STRING: ${{ secrets.AZURE_CI1_STORAGE_CONNECTION_STRING }}
       - name: Fetch Ruby source
         run: ./internal-scripts/ci-cd/download-artifact.sh
         env:
@@ -798,20 +791,13 @@ jobs:
           ARTIFACT_NAME: jemalloc-bin-debian-11
           ARTIFACT_PATH: .        
 
-      - name: Reset & prepare workspace
-        run: mkdir cache-jemalloc
-      - name: "[jemalloc] Fetch cache"
-        uses: actions/cache@v2
-        with:
-          path: cache-jemalloc
-          key: v2-ruby-bin-2.7-debian-11-jemalloc
-
       - name: Build binaries
         run: ./internal-scripts/ci-cd/build-ruby-packages/build-binaries.sh
         env:
           ENVIRONMENT_NAME: "debian-11"
           VARIANT_NAME: "jemalloc"
           RUBY_PACKAGE_VERSION_ID: "2.7"
+          CACHE_KEY_PREFIX: "sccache/debian-11"
 
       - name: Build package
         run: ./internal-scripts/ci-cd/build-ruby-packages/build-package.sh
@@ -851,6 +837,11 @@ jobs:
         uses: ./.github/actions/gcloud-login
         with:
           private_key: ${{ secrets.GCLOUD_KEY }}
+          write_keyfile_to: gcloud-credentials.json
+      - name: Dump Azure connection string
+        run: echo -n "$CONNECTION_STRING" > azure-connection-string.txt
+        env:
+          CONNECTION_STRING: ${{ secrets.AZURE_CI1_STORAGE_CONNECTION_STRING }}
       - name: Fetch Ruby source
         run: ./internal-scripts/ci-cd/download-artifact.sh
         env:
@@ -883,20 +874,13 @@ jobs:
 
       
 
-      - name: Reset & prepare workspace
-        run: mkdir cache-malloctrim
-      - name: "[malloctrim] Fetch cache"
-        uses: actions/cache@v2
-        with:
-          path: cache-malloctrim
-          key: v2-ruby-bin-2.7-debian-11-malloctrim
-
       - name: Build binaries
         run: ./internal-scripts/ci-cd/build-ruby-packages/build-binaries.sh
         env:
           ENVIRONMENT_NAME: "debian-11"
           VARIANT_NAME: "malloctrim"
           RUBY_PACKAGE_VERSION_ID: "2.7"
+          CACHE_KEY_PREFIX: "sccache/debian-11"
 
       - name: Build package
         run: ./internal-scripts/ci-cd/build-ruby-packages/build-package.sh
@@ -936,6 +920,11 @@ jobs:
         uses: ./.github/actions/gcloud-login
         with:
           private_key: ${{ secrets.GCLOUD_KEY }}
+          write_keyfile_to: gcloud-credentials.json
+      - name: Dump Azure connection string
+        run: echo -n "$CONNECTION_STRING" > azure-connection-string.txt
+        env:
+          CONNECTION_STRING: ${{ secrets.AZURE_CI1_STORAGE_CONNECTION_STRING }}
       - name: Fetch Ruby source
         run: ./internal-scripts/ci-cd/download-artifact.sh
         env:
@@ -968,20 +957,13 @@ jobs:
 
       
 
-      - name: Reset & prepare workspace
-        run: mkdir cache-normal
-      - name: "[normal] Fetch cache"
-        uses: actions/cache@v2
-        with:
-          path: cache-normal
-          key: v2-ruby-bin-3.1.2-debian-11-normal
-
       - name: Build binaries
         run: ./internal-scripts/ci-cd/build-ruby-packages/build-binaries.sh
         env:
           ENVIRONMENT_NAME: "debian-11"
           VARIANT_NAME: "normal"
           RUBY_PACKAGE_VERSION_ID: "3.1.2"
+          CACHE_KEY_PREFIX: "sccache/debian-11"
 
       - name: Build package
         run: ./internal-scripts/ci-cd/build-ruby-packages/build-package.sh
@@ -1021,6 +1003,11 @@ jobs:
         uses: ./.github/actions/gcloud-login
         with:
           private_key: ${{ secrets.GCLOUD_KEY }}
+          write_keyfile_to: gcloud-credentials.json
+      - name: Dump Azure connection string
+        run: echo -n "$CONNECTION_STRING" > azure-connection-string.txt
+        env:
+          CONNECTION_STRING: ${{ secrets.AZURE_CI1_STORAGE_CONNECTION_STRING }}
       - name: Fetch Ruby source
         run: ./internal-scripts/ci-cd/download-artifact.sh
         env:
@@ -1058,20 +1045,13 @@ jobs:
           ARTIFACT_NAME: jemalloc-bin-debian-11
           ARTIFACT_PATH: .        
 
-      - name: Reset & prepare workspace
-        run: mkdir cache-jemalloc
-      - name: "[jemalloc] Fetch cache"
-        uses: actions/cache@v2
-        with:
-          path: cache-jemalloc
-          key: v2-ruby-bin-3.1.2-debian-11-jemalloc
-
       - name: Build binaries
         run: ./internal-scripts/ci-cd/build-ruby-packages/build-binaries.sh
         env:
           ENVIRONMENT_NAME: "debian-11"
           VARIANT_NAME: "jemalloc"
           RUBY_PACKAGE_VERSION_ID: "3.1.2"
+          CACHE_KEY_PREFIX: "sccache/debian-11"
 
       - name: Build package
         run: ./internal-scripts/ci-cd/build-ruby-packages/build-package.sh
@@ -1111,6 +1091,11 @@ jobs:
         uses: ./.github/actions/gcloud-login
         with:
           private_key: ${{ secrets.GCLOUD_KEY }}
+          write_keyfile_to: gcloud-credentials.json
+      - name: Dump Azure connection string
+        run: echo -n "$CONNECTION_STRING" > azure-connection-string.txt
+        env:
+          CONNECTION_STRING: ${{ secrets.AZURE_CI1_STORAGE_CONNECTION_STRING }}
       - name: Fetch Ruby source
         run: ./internal-scripts/ci-cd/download-artifact.sh
         env:
@@ -1143,20 +1128,13 @@ jobs:
 
       
 
-      - name: Reset & prepare workspace
-        run: mkdir cache-malloctrim
-      - name: "[malloctrim] Fetch cache"
-        uses: actions/cache@v2
-        with:
-          path: cache-malloctrim
-          key: v2-ruby-bin-3.1.2-debian-11-malloctrim
-
       - name: Build binaries
         run: ./internal-scripts/ci-cd/build-ruby-packages/build-binaries.sh
         env:
           ENVIRONMENT_NAME: "debian-11"
           VARIANT_NAME: "malloctrim"
           RUBY_PACKAGE_VERSION_ID: "3.1.2"
+          CACHE_KEY_PREFIX: "sccache/debian-11"
 
       - name: Build package
         run: ./internal-scripts/ci-cd/build-ruby-packages/build-package.sh
@@ -1196,6 +1174,11 @@ jobs:
         uses: ./.github/actions/gcloud-login
         with:
           private_key: ${{ secrets.GCLOUD_KEY }}
+          write_keyfile_to: gcloud-credentials.json
+      - name: Dump Azure connection string
+        run: echo -n "$CONNECTION_STRING" > azure-connection-string.txt
+        env:
+          CONNECTION_STRING: ${{ secrets.AZURE_CI1_STORAGE_CONNECTION_STRING }}
       - name: Fetch Ruby source
         run: ./internal-scripts/ci-cd/download-artifact.sh
         env:
@@ -1228,20 +1211,13 @@ jobs:
 
       
 
-      - name: Reset & prepare workspace
-        run: mkdir cache-normal
-      - name: "[normal] Fetch cache"
-        uses: actions/cache@v2
-        with:
-          path: cache-normal
-          key: v2-ruby-bin-3.0.4-debian-11-normal
-
       - name: Build binaries
         run: ./internal-scripts/ci-cd/build-ruby-packages/build-binaries.sh
         env:
           ENVIRONMENT_NAME: "debian-11"
           VARIANT_NAME: "normal"
           RUBY_PACKAGE_VERSION_ID: "3.0.4"
+          CACHE_KEY_PREFIX: "sccache/debian-11"
 
       - name: Build package
         run: ./internal-scripts/ci-cd/build-ruby-packages/build-package.sh
@@ -1281,6 +1257,11 @@ jobs:
         uses: ./.github/actions/gcloud-login
         with:
           private_key: ${{ secrets.GCLOUD_KEY }}
+          write_keyfile_to: gcloud-credentials.json
+      - name: Dump Azure connection string
+        run: echo -n "$CONNECTION_STRING" > azure-connection-string.txt
+        env:
+          CONNECTION_STRING: ${{ secrets.AZURE_CI1_STORAGE_CONNECTION_STRING }}
       - name: Fetch Ruby source
         run: ./internal-scripts/ci-cd/download-artifact.sh
         env:
@@ -1318,20 +1299,13 @@ jobs:
           ARTIFACT_NAME: jemalloc-bin-debian-11
           ARTIFACT_PATH: .        
 
-      - name: Reset & prepare workspace
-        run: mkdir cache-jemalloc
-      - name: "[jemalloc] Fetch cache"
-        uses: actions/cache@v2
-        with:
-          path: cache-jemalloc
-          key: v2-ruby-bin-3.0.4-debian-11-jemalloc
-
       - name: Build binaries
         run: ./internal-scripts/ci-cd/build-ruby-packages/build-binaries.sh
         env:
           ENVIRONMENT_NAME: "debian-11"
           VARIANT_NAME: "jemalloc"
           RUBY_PACKAGE_VERSION_ID: "3.0.4"
+          CACHE_KEY_PREFIX: "sccache/debian-11"
 
       - name: Build package
         run: ./internal-scripts/ci-cd/build-ruby-packages/build-package.sh
@@ -1371,6 +1345,11 @@ jobs:
         uses: ./.github/actions/gcloud-login
         with:
           private_key: ${{ secrets.GCLOUD_KEY }}
+          write_keyfile_to: gcloud-credentials.json
+      - name: Dump Azure connection string
+        run: echo -n "$CONNECTION_STRING" > azure-connection-string.txt
+        env:
+          CONNECTION_STRING: ${{ secrets.AZURE_CI1_STORAGE_CONNECTION_STRING }}
       - name: Fetch Ruby source
         run: ./internal-scripts/ci-cd/download-artifact.sh
         env:
@@ -1403,20 +1382,13 @@ jobs:
 
       
 
-      - name: Reset & prepare workspace
-        run: mkdir cache-malloctrim
-      - name: "[malloctrim] Fetch cache"
-        uses: actions/cache@v2
-        with:
-          path: cache-malloctrim
-          key: v2-ruby-bin-3.0.4-debian-11-malloctrim
-
       - name: Build binaries
         run: ./internal-scripts/ci-cd/build-ruby-packages/build-binaries.sh
         env:
           ENVIRONMENT_NAME: "debian-11"
           VARIANT_NAME: "malloctrim"
           RUBY_PACKAGE_VERSION_ID: "3.0.4"
+          CACHE_KEY_PREFIX: "sccache/debian-11"
 
       - name: Build package
         run: ./internal-scripts/ci-cd/build-ruby-packages/build-package.sh
@@ -1456,6 +1428,11 @@ jobs:
         uses: ./.github/actions/gcloud-login
         with:
           private_key: ${{ secrets.GCLOUD_KEY }}
+          write_keyfile_to: gcloud-credentials.json
+      - name: Dump Azure connection string
+        run: echo -n "$CONNECTION_STRING" > azure-connection-string.txt
+        env:
+          CONNECTION_STRING: ${{ secrets.AZURE_CI1_STORAGE_CONNECTION_STRING }}
       - name: Fetch Ruby source
         run: ./internal-scripts/ci-cd/download-artifact.sh
         env:
@@ -1488,20 +1465,13 @@ jobs:
 
       
 
-      - name: Reset & prepare workspace
-        run: mkdir cache-normal
-      - name: "[normal] Fetch cache"
-        uses: actions/cache@v2
-        with:
-          path: cache-normal
-          key: v2-ruby-bin-2.7.6-debian-11-normal
-
       - name: Build binaries
         run: ./internal-scripts/ci-cd/build-ruby-packages/build-binaries.sh
         env:
           ENVIRONMENT_NAME: "debian-11"
           VARIANT_NAME: "normal"
           RUBY_PACKAGE_VERSION_ID: "2.7.6"
+          CACHE_KEY_PREFIX: "sccache/debian-11"
 
       - name: Build package
         run: ./internal-scripts/ci-cd/build-ruby-packages/build-package.sh
@@ -1541,6 +1511,11 @@ jobs:
         uses: ./.github/actions/gcloud-login
         with:
           private_key: ${{ secrets.GCLOUD_KEY }}
+          write_keyfile_to: gcloud-credentials.json
+      - name: Dump Azure connection string
+        run: echo -n "$CONNECTION_STRING" > azure-connection-string.txt
+        env:
+          CONNECTION_STRING: ${{ secrets.AZURE_CI1_STORAGE_CONNECTION_STRING }}
       - name: Fetch Ruby source
         run: ./internal-scripts/ci-cd/download-artifact.sh
         env:
@@ -1578,20 +1553,13 @@ jobs:
           ARTIFACT_NAME: jemalloc-bin-debian-11
           ARTIFACT_PATH: .        
 
-      - name: Reset & prepare workspace
-        run: mkdir cache-jemalloc
-      - name: "[jemalloc] Fetch cache"
-        uses: actions/cache@v2
-        with:
-          path: cache-jemalloc
-          key: v2-ruby-bin-2.7.6-debian-11-jemalloc
-
       - name: Build binaries
         run: ./internal-scripts/ci-cd/build-ruby-packages/build-binaries.sh
         env:
           ENVIRONMENT_NAME: "debian-11"
           VARIANT_NAME: "jemalloc"
           RUBY_PACKAGE_VERSION_ID: "2.7.6"
+          CACHE_KEY_PREFIX: "sccache/debian-11"
 
       - name: Build package
         run: ./internal-scripts/ci-cd/build-ruby-packages/build-package.sh
@@ -1631,6 +1599,11 @@ jobs:
         uses: ./.github/actions/gcloud-login
         with:
           private_key: ${{ secrets.GCLOUD_KEY }}
+          write_keyfile_to: gcloud-credentials.json
+      - name: Dump Azure connection string
+        run: echo -n "$CONNECTION_STRING" > azure-connection-string.txt
+        env:
+          CONNECTION_STRING: ${{ secrets.AZURE_CI1_STORAGE_CONNECTION_STRING }}
       - name: Fetch Ruby source
         run: ./internal-scripts/ci-cd/download-artifact.sh
         env:
@@ -1663,20 +1636,13 @@ jobs:
 
       
 
-      - name: Reset & prepare workspace
-        run: mkdir cache-malloctrim
-      - name: "[malloctrim] Fetch cache"
-        uses: actions/cache@v2
-        with:
-          path: cache-malloctrim
-          key: v2-ruby-bin-2.7.6-debian-11-malloctrim
-
       - name: Build binaries
         run: ./internal-scripts/ci-cd/build-ruby-packages/build-binaries.sh
         env:
           ENVIRONMENT_NAME: "debian-11"
           VARIANT_NAME: "malloctrim"
           RUBY_PACKAGE_VERSION_ID: "2.7.6"
+          CACHE_KEY_PREFIX: "sccache/debian-11"
 
       - name: Build package
         run: ./internal-scripts/ci-cd/build-ruby-packages/build-package.sh
