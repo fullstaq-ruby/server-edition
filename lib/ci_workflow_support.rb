@@ -304,7 +304,7 @@ private
   def autodetect_package_format(environment)
     dockerfile = File.read("#{GeneralSupport::ROOT}/environments/#{environment}/Dockerfile",
       encoding: 'utf-8')
-    if dockerfile =~ /yum install/
+    if dockerfile =~ /(yum|dnf) install/
       :RPM
     else
       :DEB

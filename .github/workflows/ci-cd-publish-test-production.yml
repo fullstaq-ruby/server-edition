@@ -795,7 +795,7 @@ jobs:
           PACKAGE_FORMAT: "RPM"
           VARIANT_NAME: "normal"
           VARIANT_PACKAGE_SUFFIX: ""
-          TEST_IMAGE_NAME: "centos:8"
+          TEST_IMAGE_NAME: "rockylinux:8"
           APT_REPO_URL: https://apt.fullstaqruby.org
           YUM_REPO_URL: https://yum.fullstaqruby.org
 
@@ -830,7 +830,7 @@ jobs:
           PACKAGE_FORMAT: "RPM"
           VARIANT_NAME: "jemalloc"
           VARIANT_PACKAGE_SUFFIX: "-jemalloc"
-          TEST_IMAGE_NAME: "centos:8"
+          TEST_IMAGE_NAME: "rockylinux:8"
           APT_REPO_URL: https://apt.fullstaqruby.org
           YUM_REPO_URL: https://yum.fullstaqruby.org
 
@@ -865,7 +865,7 @@ jobs:
           PACKAGE_FORMAT: "RPM"
           VARIANT_NAME: "malloctrim"
           VARIANT_PACKAGE_SUFFIX: "-malloctrim"
-          TEST_IMAGE_NAME: "centos:8"
+          TEST_IMAGE_NAME: "rockylinux:8"
           APT_REPO_URL: https://apt.fullstaqruby.org
           YUM_REPO_URL: https://yum.fullstaqruby.org
 
@@ -900,7 +900,7 @@ jobs:
           PACKAGE_FORMAT: "RPM"
           VARIANT_NAME: "normal"
           VARIANT_PACKAGE_SUFFIX: ""
-          TEST_IMAGE_NAME: "centos:8"
+          TEST_IMAGE_NAME: "rockylinux:8"
           APT_REPO_URL: https://apt.fullstaqruby.org
           YUM_REPO_URL: https://yum.fullstaqruby.org
 
@@ -935,7 +935,7 @@ jobs:
           PACKAGE_FORMAT: "RPM"
           VARIANT_NAME: "jemalloc"
           VARIANT_PACKAGE_SUFFIX: "-jemalloc"
-          TEST_IMAGE_NAME: "centos:8"
+          TEST_IMAGE_NAME: "rockylinux:8"
           APT_REPO_URL: https://apt.fullstaqruby.org
           YUM_REPO_URL: https://yum.fullstaqruby.org
 
@@ -970,7 +970,7 @@ jobs:
           PACKAGE_FORMAT: "RPM"
           VARIANT_NAME: "malloctrim"
           VARIANT_PACKAGE_SUFFIX: "-malloctrim"
-          TEST_IMAGE_NAME: "centos:8"
+          TEST_IMAGE_NAME: "rockylinux:8"
           APT_REPO_URL: https://apt.fullstaqruby.org
           YUM_REPO_URL: https://yum.fullstaqruby.org
 
@@ -1005,7 +1005,7 @@ jobs:
           PACKAGE_FORMAT: "RPM"
           VARIANT_NAME: "normal"
           VARIANT_PACKAGE_SUFFIX: ""
-          TEST_IMAGE_NAME: "centos:8"
+          TEST_IMAGE_NAME: "rockylinux:8"
           APT_REPO_URL: https://apt.fullstaqruby.org
           YUM_REPO_URL: https://yum.fullstaqruby.org
 
@@ -1040,7 +1040,7 @@ jobs:
           PACKAGE_FORMAT: "RPM"
           VARIANT_NAME: "jemalloc"
           VARIANT_PACKAGE_SUFFIX: "-jemalloc"
-          TEST_IMAGE_NAME: "centos:8"
+          TEST_IMAGE_NAME: "rockylinux:8"
           APT_REPO_URL: https://apt.fullstaqruby.org
           YUM_REPO_URL: https://yum.fullstaqruby.org
 
@@ -1075,7 +1075,7 @@ jobs:
           PACKAGE_FORMAT: "RPM"
           VARIANT_NAME: "malloctrim"
           VARIANT_PACKAGE_SUFFIX: "-malloctrim"
-          TEST_IMAGE_NAME: "centos:8"
+          TEST_IMAGE_NAME: "rockylinux:8"
           APT_REPO_URL: https://apt.fullstaqruby.org
           YUM_REPO_URL: https://yum.fullstaqruby.org
 
@@ -1110,7 +1110,7 @@ jobs:
           PACKAGE_FORMAT: "RPM"
           VARIANT_NAME: "normal"
           VARIANT_PACKAGE_SUFFIX: ""
-          TEST_IMAGE_NAME: "centos:8"
+          TEST_IMAGE_NAME: "rockylinux:8"
           APT_REPO_URL: https://apt.fullstaqruby.org
           YUM_REPO_URL: https://yum.fullstaqruby.org
 
@@ -1145,7 +1145,7 @@ jobs:
           PACKAGE_FORMAT: "RPM"
           VARIANT_NAME: "jemalloc"
           VARIANT_PACKAGE_SUFFIX: "-jemalloc"
-          TEST_IMAGE_NAME: "centos:8"
+          TEST_IMAGE_NAME: "rockylinux:8"
           APT_REPO_URL: https://apt.fullstaqruby.org
           YUM_REPO_URL: https://yum.fullstaqruby.org
 
@@ -1180,7 +1180,7 @@ jobs:
           PACKAGE_FORMAT: "RPM"
           VARIANT_NAME: "malloctrim"
           VARIANT_PACKAGE_SUFFIX: "-malloctrim"
-          TEST_IMAGE_NAME: "centos:8"
+          TEST_IMAGE_NAME: "rockylinux:8"
           APT_REPO_URL: https://apt.fullstaqruby.org
           YUM_REPO_URL: https://yum.fullstaqruby.org
 
@@ -1215,7 +1215,7 @@ jobs:
           PACKAGE_FORMAT: "RPM"
           VARIANT_NAME: "normal"
           VARIANT_PACKAGE_SUFFIX: ""
-          TEST_IMAGE_NAME: "centos:8"
+          TEST_IMAGE_NAME: "rockylinux:8"
           APT_REPO_URL: https://apt.fullstaqruby.org
           YUM_REPO_URL: https://yum.fullstaqruby.org
 
@@ -1250,7 +1250,7 @@ jobs:
           PACKAGE_FORMAT: "RPM"
           VARIANT_NAME: "jemalloc"
           VARIANT_PACKAGE_SUFFIX: "-jemalloc"
-          TEST_IMAGE_NAME: "centos:8"
+          TEST_IMAGE_NAME: "rockylinux:8"
           APT_REPO_URL: https://apt.fullstaqruby.org
           YUM_REPO_URL: https://yum.fullstaqruby.org
 
@@ -1285,7 +1285,7 @@ jobs:
           PACKAGE_FORMAT: "RPM"
           VARIANT_NAME: "malloctrim"
           VARIANT_PACKAGE_SUFFIX: "-malloctrim"
-          TEST_IMAGE_NAME: "centos:8"
+          TEST_IMAGE_NAME: "rockylinux:8"
           APT_REPO_URL: https://apt.fullstaqruby.org
           YUM_REPO_URL: https://yum.fullstaqruby.org
 
@@ -1320,7 +1320,7 @@ jobs:
           PACKAGE_FORMAT: "RPM"
           VARIANT_NAME: "normal"
           VARIANT_PACKAGE_SUFFIX: ""
-          TEST_IMAGE_NAME: "centos:8"
+          TEST_IMAGE_NAME: "rockylinux:8"
           APT_REPO_URL: https://apt.fullstaqruby.org
           YUM_REPO_URL: https://yum.fullstaqruby.org
 
@@ -1355,7 +1355,7 @@ jobs:
           PACKAGE_FORMAT: "RPM"
           VARIANT_NAME: "jemalloc"
           VARIANT_PACKAGE_SUFFIX: "-jemalloc"
-          TEST_IMAGE_NAME: "centos:8"
+          TEST_IMAGE_NAME: "rockylinux:8"
           APT_REPO_URL: https://apt.fullstaqruby.org
           YUM_REPO_URL: https://yum.fullstaqruby.org
 
@@ -1390,7 +1390,7 @@ jobs:
           PACKAGE_FORMAT: "RPM"
           VARIANT_NAME: "malloctrim"
           VARIANT_PACKAGE_SUFFIX: "-malloctrim"
-          TEST_IMAGE_NAME: "centos:8"
+          TEST_IMAGE_NAME: "rockylinux:8"
           APT_REPO_URL: https://apt.fullstaqruby.org
           YUM_REPO_URL: https://yum.fullstaqruby.org
 
