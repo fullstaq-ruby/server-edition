@@ -11,7 +11,7 @@ LABEL org.opencontainers.image.source https://github.com/fullstaq-labs/fullstaq-
 RUN set -x && \
     dnf install -y dnf-plugins-core epel-release && \
     dnf install -y --enablerepo epel --enablerepo powertools \
-        gcc gcc-c++ make patch bzip2 curl autoconf automake \
+        findutils gcc gcc-c++ make patch bzip2 curl autoconf automake \
         openssl-devel libyaml-devel libffi-devel readline-devel zlib-devel \
         gdbm-devel ncurses-devel ccache && \
     \
