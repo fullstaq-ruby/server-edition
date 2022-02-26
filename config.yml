@@ -12,8 +12,8 @@ ruby:
   ## then be sure to bump the corresponding `package_revision`!
   minor_version_packages:
     - minor_version: 3.1
-      full_version: 3.1.0
-      package_revision: 5
+      full_version: 3.1.1
+      package_revision: 6
     - minor_version: 3.0
       full_version: 3.0.3
       package_revision: 5
@@ -24,8 +24,8 @@ ruby:
   ## (Optional)
   ## Which tiny Ruby version packages to build.
   tiny_version_packages:
-    - full_version: 3.1.0
-      package_revision: 1
+    - full_version: 3.1.1
+      package_revision: 2
     - full_version: 3.0.3
       package_revision: 5
     - full_version: 2.7.5
