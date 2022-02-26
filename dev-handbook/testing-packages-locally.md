@@ -77,7 +77,7 @@ Run the `./test-rpms` script to test RPM packages. Example invocation:
 
 ~~~bash
 ./test-rpms \
-  -i centos:8 \
+  -i rockylinux:8 \
   -v jemalloc \
   -r fullstaq-ruby-2.7-jemalloc-rev2-centos8.x86_64.rpm \
   -b fullstaq-rbenv-1.1.2-16-0.noarch.rpm \

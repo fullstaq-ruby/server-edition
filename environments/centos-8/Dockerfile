@@ -1,4 +1,4 @@
-FROM centos:8
+FROM rockylinux:8
 
 # Used to link container image to the repo: 
 # https://docs.github.com/en/free-pro-team@latest/packages/managing-container-images-with-github-container-registry/connecting-a-repository-to-a-container-image#connecting-a-repository-to-a-container-image-on-the-command-line
@@ -9,8 +9,8 @@ LABEL org.opencontainers.image.source https://github.com/fullstaq-labs/fullstaq-
 # breaking), then bump the version number in the `image_tag` file.
 
 RUN set -x && \
-    yum install -y epel-release && \
-    yum install -y --enablerepo epel --enablerepo PowerTools\
+    dnf install -y dnf-plugins-core epel-release && \
+    dnf install -y --enablerepo epel --enablerepo powertools \
         gcc gcc-c++ make patch bzip2 curl autoconf automake \
         openssl-devel libyaml-devel libffi-devel readline-devel zlib-devel \
         gdbm-devel ncurses-devel ccache && \
@@ -23,7 +23,7 @@ RUN set -x && \
     \
     groupadd --gid 9999 builder && \
     adduser --uid 9999 --gid 9999 --password '#' builder && \
-    yum clean all && \
+    dnf clean all && \
     if ! test -e /usr/lib/ccache/cc; then \
         mkdir -p /usr/lib/ccache && \
         ln -s /usr/bin/ccache /usr/lib/ccache/cc && \
