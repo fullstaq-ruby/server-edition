@@ -256,7 +256,7 @@ jobs:
           DISTRIBUTION_NAME: "centos-8"
           VARIANT_NAME: "normal"
           VARIANT_PACKAGE_SUFFIX: ""
-          PACKAGE_FORMAT: "DEB"
+          PACKAGE_FORMAT: "RPM"
           RUBY_PACKAGE_VERSION_ID: "3.1"
           RUBY_PACKAGE_REVISION: "5"
 
@@ -346,7 +346,7 @@ jobs:
           DISTRIBUTION_NAME: "centos-8"
           VARIANT_NAME: "jemalloc"
           VARIANT_PACKAGE_SUFFIX: "-jemalloc"
-          PACKAGE_FORMAT: "DEB"
+          PACKAGE_FORMAT: "RPM"
           RUBY_PACKAGE_VERSION_ID: "3.1"
           RUBY_PACKAGE_REVISION: "5"
 
@@ -431,7 +431,7 @@ jobs:
           DISTRIBUTION_NAME: "centos-8"
           VARIANT_NAME: "malloctrim"
           VARIANT_PACKAGE_SUFFIX: "-malloctrim"
-          PACKAGE_FORMAT: "DEB"
+          PACKAGE_FORMAT: "RPM"
           RUBY_PACKAGE_VERSION_ID: "3.1"
           RUBY_PACKAGE_REVISION: "5"
 
@@ -516,7 +516,7 @@ jobs:
           DISTRIBUTION_NAME: "centos-8"
           VARIANT_NAME: "normal"
           VARIANT_PACKAGE_SUFFIX: ""
-          PACKAGE_FORMAT: "DEB"
+          PACKAGE_FORMAT: "RPM"
           RUBY_PACKAGE_VERSION_ID: "3.0"
           RUBY_PACKAGE_REVISION: "5"
 
@@ -606,7 +606,7 @@ jobs:
           DISTRIBUTION_NAME: "centos-8"
           VARIANT_NAME: "jemalloc"
           VARIANT_PACKAGE_SUFFIX: "-jemalloc"
-          PACKAGE_FORMAT: "DEB"
+          PACKAGE_FORMAT: "RPM"
           RUBY_PACKAGE_VERSION_ID: "3.0"
           RUBY_PACKAGE_REVISION: "5"
 
@@ -691,7 +691,7 @@ jobs:
           DISTRIBUTION_NAME: "centos-8"
           VARIANT_NAME: "malloctrim"
           VARIANT_PACKAGE_SUFFIX: "-malloctrim"
-          PACKAGE_FORMAT: "DEB"
+          PACKAGE_FORMAT: "RPM"
           RUBY_PACKAGE_VERSION_ID: "3.0"
           RUBY_PACKAGE_REVISION: "5"
 
@@ -776,7 +776,7 @@ jobs:
           DISTRIBUTION_NAME: "centos-8"
           VARIANT_NAME: "normal"
           VARIANT_PACKAGE_SUFFIX: ""
-          PACKAGE_FORMAT: "DEB"
+          PACKAGE_FORMAT: "RPM"
           RUBY_PACKAGE_VERSION_ID: "2.7"
           RUBY_PACKAGE_REVISION: "7"
 
@@ -866,7 +866,7 @@ jobs:
           DISTRIBUTION_NAME: "centos-8"
           VARIANT_NAME: "jemalloc"
           VARIANT_PACKAGE_SUFFIX: "-jemalloc"
-          PACKAGE_FORMAT: "DEB"
+          PACKAGE_FORMAT: "RPM"
           RUBY_PACKAGE_VERSION_ID: "2.7"
           RUBY_PACKAGE_REVISION: "7"
 
@@ -951,7 +951,7 @@ jobs:
           DISTRIBUTION_NAME: "centos-8"
           VARIANT_NAME: "malloctrim"
           VARIANT_PACKAGE_SUFFIX: "-malloctrim"
-          PACKAGE_FORMAT: "DEB"
+          PACKAGE_FORMAT: "RPM"
           RUBY_PACKAGE_VERSION_ID: "2.7"
           RUBY_PACKAGE_REVISION: "7"
 
@@ -1036,7 +1036,7 @@ jobs:
           DISTRIBUTION_NAME: "centos-8"
           VARIANT_NAME: "normal"
           VARIANT_PACKAGE_SUFFIX: ""
-          PACKAGE_FORMAT: "DEB"
+          PACKAGE_FORMAT: "RPM"
           RUBY_PACKAGE_VERSION_ID: "3.1.0"
           RUBY_PACKAGE_REVISION: "1"
 
@@ -1126,7 +1126,7 @@ jobs:
           DISTRIBUTION_NAME: "centos-8"
           VARIANT_NAME: "jemalloc"
           VARIANT_PACKAGE_SUFFIX: "-jemalloc"
-          PACKAGE_FORMAT: "DEB"
+          PACKAGE_FORMAT: "RPM"
           RUBY_PACKAGE_VERSION_ID: "3.1.0"
           RUBY_PACKAGE_REVISION: "1"
 
@@ -1211,7 +1211,7 @@ jobs:
           DISTRIBUTION_NAME: "centos-8"
           VARIANT_NAME: "malloctrim"
           VARIANT_PACKAGE_SUFFIX: "-malloctrim"
-          PACKAGE_FORMAT: "DEB"
+          PACKAGE_FORMAT: "RPM"
           RUBY_PACKAGE_VERSION_ID: "3.1.0"
           RUBY_PACKAGE_REVISION: "1"
 
@@ -1296,7 +1296,7 @@ jobs:
           DISTRIBUTION_NAME: "centos-8"
           VARIANT_NAME: "normal"
           VARIANT_PACKAGE_SUFFIX: ""
-          PACKAGE_FORMAT: "DEB"
+          PACKAGE_FORMAT: "RPM"
           RUBY_PACKAGE_VERSION_ID: "3.0.3"
           RUBY_PACKAGE_REVISION: "5"
 
@@ -1386,7 +1386,7 @@ jobs:
           DISTRIBUTION_NAME: "centos-8"
           VARIANT_NAME: "jemalloc"
           VARIANT_PACKAGE_SUFFIX: "-jemalloc"
-          PACKAGE_FORMAT: "DEB"
+          PACKAGE_FORMAT: "RPM"
           RUBY_PACKAGE_VERSION_ID: "3.0.3"
           RUBY_PACKAGE_REVISION: "5"
 
@@ -1471,7 +1471,7 @@ jobs:
           DISTRIBUTION_NAME: "centos-8"
           VARIANT_NAME: "malloctrim"
           VARIANT_PACKAGE_SUFFIX: "-malloctrim"
-          PACKAGE_FORMAT: "DEB"
+          PACKAGE_FORMAT: "RPM"
           RUBY_PACKAGE_VERSION_ID: "3.0.3"
           RUBY_PACKAGE_REVISION: "5"
 
@@ -1556,7 +1556,7 @@ jobs:
           DISTRIBUTION_NAME: "centos-8"
           VARIANT_NAME: "normal"
           VARIANT_PACKAGE_SUFFIX: ""
-          PACKAGE_FORMAT: "DEB"
+          PACKAGE_FORMAT: "RPM"
           RUBY_PACKAGE_VERSION_ID: "2.7.5"
           RUBY_PACKAGE_REVISION: "6"
 
@@ -1646,7 +1646,7 @@ jobs:
           DISTRIBUTION_NAME: "centos-8"
           VARIANT_NAME: "jemalloc"
           VARIANT_PACKAGE_SUFFIX: "-jemalloc"
-          PACKAGE_FORMAT: "DEB"
+          PACKAGE_FORMAT: "RPM"
           RUBY_PACKAGE_VERSION_ID: "2.7.5"
           RUBY_PACKAGE_REVISION: "6"
 
@@ -1731,7 +1731,7 @@ jobs:
           DISTRIBUTION_NAME: "centos-8"
           VARIANT_NAME: "malloctrim"
           VARIANT_PACKAGE_SUFFIX: "-malloctrim"
-          PACKAGE_FORMAT: "DEB"
+          PACKAGE_FORMAT: "RPM"
           RUBY_PACKAGE_VERSION_ID: "2.7.5"
           RUBY_PACKAGE_REVISION: "6"
 
