@@ -2,6 +2,8 @@
 
 All packages are built within [build environments](build-environments.md): Docker containers that are based on the distribution that we want to package for, and that contains all the tooling (such as compilers) that we need. So adding support for a new distribution involves creating a new build environment for that distribution.
 
+Note that older Ruby versions may fail to compile on newer distributions. See [Excluding Ruby versions from certain distributions](#excluding-ruby-versions-from-certain-distributions) to learn how to deal with that.
+
 ## Before you begin
 
 Follow the [Development environment setup](dev-environment-setup.md) instructions. In particular, be sure to setup the Git hooks.
@@ -50,3 +52,18 @@ In README.md under "Installation", add instructions for this new distribution.
 ## Step 5: Commit and push your changes
 
 Commit and push your changes to the Git repo.
+
+## Excluding Ruby versions from certain distributions
+
+If an older Ruby version fails to compile on a newer distribution (for example, Ruby < 3.1 is not compatible with OpenSSL v3, which is shipped by Ubuntu 22.04), then you should add an _exclusion_ for this particular pair Ruby version and distribution.
+
+In `config.yml`, scroll to the `distribution_exclusions` section and add an entry (or extend an existing one), like this:
+
+~~~yaml
+distribution_exclusions:
+  - ruby_minor_version: '3.0'
+    distros:
+      - ubuntu-22.04
+~~~
+
+With exclusions in place, the CI/CD system will skip building the specified Ruby versions from the associated distributions.

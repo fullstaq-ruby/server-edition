@@ -11,25 +11,25 @@ ruby:
   ## NOTE: if you change an existing `full_version` value,
   ## then be sure to bump the corresponding `package_revision`!
   minor_version_packages:
-    - minor_version: 3.1
-      full_version: 3.1.2
-      package_revision: 7
-    - minor_version: 3.0
-      full_version: 3.0.4
-      package_revision: 6
-    - minor_version: 2.7
-      full_version: 2.7.6
-      package_revision: 8
+    - minor_version: '3.1'
+      full_version: '3.1.2'
+      package_revision: '7'
+    - minor_version: '3.0'
+      full_version: '3.0.4'
+      package_revision: '6'
+    - minor_version: '2.7'
+      full_version: '2.7.6'
+      package_revision: '8'
 
   ## (Optional)
   ## Which tiny Ruby version packages to build.
   tiny_version_packages:
-    - full_version: 3.1.2
-      package_revision: 3
-    - full_version: 3.0.4
-      package_revision: 6
-    - full_version: 2.7.6
-      package_revision: 7
+    - full_version: '3.1.2'
+      package_revision: '3'
+    - full_version: '3.0.4'
+      package_revision: '6'
+    - full_version: '2.7.6'
+      package_revision: '7'
 
 ## (Required)
 ## Which Rbenv version to package.
@@ -70,11 +70,11 @@ rbenv:
 ## `package_revision` to 0.
 common:
   rpm:
-    version: 1.0
-    package_revision: 0
+    version: '1.0'
+    package_revision: '0'
   deb:
-    version: 1.0
-    package_revision: 0
+    version: '1.0'
+    package_revision: '0'
 
 ## (Required)
 ## Which variants to build.
@@ -88,7 +88,7 @@ variants:
 ##
 ## NOTE: If you change this, then be sure to bump the Ruby
 ## `package_revision` numbers too!
-jemalloc_version: 3.6.0
+jemalloc_version: '3.6.0'
 
 ## (Required)
 ## Specify which distributions to build packages for.
@@ -106,3 +106,14 @@ distributions: all
 #   - ubuntu-18.04
 #   - ubuntu-20.04
 #   - ubuntu-22.04
+
+## (Optional)
+## Excludes certain Ruby minor versions from certain distributions.
+## Useful if certain older Ruby versions don't compile on newer distributions.
+distribution_exclusions:
+  - ruby_minor_version: '2.7'
+    distros:
+      - ubuntu-22.04
+  - ruby_minor_version: '3.0'
+    distros:
+      - ubuntu-22.04
