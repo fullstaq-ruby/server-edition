@@ -40,7 +40,7 @@ In `config.yml`, scroll to the `distributions` section, and add a comment indica
 
 Test this build environment by:
 
- 1. [Building packages with it.](building-packages-locally.md)
+ 1. [Building packages with it](building-packages-locally.md).
  2. [Testing the built packages](testing-packages-locally.md).
 
 ## Step 4: Update docs

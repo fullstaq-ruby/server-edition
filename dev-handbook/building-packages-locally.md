@@ -48,7 +48,7 @@ Download the following source code:
 For example:
 
 ~~~bash
-curl -fLO https://cache.ruby-lang.org/pub/ruby/2.7/ruby-2.7.1.tar.gz
+curl -fLO https://cache.ruby-lang.org/pub/ruby/3.1/ruby-3.1.2.tar.gz
 git clone https://github.com/fullstaq-labs/fullstaq-rbenv.git
 
 # Only run the following if you intend to build the
@@ -88,8 +88,8 @@ If you intend to build the Jemalloc variant of Fullstaq Ruby, then this script r
 ~~~bash
 ./build-ruby \
   -n centos-8 \
-  -s ruby-2.7.1.tar.gz \
-  -v 2.7.1 \
+  -s ruby-3.1.2.tar.gz \
+  -v 3.1.2 \
   -o ruby-bin.tar.gz \
   -m jemalloc-bin.tar.gz \
   -j 2
@@ -99,7 +99,7 @@ Here's what the parameters mean:
 
  * `-n` — the distribution you want to build for. You can see a list of distribution names by running `./build-ruby -h`.
  * `-s` — path to the Ruby source tarball, in tar.gz format.
- * `-v` — the version number for this Ruby package that you would like to see in `rbenv versions`. In this example, we picked a number that's the exact same as the Ruby version number. But when you're building a minor version package, then you omit the tiny version number, and specify `2.7`.
+ * `-v` — the version number for this Ruby package that you would like to see in `rbenv versions`. In this example, we picked a number that's the exact same as the Ruby version number. But when you're building a minor version package, then you omit the tiny version number, and specify `3.1`.
  * `-o` — path to write the resulting binary tarball to, in tar.gz format. This tarball includes everything that's needed to produce the eventual Ruby package.
  * `-m` — path to the Jemalloc binary tarball, as produced by step 2.
  * `-j` — number of concurrent compiler invocations. Set this to equal the number of CPU cores, in order to speed up the compilation.
@@ -113,8 +113,8 @@ Example invocation with `malloc_trim` support:
 ~~~bash
 ./build-ruby \
   -n centos-8 \
-  -s ruby-2.7.1.tar.gz \
-  -v 2.7.1 \
+  -s ruby-3.1.2.tar.gz \
+  -v 3.1.2 \
   -o ruby-bin.tar.gz \
   -t \
   -j 2
@@ -125,8 +125,8 @@ Example invocation _without_ `malloc_trim` (and also without Jemalloc) support:
 ~~~bash
 ./build-ruby \
   -n centos-8 \
-  -s ruby-2.7.1.tar.gz \
-  -v 2.7.1 \
+  -s ruby-3.1.2.tar.gz \
+  -v 3.1.2 \
   -o ruby-bin.tar.gz \
   -j 2
 ~~~
@@ -140,7 +140,7 @@ Run the `build-ruby-deb` script. Example invocation:
 ~~~bash
 ./build-ruby-deb \
   -b ruby-bin.tar.gz \
-  -o fullstaq-ruby-2.7.1-jemalloc_0-debian-10_amd64.deb
+  -o fullstaq-ruby-3.1.2-jemalloc_0-debian-11_amd64.deb
 ~~~
 
 What the parameters mean:
@@ -155,7 +155,7 @@ Run the `build-ruby-rpm` script. Example invocation:
 ~~~bash
 ./build-ruby-rpm \
   -b ruby-bin.tar.gz \
-  -o fullstaq-ruby-2.7.1-jemalloc-rev0-centos8.x86_64.rpm
+  -o fullstaq-ruby-3.1.2-jemalloc-rev0-centos8.x86_64.rpm
 ~~~
 
 What the parameters mean:
