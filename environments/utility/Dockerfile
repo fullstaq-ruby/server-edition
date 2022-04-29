@@ -15,24 +15,28 @@ RUN set -x && \
     apt install -y wget ca-certificates binutils build-essential \
         curl ca-certificates rpm file ruby ruby-dev rubygems sudo \
         aptly createrepo parallel && \
-    \
-    curl -sSLo /sbin/activatecontaineruid.gz https://github.com/fullstaq-labs/activatecontaineruid/releases/download/v0.9.2/activatecontaineruid-0.9.2-x86_64-linux.gz && \
-    gunzip /sbin/activatecontaineruid.gz && \
-    chmod +x,+s /sbin/activatecontaineruid && \
-    mkdir /etc/activatecontaineruid && \
-    echo 'app_account: utility' > /etc/activatecontaineruid/config.yml && \
-    \
-    gem install bundler --no-document -v 2.2.28 && \
+    apt clean && \
+    rm -rf /tmp/* /var/tmp/* /var/lib/apt/lists/*
+
+RUN set -x && \
+    curl -fsSLo /sbin/matchhostfsowner.gz https://github.com/FooBarWidget/matchhostfsowner/releases/download/v0.9.8/matchhostfsowner-0.9.8-x86_64-linux.gz && \
+    gunzip /sbin/matchhostfsowner.gz && \
+    chmod +x,+s /sbin/matchhostfsowner && \
+    mkdir /etc/matchhostfsowner && \
+    echo 'app_account: utility' > /etc/matchhostfsowner/config.yml && \
     addgroup --gid 9999 utility && \
     adduser --uid 9999 --gid 9999 --disabled-password --gecos Utility utility && \
-    usermod -L utility && \
+    usermod -L utility
+
+RUN set -x && \
+    gem install bundler --no-document -v 2.2.28 && \
     mkdir /bundle && \
     chown utility: /bundle && \
     cp /utility_build/* /home/utility/ && \
     cd /home/utility && \
-    sudo -H -u utility bundle install -j4 --path /bundle && \
-    apt clean && \
-    rm -rf /utility_build /tmp/* /var/tmp/* /var/lib/apt/lists/*
+    sudo -H -u utility bundle config set --local path /bundle && \
+    sudo -H -u utility bundle install -j4 && \
+    rm -rf /utility_build /tmp/* /var/tmp/*
 
 USER utility
-ENTRYPOINT ["/sbin/activatecontaineruid"]
+ENTRYPOINT ["/sbin/matchhostfsowner"]

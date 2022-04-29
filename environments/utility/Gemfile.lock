@@ -3,11 +3,11 @@ GEM
   specs:
     arr-pm (0.0.11)
       cabin (> 0)
-    backports (3.21.0)
+    backports (3.23.0)
     cabin (0.9.0)
     clamp (1.0.1)
     dotenv (2.7.6)
-    fpm (1.13.1)
+    fpm (1.14.2)
       arr-pm (~> 0.0.11)
       backports (>= 2.6.2)
       cabin (>= 0.6.0)
@@ -17,10 +17,10 @@ GEM
       pleaserun (~> 0.0.29)
       rexml
       stud
-    git (1.9.1)
+    git (1.11.0)
       rchardet (~> 1.8)
     insist (1.0.0)
-    json (2.5.1)
+    json (2.6.1)
     mustache (0.99.8)
     pleaserun (0.0.32)
       cabin (> 0)
@@ -38,6 +38,9 @@ PLATFORMS
 
 DEPENDENCIES
   fpm
+
+RUBY VERSION
+   ruby 2.7.6p219
 
 BUNDLED WITH
    2.2.28
