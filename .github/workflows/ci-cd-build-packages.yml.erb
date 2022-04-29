@@ -16,6 +16,7 @@ on:
 env:
   CI_ARTIFACTS_BUCKET: fullstaq-ruby-server-edition-ci-artifacts
   CI_ARTIFACTS_RUN_NUMBER: ${{ github.event.inputs.ci_artifacts_run_number || github.run_number }}
+  CACHE_CONTAINER: server-edition-ci-cache
 
 jobs:
   # Determines which jobs should be run, or (in case this is a re-run)
@@ -84,13 +85,11 @@ jobs:
           uses: ./.github/actions/gcloud-login
           with:
             private_key: ${{ secrets.GCLOUD_KEY }}
-        - name: Fetch cache
-          uses: actions/cache@v1
-          with:
-            path: cache
-            key: 'jemalloc-bin-<%= distribution[:name] %>-<%= jemalloc_version %>'
-        - name: Create cache dir
-          run: mkdir -p cache
+            write_keyfile_to: gcloud-credentials.json
+        - name: Dump Azure connection string
+          run: echo -n "$CONNECTION_STRING" > azure-connection-string.txt
+          env:
+            CONNECTION_STRING: ${{ secrets.AZURE_CI1_STORAGE_CONNECTION_STRING }}
 
         - name: Download Docker image necessary for building
           run: ./internal-scripts/ci-cd/download-artifact.sh
@@ -104,6 +103,8 @@ jobs:
           env:
             TARBALL: image.tar.zst
 
+        - run: mkdir cache
+
         - name: Download source
           run: ./internal-scripts/ci-cd/build-jemalloc-binaries/download-source.sh
           env:
@@ -113,6 +114,7 @@ jobs:
           run: ./internal-scripts/ci-cd/build-jemalloc-binaries/build.sh
           env:
             ENVIRONMENT_NAME: '<%= distribution[:name] %>'
+            CACHE_KEY_PREFIX: 'sccache/<%= distribution[:name] %>'
 
         - name: Archive artifact
           run: ./internal-scripts/ci-cd/upload-artifact.sh
@@ -151,6 +153,11 @@ jobs:
           uses: ./.github/actions/gcloud-login
           with:
             private_key: ${{ secrets.GCLOUD_KEY }}
+            write_keyfile_to: gcloud-credentials.json
+        - name: Dump Azure connection string
+          run: echo -n "$CONNECTION_STRING" > azure-connection-string.txt
+          env:
+            CONNECTION_STRING: ${{ secrets.AZURE_CI1_STORAGE_CONNECTION_STRING }}
         - name: Fetch Ruby source
           run: ./internal-scripts/ci-cd/download-artifact.sh
           env:
@@ -191,20 +198,13 @@ jobs:
         <%- end -%>
         <% end %>
 
-        - name: Reset & prepare workspace
-          run: mkdir cache-<%= variant[:name] %>
-        - name: "[<%= variant[:name] %>] Fetch cache"
-          uses: actions/cache@v2
-          with:
-            path: cache-<%= variant[:name] %>
-            key: v2-ruby-bin-<%= ruby_package_version[:id] %>-<%= distribution[:name] %>-<%= variant[:name] %>
-
         - name: Build binaries
           run: ./internal-scripts/ci-cd/build-ruby-packages/build-binaries.sh
           env:
             ENVIRONMENT_NAME: "<%= distribution[:name] %>"
             VARIANT_NAME: "<%= variant[:name] %>"
             RUBY_PACKAGE_VERSION_ID: "<%= ruby_package_version[:id] %>"
+            CACHE_KEY_PREFIX: "sccache/<%= distribution[:name] %>"
 
         - name: Build package
           run: ./internal-scripts/ci-cd/build-ruby-packages/build-package.sh

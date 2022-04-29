@@ -177,14 +177,14 @@ jobs:
         run: ./internal-scripts/ci-cd/build-docker-images/build.sh
         env:
           IMAGE_NAME: 'fullstaq/ruby-build-env-centos-7'
-          IMAGE_TAG: '3'
+          IMAGE_TAG: '4'
           SOURCE_DIR: 'environments/centos-7'
 
       - name: Dump image
         run: ./internal-scripts/ci-cd/build-docker-images/dump-image.sh
         env:
           IMAGE_NAME: 'fullstaq/ruby-build-env-centos-7'
-          IMAGE_TAG: '3'
+          IMAGE_TAG: '4'
       - name: Archive artifact
         run: ./internal-scripts/ci-cd/upload-artifact.sh
         env:
@@ -208,14 +208,14 @@ jobs:
         run: ./internal-scripts/ci-cd/build-docker-images/build.sh
         env:
           IMAGE_NAME: 'fullstaq/ruby-build-env-centos-8'
-          IMAGE_TAG: '2'
+          IMAGE_TAG: '3'
           SOURCE_DIR: 'environments/centos-8'
 
       - name: Dump image
         run: ./internal-scripts/ci-cd/build-docker-images/dump-image.sh
         env:
           IMAGE_NAME: 'fullstaq/ruby-build-env-centos-8'
-          IMAGE_TAG: '2'
+          IMAGE_TAG: '3'
       - name: Archive artifact
         run: ./internal-scripts/ci-cd/upload-artifact.sh
         env:
@@ -239,14 +239,14 @@ jobs:
         run: ./internal-scripts/ci-cd/build-docker-images/build.sh
         env:
           IMAGE_NAME: 'fullstaq/ruby-build-env-debian-10'
-          IMAGE_TAG: '1'
+          IMAGE_TAG: '2'
           SOURCE_DIR: 'environments/debian-10'
 
       - name: Dump image
         run: ./internal-scripts/ci-cd/build-docker-images/dump-image.sh
         env:
           IMAGE_NAME: 'fullstaq/ruby-build-env-debian-10'
-          IMAGE_TAG: '1'
+          IMAGE_TAG: '2'
       - name: Archive artifact
         run: ./internal-scripts/ci-cd/upload-artifact.sh
         env:
@@ -270,14 +270,14 @@ jobs:
         run: ./internal-scripts/ci-cd/build-docker-images/build.sh
         env:
           IMAGE_NAME: 'fullstaq/ruby-build-env-debian-11'
-          IMAGE_TAG: '1'
+          IMAGE_TAG: '2'
           SOURCE_DIR: 'environments/debian-11'
 
       - name: Dump image
         run: ./internal-scripts/ci-cd/build-docker-images/dump-image.sh
         env:
           IMAGE_NAME: 'fullstaq/ruby-build-env-debian-11'
-          IMAGE_TAG: '1'
+          IMAGE_TAG: '2'
       - name: Archive artifact
         run: ./internal-scripts/ci-cd/upload-artifact.sh
         env:
@@ -301,14 +301,14 @@ jobs:
         run: ./internal-scripts/ci-cd/build-docker-images/build.sh
         env:
           IMAGE_NAME: 'fullstaq/ruby-build-env-debian-9'
-          IMAGE_TAG: '2'
+          IMAGE_TAG: '3'
           SOURCE_DIR: 'environments/debian-9'
 
       - name: Dump image
         run: ./internal-scripts/ci-cd/build-docker-images/dump-image.sh
         env:
           IMAGE_NAME: 'fullstaq/ruby-build-env-debian-9'
-          IMAGE_TAG: '2'
+          IMAGE_TAG: '3'
       - name: Archive artifact
         run: ./internal-scripts/ci-cd/upload-artifact.sh
         env:
@@ -332,14 +332,14 @@ jobs:
         run: ./internal-scripts/ci-cd/build-docker-images/build.sh
         env:
           IMAGE_NAME: 'fullstaq/ruby-build-env-ubuntu-18.04'
-          IMAGE_TAG: '2'
+          IMAGE_TAG: '3'
           SOURCE_DIR: 'environments/ubuntu-18.04'
 
       - name: Dump image
         run: ./internal-scripts/ci-cd/build-docker-images/dump-image.sh
         env:
           IMAGE_NAME: 'fullstaq/ruby-build-env-ubuntu-18.04'
-          IMAGE_TAG: '2'
+          IMAGE_TAG: '3'
       - name: Archive artifact
         run: ./internal-scripts/ci-cd/upload-artifact.sh
         env:
@@ -363,14 +363,14 @@ jobs:
         run: ./internal-scripts/ci-cd/build-docker-images/build.sh
         env:
           IMAGE_NAME: 'fullstaq/ruby-build-env-ubuntu-20.04'
-          IMAGE_TAG: '2'
+          IMAGE_TAG: '3'
           SOURCE_DIR: 'environments/ubuntu-20.04'
 
       - name: Dump image
         run: ./internal-scripts/ci-cd/build-docker-images/dump-image.sh
         env:
           IMAGE_NAME: 'fullstaq/ruby-build-env-ubuntu-20.04'
-          IMAGE_TAG: '2'
+          IMAGE_TAG: '3'
       - name: Archive artifact
         run: ./internal-scripts/ci-cd/upload-artifact.sh
         env:

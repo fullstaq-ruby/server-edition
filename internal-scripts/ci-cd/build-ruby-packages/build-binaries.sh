@@ -9,29 +9,26 @@ source "$ROOTDIR/lib/library.sh"
 require_envvar ENVIRONMENT_NAME
 require_envvar VARIANT_NAME
 require_envvar RUBY_PACKAGE_VERSION_ID
+require_envvar CACHE_CONTAINER
+require_envvar CACHE_KEY_PREFIX
 
-
-BUILD_IMAGE_NAME="fullstaq/ruby-build-env-$ENVIRONMENT_NAME"
-BUILD_IMAGE_TAG=$(read_single_value_file "$ROOTDIR/environments/$ENVIRONMENT_NAME/image_tag")
 
 if [[ "$VARIANT_NAME" = jemalloc ]]; then
-    MOUNT_ARGS=(-v "$(pwd)/jemalloc-bin.tar.gz:/input/jemalloc-bin.tar.gz:ro")
+    VARIANT_ARGS=(-m "$(pwd)/jemalloc-bin.tar.gz")
+elif [[ "$VARIANT_NAME" = malloctrim ]]; then
+    VARIANT_ARGS=(-t)
 else
-    MOUNT_ARGS=()
+    VARIANT_ARGS=()
 fi
 
-touch "ruby-bin-$VARIANT_NAME.tar.gz"
-
-exec docker run --rm --init \
-    -v "$ROOTDIR:/system:ro" \
-    -v "$(pwd)/ruby-src.tar.gz:/input/ruby-src.tar.gz:ro" \
-    -v "$(pwd)/ruby-bin-$VARIANT_NAME.tar.gz:/output/ruby-bin.tar.gz" \
-    -v "$(pwd)/cache-$VARIANT_NAME:/cache:delegated" \
-    "${MOUNT_ARGS[@]}" \
-    -e "VARIANT=$VARIANT_NAME" \
-    -e "BUILD_CONCURRENCY=2" \
-    -e "PACKAGE_VERSION=$RUBY_PACKAGE_VERSION_ID" \
-    -e "ENVIRONMENT_NAME=$ENVIRONMENT_NAME" \
-    --user "$(id -u):$(id -g)" \
-    "$BUILD_IMAGE_NAME:$BUILD_IMAGE_TAG" \
-    /system/container-entrypoints/build-ruby
+set -x
+exec "$ROOTDIR/build-ruby" \
+    -n "$ENVIRONMENT_NAME" \
+    -s "$(pwd)/ruby-src.tar.gz" \
+    -v "$RUBY_PACKAGE_VERSION_ID" \
+    -o "$(pwd)/ruby-bin-$VARIANT_NAME.tar.gz" \
+    "${VARIANT_ARGS[@]}" \
+    -j 2 \
+    -c azure-connection-string.txt \
+    -r "$CACHE_CONTAINER" \
+    -d "$CACHE_KEY_PREFIX"

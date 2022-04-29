@@ -26,6 +26,7 @@ on:
 env:
   CI_ARTIFACTS_BUCKET: fullstaq-ruby-server-edition-ci-artifacts
   CI_ARTIFACTS_RUN_NUMBER: ${{ github.event.inputs.ci_artifacts_run_number || github.run_number }}
+  CACHE_CONTAINER: server-edition-ci-cache
 
 jobs:
   # Determines which jobs should be run, or (in case this is a re-run)
@@ -93,13 +94,11 @@ jobs:
         uses: ./.github/actions/gcloud-login
         with:
           private_key: ${{ secrets.GCLOUD_KEY }}
-      - name: Fetch cache
-        uses: actions/cache@v1
-        with:
-          path: cache
-          key: 'jemalloc-bin-centos-8-3.6.0'
-      - name: Create cache dir
-        run: mkdir -p cache
+          write_keyfile_to: gcloud-credentials.json
+      - name: Dump Azure connection string
+        run: echo -n "$CONNECTION_STRING" > azure-connection-string.txt
+        env:
+          CONNECTION_STRING: ${{ secrets.AZURE_CI1_STORAGE_CONNECTION_STRING }}
 
       - name: Download Docker image necessary for building
         run: ./internal-scripts/ci-cd/download-artifact.sh
@@ -113,6 +112,8 @@ jobs:
         env:
           TARBALL: image.tar.zst
 
+      - run: mkdir cache
+
       - name: Download source
         run: ./internal-scripts/ci-cd/build-jemalloc-binaries/download-source.sh
         env:
@@ -122,6 +123,7 @@ jobs:
         run: ./internal-scripts/ci-cd/build-jemalloc-binaries/build.sh
         env:
           ENVIRONMENT_NAME: 'centos-8'
+          CACHE_KEY_PREFIX: 'sccache/centos-8'
 
       - name: Archive artifact
         run: ./internal-scripts/ci-cd/upload-artifact.sh
@@ -140,13 +142,11 @@ jobs:
         uses: ./.github/actions/gcloud-login
         with:
           private_key: ${{ secrets.GCLOUD_KEY }}
-      - name: Fetch cache
-        uses: actions/cache@v1
-        with:
-          path: cache
-          key: 'jemalloc-bin-ubuntu-18.04-3.6.0'
-      - name: Create cache dir
-        run: mkdir -p cache
+          write_keyfile_to: gcloud-credentials.json
+      - name: Dump Azure connection string
+        run: echo -n "$CONNECTION_STRING" > azure-connection-string.txt
+        env:
+          CONNECTION_STRING: ${{ secrets.AZURE_CI1_STORAGE_CONNECTION_STRING }}
 
       - name: Download Docker image necessary for building
         run: ./internal-scripts/ci-cd/download-artifact.sh
@@ -160,6 +160,8 @@ jobs:
         env:
           TARBALL: image.tar.zst
 
+      - run: mkdir cache
+
       - name: Download source
         run: ./internal-scripts/ci-cd/build-jemalloc-binaries/download-source.sh
         env:
@@ -169,6 +171,7 @@ jobs:
         run: ./internal-scripts/ci-cd/build-jemalloc-binaries/build.sh
         env:
           ENVIRONMENT_NAME: 'ubuntu-18.04'
+          CACHE_KEY_PREFIX: 'sccache/ubuntu-18.04'
 
       - name: Archive artifact
         run: ./internal-scripts/ci-cd/upload-artifact.sh
@@ -203,6 +206,11 @@ jobs:
         uses: ./.github/actions/gcloud-login
         with:
           private_key: ${{ secrets.GCLOUD_KEY }}
+          write_keyfile_to: gcloud-credentials.json
+      - name: Dump Azure connection string
+        run: echo -n "$CONNECTION_STRING" > azure-connection-string.txt
+        env:
+          CONNECTION_STRING: ${{ secrets.AZURE_CI1_STORAGE_CONNECTION_STRING }}
       - name: Fetch Ruby source
         run: ./internal-scripts/ci-cd/download-artifact.sh
         env:
@@ -235,20 +243,13 @@ jobs:
 
       
 
-      - name: Reset & prepare workspace
-        run: mkdir cache-normal
-      - name: "[normal] Fetch cache"
-        uses: actions/cache@v2
-        with:
-          path: cache-normal
-          key: v2-ruby-bin-3.1-centos-8-normal
-
       - name: Build binaries
         run: ./internal-scripts/ci-cd/build-ruby-packages/build-binaries.sh
         env:
           ENVIRONMENT_NAME: "centos-8"
           VARIANT_NAME: "normal"
           RUBY_PACKAGE_VERSION_ID: "3.1"
+          CACHE_KEY_PREFIX: "sccache/centos-8"
 
       - name: Build package
         run: ./internal-scripts/ci-cd/build-ruby-packages/build-package.sh
@@ -288,6 +289,11 @@ jobs:
         uses: ./.github/actions/gcloud-login
         with:
           private_key: ${{ secrets.GCLOUD_KEY }}
+          write_keyfile_to: gcloud-credentials.json
+      - name: Dump Azure connection string
+        run: echo -n "$CONNECTION_STRING" > azure-connection-string.txt
+        env:
+          CONNECTION_STRING: ${{ secrets.AZURE_CI1_STORAGE_CONNECTION_STRING }}
       - name: Fetch Ruby source
         run: ./internal-scripts/ci-cd/download-artifact.sh
         env:
@@ -325,20 +331,13 @@ jobs:
           ARTIFACT_NAME: jemalloc-bin-centos-8
           ARTIFACT_PATH: .        
 
-      - name: Reset & prepare workspace
-        run: mkdir cache-jemalloc
-      - name: "[jemalloc] Fetch cache"
-        uses: actions/cache@v2
-        with:
-          path: cache-jemalloc
-          key: v2-ruby-bin-3.1-centos-8-jemalloc
-
       - name: Build binaries
         run: ./internal-scripts/ci-cd/build-ruby-packages/build-binaries.sh
         env:
           ENVIRONMENT_NAME: "centos-8"
           VARIANT_NAME: "jemalloc"
           RUBY_PACKAGE_VERSION_ID: "3.1"
+          CACHE_KEY_PREFIX: "sccache/centos-8"
 
       - name: Build package
         run: ./internal-scripts/ci-cd/build-ruby-packages/build-package.sh
@@ -378,6 +377,11 @@ jobs:
         uses: ./.github/actions/gcloud-login
         with:
           private_key: ${{ secrets.GCLOUD_KEY }}
+          write_keyfile_to: gcloud-credentials.json
+      - name: Dump Azure connection string
+        run: echo -n "$CONNECTION_STRING" > azure-connection-string.txt
+        env:
+          CONNECTION_STRING: ${{ secrets.AZURE_CI1_STORAGE_CONNECTION_STRING }}
       - name: Fetch Ruby source
         run: ./internal-scripts/ci-cd/download-artifact.sh
         env:
@@ -410,20 +414,13 @@ jobs:
 
       
 
-      - name: Reset & prepare workspace
-        run: mkdir cache-malloctrim
-      - name: "[malloctrim] Fetch cache"
-        uses: actions/cache@v2
-        with:
-          path: cache-malloctrim
-          key: v2-ruby-bin-3.1-centos-8-malloctrim
-
       - name: Build binaries
         run: ./internal-scripts/ci-cd/build-ruby-packages/build-binaries.sh
         env:
           ENVIRONMENT_NAME: "centos-8"
           VARIANT_NAME: "malloctrim"
           RUBY_PACKAGE_VERSION_ID: "3.1"
+          CACHE_KEY_PREFIX: "sccache/centos-8"
 
       - name: Build package
         run: ./internal-scripts/ci-cd/build-ruby-packages/build-package.sh
@@ -463,6 +460,11 @@ jobs:
         uses: ./.github/actions/gcloud-login
         with:
           private_key: ${{ secrets.GCLOUD_KEY }}
+          write_keyfile_to: gcloud-credentials.json
+      - name: Dump Azure connection string
+        run: echo -n "$CONNECTION_STRING" > azure-connection-string.txt
+        env:
+          CONNECTION_STRING: ${{ secrets.AZURE_CI1_STORAGE_CONNECTION_STRING }}
       - name: Fetch Ruby source
         run: ./internal-scripts/ci-cd/download-artifact.sh
         env:
@@ -495,20 +497,13 @@ jobs:
 
       
 
-      - name: Reset & prepare workspace
-        run: mkdir cache-normal
-      - name: "[normal] Fetch cache"
-        uses: actions/cache@v2
-        with:
-          path: cache-normal
-          key: v2-ruby-bin-3.0-centos-8-normal
-
       - name: Build binaries
         run: ./internal-scripts/ci-cd/build-ruby-packages/build-binaries.sh
         env:
           ENVIRONMENT_NAME: "centos-8"
           VARIANT_NAME: "normal"
           RUBY_PACKAGE_VERSION_ID: "3.0"
+          CACHE_KEY_PREFIX: "sccache/centos-8"
 
       - name: Build package
         run: ./internal-scripts/ci-cd/build-ruby-packages/build-package.sh
@@ -548,6 +543,11 @@ jobs:
         uses: ./.github/actions/gcloud-login
         with:
           private_key: ${{ secrets.GCLOUD_KEY }}
+          write_keyfile_to: gcloud-credentials.json
+      - name: Dump Azure connection string
+        run: echo -n "$CONNECTION_STRING" > azure-connection-string.txt
+        env:
+          CONNECTION_STRING: ${{ secrets.AZURE_CI1_STORAGE_CONNECTION_STRING }}
       - name: Fetch Ruby source
         run: ./internal-scripts/ci-cd/download-artifact.sh
         env:
@@ -585,20 +585,13 @@ jobs:
           ARTIFACT_NAME: jemalloc-bin-centos-8
           ARTIFACT_PATH: .        
 
-      - name: Reset & prepare workspace
-        run: mkdir cache-jemalloc
-      - name: "[jemalloc] Fetch cache"
-        uses: actions/cache@v2
-        with:
-          path: cache-jemalloc
-          key: v2-ruby-bin-3.0-centos-8-jemalloc
-
       - name: Build binaries
         run: ./internal-scripts/ci-cd/build-ruby-packages/build-binaries.sh
         env:
           ENVIRONMENT_NAME: "centos-8"
           VARIANT_NAME: "jemalloc"
           RUBY_PACKAGE_VERSION_ID: "3.0"
+          CACHE_KEY_PREFIX: "sccache/centos-8"
 
       - name: Build package
         run: ./internal-scripts/ci-cd/build-ruby-packages/build-package.sh
@@ -638,6 +631,11 @@ jobs:
         uses: ./.github/actions/gcloud-login
         with:
           private_key: ${{ secrets.GCLOUD_KEY }}
+          write_keyfile_to: gcloud-credentials.json
+      - name: Dump Azure connection string
+        run: echo -n "$CONNECTION_STRING" > azure-connection-string.txt
+        env:
+          CONNECTION_STRING: ${{ secrets.AZURE_CI1_STORAGE_CONNECTION_STRING }}
       - name: Fetch Ruby source
         run: ./internal-scripts/ci-cd/download-artifact.sh
         env:
@@ -670,20 +668,13 @@ jobs:
 
       
 
-      - name: Reset & prepare workspace
-        run: mkdir cache-malloctrim
-      - name: "[malloctrim] Fetch cache"
-        uses: actions/cache@v2
-        with:
-          path: cache-malloctrim
-          key: v2-ruby-bin-3.0-centos-8-malloctrim
-
       - name: Build binaries
         run: ./internal-scripts/ci-cd/build-ruby-packages/build-binaries.sh
         env:
           ENVIRONMENT_NAME: "centos-8"
           VARIANT_NAME: "malloctrim"
           RUBY_PACKAGE_VERSION_ID: "3.0"
+          CACHE_KEY_PREFIX: "sccache/centos-8"
 
       - name: Build package
         run: ./internal-scripts/ci-cd/build-ruby-packages/build-package.sh
@@ -723,6 +714,11 @@ jobs:
         uses: ./.github/actions/gcloud-login
         with:
           private_key: ${{ secrets.GCLOUD_KEY }}
+          write_keyfile_to: gcloud-credentials.json
+      - name: Dump Azure connection string
+        run: echo -n "$CONNECTION_STRING" > azure-connection-string.txt
+        env:
+          CONNECTION_STRING: ${{ secrets.AZURE_CI1_STORAGE_CONNECTION_STRING }}
       - name: Fetch Ruby source
         run: ./internal-scripts/ci-cd/download-artifact.sh
         env:
@@ -755,20 +751,13 @@ jobs:
 
       
 
-      - name: Reset & prepare workspace
-        run: mkdir cache-normal
-      - name: "[normal] Fetch cache"
-        uses: actions/cache@v2
-        with:
-          path: cache-normal
-          key: v2-ruby-bin-2.7-centos-8-normal
-
       - name: Build binaries
         run: ./internal-scripts/ci-cd/build-ruby-packages/build-binaries.sh
         env:
           ENVIRONMENT_NAME: "centos-8"
           VARIANT_NAME: "normal"
           RUBY_PACKAGE_VERSION_ID: "2.7"
+          CACHE_KEY_PREFIX: "sccache/centos-8"
 
       - name: Build package
         run: ./internal-scripts/ci-cd/build-ruby-packages/build-package.sh
@@ -808,6 +797,11 @@ jobs:
         uses: ./.github/actions/gcloud-login
         with:
           private_key: ${{ secrets.GCLOUD_KEY }}
+          write_keyfile_to: gcloud-credentials.json
+      - name: Dump Azure connection string
+        run: echo -n "$CONNECTION_STRING" > azure-connection-string.txt
+        env:
+          CONNECTION_STRING: ${{ secrets.AZURE_CI1_STORAGE_CONNECTION_STRING }}
       - name: Fetch Ruby source
         run: ./internal-scripts/ci-cd/download-artifact.sh
         env:
@@ -845,20 +839,13 @@ jobs:
           ARTIFACT_NAME: jemalloc-bin-centos-8
           ARTIFACT_PATH: .        
 
-      - name: Reset & prepare workspace
-        run: mkdir cache-jemalloc
-      - name: "[jemalloc] Fetch cache"
-        uses: actions/cache@v2
-        with:
-          path: cache-jemalloc
-          key: v2-ruby-bin-2.7-centos-8-jemalloc
-
       - name: Build binaries
         run: ./internal-scripts/ci-cd/build-ruby-packages/build-binaries.sh
         env:
           ENVIRONMENT_NAME: "centos-8"
           VARIANT_NAME: "jemalloc"
           RUBY_PACKAGE_VERSION_ID: "2.7"
+          CACHE_KEY_PREFIX: "sccache/centos-8"
 
       - name: Build package
         run: ./internal-scripts/ci-cd/build-ruby-packages/build-package.sh
@@ -898,6 +885,11 @@ jobs:
         uses: ./.github/actions/gcloud-login
         with:
           private_key: ${{ secrets.GCLOUD_KEY }}
+          write_keyfile_to: gcloud-credentials.json
+      - name: Dump Azure connection string
+        run: echo -n "$CONNECTION_STRING" > azure-connection-string.txt
+        env:
+          CONNECTION_STRING: ${{ secrets.AZURE_CI1_STORAGE_CONNECTION_STRING }}
       - name: Fetch Ruby source
         run: ./internal-scripts/ci-cd/download-artifact.sh
         env:
@@ -930,20 +922,13 @@ jobs:
 
       
 
-      - name: Reset & prepare workspace
-        run: mkdir cache-malloctrim
-      - name: "[malloctrim] Fetch cache"
-        uses: actions/cache@v2
-        with:
-          path: cache-malloctrim
-          key: v2-ruby-bin-2.7-centos-8-malloctrim
-
       - name: Build binaries
         run: ./internal-scripts/ci-cd/build-ruby-packages/build-binaries.sh
         env:
           ENVIRONMENT_NAME: "centos-8"
           VARIANT_NAME: "malloctrim"
           RUBY_PACKAGE_VERSION_ID: "2.7"
+          CACHE_KEY_PREFIX: "sccache/centos-8"
 
       - name: Build package
         run: ./internal-scripts/ci-cd/build-ruby-packages/build-package.sh
@@ -983,6 +968,11 @@ jobs:
         uses: ./.github/actions/gcloud-login
         with:
           private_key: ${{ secrets.GCLOUD_KEY }}
+          write_keyfile_to: gcloud-credentials.json
+      - name: Dump Azure connection string
+        run: echo -n "$CONNECTION_STRING" > azure-connection-string.txt
+        env:
+          CONNECTION_STRING: ${{ secrets.AZURE_CI1_STORAGE_CONNECTION_STRING }}
       - name: Fetch Ruby source
         run: ./internal-scripts/ci-cd/download-artifact.sh
         env:
@@ -1015,20 +1005,13 @@ jobs:
 
       
 
-      - name: Reset & prepare workspace
-        run: mkdir cache-normal
-      - name: "[normal] Fetch cache"
-        uses: actions/cache@v2
-        with:
-          path: cache-normal
-          key: v2-ruby-bin-3.1.2-centos-8-normal
-
       - name: Build binaries
         run: ./internal-scripts/ci-cd/build-ruby-packages/build-binaries.sh
         env:
           ENVIRONMENT_NAME: "centos-8"
           VARIANT_NAME: "normal"
           RUBY_PACKAGE_VERSION_ID: "3.1.2"
+          CACHE_KEY_PREFIX: "sccache/centos-8"
 
       - name: Build package
         run: ./internal-scripts/ci-cd/build-ruby-packages/build-package.sh
@@ -1068,6 +1051,11 @@ jobs:
         uses: ./.github/actions/gcloud-login
         with:
           private_key: ${{ secrets.GCLOUD_KEY }}
+          write_keyfile_to: gcloud-credentials.json
+      - name: Dump Azure connection string
+        run: echo -n "$CONNECTION_STRING" > azure-connection-string.txt
+        env:
+          CONNECTION_STRING: ${{ secrets.AZURE_CI1_STORAGE_CONNECTION_STRING }}
       - name: Fetch Ruby source
         run: ./internal-scripts/ci-cd/download-artifact.sh
         env:
@@ -1105,20 +1093,13 @@ jobs:
           ARTIFACT_NAME: jemalloc-bin-centos-8
           ARTIFACT_PATH: .        
 
-      - name: Reset & prepare workspace
-        run: mkdir cache-jemalloc
-      - name: "[jemalloc] Fetch cache"
-        uses: actions/cache@v2
-        with:
-          path: cache-jemalloc
-          key: v2-ruby-bin-3.1.2-centos-8-jemalloc
-
       - name: Build binaries
         run: ./internal-scripts/ci-cd/build-ruby-packages/build-binaries.sh
         env:
           ENVIRONMENT_NAME: "centos-8"
           VARIANT_NAME: "jemalloc"
           RUBY_PACKAGE_VERSION_ID: "3.1.2"
+          CACHE_KEY_PREFIX: "sccache/centos-8"
 
       - name: Build package
         run: ./internal-scripts/ci-cd/build-ruby-packages/build-package.sh
@@ -1158,6 +1139,11 @@ jobs:
         uses: ./.github/actions/gcloud-login
         with:
           private_key: ${{ secrets.GCLOUD_KEY }}
+          write_keyfile_to: gcloud-credentials.json
+      - name: Dump Azure connection string
+        run: echo -n "$CONNECTION_STRING" > azure-connection-string.txt
+        env:
+          CONNECTION_STRING: ${{ secrets.AZURE_CI1_STORAGE_CONNECTION_STRING }}
       - name: Fetch Ruby source
         run: ./internal-scripts/ci-cd/download-artifact.sh
         env:
@@ -1190,20 +1176,13 @@ jobs:
 
       
 
-      - name: Reset & prepare workspace
-        run: mkdir cache-malloctrim
-      - name: "[malloctrim] Fetch cache"
-        uses: actions/cache@v2
-        with:
-          path: cache-malloctrim
-          key: v2-ruby-bin-3.1.2-centos-8-malloctrim
-
       - name: Build binaries
         run: ./internal-scripts/ci-cd/build-ruby-packages/build-binaries.sh
         env:
           ENVIRONMENT_NAME: "centos-8"
           VARIANT_NAME: "malloctrim"
           RUBY_PACKAGE_VERSION_ID: "3.1.2"
+          CACHE_KEY_PREFIX: "sccache/centos-8"
 
       - name: Build package
         run: ./internal-scripts/ci-cd/build-ruby-packages/build-package.sh
@@ -1243,6 +1222,11 @@ jobs:
         uses: ./.github/actions/gcloud-login
         with:
           private_key: ${{ secrets.GCLOUD_KEY }}
+          write_keyfile_to: gcloud-credentials.json
+      - name: Dump Azure connection string
+        run: echo -n "$CONNECTION_STRING" > azure-connection-string.txt
+        env:
+          CONNECTION_STRING: ${{ secrets.AZURE_CI1_STORAGE_CONNECTION_STRING }}
       - name: Fetch Ruby source
         run: ./internal-scripts/ci-cd/download-artifact.sh
         env:
@@ -1275,20 +1259,13 @@ jobs:
 
       
 
-      - name: Reset & prepare workspace
-        run: mkdir cache-normal
-      - name: "[normal] Fetch cache"
-        uses: actions/cache@v2
-        with:
-          path: cache-normal
-          key: v2-ruby-bin-3.0.4-centos-8-normal
-
       - name: Build binaries
         run: ./internal-scripts/ci-cd/build-ruby-packages/build-binaries.sh
         env:
           ENVIRONMENT_NAME: "centos-8"
           VARIANT_NAME: "normal"
           RUBY_PACKAGE_VERSION_ID: "3.0.4"
+          CACHE_KEY_PREFIX: "sccache/centos-8"
 
       - name: Build package
         run: ./internal-scripts/ci-cd/build-ruby-packages/build-package.sh
@@ -1328,6 +1305,11 @@ jobs:
         uses: ./.github/actions/gcloud-login
         with:
           private_key: ${{ secrets.GCLOUD_KEY }}
+          write_keyfile_to: gcloud-credentials.json
+      - name: Dump Azure connection string
+        run: echo -n "$CONNECTION_STRING" > azure-connection-string.txt
+        env:
+          CONNECTION_STRING: ${{ secrets.AZURE_CI1_STORAGE_CONNECTION_STRING }}
       - name: Fetch Ruby source
         run: ./internal-scripts/ci-cd/download-artifact.sh
         env:
@@ -1365,20 +1347,13 @@ jobs:
           ARTIFACT_NAME: jemalloc-bin-centos-8
           ARTIFACT_PATH: .        
 
-      - name: Reset & prepare workspace
-        run: mkdir cache-jemalloc
-      - name: "[jemalloc] Fetch cache"
-        uses: actions/cache@v2
-        with:
-          path: cache-jemalloc
-          key: v2-ruby-bin-3.0.4-centos-8-jemalloc
-
       - name: Build binaries
         run: ./internal-scripts/ci-cd/build-ruby-packages/build-binaries.sh
         env:
           ENVIRONMENT_NAME: "centos-8"
           VARIANT_NAME: "jemalloc"
           RUBY_PACKAGE_VERSION_ID: "3.0.4"
+          CACHE_KEY_PREFIX: "sccache/centos-8"
 
       - name: Build package
         run: ./internal-scripts/ci-cd/build-ruby-packages/build-package.sh
@@ -1418,6 +1393,11 @@ jobs:
         uses: ./.github/actions/gcloud-login
         with:
           private_key: ${{ secrets.GCLOUD_KEY }}
+          write_keyfile_to: gcloud-credentials.json
+      - name: Dump Azure connection string
+        run: echo -n "$CONNECTION_STRING" > azure-connection-string.txt
+        env:
+          CONNECTION_STRING: ${{ secrets.AZURE_CI1_STORAGE_CONNECTION_STRING }}
       - name: Fetch Ruby source
         run: ./internal-scripts/ci-cd/download-artifact.sh
         env:
@@ -1450,20 +1430,13 @@ jobs:
 
       
 
-      - name: Reset & prepare workspace
-        run: mkdir cache-malloctrim
-      - name: "[malloctrim] Fetch cache"
-        uses: actions/cache@v2
-        with:
-          path: cache-malloctrim
-          key: v2-ruby-bin-3.0.4-centos-8-malloctrim
-
       - name: Build binaries
         run: ./internal-scripts/ci-cd/build-ruby-packages/build-binaries.sh
         env:
           ENVIRONMENT_NAME: "centos-8"
           VARIANT_NAME: "malloctrim"
           RUBY_PACKAGE_VERSION_ID: "3.0.4"
+          CACHE_KEY_PREFIX: "sccache/centos-8"
 
       - name: Build package
         run: ./internal-scripts/ci-cd/build-ruby-packages/build-package.sh
@@ -1503,6 +1476,11 @@ jobs:
         uses: ./.github/actions/gcloud-login
         with:
           private_key: ${{ secrets.GCLOUD_KEY }}
+          write_keyfile_to: gcloud-credentials.json
+      - name: Dump Azure connection string
+        run: echo -n "$CONNECTION_STRING" > azure-connection-string.txt
+        env:
+          CONNECTION_STRING: ${{ secrets.AZURE_CI1_STORAGE_CONNECTION_STRING }}
       - name: Fetch Ruby source
         run: ./internal-scripts/ci-cd/download-artifact.sh
         env:
@@ -1535,20 +1513,13 @@ jobs:
 
       
 
-      - name: Reset & prepare workspace
-        run: mkdir cache-normal
-      - name: "[normal] Fetch cache"
-        uses: actions/cache@v2
-        with:
-          path: cache-normal
-          key: v2-ruby-bin-2.7.6-centos-8-normal
-
       - name: Build binaries
         run: ./internal-scripts/ci-cd/build-ruby-packages/build-binaries.sh
         env:
           ENVIRONMENT_NAME: "centos-8"
           VARIANT_NAME: "normal"
           RUBY_PACKAGE_VERSION_ID: "2.7.6"
+          CACHE_KEY_PREFIX: "sccache/centos-8"
 
       - name: Build package
         run: ./internal-scripts/ci-cd/build-ruby-packages/build-package.sh
@@ -1588,6 +1559,11 @@ jobs:
         uses: ./.github/actions/gcloud-login
         with:
           private_key: ${{ secrets.GCLOUD_KEY }}
+          write_keyfile_to: gcloud-credentials.json
+      - name: Dump Azure connection string
+        run: echo -n "$CONNECTION_STRING" > azure-connection-string.txt
+        env:
+          CONNECTION_STRING: ${{ secrets.AZURE_CI1_STORAGE_CONNECTION_STRING }}
       - name: Fetch Ruby source
         run: ./internal-scripts/ci-cd/download-artifact.sh
         env:
@@ -1625,20 +1601,13 @@ jobs:
           ARTIFACT_NAME: jemalloc-bin-centos-8
           ARTIFACT_PATH: .        
 
-      - name: Reset & prepare workspace
-        run: mkdir cache-jemalloc
-      - name: "[jemalloc] Fetch cache"
-        uses: actions/cache@v2
-        with:
-          path: cache-jemalloc
-          key: v2-ruby-bin-2.7.6-centos-8-jemalloc
-
       - name: Build binaries
         run: ./internal-scripts/ci-cd/build-ruby-packages/build-binaries.sh
         env:
           ENVIRONMENT_NAME: "centos-8"
           VARIANT_NAME: "jemalloc"
           RUBY_PACKAGE_VERSION_ID: "2.7.6"
+          CACHE_KEY_PREFIX: "sccache/centos-8"
 
       - name: Build package
         run: ./internal-scripts/ci-cd/build-ruby-packages/build-package.sh
@@ -1678,6 +1647,11 @@ jobs:
         uses: ./.github/actions/gcloud-login
         with:
           private_key: ${{ secrets.GCLOUD_KEY }}
+          write_keyfile_to: gcloud-credentials.json
+      - name: Dump Azure connection string
+        run: echo -n "$CONNECTION_STRING" > azure-connection-string.txt
+        env:
+          CONNECTION_STRING: ${{ secrets.AZURE_CI1_STORAGE_CONNECTION_STRING }}
       - name: Fetch Ruby source
         run: ./internal-scripts/ci-cd/download-artifact.sh
         env:
@@ -1710,20 +1684,13 @@ jobs:
 
       
 
-      - name: Reset & prepare workspace
-        run: mkdir cache-malloctrim
-      - name: "[malloctrim] Fetch cache"
-        uses: actions/cache@v2
-        with:
-          path: cache-malloctrim
-          key: v2-ruby-bin-2.7.6-centos-8-malloctrim
-
       - name: Build binaries
         run: ./internal-scripts/ci-cd/build-ruby-packages/build-binaries.sh
         env:
           ENVIRONMENT_NAME: "centos-8"
           VARIANT_NAME: "malloctrim"
           RUBY_PACKAGE_VERSION_ID: "2.7.6"
+          CACHE_KEY_PREFIX: "sccache/centos-8"
 
       - name: Build package
         run: ./internal-scripts/ci-cd/build-ruby-packages/build-package.sh
@@ -1764,6 +1731,11 @@ jobs:
         uses: ./.github/actions/gcloud-login
         with:
           private_key: ${{ secrets.GCLOUD_KEY }}
+          write_keyfile_to: gcloud-credentials.json
+      - name: Dump Azure connection string
+        run: echo -n "$CONNECTION_STRING" > azure-connection-string.txt
+        env:
+          CONNECTION_STRING: ${{ secrets.AZURE_CI1_STORAGE_CONNECTION_STRING }}
       - name: Fetch Ruby source
         run: ./internal-scripts/ci-cd/download-artifact.sh
         env:
@@ -1796,20 +1768,13 @@ jobs:
 
       
 
-      - name: Reset & prepare workspace
-        run: mkdir cache-normal
-      - name: "[normal] Fetch cache"
-        uses: actions/cache@v2
-        with:
-          path: cache-normal
-          key: v2-ruby-bin-3.1-ubuntu-18.04-normal
-
       - name: Build binaries
         run: ./internal-scripts/ci-cd/build-ruby-packages/build-binaries.sh
         env:
           ENVIRONMENT_NAME: "ubuntu-18.04"
           VARIANT_NAME: "normal"
           RUBY_PACKAGE_VERSION_ID: "3.1"
+          CACHE_KEY_PREFIX: "sccache/ubuntu-18.04"
 
       - name: Build package
         run: ./internal-scripts/ci-cd/build-ruby-packages/build-package.sh
@@ -1849,6 +1814,11 @@ jobs:
         uses: ./.github/actions/gcloud-login
         with:
           private_key: ${{ secrets.GCLOUD_KEY }}
+          write_keyfile_to: gcloud-credentials.json
+      - name: Dump Azure connection string
+        run: echo -n "$CONNECTION_STRING" > azure-connection-string.txt
+        env:
+          CONNECTION_STRING: ${{ secrets.AZURE_CI1_STORAGE_CONNECTION_STRING }}
       - name: Fetch Ruby source
         run: ./internal-scripts/ci-cd/download-artifact.sh
         env:
@@ -1886,20 +1856,13 @@ jobs:
           ARTIFACT_NAME: jemalloc-bin-ubuntu-18.04
           ARTIFACT_PATH: .        
 
-      - name: Reset & prepare workspace
-        run: mkdir cache-jemalloc
-      - name: "[jemalloc] Fetch cache"
-        uses: actions/cache@v2
-        with:
-          path: cache-jemalloc
-          key: v2-ruby-bin-3.1-ubuntu-18.04-jemalloc
-
       - name: Build binaries
         run: ./internal-scripts/ci-cd/build-ruby-packages/build-binaries.sh
         env:
           ENVIRONMENT_NAME: "ubuntu-18.04"
           VARIANT_NAME: "jemalloc"
           RUBY_PACKAGE_VERSION_ID: "3.1"
+          CACHE_KEY_PREFIX: "sccache/ubuntu-18.04"
 
       - name: Build package
         run: ./internal-scripts/ci-cd/build-ruby-packages/build-package.sh
@@ -1939,6 +1902,11 @@ jobs:
         uses: ./.github/actions/gcloud-login
         with:
           private_key: ${{ secrets.GCLOUD_KEY }}
+          write_keyfile_to: gcloud-credentials.json
+      - name: Dump Azure connection string
+        run: echo -n "$CONNECTION_STRING" > azure-connection-string.txt
+        env:
+          CONNECTION_STRING: ${{ secrets.AZURE_CI1_STORAGE_CONNECTION_STRING }}
       - name: Fetch Ruby source
         run: ./internal-scripts/ci-cd/download-artifact.sh
         env:
@@ -1971,20 +1939,13 @@ jobs:
 
       
 
-      - name: Reset & prepare workspace
-        run: mkdir cache-malloctrim
-      - name: "[malloctrim] Fetch cache"
-        uses: actions/cache@v2
-        with:
-          path: cache-malloctrim
-          key: v2-ruby-bin-3.1-ubuntu-18.04-malloctrim
-
       - name: Build binaries
         run: ./internal-scripts/ci-cd/build-ruby-packages/build-binaries.sh
         env:
           ENVIRONMENT_NAME: "ubuntu-18.04"
           VARIANT_NAME: "malloctrim"
           RUBY_PACKAGE_VERSION_ID: "3.1"
+          CACHE_KEY_PREFIX: "sccache/ubuntu-18.04"
 
       - name: Build package
         run: ./internal-scripts/ci-cd/build-ruby-packages/build-package.sh
@@ -2024,6 +1985,11 @@ jobs:
         uses: ./.github/actions/gcloud-login
         with:
           private_key: ${{ secrets.GCLOUD_KEY }}
+          write_keyfile_to: gcloud-credentials.json
+      - name: Dump Azure connection string
+        run: echo -n "$CONNECTION_STRING" > azure-connection-string.txt
+        env:
+          CONNECTION_STRING: ${{ secrets.AZURE_CI1_STORAGE_CONNECTION_STRING }}
       - name: Fetch Ruby source
         run: ./internal-scripts/ci-cd/download-artifact.sh
         env:
@@ -2056,20 +2022,13 @@ jobs:
 
       
 
-      - name: Reset & prepare workspace
-        run: mkdir cache-normal
-      - name: "[normal] Fetch cache"
-        uses: actions/cache@v2
-        with:
-          path: cache-normal
-          key: v2-ruby-bin-3.0-ubuntu-18.04-normal
-
       - name: Build binaries
         run: ./internal-scripts/ci-cd/build-ruby-packages/build-binaries.sh
         env:
           ENVIRONMENT_NAME: "ubuntu-18.04"
           VARIANT_NAME: "normal"
           RUBY_PACKAGE_VERSION_ID: "3.0"
+          CACHE_KEY_PREFIX: "sccache/ubuntu-18.04"
 
       - name: Build package
         run: ./internal-scripts/ci-cd/build-ruby-packages/build-package.sh
@@ -2109,6 +2068,11 @@ jobs:
         uses: ./.github/actions/gcloud-login
         with:
           private_key: ${{ secrets.GCLOUD_KEY }}
+          write_keyfile_to: gcloud-credentials.json
+      - name: Dump Azure connection string
+        run: echo -n "$CONNECTION_STRING" > azure-connection-string.txt
+        env:
+          CONNECTION_STRING: ${{ secrets.AZURE_CI1_STORAGE_CONNECTION_STRING }}
       - name: Fetch Ruby source
         run: ./internal-scripts/ci-cd/download-artifact.sh
         env:
@@ -2146,20 +2110,13 @@ jobs:
           ARTIFACT_NAME: jemalloc-bin-ubuntu-18.04
           ARTIFACT_PATH: .        
 
-      - name: Reset & prepare workspace
-        run: mkdir cache-jemalloc
-      - name: "[jemalloc] Fetch cache"
-        uses: actions/cache@v2
-        with:
-          path: cache-jemalloc
-          key: v2-ruby-bin-3.0-ubuntu-18.04-jemalloc
-
       - name: Build binaries
         run: ./internal-scripts/ci-cd/build-ruby-packages/build-binaries.sh
         env:
           ENVIRONMENT_NAME: "ubuntu-18.04"
           VARIANT_NAME: "jemalloc"
           RUBY_PACKAGE_VERSION_ID: "3.0"
+          CACHE_KEY_PREFIX: "sccache/ubuntu-18.04"
 
       - name: Build package
         run: ./internal-scripts/ci-cd/build-ruby-packages/build-package.sh
@@ -2199,6 +2156,11 @@ jobs:
         uses: ./.github/actions/gcloud-login
         with:
           private_key: ${{ secrets.GCLOUD_KEY }}
+          write_keyfile_to: gcloud-credentials.json
+      - name: Dump Azure connection string
+        run: echo -n "$CONNECTION_STRING" > azure-connection-string.txt
+        env:
+          CONNECTION_STRING: ${{ secrets.AZURE_CI1_STORAGE_CONNECTION_STRING }}
       - name: Fetch Ruby source
         run: ./internal-scripts/ci-cd/download-artifact.sh
         env:
@@ -2231,20 +2193,13 @@ jobs:
 
       
 
-      - name: Reset & prepare workspace
-        run: mkdir cache-malloctrim
-      - name: "[malloctrim] Fetch cache"
-        uses: actions/cache@v2
-        with:
-          path: cache-malloctrim
-          key: v2-ruby-bin-3.0-ubuntu-18.04-malloctrim
-
       - name: Build binaries
         run: ./internal-scripts/ci-cd/build-ruby-packages/build-binaries.sh
         env:
           ENVIRONMENT_NAME: "ubuntu-18.04"
           VARIANT_NAME: "malloctrim"
           RUBY_PACKAGE_VERSION_ID: "3.0"
+          CACHE_KEY_PREFIX: "sccache/ubuntu-18.04"
 
       - name: Build package
         run: ./internal-scripts/ci-cd/build-ruby-packages/build-package.sh
@@ -2284,6 +2239,11 @@ jobs:
         uses: ./.github/actions/gcloud-login
         with:
           private_key: ${{ secrets.GCLOUD_KEY }}
+          write_keyfile_to: gcloud-credentials.json
+      - name: Dump Azure connection string
+        run: echo -n "$CONNECTION_STRING" > azure-connection-string.txt
+        env:
+          CONNECTION_STRING: ${{ secrets.AZURE_CI1_STORAGE_CONNECTION_STRING }}
       - name: Fetch Ruby source
         run: ./internal-scripts/ci-cd/download-artifact.sh
         env:
@@ -2316,20 +2276,13 @@ jobs:
 
       
 
-      - name: Reset & prepare workspace
-        run: mkdir cache-normal
-      - name: "[normal] Fetch cache"
-        uses: actions/cache@v2
-        with:
-          path: cache-normal
-          key: v2-ruby-bin-2.7-ubuntu-18.04-normal
-
       - name: Build binaries
         run: ./internal-scripts/ci-cd/build-ruby-packages/build-binaries.sh
         env:
           ENVIRONMENT_NAME: "ubuntu-18.04"
           VARIANT_NAME: "normal"
           RUBY_PACKAGE_VERSION_ID: "2.7"
+          CACHE_KEY_PREFIX: "sccache/ubuntu-18.04"
 
       - name: Build package
         run: ./internal-scripts/ci-cd/build-ruby-packages/build-package.sh
@@ -2369,6 +2322,11 @@ jobs:
         uses: ./.github/actions/gcloud-login
         with:
           private_key: ${{ secrets.GCLOUD_KEY }}
+          write_keyfile_to: gcloud-credentials.json
+      - name: Dump Azure connection string
+        run: echo -n "$CONNECTION_STRING" > azure-connection-string.txt
+        env:
+          CONNECTION_STRING: ${{ secrets.AZURE_CI1_STORAGE_CONNECTION_STRING }}
       - name: Fetch Ruby source
         run: ./internal-scripts/ci-cd/download-artifact.sh
         env:
@@ -2406,20 +2364,13 @@ jobs:
           ARTIFACT_NAME: jemalloc-bin-ubuntu-18.04
           ARTIFACT_PATH: .        
 
-      - name: Reset & prepare workspace
-        run: mkdir cache-jemalloc
-      - name: "[jemalloc] Fetch cache"
-        uses: actions/cache@v2
-        with:
-          path: cache-jemalloc
-          key: v2-ruby-bin-2.7-ubuntu-18.04-jemalloc
-
       - name: Build binaries
         run: ./internal-scripts/ci-cd/build-ruby-packages/build-binaries.sh
         env:
           ENVIRONMENT_NAME: "ubuntu-18.04"
           VARIANT_NAME: "jemalloc"
           RUBY_PACKAGE_VERSION_ID: "2.7"
+          CACHE_KEY_PREFIX: "sccache/ubuntu-18.04"
 
       - name: Build package
         run: ./internal-scripts/ci-cd/build-ruby-packages/build-package.sh
@@ -2459,6 +2410,11 @@ jobs:
         uses: ./.github/actions/gcloud-login
         with:
           private_key: ${{ secrets.GCLOUD_KEY }}
+          write_keyfile_to: gcloud-credentials.json
+      - name: Dump Azure connection string
+        run: echo -n "$CONNECTION_STRING" > azure-connection-string.txt
+        env:
+          CONNECTION_STRING: ${{ secrets.AZURE_CI1_STORAGE_CONNECTION_STRING }}
       - name: Fetch Ruby source
         run: ./internal-scripts/ci-cd/download-artifact.sh
         env:
@@ -2491,20 +2447,13 @@ jobs:
 
       
 
-      - name: Reset & prepare workspace
-        run: mkdir cache-malloctrim
-      - name: "[malloctrim] Fetch cache"
-        uses: actions/cache@v2
-        with:
-          path: cache-malloctrim
-          key: v2-ruby-bin-2.7-ubuntu-18.04-malloctrim
-
       - name: Build binaries
         run: ./internal-scripts/ci-cd/build-ruby-packages/build-binaries.sh
         env:
           ENVIRONMENT_NAME: "ubuntu-18.04"
           VARIANT_NAME: "malloctrim"
           RUBY_PACKAGE_VERSION_ID: "2.7"
+          CACHE_KEY_PREFIX: "sccache/ubuntu-18.04"
 
       - name: Build package
         run: ./internal-scripts/ci-cd/build-ruby-packages/build-package.sh
@@ -2544,6 +2493,11 @@ jobs:
         uses: ./.github/actions/gcloud-login
         with:
           private_key: ${{ secrets.GCLOUD_KEY }}
+          write_keyfile_to: gcloud-credentials.json
+      - name: Dump Azure connection string
+        run: echo -n "$CONNECTION_STRING" > azure-connection-string.txt
+        env:
+          CONNECTION_STRING: ${{ secrets.AZURE_CI1_STORAGE_CONNECTION_STRING }}
       - name: Fetch Ruby source
         run: ./internal-scripts/ci-cd/download-artifact.sh
         env:
@@ -2576,20 +2530,13 @@ jobs:
 
       
 
-      - name: Reset & prepare workspace
-        run: mkdir cache-normal
-      - name: "[normal] Fetch cache"
-        uses: actions/cache@v2
-        with:
-          path: cache-normal
-          key: v2-ruby-bin-3.1.2-ubuntu-18.04-normal
-
       - name: Build binaries
         run: ./internal-scripts/ci-cd/build-ruby-packages/build-binaries.sh
         env:
           ENVIRONMENT_NAME: "ubuntu-18.04"
           VARIANT_NAME: "normal"
           RUBY_PACKAGE_VERSION_ID: "3.1.2"
+          CACHE_KEY_PREFIX: "sccache/ubuntu-18.04"
 
       - name: Build package
         run: ./internal-scripts/ci-cd/build-ruby-packages/build-package.sh
@@ -2629,6 +2576,11 @@ jobs:
         uses: ./.github/actions/gcloud-login
         with:
           private_key: ${{ secrets.GCLOUD_KEY }}
+          write_keyfile_to: gcloud-credentials.json
+      - name: Dump Azure connection string
+        run: echo -n "$CONNECTION_STRING" > azure-connection-string.txt
+        env:
+          CONNECTION_STRING: ${{ secrets.AZURE_CI1_STORAGE_CONNECTION_STRING }}
       - name: Fetch Ruby source
         run: ./internal-scripts/ci-cd/download-artifact.sh
         env:
@@ -2666,20 +2618,13 @@ jobs:
           ARTIFACT_NAME: jemalloc-bin-ubuntu-18.04
           ARTIFACT_PATH: .        
 
-      - name: Reset & prepare workspace
-        run: mkdir cache-jemalloc
-      - name: "[jemalloc] Fetch cache"
-        uses: actions/cache@v2
-        with:
-          path: cache-jemalloc
-          key: v2-ruby-bin-3.1.2-ubuntu-18.04-jemalloc
-
       - name: Build binaries
         run: ./internal-scripts/ci-cd/build-ruby-packages/build-binaries.sh
         env:
           ENVIRONMENT_NAME: "ubuntu-18.04"
           VARIANT_NAME: "jemalloc"
           RUBY_PACKAGE_VERSION_ID: "3.1.2"
+          CACHE_KEY_PREFIX: "sccache/ubuntu-18.04"
 
       - name: Build package
         run: ./internal-scripts/ci-cd/build-ruby-packages/build-package.sh
@@ -2719,6 +2664,11 @@ jobs:
         uses: ./.github/actions/gcloud-login
         with:
           private_key: ${{ secrets.GCLOUD_KEY }}
+          write_keyfile_to: gcloud-credentials.json
+      - name: Dump Azure connection string
+        run: echo -n "$CONNECTION_STRING" > azure-connection-string.txt
+        env:
+          CONNECTION_STRING: ${{ secrets.AZURE_CI1_STORAGE_CONNECTION_STRING }}
       - name: Fetch Ruby source
         run: ./internal-scripts/ci-cd/download-artifact.sh
         env:
@@ -2751,20 +2701,13 @@ jobs:
 
       
 
-      - name: Reset & prepare workspace
-        run: mkdir cache-malloctrim
-      - name: "[malloctrim] Fetch cache"
-        uses: actions/cache@v2
-        with:
-          path: cache-malloctrim
-          key: v2-ruby-bin-3.1.2-ubuntu-18.04-malloctrim
-
       - name: Build binaries
         run: ./internal-scripts/ci-cd/build-ruby-packages/build-binaries.sh
         env:
           ENVIRONMENT_NAME: "ubuntu-18.04"
           VARIANT_NAME: "malloctrim"
           RUBY_PACKAGE_VERSION_ID: "3.1.2"
+          CACHE_KEY_PREFIX: "sccache/ubuntu-18.04"
 
       - name: Build package
         run: ./internal-scripts/ci-cd/build-ruby-packages/build-package.sh
@@ -2804,6 +2747,11 @@ jobs:
         uses: ./.github/actions/gcloud-login
         with:
           private_key: ${{ secrets.GCLOUD_KEY }}
+          write_keyfile_to: gcloud-credentials.json
+      - name: Dump Azure connection string
+        run: echo -n "$CONNECTION_STRING" > azure-connection-string.txt
+        env:
+          CONNECTION_STRING: ${{ secrets.AZURE_CI1_STORAGE_CONNECTION_STRING }}
       - name: Fetch Ruby source
         run: ./internal-scripts/ci-cd/download-artifact.sh
         env:
@@ -2836,20 +2784,13 @@ jobs:
 
       
 
-      - name: Reset & prepare workspace
-        run: mkdir cache-normal
-      - name: "[normal] Fetch cache"
-        uses: actions/cache@v2
-        with:
-          path: cache-normal
-          key: v2-ruby-bin-3.0.4-ubuntu-18.04-normal
-
       - name: Build binaries
         run: ./internal-scripts/ci-cd/build-ruby-packages/build-binaries.sh
         env:
           ENVIRONMENT_NAME: "ubuntu-18.04"
           VARIANT_NAME: "normal"
           RUBY_PACKAGE_VERSION_ID: "3.0.4"
+          CACHE_KEY_PREFIX: "sccache/ubuntu-18.04"
 
       - name: Build package
         run: ./internal-scripts/ci-cd/build-ruby-packages/build-package.sh
@@ -2889,6 +2830,11 @@ jobs:
         uses: ./.github/actions/gcloud-login
         with:
           private_key: ${{ secrets.GCLOUD_KEY }}
+          write_keyfile_to: gcloud-credentials.json
+      - name: Dump Azure connection string
+        run: echo -n "$CONNECTION_STRING" > azure-connection-string.txt
+        env:
+          CONNECTION_STRING: ${{ secrets.AZURE_CI1_STORAGE_CONNECTION_STRING }}
       - name: Fetch Ruby source
         run: ./internal-scripts/ci-cd/download-artifact.sh
         env:
@@ -2926,20 +2872,13 @@ jobs:
           ARTIFACT_NAME: jemalloc-bin-ubuntu-18.04
           ARTIFACT_PATH: .        
 
-      - name: Reset & prepare workspace
-        run: mkdir cache-jemalloc
-      - name: "[jemalloc] Fetch cache"
-        uses: actions/cache@v2
-        with:
-          path: cache-jemalloc
-          key: v2-ruby-bin-3.0.4-ubuntu-18.04-jemalloc
-
       - name: Build binaries
         run: ./internal-scripts/ci-cd/build-ruby-packages/build-binaries.sh
         env:
           ENVIRONMENT_NAME: "ubuntu-18.04"
           VARIANT_NAME: "jemalloc"
           RUBY_PACKAGE_VERSION_ID: "3.0.4"
+          CACHE_KEY_PREFIX: "sccache/ubuntu-18.04"
 
       - name: Build package
         run: ./internal-scripts/ci-cd/build-ruby-packages/build-package.sh
@@ -2979,6 +2918,11 @@ jobs:
         uses: ./.github/actions/gcloud-login
         with:
           private_key: ${{ secrets.GCLOUD_KEY }}
+          write_keyfile_to: gcloud-credentials.json
+      - name: Dump Azure connection string
+        run: echo -n "$CONNECTION_STRING" > azure-connection-string.txt
+        env:
+          CONNECTION_STRING: ${{ secrets.AZURE_CI1_STORAGE_CONNECTION_STRING }}
       - name: Fetch Ruby source
         run: ./internal-scripts/ci-cd/download-artifact.sh
         env:
@@ -3011,20 +2955,13 @@ jobs:
 
       
 
-      - name: Reset & prepare workspace
-        run: mkdir cache-malloctrim
-      - name: "[malloctrim] Fetch cache"
-        uses: actions/cache@v2
-        with:
-          path: cache-malloctrim
-          key: v2-ruby-bin-3.0.4-ubuntu-18.04-malloctrim
-
       - name: Build binaries
         run: ./internal-scripts/ci-cd/build-ruby-packages/build-binaries.sh
         env:
           ENVIRONMENT_NAME: "ubuntu-18.04"
           VARIANT_NAME: "malloctrim"
           RUBY_PACKAGE_VERSION_ID: "3.0.4"
+          CACHE_KEY_PREFIX: "sccache/ubuntu-18.04"
 
       - name: Build package
         run: ./internal-scripts/ci-cd/build-ruby-packages/build-package.sh
@@ -3064,6 +3001,11 @@ jobs:
         uses: ./.github/actions/gcloud-login
         with:
           private_key: ${{ secrets.GCLOUD_KEY }}
+          write_keyfile_to: gcloud-credentials.json
+      - name: Dump Azure connection string
+        run: echo -n "$CONNECTION_STRING" > azure-connection-string.txt
+        env:
+          CONNECTION_STRING: ${{ secrets.AZURE_CI1_STORAGE_CONNECTION_STRING }}
       - name: Fetch Ruby source
         run: ./internal-scripts/ci-cd/download-artifact.sh
         env:
@@ -3096,20 +3038,13 @@ jobs:
 
       
 
-      - name: Reset & prepare workspace
-        run: mkdir cache-normal
-      - name: "[normal] Fetch cache"
-        uses: actions/cache@v2
-        with:
-          path: cache-normal
-          key: v2-ruby-bin-2.7.6-ubuntu-18.04-normal
-
       - name: Build binaries
         run: ./internal-scripts/ci-cd/build-ruby-packages/build-binaries.sh
         env:
           ENVIRONMENT_NAME: "ubuntu-18.04"
           VARIANT_NAME: "normal"
           RUBY_PACKAGE_VERSION_ID: "2.7.6"
+          CACHE_KEY_PREFIX: "sccache/ubuntu-18.04"
 
       - name: Build package
         run: ./internal-scripts/ci-cd/build-ruby-packages/build-package.sh
@@ -3149,6 +3084,11 @@ jobs:
         uses: ./.github/actions/gcloud-login
         with:
           private_key: ${{ secrets.GCLOUD_KEY }}
+          write_keyfile_to: gcloud-credentials.json
+      - name: Dump Azure connection string
+        run: echo -n "$CONNECTION_STRING" > azure-connection-string.txt
+        env:
+          CONNECTION_STRING: ${{ secrets.AZURE_CI1_STORAGE_CONNECTION_STRING }}
       - name: Fetch Ruby source
         run: ./internal-scripts/ci-cd/download-artifact.sh
         env:
@@ -3186,20 +3126,13 @@ jobs:
           ARTIFACT_NAME: jemalloc-bin-ubuntu-18.04
           ARTIFACT_PATH: .        
 
-      - name: Reset & prepare workspace
-        run: mkdir cache-jemalloc
-      - name: "[jemalloc] Fetch cache"
-        uses: actions/cache@v2
-        with:
-          path: cache-jemalloc
-          key: v2-ruby-bin-2.7.6-ubuntu-18.04-jemalloc
-
       - name: Build binaries
         run: ./internal-scripts/ci-cd/build-ruby-packages/build-binaries.sh
         env:
           ENVIRONMENT_NAME: "ubuntu-18.04"
           VARIANT_NAME: "jemalloc"
           RUBY_PACKAGE_VERSION_ID: "2.7.6"
+          CACHE_KEY_PREFIX: "sccache/ubuntu-18.04"
 
       - name: Build package
         run: ./internal-scripts/ci-cd/build-ruby-packages/build-package.sh
@@ -3239,6 +3172,11 @@ jobs:
         uses: ./.github/actions/gcloud-login
         with:
           private_key: ${{ secrets.GCLOUD_KEY }}
+          write_keyfile_to: gcloud-credentials.json
+      - name: Dump Azure connection string
+        run: echo -n "$CONNECTION_STRING" > azure-connection-string.txt
+        env:
+          CONNECTION_STRING: ${{ secrets.AZURE_CI1_STORAGE_CONNECTION_STRING }}
       - name: Fetch Ruby source
         run: ./internal-scripts/ci-cd/download-artifact.sh
         env:
@@ -3271,20 +3209,13 @@ jobs:
 
       
 
-      - name: Reset & prepare workspace
-        run: mkdir cache-malloctrim
-      - name: "[malloctrim] Fetch cache"
-        uses: actions/cache@v2
-        with:
-          path: cache-malloctrim
-          key: v2-ruby-bin-2.7.6-ubuntu-18.04-malloctrim
-
       - name: Build binaries
         run: ./internal-scripts/ci-cd/build-ruby-packages/build-binaries.sh
         env:
           ENVIRONMENT_NAME: "ubuntu-18.04"
           VARIANT_NAME: "malloctrim"
           RUBY_PACKAGE_VERSION_ID: "2.7.6"
+          CACHE_KEY_PREFIX: "sccache/ubuntu-18.04"
 
       - name: Build package
         run: ./internal-scripts/ci-cd/build-ruby-packages/build-package.sh
