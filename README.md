@@ -452,7 +452,7 @@ sudo yum install fullstaq-ruby-3.1.1
 ### Debian/Ubuntu
 
  * Supported Debian versions: 11 *(bullseye)*, 10 *(buster)*, 9 *(stretch)*
- * Supported Ubuntu versions: 20.04, 18.04
+ * Supported Ubuntu versions: 22.04, 20.04, 18.04
  * Supported architectures: x86-64
 
 First, make sure your package manager supports HTTPS and that the necessary crypto tools are installed:
@@ -464,6 +464,9 @@ sudo apt install gnupg apt-transport-https ca-certificates curl
 Next, add the Fullstaq Ruby repository by creating `/etc/apt/sources.list.d/fullstaq-ruby.list`. Paste **one** of the lines below depending your distro:
 
 ~~~bash
+# Ubuntu 22.04
+deb https://apt.fullstaqruby.org ubuntu-22.04 main
+
 # Ubuntu 20.04
 deb https://apt.fullstaqruby.org ubuntu-20.04 main
 
@@ -496,22 +499,22 @@ Ruby packages are now available as `fullstaq-ruby-<VERSION>`:
 
     $ sudo apt search fullstaq-ruby
     ...
-    fullstaq-ruby-3.0/ubuntu-18.04 1-ubuntu-18.04 amd64
+    fullstaq-ruby-3.0/ubuntu-22.04 1-ubuntu-22.04 amd64
       Fullstaq Ruby 3.0
 
-    fullstaq-ruby-3.0-jemalloc/ubuntu-18.04 1-ubuntu-18.04 amd64
+    fullstaq-ruby-3.0-jemalloc/ubuntu-22.04 1-ubuntu-22.04 amd64
       Fullstaq Ruby 3.0-jemalloc
 
-    fullstaq-ruby-3.0-malloctrim/ubuntu-18.04 1-ubuntu-18.04 amd64
+    fullstaq-ruby-3.0-malloctrim/ubuntu-22.04 1-ubuntu-22.04 amd64
       Fullstaq Ruby 3.0-malloctrim
     ...
-    fullstaq-ruby-3.1/ubuntu-18.04 1-ubuntu-18.04 amd64
+    fullstaq-ruby-3.1/ubuntu-22.04 1-ubuntu-22.04 amd64
       Fullstaq Ruby 3.1
 
-    fullstaq-ruby-3.1-jemalloc/ubuntu-18.04 1-ubuntu-18.04 amd64
+    fullstaq-ruby-3.1-jemalloc/ubuntu-22.04 1-ubuntu-22.04 amd64
       Fullstaq Ruby 3.1-jemalloc
 
-    fullstaq-ruby-3.1-malloctrim/ubuntu-18.04 1-ubuntu-18.04 amd64
+    fullstaq-ruby-3.1-malloctrim/ubuntu-22.04 1-ubuntu-22.04 amd64
       Fullstaq Ruby 3.1-malloctrim
     ...
 

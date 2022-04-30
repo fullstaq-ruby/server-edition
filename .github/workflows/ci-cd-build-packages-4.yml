@@ -130,6 +130,54 @@ jobs:
         env:
           ARTIFACT_NAME: 'jemalloc-bin-debian-11'
           ARTIFACT_PATH: output
+  build_jemalloc_ubuntu_22_04:
+    name: 'Build Jemalloc [ubuntu-22.04]'
+    runs-on: ubuntu-20.04
+    needs:
+      - determine_necessary_jobs
+    if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Jemalloc [ubuntu-22.04];')
+    steps:
+      - uses: actions/checkout@v2
+      - name: Login to Google Cloud
+        uses: ./.github/actions/gcloud-login
+        with:
+          private_key: ${{ secrets.GCLOUD_KEY }}
+          write_keyfile_to: gcloud-credentials.json
+      - name: Dump Azure connection string
+        run: echo -n "$CONNECTION_STRING" > azure-connection-string.txt
+        env:
+          CONNECTION_STRING: ${{ secrets.AZURE_CI1_STORAGE_CONNECTION_STRING }}
+
+      - name: Download Docker image necessary for building
+        run: ./internal-scripts/ci-cd/download-artifact.sh
+        if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Use locally-built Docker image ubuntu-22.04;')
+        env:
+          ARTIFACT_NAME: 'docker-image-ubuntu-22.04'
+          ARTIFACT_PATH: .
+      - name: Load Docker image necessary for building
+        run: ./internal-scripts/ci-cd/load-docker-image.sh
+        if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Use locally-built Docker image ubuntu-22.04;')
+        env:
+          TARBALL: image.tar.zst
+
+      - run: mkdir cache
+
+      - name: Download source
+        run: ./internal-scripts/ci-cd/build-jemalloc-binaries/download-source.sh
+        env:
+          JEMALLOC_VERSION: "3.6.0"
+
+      - name: Build
+        run: ./internal-scripts/ci-cd/build-jemalloc-binaries/build.sh
+        env:
+          ENVIRONMENT_NAME: 'ubuntu-22.04'
+          CACHE_KEY_PREFIX: 'sccache/ubuntu-22.04'
+
+      - name: Archive artifact
+        run: ./internal-scripts/ci-cd/upload-artifact.sh
+        env:
+          ARTIFACT_NAME: 'jemalloc-bin-ubuntu-22.04'
+          ARTIFACT_PATH: output
 
 
   ### Ruby ###
@@ -1661,6 +1709,515 @@ jobs:
           ARTIFACT_PATH: output-malloctrim
 
 
+  build_ruby_ubuntu_22_04-3_1-normal:
+    name: 'Build Ruby [ubuntu-22.04/3.1/normal]'
+    runs-on: ubuntu-20.04
+    needs:
+      - determine_necessary_jobs
+      - build_jemalloc_ubuntu_22_04
+    # Run even if a dependent job has been skipped
+    if: |
+      contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Ruby [ubuntu-22.04/3.1/normal];')
+      && !failure() && !cancelled()
+    steps:
+      - name: Check whether 'Build Jemalloc [ubuntu-22.04]' did not fail
+        run: 'false'
+        if: |
+          needs.build_jemalloc_ubuntu_22_04.result == 'skipped'
+          && contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Jemalloc [ubuntu-22.04];')
+
+      - uses: actions/checkout@v2
+      - name: Login to Google Cloud
+        uses: ./.github/actions/gcloud-login
+        with:
+          private_key: ${{ secrets.GCLOUD_KEY }}
+          write_keyfile_to: gcloud-credentials.json
+      - name: Dump Azure connection string
+        run: echo -n "$CONNECTION_STRING" > azure-connection-string.txt
+        env:
+          CONNECTION_STRING: ${{ secrets.AZURE_CI1_STORAGE_CONNECTION_STRING }}
+      - name: Fetch Ruby source
+        run: ./internal-scripts/ci-cd/download-artifact.sh
+        env:
+          ARTIFACT_NAME: ruby-src-3.1.2
+          ARTIFACT_PATH: .
+
+      - name: Download Docker image necessary for building
+        run: ./internal-scripts/ci-cd/download-artifact.sh
+        if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Use locally-built Docker image ubuntu-22.04;')
+        env:
+          ARTIFACT_NAME: 'docker-image-ubuntu-22.04'
+          ARTIFACT_PATH: .
+      - name: Load Docker image necessary for building
+        run: ./internal-scripts/ci-cd/load-docker-image.sh
+        if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Use locally-built Docker image ubuntu-22.04;')
+        env:
+          TARBALL: image.tar.zst
+
+      - name: Download Docker image necessary for packaging
+        run: ./internal-scripts/ci-cd/download-artifact.sh
+        if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Use locally-built Docker image utility;')
+        env:
+          ARTIFACT_NAME: docker-image-utility
+          ARTIFACT_PATH: .
+      - name: Load Docker image necessary for packaging
+        run: ./internal-scripts/ci-cd/load-docker-image.sh
+        if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Use locally-built Docker image utility;')
+        env:
+          TARBALL: image.tar.zst
+
+      
+
+      - name: Build binaries
+        run: ./internal-scripts/ci-cd/build-ruby-packages/build-binaries.sh
+        env:
+          ENVIRONMENT_NAME: "ubuntu-22.04"
+          VARIANT_NAME: "normal"
+          RUBY_PACKAGE_VERSION_ID: "3.1"
+          CACHE_KEY_PREFIX: "sccache/ubuntu-22.04"
+
+      - name: Build package
+        run: ./internal-scripts/ci-cd/build-ruby-packages/build-package.sh
+        env:
+          DISTRIBUTION_NAME: "ubuntu-22.04"
+          VARIANT_NAME: "normal"
+          VARIANT_PACKAGE_SUFFIX: ""
+          PACKAGE_FORMAT: "DEB"
+          RUBY_PACKAGE_VERSION_ID: "3.1"
+          RUBY_PACKAGE_REVISION: "7"
+
+      - name: Archive package artifact to Google Cloud
+        run: ./internal-scripts/ci-cd/upload-artifact.sh
+        env:
+          ARTIFACT_NAME: "ruby-pkg_3.1_ubuntu-22.04_normal"
+          ARTIFACT_PATH: output-normal
+
+  build_ruby_ubuntu_22_04-3_1-jemalloc:
+    name: 'Build Ruby [ubuntu-22.04/3.1/jemalloc]'
+    runs-on: ubuntu-20.04
+    needs:
+      - determine_necessary_jobs
+      - build_jemalloc_ubuntu_22_04
+    # Run even if a dependent job has been skipped
+    if: |
+      contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Ruby [ubuntu-22.04/3.1/jemalloc];')
+      && !failure() && !cancelled()
+    steps:
+      - name: Check whether 'Build Jemalloc [ubuntu-22.04]' did not fail
+        run: 'false'
+        if: |
+          needs.build_jemalloc_ubuntu_22_04.result == 'skipped'
+          && contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Jemalloc [ubuntu-22.04];')
+
+      - uses: actions/checkout@v2
+      - name: Login to Google Cloud
+        uses: ./.github/actions/gcloud-login
+        with:
+          private_key: ${{ secrets.GCLOUD_KEY }}
+          write_keyfile_to: gcloud-credentials.json
+      - name: Dump Azure connection string
+        run: echo -n "$CONNECTION_STRING" > azure-connection-string.txt
+        env:
+          CONNECTION_STRING: ${{ secrets.AZURE_CI1_STORAGE_CONNECTION_STRING }}
+      - name: Fetch Ruby source
+        run: ./internal-scripts/ci-cd/download-artifact.sh
+        env:
+          ARTIFACT_NAME: ruby-src-3.1.2
+          ARTIFACT_PATH: .
+
+      - name: Download Docker image necessary for building
+        run: ./internal-scripts/ci-cd/download-artifact.sh
+        if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Use locally-built Docker image ubuntu-22.04;')
+        env:
+          ARTIFACT_NAME: 'docker-image-ubuntu-22.04'
+          ARTIFACT_PATH: .
+      - name: Load Docker image necessary for building
+        run: ./internal-scripts/ci-cd/load-docker-image.sh
+        if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Use locally-built Docker image ubuntu-22.04;')
+        env:
+          TARBALL: image.tar.zst
+
+      - name: Download Docker image necessary for packaging
+        run: ./internal-scripts/ci-cd/download-artifact.sh
+        if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Use locally-built Docker image utility;')
+        env:
+          ARTIFACT_NAME: docker-image-utility
+          ARTIFACT_PATH: .
+      - name: Load Docker image necessary for packaging
+        run: ./internal-scripts/ci-cd/load-docker-image.sh
+        if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Use locally-built Docker image utility;')
+        env:
+          TARBALL: image.tar.zst
+
+      
+      - name: Fetch Jemalloc binary
+        run: ./internal-scripts/ci-cd/download-artifact.sh
+        env:
+          ARTIFACT_NAME: jemalloc-bin-ubuntu-22.04
+          ARTIFACT_PATH: .        
+
+      - name: Build binaries
+        run: ./internal-scripts/ci-cd/build-ruby-packages/build-binaries.sh
+        env:
+          ENVIRONMENT_NAME: "ubuntu-22.04"
+          VARIANT_NAME: "jemalloc"
+          RUBY_PACKAGE_VERSION_ID: "3.1"
+          CACHE_KEY_PREFIX: "sccache/ubuntu-22.04"
+
+      - name: Build package
+        run: ./internal-scripts/ci-cd/build-ruby-packages/build-package.sh
+        env:
+          DISTRIBUTION_NAME: "ubuntu-22.04"
+          VARIANT_NAME: "jemalloc"
+          VARIANT_PACKAGE_SUFFIX: "-jemalloc"
+          PACKAGE_FORMAT: "DEB"
+          RUBY_PACKAGE_VERSION_ID: "3.1"
+          RUBY_PACKAGE_REVISION: "7"
+
+      - name: Archive package artifact to Google Cloud
+        run: ./internal-scripts/ci-cd/upload-artifact.sh
+        env:
+          ARTIFACT_NAME: "ruby-pkg_3.1_ubuntu-22.04_jemalloc"
+          ARTIFACT_PATH: output-jemalloc
+
+  build_ruby_ubuntu_22_04-3_1-malloctrim:
+    name: 'Build Ruby [ubuntu-22.04/3.1/malloctrim]'
+    runs-on: ubuntu-20.04
+    needs:
+      - determine_necessary_jobs
+      - build_jemalloc_ubuntu_22_04
+    # Run even if a dependent job has been skipped
+    if: |
+      contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Ruby [ubuntu-22.04/3.1/malloctrim];')
+      && !failure() && !cancelled()
+    steps:
+      - name: Check whether 'Build Jemalloc [ubuntu-22.04]' did not fail
+        run: 'false'
+        if: |
+          needs.build_jemalloc_ubuntu_22_04.result == 'skipped'
+          && contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Jemalloc [ubuntu-22.04];')
+
+      - uses: actions/checkout@v2
+      - name: Login to Google Cloud
+        uses: ./.github/actions/gcloud-login
+        with:
+          private_key: ${{ secrets.GCLOUD_KEY }}
+          write_keyfile_to: gcloud-credentials.json
+      - name: Dump Azure connection string
+        run: echo -n "$CONNECTION_STRING" > azure-connection-string.txt
+        env:
+          CONNECTION_STRING: ${{ secrets.AZURE_CI1_STORAGE_CONNECTION_STRING }}
+      - name: Fetch Ruby source
+        run: ./internal-scripts/ci-cd/download-artifact.sh
+        env:
+          ARTIFACT_NAME: ruby-src-3.1.2
+          ARTIFACT_PATH: .
+
+      - name: Download Docker image necessary for building
+        run: ./internal-scripts/ci-cd/download-artifact.sh
+        if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Use locally-built Docker image ubuntu-22.04;')
+        env:
+          ARTIFACT_NAME: 'docker-image-ubuntu-22.04'
+          ARTIFACT_PATH: .
+      - name: Load Docker image necessary for building
+        run: ./internal-scripts/ci-cd/load-docker-image.sh
+        if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Use locally-built Docker image ubuntu-22.04;')
+        env:
+          TARBALL: image.tar.zst
+
+      - name: Download Docker image necessary for packaging
+        run: ./internal-scripts/ci-cd/download-artifact.sh
+        if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Use locally-built Docker image utility;')
+        env:
+          ARTIFACT_NAME: docker-image-utility
+          ARTIFACT_PATH: .
+      - name: Load Docker image necessary for packaging
+        run: ./internal-scripts/ci-cd/load-docker-image.sh
+        if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Use locally-built Docker image utility;')
+        env:
+          TARBALL: image.tar.zst
+
+      
+
+      - name: Build binaries
+        run: ./internal-scripts/ci-cd/build-ruby-packages/build-binaries.sh
+        env:
+          ENVIRONMENT_NAME: "ubuntu-22.04"
+          VARIANT_NAME: "malloctrim"
+          RUBY_PACKAGE_VERSION_ID: "3.1"
+          CACHE_KEY_PREFIX: "sccache/ubuntu-22.04"
+
+      - name: Build package
+        run: ./internal-scripts/ci-cd/build-ruby-packages/build-package.sh
+        env:
+          DISTRIBUTION_NAME: "ubuntu-22.04"
+          VARIANT_NAME: "malloctrim"
+          VARIANT_PACKAGE_SUFFIX: "-malloctrim"
+          PACKAGE_FORMAT: "DEB"
+          RUBY_PACKAGE_VERSION_ID: "3.1"
+          RUBY_PACKAGE_REVISION: "7"
+
+      - name: Archive package artifact to Google Cloud
+        run: ./internal-scripts/ci-cd/upload-artifact.sh
+        env:
+          ARTIFACT_NAME: "ruby-pkg_3.1_ubuntu-22.04_malloctrim"
+          ARTIFACT_PATH: output-malloctrim
+
+  build_ruby_ubuntu_22_04-3_1_2-normal:
+    name: 'Build Ruby [ubuntu-22.04/3.1.2/normal]'
+    runs-on: ubuntu-20.04
+    needs:
+      - determine_necessary_jobs
+      - build_jemalloc_ubuntu_22_04
+    # Run even if a dependent job has been skipped
+    if: |
+      contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Ruby [ubuntu-22.04/3.1.2/normal];')
+      && !failure() && !cancelled()
+    steps:
+      - name: Check whether 'Build Jemalloc [ubuntu-22.04]' did not fail
+        run: 'false'
+        if: |
+          needs.build_jemalloc_ubuntu_22_04.result == 'skipped'
+          && contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Jemalloc [ubuntu-22.04];')
+
+      - uses: actions/checkout@v2
+      - name: Login to Google Cloud
+        uses: ./.github/actions/gcloud-login
+        with:
+          private_key: ${{ secrets.GCLOUD_KEY }}
+          write_keyfile_to: gcloud-credentials.json
+      - name: Dump Azure connection string
+        run: echo -n "$CONNECTION_STRING" > azure-connection-string.txt
+        env:
+          CONNECTION_STRING: ${{ secrets.AZURE_CI1_STORAGE_CONNECTION_STRING }}
+      - name: Fetch Ruby source
+        run: ./internal-scripts/ci-cd/download-artifact.sh
+        env:
+          ARTIFACT_NAME: ruby-src-3.1.2
+          ARTIFACT_PATH: .
+
+      - name: Download Docker image necessary for building
+        run: ./internal-scripts/ci-cd/download-artifact.sh
+        if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Use locally-built Docker image ubuntu-22.04;')
+        env:
+          ARTIFACT_NAME: 'docker-image-ubuntu-22.04'
+          ARTIFACT_PATH: .
+      - name: Load Docker image necessary for building
+        run: ./internal-scripts/ci-cd/load-docker-image.sh
+        if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Use locally-built Docker image ubuntu-22.04;')
+        env:
+          TARBALL: image.tar.zst
+
+      - name: Download Docker image necessary for packaging
+        run: ./internal-scripts/ci-cd/download-artifact.sh
+        if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Use locally-built Docker image utility;')
+        env:
+          ARTIFACT_NAME: docker-image-utility
+          ARTIFACT_PATH: .
+      - name: Load Docker image necessary for packaging
+        run: ./internal-scripts/ci-cd/load-docker-image.sh
+        if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Use locally-built Docker image utility;')
+        env:
+          TARBALL: image.tar.zst
+
+      
+
+      - name: Build binaries
+        run: ./internal-scripts/ci-cd/build-ruby-packages/build-binaries.sh
+        env:
+          ENVIRONMENT_NAME: "ubuntu-22.04"
+          VARIANT_NAME: "normal"
+          RUBY_PACKAGE_VERSION_ID: "3.1.2"
+          CACHE_KEY_PREFIX: "sccache/ubuntu-22.04"
+
+      - name: Build package
+        run: ./internal-scripts/ci-cd/build-ruby-packages/build-package.sh
+        env:
+          DISTRIBUTION_NAME: "ubuntu-22.04"
+          VARIANT_NAME: "normal"
+          VARIANT_PACKAGE_SUFFIX: ""
+          PACKAGE_FORMAT: "DEB"
+          RUBY_PACKAGE_VERSION_ID: "3.1.2"
+          RUBY_PACKAGE_REVISION: "3"
+
+      - name: Archive package artifact to Google Cloud
+        run: ./internal-scripts/ci-cd/upload-artifact.sh
+        env:
+          ARTIFACT_NAME: "ruby-pkg_3.1.2_ubuntu-22.04_normal"
+          ARTIFACT_PATH: output-normal
+
+  build_ruby_ubuntu_22_04-3_1_2-jemalloc:
+    name: 'Build Ruby [ubuntu-22.04/3.1.2/jemalloc]'
+    runs-on: ubuntu-20.04
+    needs:
+      - determine_necessary_jobs
+      - build_jemalloc_ubuntu_22_04
+    # Run even if a dependent job has been skipped
+    if: |
+      contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Ruby [ubuntu-22.04/3.1.2/jemalloc];')
+      && !failure() && !cancelled()
+    steps:
+      - name: Check whether 'Build Jemalloc [ubuntu-22.04]' did not fail
+        run: 'false'
+        if: |
+          needs.build_jemalloc_ubuntu_22_04.result == 'skipped'
+          && contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Jemalloc [ubuntu-22.04];')
+
+      - uses: actions/checkout@v2
+      - name: Login to Google Cloud
+        uses: ./.github/actions/gcloud-login
+        with:
+          private_key: ${{ secrets.GCLOUD_KEY }}
+          write_keyfile_to: gcloud-credentials.json
+      - name: Dump Azure connection string
+        run: echo -n "$CONNECTION_STRING" > azure-connection-string.txt
+        env:
+          CONNECTION_STRING: ${{ secrets.AZURE_CI1_STORAGE_CONNECTION_STRING }}
+      - name: Fetch Ruby source
+        run: ./internal-scripts/ci-cd/download-artifact.sh
+        env:
+          ARTIFACT_NAME: ruby-src-3.1.2
+          ARTIFACT_PATH: .
+
+      - name: Download Docker image necessary for building
+        run: ./internal-scripts/ci-cd/download-artifact.sh
+        if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Use locally-built Docker image ubuntu-22.04;')
+        env:
+          ARTIFACT_NAME: 'docker-image-ubuntu-22.04'
+          ARTIFACT_PATH: .
+      - name: Load Docker image necessary for building
+        run: ./internal-scripts/ci-cd/load-docker-image.sh
+        if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Use locally-built Docker image ubuntu-22.04;')
+        env:
+          TARBALL: image.tar.zst
+
+      - name: Download Docker image necessary for packaging
+        run: ./internal-scripts/ci-cd/download-artifact.sh
+        if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Use locally-built Docker image utility;')
+        env:
+          ARTIFACT_NAME: docker-image-utility
+          ARTIFACT_PATH: .
+      - name: Load Docker image necessary for packaging
+        run: ./internal-scripts/ci-cd/load-docker-image.sh
+        if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Use locally-built Docker image utility;')
+        env:
+          TARBALL: image.tar.zst
+
+      
+      - name: Fetch Jemalloc binary
+        run: ./internal-scripts/ci-cd/download-artifact.sh
+        env:
+          ARTIFACT_NAME: jemalloc-bin-ubuntu-22.04
+          ARTIFACT_PATH: .        
+
+      - name: Build binaries
+        run: ./internal-scripts/ci-cd/build-ruby-packages/build-binaries.sh
+        env:
+          ENVIRONMENT_NAME: "ubuntu-22.04"
+          VARIANT_NAME: "jemalloc"
+          RUBY_PACKAGE_VERSION_ID: "3.1.2"
+          CACHE_KEY_PREFIX: "sccache/ubuntu-22.04"
+
+      - name: Build package
+        run: ./internal-scripts/ci-cd/build-ruby-packages/build-package.sh
+        env:
+          DISTRIBUTION_NAME: "ubuntu-22.04"
+          VARIANT_NAME: "jemalloc"
+          VARIANT_PACKAGE_SUFFIX: "-jemalloc"
+          PACKAGE_FORMAT: "DEB"
+          RUBY_PACKAGE_VERSION_ID: "3.1.2"
+          RUBY_PACKAGE_REVISION: "3"
+
+      - name: Archive package artifact to Google Cloud
+        run: ./internal-scripts/ci-cd/upload-artifact.sh
+        env:
+          ARTIFACT_NAME: "ruby-pkg_3.1.2_ubuntu-22.04_jemalloc"
+          ARTIFACT_PATH: output-jemalloc
+
+  build_ruby_ubuntu_22_04-3_1_2-malloctrim:
+    name: 'Build Ruby [ubuntu-22.04/3.1.2/malloctrim]'
+    runs-on: ubuntu-20.04
+    needs:
+      - determine_necessary_jobs
+      - build_jemalloc_ubuntu_22_04
+    # Run even if a dependent job has been skipped
+    if: |
+      contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Ruby [ubuntu-22.04/3.1.2/malloctrim];')
+      && !failure() && !cancelled()
+    steps:
+      - name: Check whether 'Build Jemalloc [ubuntu-22.04]' did not fail
+        run: 'false'
+        if: |
+          needs.build_jemalloc_ubuntu_22_04.result == 'skipped'
+          && contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Jemalloc [ubuntu-22.04];')
+
+      - uses: actions/checkout@v2
+      - name: Login to Google Cloud
+        uses: ./.github/actions/gcloud-login
+        with:
+          private_key: ${{ secrets.GCLOUD_KEY }}
+          write_keyfile_to: gcloud-credentials.json
+      - name: Dump Azure connection string
+        run: echo -n "$CONNECTION_STRING" > azure-connection-string.txt
+        env:
+          CONNECTION_STRING: ${{ secrets.AZURE_CI1_STORAGE_CONNECTION_STRING }}
+      - name: Fetch Ruby source
+        run: ./internal-scripts/ci-cd/download-artifact.sh
+        env:
+          ARTIFACT_NAME: ruby-src-3.1.2
+          ARTIFACT_PATH: .
+
+      - name: Download Docker image necessary for building
+        run: ./internal-scripts/ci-cd/download-artifact.sh
+        if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Use locally-built Docker image ubuntu-22.04;')
+        env:
+          ARTIFACT_NAME: 'docker-image-ubuntu-22.04'
+          ARTIFACT_PATH: .
+      - name: Load Docker image necessary for building
+        run: ./internal-scripts/ci-cd/load-docker-image.sh
+        if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Use locally-built Docker image ubuntu-22.04;')
+        env:
+          TARBALL: image.tar.zst
+
+      - name: Download Docker image necessary for packaging
+        run: ./internal-scripts/ci-cd/download-artifact.sh
+        if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Use locally-built Docker image utility;')
+        env:
+          ARTIFACT_NAME: docker-image-utility
+          ARTIFACT_PATH: .
+      - name: Load Docker image necessary for packaging
+        run: ./internal-scripts/ci-cd/load-docker-image.sh
+        if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Use locally-built Docker image utility;')
+        env:
+          TARBALL: image.tar.zst
+
+      
+
+      - name: Build binaries
+        run: ./internal-scripts/ci-cd/build-ruby-packages/build-binaries.sh
+        env:
+          ENVIRONMENT_NAME: "ubuntu-22.04"
+          VARIANT_NAME: "malloctrim"
+          RUBY_PACKAGE_VERSION_ID: "3.1.2"
+          CACHE_KEY_PREFIX: "sccache/ubuntu-22.04"
+
+      - name: Build package
+        run: ./internal-scripts/ci-cd/build-ruby-packages/build-package.sh
+        env:
+          DISTRIBUTION_NAME: "ubuntu-22.04"
+          VARIANT_NAME: "malloctrim"
+          VARIANT_PACKAGE_SUFFIX: "-malloctrim"
+          PACKAGE_FORMAT: "DEB"
+          RUBY_PACKAGE_VERSION_ID: "3.1.2"
+          RUBY_PACKAGE_REVISION: "3"
+
+      - name: Archive package artifact to Google Cloud
+        run: ./internal-scripts/ci-cd/upload-artifact.sh
+        env:
+          ARTIFACT_NAME: "ruby-pkg_3.1.2_ubuntu-22.04_malloctrim"
+          ARTIFACT_PATH: output-malloctrim
+
+
 
   ### Finalize ###
 
@@ -1696,6 +2253,16 @@ jobs:
       - build_ruby_debian_11-2_7_6-normal
       - build_ruby_debian_11-2_7_6-jemalloc
       - build_ruby_debian_11-2_7_6-malloctrim
+
+      - build_jemalloc_ubuntu_22_04
+
+      - build_ruby_ubuntu_22_04-3_1-normal
+      - build_ruby_ubuntu_22_04-3_1-jemalloc
+      - build_ruby_ubuntu_22_04-3_1-malloctrim
+
+      - build_ruby_ubuntu_22_04-3_1_2-normal
+      - build_ruby_ubuntu_22_04-3_1_2-jemalloc
+      - build_ruby_ubuntu_22_04-3_1_2-malloctrim
     runs-on: ubuntu-20.04
     if: 'always()'
     steps:
@@ -1716,6 +2283,7 @@ jobs:
         env:
           ARTIFACT_NAMES: |
             jemalloc-bin-debian-11
+            jemalloc-bin-ubuntu-22.04
           ARTIFACT_PATH: artifacts
           CLEAR: true
       - name: Archive Jemalloc binary artifact [debian-11] to Github
@@ -1723,11 +2291,16 @@ jobs:
         with:
           name: 'jemalloc-bin-debian-11'
           path: 'artifacts/jemalloc-bin-debian-11'
+      - name: Archive Jemalloc binary artifact [ubuntu-22.04] to Github
+        uses: actions/upload-artifact@v2
+        with:
+          name: 'jemalloc-bin-ubuntu-22.04'
+          path: 'artifacts/jemalloc-bin-ubuntu-22.04'
 
       - name: Download Ruby package artifacts from Google Cloud
         run: ./internal-scripts/ci-cd/download-artifacts.sh
         env:
-          ARTIFACT_NAMES: 'ruby-pkg_3.1_debian-11_normal ruby-pkg_3.1_debian-11_jemalloc ruby-pkg_3.1_debian-11_malloctrim ruby-pkg_3.0_debian-11_normal ruby-pkg_3.0_debian-11_jemalloc ruby-pkg_3.0_debian-11_malloctrim ruby-pkg_2.7_debian-11_normal ruby-pkg_2.7_debian-11_jemalloc ruby-pkg_2.7_debian-11_malloctrim ruby-pkg_3.1.2_debian-11_normal ruby-pkg_3.1.2_debian-11_jemalloc ruby-pkg_3.1.2_debian-11_malloctrim ruby-pkg_3.0.4_debian-11_normal ruby-pkg_3.0.4_debian-11_jemalloc ruby-pkg_3.0.4_debian-11_malloctrim ruby-pkg_2.7.6_debian-11_normal ruby-pkg_2.7.6_debian-11_jemalloc ruby-pkg_2.7.6_debian-11_malloctrim'
+          ARTIFACT_NAMES: 'ruby-pkg_3.1_debian-11_normal ruby-pkg_3.1_debian-11_jemalloc ruby-pkg_3.1_debian-11_malloctrim ruby-pkg_3.0_debian-11_normal ruby-pkg_3.0_debian-11_jemalloc ruby-pkg_3.0_debian-11_malloctrim ruby-pkg_2.7_debian-11_normal ruby-pkg_2.7_debian-11_jemalloc ruby-pkg_2.7_debian-11_malloctrim ruby-pkg_3.1.2_debian-11_normal ruby-pkg_3.1.2_debian-11_jemalloc ruby-pkg_3.1.2_debian-11_malloctrim ruby-pkg_3.0.4_debian-11_normal ruby-pkg_3.0.4_debian-11_jemalloc ruby-pkg_3.0.4_debian-11_malloctrim ruby-pkg_2.7.6_debian-11_normal ruby-pkg_2.7.6_debian-11_jemalloc ruby-pkg_2.7.6_debian-11_malloctrim ruby-pkg_3.1_ubuntu-22.04_normal ruby-pkg_3.1_ubuntu-22.04_jemalloc ruby-pkg_3.1_ubuntu-22.04_malloctrim ruby-pkg_3.1.2_ubuntu-22.04_normal ruby-pkg_3.1.2_ubuntu-22.04_jemalloc ruby-pkg_3.1.2_ubuntu-22.04_malloctrim'
           ARTIFACT_PATH: artifacts
           CLEAR: true
       - name: Archive Ruby package artifact [ruby-pkg_3.1_debian-11_normal] to Github
@@ -1820,6 +2393,36 @@ jobs:
         with:
           name: ruby-pkg_2.7.6_debian-11_malloctrim
           path: artifacts/ruby-pkg_2.7.6_debian-11_malloctrim
+      - name: Archive Ruby package artifact [ruby-pkg_3.1_ubuntu-22.04_normal] to Github
+        uses: actions/upload-artifact@v2
+        with:
+          name: ruby-pkg_3.1_ubuntu-22.04_normal
+          path: artifacts/ruby-pkg_3.1_ubuntu-22.04_normal
+      - name: Archive Ruby package artifact [ruby-pkg_3.1_ubuntu-22.04_jemalloc] to Github
+        uses: actions/upload-artifact@v2
+        with:
+          name: ruby-pkg_3.1_ubuntu-22.04_jemalloc
+          path: artifacts/ruby-pkg_3.1_ubuntu-22.04_jemalloc
+      - name: Archive Ruby package artifact [ruby-pkg_3.1_ubuntu-22.04_malloctrim] to Github
+        uses: actions/upload-artifact@v2
+        with:
+          name: ruby-pkg_3.1_ubuntu-22.04_malloctrim
+          path: artifacts/ruby-pkg_3.1_ubuntu-22.04_malloctrim
+      - name: Archive Ruby package artifact [ruby-pkg_3.1.2_ubuntu-22.04_normal] to Github
+        uses: actions/upload-artifact@v2
+        with:
+          name: ruby-pkg_3.1.2_ubuntu-22.04_normal
+          path: artifacts/ruby-pkg_3.1.2_ubuntu-22.04_normal
+      - name: Archive Ruby package artifact [ruby-pkg_3.1.2_ubuntu-22.04_jemalloc] to Github
+        uses: actions/upload-artifact@v2
+        with:
+          name: ruby-pkg_3.1.2_ubuntu-22.04_jemalloc
+          path: artifacts/ruby-pkg_3.1.2_ubuntu-22.04_jemalloc
+      - name: Archive Ruby package artifact [ruby-pkg_3.1.2_ubuntu-22.04_malloctrim] to Github
+        uses: actions/upload-artifact@v2
+        with:
+          name: ruby-pkg_3.1.2_ubuntu-22.04_malloctrim
+          path: artifacts/ruby-pkg_3.1.2_ubuntu-22.04_malloctrim
 
 
       ### Check whether dependent jobs failed ###
@@ -1835,6 +2438,9 @@ jobs:
             || (needs.build_jemalloc_debian_11.result != 'success'
               && (needs.build_jemalloc_debian_11.result != 'skipped'
                 || contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Jemalloc [debian-11];')))
+            || (needs.build_jemalloc_ubuntu_22_04.result != 'success'
+              && (needs.build_jemalloc_ubuntu_22_04.result != 'skipped'
+                || contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Jemalloc [ubuntu-22.04];')))
       - name: Check whether 'Build Ruby [debian-11]' did not fail
         run: 'false'
         if: |
@@ -1893,6 +2499,28 @@ jobs:
             || (needs.build_ruby_debian_11-2_7_6-malloctrim.result != 'success'
               && (needs.build_ruby_debian_11-2_7_6-malloctrim.result != 'skipped'
                 || contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Ruby [debian-11/2.7.6/malloctrim];')))
+      - name: Check whether 'Build Ruby [ubuntu-22.04]' did not fail
+        run: 'false'
+        if: |
+          false
+            || (needs.build_ruby_ubuntu_22_04-3_1-normal.result != 'success'
+              && (needs.build_ruby_ubuntu_22_04-3_1-normal.result != 'skipped'
+                || contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Ruby [ubuntu-22.04/3.1/normal];')))
+            || (needs.build_ruby_ubuntu_22_04-3_1-jemalloc.result != 'success'
+              && (needs.build_ruby_ubuntu_22_04-3_1-jemalloc.result != 'skipped'
+                || contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Ruby [ubuntu-22.04/3.1/jemalloc];')))
+            || (needs.build_ruby_ubuntu_22_04-3_1-malloctrim.result != 'success'
+              && (needs.build_ruby_ubuntu_22_04-3_1-malloctrim.result != 'skipped'
+                || contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Ruby [ubuntu-22.04/3.1/malloctrim];')))
+            || (needs.build_ruby_ubuntu_22_04-3_1_2-normal.result != 'success'
+              && (needs.build_ruby_ubuntu_22_04-3_1_2-normal.result != 'skipped'
+                || contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Ruby [ubuntu-22.04/3.1.2/normal];')))
+            || (needs.build_ruby_ubuntu_22_04-3_1_2-jemalloc.result != 'success'
+              && (needs.build_ruby_ubuntu_22_04-3_1_2-jemalloc.result != 'skipped'
+                || contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Ruby [ubuntu-22.04/3.1.2/jemalloc];')))
+            || (needs.build_ruby_ubuntu_22_04-3_1_2-malloctrim.result != 'success'
+              && (needs.build_ruby_ubuntu_22_04-3_1_2-malloctrim.result != 'skipped'
+                || contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Ruby [ubuntu-22.04/3.1.2/malloctrim];')))
 
 
       ### Trigger next workflow ###

@@ -128,7 +128,7 @@ jobs:
   ### Ruby ###
 
   <%- distributions.each do |distribution| %>
-  <%- ruby_package_versions.each do |ruby_package_version| -%>
+  <%- ruby_package_versions_for_distro(distribution).each do |ruby_package_version| -%>
   <%- variants.each do |variant| -%>
   <%- unindent(2) do %>
     build_ruby_<%= slug(distribution[:name]) %>-<%= slug(ruby_package_version[:id]) %>-<%= slug(variant[:name]) %>:
@@ -238,7 +238,7 @@ jobs:
       <%- distributions.each do |distribution| -%>
       <%- unindent(2) do %>
         - build_jemalloc_<%= slug(distribution[:name]) %>
-        <%- ruby_package_versions.each do |ruby_package_version| %>
+        <%- ruby_package_versions_for_distro(distribution).each do |ruby_package_version| %>
         <%- variants.each do |variant| -%>
         - build_ruby_<%= slug(distribution[:name]) %>-<%= slug(ruby_package_version[:id]) %>-<%= slug(variant[:name]) %>
         <%- end -%>
@@ -312,7 +312,7 @@ jobs:
         run: 'false'
         if: |
           false
-          <%- ruby_package_versions.each do |ruby_package_version| -%>
+          <%- ruby_package_versions_for_distro(distribution).each do |ruby_package_version| -%>
           <%- variants.each do |variant| -%>
             || (needs.build_ruby_<%= slug(distribution[:name]) %>-<%= slug(ruby_package_version[:id]) %>-<%= slug(variant[:name]) %>.result != 'success'
               && (needs.build_ruby_<%= slug(distribution[:name]) %>-<%= slug(ruby_package_version[:id]) %>-<%= slug(variant[:name]) %>.result != 'skipped'
