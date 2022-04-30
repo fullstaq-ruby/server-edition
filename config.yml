@@ -13,23 +13,23 @@ ruby:
   minor_version_packages:
     - minor_version: '3.1'
       full_version: '3.1.2'
-      package_revision: '7'
+      package_revision: '8'
     - minor_version: '3.0'
       full_version: '3.0.4'
-      package_revision: '6'
+      package_revision: '7'
     - minor_version: '2.7'
       full_version: '2.7.6'
-      package_revision: '8'
+      package_revision: '9'
 
   ## (Optional)
   ## Which tiny Ruby version packages to build.
   tiny_version_packages:
     - full_version: '3.1.2'
-      package_revision: '3'
+      package_revision: '4'
     - full_version: '3.0.4'
-      package_revision: '6'
-    - full_version: '2.7.6'
       package_revision: '7'
+    - full_version: '2.7.6'
+      package_revision: '8'
 
 ## (Required)
 ## Which Rbenv version to package.
