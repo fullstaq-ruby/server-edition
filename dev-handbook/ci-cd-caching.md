@@ -18,6 +18,12 @@ Sccache solves all of the above problems. We cache Azure Blob Storage. All CI jo
 
 The choice of Azure Blob Storage may seem odd given the fact that [the rest of our infrastructure is hosted on Google Cloud](https://github.com/fullstaq-ruby/infra/blob/main/docs/infrastructure-overview.md). The reason is performance. Github-hosted Actions runners are hosted on Azure. [Research has shown](https://github.com/fullstaq-ruby/server-edition/issues/86#issuecomment-1032643774) that latency between Azure and Google Cloud Storage is pretty abysmal: caching to Google Cloud Storage actually makes things **slower**, even if the runner and the Google Cloud Storage bucket are located near each other. In contrast, latency between runners and Azure Blob Storage is very good, even if runners are located on two opposite sides of the US continent.
 
+## Expiration
+
+We expire cache entries based on last access time. Using [lifecycle rules](https://docs.microsoft.com/en-us/azure/storage/blobs/lifecycle-management-overview#rule-actions), we automatically delete objects that haven't been accessed in 90 days.
+
+Ideally we want LRU expiration based by total cache size, like ccache does. But this approach is not supported by sccache when using Azure Blob Storage (likely because calculating the total cache size is expensive), so last-access-time-based expiration is the next best thing.
+
 ## Performance impact
 
 The use of sccache impacts performance as follows (compared to not using sccache):
