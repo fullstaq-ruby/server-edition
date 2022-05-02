@@ -27,12 +27,6 @@ fi
 BUILD_CONCURRENCY="${BUILD_CONCURRENCY:-4}"
 INSTALL_PREFIX="/usr/lib/fullstaq-ruby/versions/$PACKAGE_VERSION$VARIANT_SUFFIX"
 
-if [[ "$ENVIRONMENT_NAME" =~ debian || "$ENVIRONMENT_NAME" =~ ubuntu ]]; then
-    # Make Ruby believe mkdir is in /bin instead of /usr/bin.
-    # Fixes https://github.com/fullstaq-ruby/server-edition/issues/101
-    export PATH="/bin:$PATH"
-fi
-
 
 if [[ "$VARIANT" = jemalloc ]]; then
     JEMALLOC_DIR=/home/builder/jemalloc
@@ -138,6 +132,14 @@ echo
 
 
 if [[ -e /etc/debian_version ]]; then
+    # Fixes https://github.com/fullstaq-ruby/server-edition/issues/101
+    header "Fixing up paths..."
+    run sed -i 's|CONFIG\["MAKEDIRS"\] = .*|CONFIG["MAKEDIRS"] = "/bin/mkdir -p"|' "$DESTDIR/$INSTALL_PREFIX"/lib/ruby/*/*/rbconfig.rb
+    run sed -i 's|CONFIG\["MKDIR_P"\] = .*|CONFIG["MKDIR_P"] = "/bin/mkdir -p"|' "$DESTDIR/$INSTALL_PREFIX"/lib/ruby/*/*/rbconfig.rb
+    run sed -i 's|CONFIG\["EGREP"\] = .*|CONFIG["EGREP"] = "/bin/grep -E"|' "$DESTDIR/$INSTALL_PREFIX"/lib/ruby/*/*/rbconfig.rb
+    run sed -i 's|CONFIG\["GREP"\] = .*|CONFIG["GREP"] = "/bin/grep"|' "$DESTDIR/$INSTALL_PREFIX"/lib/ruby/*/*/rbconfig.rb
+    echo
+
     header "Autodetecting package dependencies..."
     PLATFORM_NAME=$(ls "$DESTDIR/$INSTALL_PREFIX/lib/ruby/vendor_ruby/$ABI_VERSION")
     export LD_LIBRARY_PATH="$DESTDIR/$INSTALL_PREFIX/lib"
