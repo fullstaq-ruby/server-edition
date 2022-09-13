@@ -222,6 +222,37 @@ jobs:
           ARTIFACT_NAME: 'docker-image-centos-8'
           ARTIFACT_PATH: output
 
+  build_docker_image_centos_9:
+    name: 'Build Docker image [centos-9]'
+    runs-on: ubuntu-18.04
+    needs:
+      - determine_necessary_jobs
+    if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Docker image centos-9;')
+    steps:
+      - uses: actions/checkout@v2
+      - name: Login to Google Cloud
+        uses: ./.github/actions/gcloud-login
+        with:
+          private_key: ${{ secrets.GCLOUD_KEY }}
+
+      - name: Build
+        run: ./internal-scripts/ci-cd/build-docker-images/build.sh
+        env:
+          IMAGE_NAME: 'fullstaq/ruby-build-env-centos-9'
+          IMAGE_TAG: '1'
+          SOURCE_DIR: 'environments/centos-9'
+
+      - name: Dump image
+        run: ./internal-scripts/ci-cd/build-docker-images/dump-image.sh
+        env:
+          IMAGE_NAME: 'fullstaq/ruby-build-env-centos-9'
+          IMAGE_TAG: '1'
+      - name: Archive artifact
+        run: ./internal-scripts/ci-cd/upload-artifact.sh
+        env:
+          ARTIFACT_NAME: 'docker-image-centos-9'
+          ARTIFACT_PATH: output
+
   build_docker_image_debian_10:
     name: 'Build Docker image [debian-10]'
     runs-on: ubuntu-18.04
@@ -763,6 +794,7 @@ jobs:
       - download_rbenv_source
       - build_docker_image_centos_7
       - build_docker_image_centos_8
+      - build_docker_image_centos_9
       - build_docker_image_debian_10
       - build_docker_image_debian_11
       - build_docker_image_debian_9
@@ -844,6 +876,19 @@ jobs:
         if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Docker image centos-8;')
         with:
           name: 'docker-image-centos-8'
+          path: artifacts
+      - name: Download Docker image artifact [centos-9] from Google Cloud
+        run: ./internal-scripts/ci-cd/download-artifact.sh
+        if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Docker image centos-9;')
+        env:
+          ARTIFACT_NAME: 'docker-image-centos-9'
+          ARTIFACT_PATH: artifacts
+          CLEAR: true
+      - name: Archive Docker image artifact [centos-9] to Github
+        uses: actions/upload-artifact@v2
+        if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Docker image centos-9;')
+        with:
+          name: 'docker-image-centos-9'
           path: artifacts
       - name: Download Docker image artifact [debian-10] from Google Cloud
         run: ./internal-scripts/ci-cd/download-artifact.sh
@@ -1055,6 +1100,9 @@ jobs:
             || (needs.build_docker_image_centos_8.result != 'success'
               && (needs.build_docker_image_centos_8.result != 'skipped'
                 || contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Docker image centos-8;')))
+            || (needs.build_docker_image_centos_9.result != 'success'
+              && (needs.build_docker_image_centos_9.result != 'skipped'
+                || contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Docker image centos-9;')))
             || (needs.build_docker_image_debian_10.result != 'success'
               && (needs.build_docker_image_debian_10.result != 'skipped'
                 || contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Docker image debian-10;')))
