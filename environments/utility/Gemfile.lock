@@ -1,8 +1,7 @@
 GEM
   remote: https://rubygems.org/
   specs:
-    arr-pm (0.0.11)
-      cabin (> 0)
+    arr-pm (0.0.12)
     backports (3.23.0)
     cabin (0.9.0)
     clamp (1.0.1)
