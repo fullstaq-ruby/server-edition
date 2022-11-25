@@ -10,19 +10,16 @@ LABEL org.opencontainers.image.source https://github.com/fullstaq-ruby/server-ed
 
 RUN set -x && \
     dnf install -y dnf-plugins-core epel-release && \
-    dnf install -y --enablerepo epel --enablerepo powertools \
+    dnf install -y --enablerepo epel --enablerepo devel  \
         findutils gcc gcc-c++ make patch bzip2 curl autoconf automake \
         openssl-devel libyaml-devel libffi-devel readline-devel zlib-devel \
         gdbm-devel ncurses-devel && \
     dnf clean all && \
     rm -rf /tmp/* /var/tmp/*
 
-# RUN curl -fsSLo sccache.tar.gz https://github.com/mozilla/sccache/releases/download/v0.3.0/sccache-v0.2.16-x86_64-unknown-linux-musl.tar.gz && \
-#     tar xzf sccache.tar.gz && \
-#     mv sccache-*/sccache /usr/local/bin/ && \
-RUN curl -fsSLo sccache.gz https://github.com/FooBarWidget/sccache/releases/download/v0.2.16/sccache.gz && \
-    gunzip sccache.gz && \
-    mv sccache /usr/local/bin/ && \
+RUN curl -fsSLo sccache.tar.gz https://github.com/mozilla/sccache/releases/download/v0.3.1/sccache-v0.3.1-x86_64-unknown-linux-musl.tar.gz && \
+    tar xzf sccache.tar.gz && \
+    mv sccache-*/sccache /usr/local/bin/ && \
     chmod +x /usr/local/bin/sccache && \
     chown root: /usr/local/bin/sccache && \
     rm -rf sccache-* && \

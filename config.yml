@@ -100,6 +100,7 @@ distributions: all
 # distributions:
 #   - centos-7
 #   - centos-8
+#   - el-9
 #   - debian-9
 #   - debian-10
 #   - debian-11
@@ -114,6 +115,8 @@ distribution_exclusions:
   - ruby_minor_version: '2.7'
     distros:
       - ubuntu-22.04
+      - el-9
   - ruby_minor_version: '3.0'
     distros:
       - ubuntu-22.04
+      - el-9

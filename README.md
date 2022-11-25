@@ -29,7 +29,7 @@ You can think of Fullstaq Ruby as a competitor of `apt/yum install ruby`, `rbenv
      + [Vs JRuby, TruffleRuby and Rubinius](#vs-jruby-truffleruby-and-rubinius)
      + [Vs LD_PRELOADing Jemalloc yourself](#vs-ld_preloading-jemalloc-yourself)
  * [Installation](#installation)
-   - [RHEL/CentOS](#rhelcentos)
+   - [Enterprise Linux](#enterprise-linux)
    - [Debian/Ubuntu](#debianubuntu)
    - [Deactivate Git-based Rbenv](#deactivate-git-based-rbenv)
    - [Activate Rbenv shell integration (optional)](#activate-rbenv-shell-integration-optional)
@@ -186,7 +186,7 @@ The Fullstaq Ruby native OS packages allow you to install Rubies by adding our r
 
 > _See also: [Installation](#installation)_
 
-Let's say you're on Ubuntu (RHEL/CentOS packages use a different naming scheme). Let's pretend Fullstaq Ruby only packages Ruby 3.0.2 and Ruby 3.0.3 (and let's pretend the latter is also the latest release). You will be able to install the following packages:
+Let's say you're on Ubuntu (Enterprise Linux packages use a different naming scheme). Let's pretend Fullstaq Ruby only packages Ruby 3.0.2 and Ruby 3.0.3 (and let's pretend the latter is also the latest release). You will be able to install the following packages:
 
  * Version 3.0:
     - Normal variant: `apt install fullstaq-ruby-3.0`
@@ -352,7 +352,7 @@ The differences are:
 
    The Jemalloc and malloc_trim variants allow significant reduction in memory usage, and possibly also performance improvements. Learn more: [What is Jemalloc and how does it benefit me?](#what-is-jemalloc-and-how-does-it-benefit-me), [What is malloc_trim and how does it benefit me?](#what-is-malloc_trim-and-how-does-it-benefit-me)
 
- * Fullstaq Ruby also provides Debian, RHEL and CentOS packages.
+ * Fullstaq Ruby also provides Debian, Enterprise Linux packages.
 
  * Fullstaq Ruby has much better support for managing multiple Ruby versions, thanks to the Rbenv integration.
 
@@ -374,25 +374,27 @@ Fullstaq Ruby, ensures that the right version of Jemalloc is used. We are a bunc
 
 ## Installation
 
-### RHEL/CentOS
+### Enterprise Linux
 
- * Supported RHEL/CentOS versions: 9, 8, 7
+> Red Hat Enterprise Linux (RHEL) is the original "Enterprise Linux". Compatible derivatives are CentOS, Rocky Linux and Alma Linux.
+
+ * Supported Enterprise Linux versions: 9, 8, 7
  * Supported architectures: x86-64
 
 Add the Fullstaq Ruby repository by creating `/etc/yum.repos.d/fullstaq-ruby.repo`. Pick one of the following:
 
-CentOS 9:
+Enterprise Linux 9:
 
     [fullstaq-ruby]
     name=fullstaq-ruby
-    baseurl=https://yum.fullstaqruby.org/centos-9/$basearch
+    baseurl=https://yum.fullstaqruby.org/el-9/$basearch
     gpgcheck=0
     repo_gpgcheck=1
     enabled=1
     gpgkey=https://raw.githubusercontent.com/fullstaq-labs/fullstaq-ruby-server-edition/main/fullstaq-ruby.asc
     sslverify=1
 
-CentOS 8:
+Enterprise Linux 8:
 
     [fullstaq-ruby]
     name=fullstaq-ruby
@@ -403,7 +405,7 @@ CentOS 8:
     gpgkey=https://raw.githubusercontent.com/fullstaq-labs/fullstaq-ruby-server-edition/main/fullstaq-ruby.asc
     sslverify=1
 
-CentOS 7:
+Enterprise Linux 7:
 
     [fullstaq-ruby]
     name=fullstaq-ruby
@@ -590,7 +592,7 @@ Be sure to restart your shell after installing shell integration.
 Adding to .bashrc/.bash_profile only activates the shell integration for that specific user. If you want to activate shell integration for all users, you should add to a system-wide shell file. For example if you're using bash, then:
 
  * Ubuntu: /etc/bash.bashrc
- * RHEL/CentOS: /etc/bashrc
+ * Enterprise Linux: /etc/bashrc
 
 ## Usage after installation
 
