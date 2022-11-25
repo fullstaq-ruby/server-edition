@@ -41,7 +41,9 @@ class IncrementCounterApp
     end
 
     logger.info "Counter '#{ENV['COUNTER_PATH']}' updated: value=#{new_value}"
-    puts "::set-output name=value::#{new_value}"
+    File.open(ENV['GITHUB_OUTPUT'] || '/dev/stdout', 'a') do |f|
+      f.puts "value=#{new_value}"
+    end
   end
 
 private

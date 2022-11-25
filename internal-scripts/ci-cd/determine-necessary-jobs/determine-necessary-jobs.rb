@@ -214,7 +214,9 @@ private
 
   def print_ci_output_variable(job_descriptions)
     value = job_descriptions.join(';')
-    puts "::set-output name=necessary_jobs::;#{value};"
+    File.open(ENV['GITHUB_OUTPUT'] || '/dev/stdout', 'a') do |f|
+      f.puts "necessary_jobs=;#{value};"
+    end
   end
 end
 

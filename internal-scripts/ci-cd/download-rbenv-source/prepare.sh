@@ -11,6 +11,8 @@ echo "Repo: $REPO_URL"
 echo "Ref: $REF"
 echo "Cache key: $CACHE_KEY"
 
-echo "::set-output name=repo_url::$REPO_URL"
-echo "::set-output name=ref::$REF"
-echo "::set-output name=cache_key::$CACHE_KEY"
+{
+    echo "repo_url=$REPO_URL"
+    echo "ref=$REF"
+    echo "cache_key=$CACHE_KEY"
+} >> "$GITHUB_OUTPUT"
