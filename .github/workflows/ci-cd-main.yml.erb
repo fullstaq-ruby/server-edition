@@ -31,6 +31,8 @@ jobs:
     runs-on: ubuntu-20.04
     outputs:
       necessary_jobs: ${{ steps.check.outputs.necessary_jobs }}
+    permissions:
+      packages: read
     steps:
       - name: Workaround for detecting new workflows in branches
         run: |
@@ -38,7 +40,7 @@ jobs:
           exit 1
         if: github.event_name == 'push' && github.ref == 'refs/heads/fix/cicd-new-workflows'
 
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: Login to Google Cloud
         uses: ./.github/actions/gcloud-login
         with:
@@ -50,13 +52,16 @@ jobs:
       - name: Determine necessary jobs
         id: check
         run: ./internal-scripts/ci-cd/determine-necessary-jobs/determine-necessary-jobs.rb
+        env:
+          GITHUB_ACTOR: ${{ github.actor }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
 
   check_workflow_uptodate:
     name: Check whether workflow is up-to-date
     runs-on: ubuntu-20.04
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: Check
         run: ./internal-scripts/ci-cd/check-workflow-uptodate/check.sh
 
@@ -76,7 +81,7 @@ jobs:
           needs.download_rbenv_source.result == 'skipped'
           && contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Download Rbenv source;')
 
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
         with:
           fetch-depth: 0
       - uses: actions/setup-ruby@v1
@@ -127,7 +132,7 @@ jobs:
     runs-on: ubuntu-20.04
     if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Install gem bundle;')
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: Login to Google Cloud
         uses: ./.github/actions/gcloud-login
         with:
@@ -153,12 +158,12 @@ jobs:
   <%- unindent(2) do -%>
     build_docker_image_<%= slug(image[:id]) %>:
       name: 'Build Docker image [<%= image[:id] %>]'
-      runs-on: ubuntu-18.04
+      runs-on: ubuntu-20.04
       needs:
         - determine_necessary_jobs
       if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Docker image <%= image[:id] %>;')
       steps:
-        - uses: actions/checkout@v2
+        - uses: actions/checkout@v3
         - name: Login to Google Cloud
           uses: ./.github/actions/gcloud-login
           with:
@@ -191,23 +196,16 @@ jobs:
   <%- unindent(2) do -%>
     download_ruby_source_<%= slug(ruby_version) %>:
       name: Download Ruby source [<%= ruby_version %>]
-      runs-on: ubuntu-20.04
       needs:
         - determine_necessary_jobs
+      runs-on: ubuntu-20.04
       if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Download Ruby source <%= ruby_version %>;')
       steps:
-        - uses: actions/checkout@v2
+        - uses: actions/checkout@v3
         - name: Login to Google Cloud
           uses: ./.github/actions/gcloud-login
           with:
             private_key: ${{ secrets.GCLOUD_KEY }}
-
-        - name: Fetch cache
-          id: fetch_cache
-          uses: actions/cache@v1
-          with:
-            path: output
-            key: v3-ruby-src-<%= ruby_version %>
 
         - name: Download
           run: ./internal-scripts/ci-cd/download-ruby-sources/download.sh
@@ -226,12 +224,12 @@ jobs:
 
   download_rbenv_source:
     name: Download Rbenv source
-    runs-on: ubuntu-20.04
     needs:
       - determine_necessary_jobs
+    runs-on: ubuntu-20.04
     if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Download Rbenv source;')
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: Login to Google Cloud
         uses: ./.github/actions/gcloud-login
         with:
@@ -239,11 +237,6 @@ jobs:
       - name: Prepare
         id: prepare
         run: ./internal-scripts/ci-cd/download-rbenv-source/prepare.sh
-      - name: Fetch cache
-        uses: actions/cache@v1
-        with:
-          path: output
-          key: v2-rbenv-src-${{ steps.prepare.outputs.cache_key }}
 
       - name: Download
         run: ./internal-scripts/ci-cd/download-rbenv-source/download.sh
@@ -263,15 +256,36 @@ jobs:
   build_common_deb:
     name: Build common DEB
     runs-on: ubuntu-20.04
+    permissions:
+      packages: read
     needs:
       - determine_necessary_jobs
-    if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build common DEB;')
+      - build_docker_image_utility
+    # Run even if a dependent job has been skipped
+    if: |
+      contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build common DEB;')
+      && !failure() && !cancelled()
     steps:
-      - uses: actions/checkout@v2
+      - name: Check whether dependent jobs did not fail
+        run: 'false'
+        if: |
+          (
+            needs.download_rbenv_source.result == 'skipped'
+            && contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Download Rbenv source;')
+          ) || (
+            needs.build_docker_image_utility.result == 'skipped'
+            && contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Docker image utility;')
+          )
+
+      - uses: actions/checkout@v3
       - name: Login to Google Cloud
         uses: ./.github/actions/gcloud-login
         with:
           private_key: ${{ secrets.GCLOUD_KEY }}
+      - name: Login to Github Container Registry
+        run: docker login ghcr.io -u ${{ github.actor }} --password-stdin <<<"$GITHUB_TOKEN"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Download utility Docker image
         run: ./internal-scripts/ci-cd/download-artifact.sh
@@ -302,15 +316,36 @@ jobs:
   build_common_rpm:
     name: Build common RPM
     runs-on: ubuntu-20.04
+    permissions:
+      packages: read
     needs:
       - determine_necessary_jobs
-    if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build common RPM;')
+      - build_docker_image_utility
+    # Run even if a dependent job has been skipped
+    if: |
+      contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build common RPM;')
+      && !failure() && !cancelled()
     steps:
-      - uses: actions/checkout@v2
+      - name: Check whether dependent jobs did not fail
+        run: 'false'
+        if: |
+          (
+            needs.download_rbenv_source.result == 'skipped'
+            && contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Download Rbenv source;')
+          ) || (
+            needs.build_docker_image_utility.result == 'skipped'
+            && contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Docker image utility;')
+          )
+
+      - uses: actions/checkout@v3
       - name: Login to Google Cloud
         uses: ./.github/actions/gcloud-login
         with:
           private_key: ${{ secrets.GCLOUD_KEY }}
+      - name: Login to Github Container Registry
+        run: docker login ghcr.io -u ${{ github.actor }} --password-stdin <<<"$GITHUB_TOKEN"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Download utility Docker image
         run: ./internal-scripts/ci-cd/download-artifact.sh
@@ -343,17 +378,37 @@ jobs:
   build_rbenv_deb:
     name: Build Rbenv DEB
     runs-on: ubuntu-20.04
+    permissions:
+      packages: read
     needs:
       - determine_necessary_jobs
       - download_rbenv_source
+      - build_docker_image_utility
     # Run even if a dependent job has been skipped
-    if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Rbenv DEB;')
+    if: |
+      contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Rbenv DEB;')
+      && !failure() && !cancelled()
     steps:
-      - uses: actions/checkout@v2
+      - name: Check whether dependent jobs did not fail
+        run: 'false'
+        if: |
+          (
+            needs.download_rbenv_source.result == 'skipped'
+            && contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Download Rbenv source;')
+          ) || (
+            needs.build_docker_image_utility.result == 'skipped'
+            && contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Docker image utility;')
+          )
+
+      - uses: actions/checkout@v3
       - name: Login to Google Cloud
         uses: ./.github/actions/gcloud-login
         with:
           private_key: ${{ secrets.GCLOUD_KEY }}
+      - name: Login to Github Container Registry
+        run: docker login ghcr.io -u ${{ github.actor }} --password-stdin <<<"$GITHUB_TOKEN"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Fetch Rbenv source
         run: ./internal-scripts/ci-cd/download-artifact.sh
@@ -390,17 +445,37 @@ jobs:
   build_rbenv_rpm:
     name: Build Rbenv RPM
     runs-on: ubuntu-20.04
+    permissions:
+      packages: read
     needs:
       - determine_necessary_jobs
       - download_rbenv_source
+      - build_docker_image_utility
     # Run even if a dependent job has been skipped
-    if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Rbenv RPM;')
+    if: |
+      contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Rbenv RPM;')
+      && !failure() && !cancelled()
     steps:
-      - uses: actions/checkout@v2
+      - name: Check whether dependent jobs did not fail
+        run: 'false'
+        if: |
+          (
+            needs.download_rbenv_source.result == 'skipped'
+            && contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Download Rbenv source;')
+          ) || (
+            needs.build_docker_image_utility.result == 'skipped'
+            && contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Docker image utility;')
+          )
+
+      - uses: actions/checkout@v3
       - name: Login to Google Cloud
         uses: ./.github/actions/gcloud-login
         with:
           private_key: ${{ secrets.GCLOUD_KEY }}
+      - name: Login to Github Container Registry
+        run: docker login ghcr.io -u ${{ github.actor }} --password-stdin <<<"$GITHUB_TOKEN"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Fetch Rbenv source
         run: ./internal-scripts/ci-cd/download-artifact.sh
@@ -459,7 +534,7 @@ jobs:
     runs-on: ubuntu-20.04
     if: 'always()'
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: Login to Google Cloud
         uses: ./.github/actions/gcloud-login
         with:

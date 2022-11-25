@@ -169,7 +169,7 @@ if [[ "$SERVER" = "" ]]; then
         -v "$COMMON_RPM_PATH:/input/$(basename "$COMMON_RPM_PATH"):ro" \
         -v "$TEMP_DIR/repo:/output" \
         --user "$(id -u):$(id -g)" \
-        "fullstaq/ruby-build-env-utility:$UTILITY_IMAGE_VERSION" \
+        "ghcr.io/fullstaq-ruby/server-edition-ci-images:utility-v$UTILITY_IMAGE_VERSION" \
         /system/container-entrypoints/test-rpms-prepare
     echo
     RUN_ARGS=()

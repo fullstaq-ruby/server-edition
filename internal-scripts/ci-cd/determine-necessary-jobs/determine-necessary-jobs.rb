@@ -1,14 +1,22 @@
 #!/usr/bin/env ruby
 require 'set'
+require 'json'
 require 'net/http'
 require_relative '../../../lib/general_support'
+require_relative '../../../lib/shell_scripting_support'
 require_relative '../../../lib/ci_workflow_support'
 
 class App
   include GeneralSupport
+  include ShellScriptingSupport
   include CiWorkflowSupport
 
+  GHCR_AUTH_URL = 'https://ghcr.io/token?scope=repository:fullstaq-ruby/server-edition-ci-images:pull'
+
   def initialize(existing_artifacts_list_path)
+    require_envvar 'GITHUB_ACTOR'
+    require_envvar 'GITHUB_TOKEN'
+    authenticate_container_registry
     load_config
     @jobs_to_be_run = []
     @jobs_to_be_skipped = []
@@ -102,6 +110,17 @@ class App
     report_results
   end
 
+private
+  def authenticate_container_registry
+    response = http_get(GHCR_AUTH_URL, username: ENV['GITHUB_ACTOR'], password: ENV['GITHUB_TOKEN'])
+    if response.code != '200'
+      abort "*** Error requesting #{GHCR_AUTH_URL}: HTTP response #{response.code}"
+    end
+
+    doc = JSON.parse(response.body)
+    @container_registry_token = doc['token']
+  end
+
   def determine_necessary_job(job_description)
     if yield
       @jobs_to_be_run << job_description
@@ -115,8 +134,9 @@ class App
   end
 
   def docker_image_absent_in_registry?(image_name, image_tag)
-    url = "https://index.docker.io/v1/repositories/#{image_name}/tags/#{image_tag}"
-    response = http_get(url)
+    image_name_without_host = image_name.sub(/^ghcr.io\//, '')
+    url = "https://ghcr.io/v2/#{image_name_without_host}/manifests/#{image_tag}"
+    response = http_get(url, bearer_token: @container_registry_token)
     if response.code == '200'
       false
     elsif response.code == '404'
@@ -126,8 +146,15 @@ class App
     end
   end
 
-  def http_get(url)
+  def http_get(url, username: nil, password: nil, bearer_token: nil)
     uri = URI.parse(url)
+    request = Net::HTTP::Get.new(uri)
+    if username
+      request.basic_auth(username, password)
+    elsif bearer_token
+      request['Authorization'] = "Bearer #{bearer_token}"
+    end
+
     redirect_limit = 10
     result = nil
 
@@ -137,7 +164,9 @@ class App
       end
 
       begin
-        response = Net::HTTP.get_response(uri)
+        response = Net::HTTP.start(uri.host, uri.port, use_ssl: uri.port == 443) do |http|
+          http.request(request)
+        end
       rescue SystemCallError => e
         abort "*** Error requesting #{url}: #{e}"
       end

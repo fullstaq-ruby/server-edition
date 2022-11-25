@@ -6,21 +6,18 @@ SELFDIR=$(cd "$SELFDIR" && pwd)
 # shellcheck source=lib/library.sh
 source "$SELFDIR/lib/library.sh"
 
-FORMAT="fullstaq/ruby-build-env-%s"
-
 function usage()
 {
-	echo "Usage: ./build-environment [OPTIONS] <NAME>"
+	echo "Usage: ./build-environment [OPTIONS] <ENV>"
 	echo "Build a build environment Docker image. A build environment is an image based on"
 	echo "a certain Linux distro, and is used to compile Ruby for that distro."
 	echo
-	echo "<NAME> is the name of a subdirectory in environments/, such as 'ubuntu-18.04'."
+	echo "<ENV> is the name of a subdirectory in environments/, such as 'ubuntu-22.04'."
 	echo
 	echo "This script will produce a Docker image called"
-	echo "'fullstaq/ruby-build-env-<NAME>'. You can change the name format with -f."
+	echo "'ghcr.io/fullstaq-ruby/server-edition-ci-images:<ENV>-v<VERSION>'."
 	echo
 	echo "Optional options:"
-	echo "  -f FORMAT  A format string that defines the output image name. Default: $FORMAT"
 	echo "  -h         Show usage"
 }
 
@@ -56,13 +53,13 @@ function parse_options()
 
 parse_options "$@"
 
-NAME="$1"
-IMAGE_NAME=$(printf "$FORMAT" "$NAME")
-IMAGE_VERSION=$(read_single_value_file "$SELFDIR/environments/$NAME/image_tag")
+ENV="$1"
+IMAGE_NAME=ghcr.io/fullstaq-ruby/server-edition-ci-images
+IMAGE_VERSION=$(read_single_value_file "$SELFDIR/environments/$ENV/image_tag")
 
-if [[ ! -e "$SELFDIR/environments/$NAME" ]]; then
-	echo "ERROR: $SELFDIR/environments/$NAME does not exist." >&2
+if [[ ! -e "$SELFDIR/environments/$ENV" ]]; then
+	echo "ERROR: $SELFDIR/environments/$ENV does not exist." >&2
 	exit 1
 fi
 
-run docker build --pull -t "$IMAGE_NAME:$IMAGE_VERSION" "$SELFDIR/environments/$NAME"
+run docker build --pull -t "$IMAGE_NAME:$ENV-v$IMAGE_VERSION" "$SELFDIR/environments/$ENV"

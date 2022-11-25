@@ -106,7 +106,7 @@ verbose_run docker run --rm --init "${TTY_ARGS[@]}" \
     -e "VERSION=$VERSION" \
     -e "REVISION=$REVISION" \
     --user "$(id -u):$(id -g)" \
-    "fullstaq/ruby-build-env-utility:$IMAGE_VERSION" \
+    "ghcr.io/fullstaq-ruby/server-edition-ci-images:utility-v$IMAGE_VERSION" \
     /system/container-entrypoints/build-rbenv-rpm
 
 function _cleanup() {

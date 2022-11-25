@@ -7,7 +7,7 @@ SELFDIR=$(cd "$SELFDIR" && pwd)
 source "$SELFDIR/lib/library.sh"
 
 cd "$SELFDIR/environments"
-for NAME in *; do
-	IMAGE_VERSION=$(read_single_value_file "$NAME/image_tag")
-	run docker push "fullstaq/ruby-build-env-$NAME:$IMAGE_VERSION"
+for ENV in *; do
+	IMAGE_VERSION=$(read_single_value_file "$ENV/image_tag")
+	run docker push "ghcr.io/fullstaq-ruby/server-edition-ci-images:$ENV-v$IMAGE_VERSION"
 done

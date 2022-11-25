@@ -25,6 +25,7 @@ jobs:
     runs-on: ubuntu-20.04
     permissions:
       checks: write
+      packages: read
     outputs:
       necessary_jobs: ${{ steps.check.outputs.necessary_jobs }}
     steps:
@@ -46,7 +47,7 @@ jobs:
               "summary": "Packages are tested in another workflow.\n[**➜ See workflow run #${{ github.run_id }} for logs**](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})"
             }
 
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: Login to Google Cloud
         uses: ./.github/actions/gcloud-login
         with:
@@ -58,6 +59,9 @@ jobs:
       - name: Determine necessary jobs
         id: check
         run: ./internal-scripts/ci-cd/determine-necessary-jobs/determine-necessary-jobs.rb
+        env:
+          GITHUB_ACTOR: ${{ github.actor }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
 
   ### Publish ###
@@ -66,10 +70,12 @@ jobs:
     name: Publish packages
     runs-on: ubuntu-20.04
     environment: Production repos
+    permissions:
+      packages: read
     needs:
       - determine_necessary_jobs
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
         with:
           fetch-depth: 0
       - name: Login to Google Cloud
@@ -78,6 +84,10 @@ jobs:
           private_key: ${{ secrets.GCLOUD_KEY }}
       - name: Set Google Cloud project
         run: gcloud config set core/project ${{ env.GCLOUD_PROJECT }}
+      - name: Login to Github Container Registry
+        run: docker login ghcr.io -u ${{ github.actor }} --password-stdin <<<"$GITHUB_TOKEN"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Download artifacts
         run: ./internal-scripts/ci-cd/download-artifacts.sh
@@ -142,7 +152,7 @@ jobs:
         github.ref == 'refs/heads/main'
         && contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [<%= distribution[:name] %>/<%= ruby_package_version[:id] %>/<%= variant[:name] %>];')
       steps:
-        - uses: actions/checkout@v2
+        - uses: actions/checkout@v3
         - name: Login to Google Cloud
           uses: ./.github/actions/gcloud-login
           with:
@@ -194,7 +204,7 @@ jobs:
       <%- end -%>
     if: 'always()'
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
         with:
           fetch-depth: 0
 

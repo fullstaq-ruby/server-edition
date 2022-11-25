@@ -66,7 +66,7 @@ private
 
 
   def utility_image_name
-    "fullstaq/ruby-build-env-utility:#{utility_image_version}"
+    "ghcr.io/fullstaq-ruby/server-edition-ci-images:utility-v#{utility_image_version}"
   end
 
   def utility_image_version

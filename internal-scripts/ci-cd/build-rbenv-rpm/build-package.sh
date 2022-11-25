@@ -11,21 +11,13 @@ require_envvar VERSION
 require_envvar REVISION
 
 
-UTILITY_IMAGE_NAME=fullstaq/ruby-build-env-utility
-UTILITY_IMAGE_TAG=$(read_single_value_file "$ROOTDIR/environments/utility/image_tag")
+set -x
 
 mkdir rbenv
 tar -C rbenv -xzf rbenv-src.tar.gz
-
 mkdir output
-touch output/"$PACKAGE_BASENAME"
-
-exec docker run --rm --init \
-  -v "$ROOTDIR:/system:ro" \
-  -v "$(pwd)/rbenv:/input/rbenv:ro" \
-  -v "$(pwd)/output/$PACKAGE_BASENAME:/output/rbenv.rpm" \
-  -e "VERSION=$VERSION" \
-  -e "REVISION=$REVISION" \
-  --user "$(id -u):$(id -g)" \
-  "$UTILITY_IMAGE_NAME:$UTILITY_IMAGE_TAG" \
-  /system/container-entrypoints/build-rbenv-rpm
+exec ./build-rbenv-rpm \
+    -s rbenv \
+    -o "output/$PACKAGE_BASENAME" \
+    -n "$VERSION" \
+    -r "$REVISION"

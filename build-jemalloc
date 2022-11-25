@@ -129,7 +129,7 @@ verbose_run docker run --rm --init "${TTY_ARGS[@]}" \
     -e "CACHE_CONTAINER=$CACHE_CONTAINER" \
     -e "CACHE_KEY_PREFIX=$CACHE_KEY_PREFIX" \
     --user "$(id -u):$(id -g)" \
-    "fullstaq/ruby-build-env-$ENVIRONMENT_NAME:$IMAGE_VERSION" \
+    "ghcr.io/fullstaq-ruby/server-edition-ci-images:$ENVIRONMENT_NAME-v$IMAGE_VERSION" \
     /system/container-entrypoints/build-jemalloc
 
 function _cleanup() {

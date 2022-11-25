@@ -38,6 +38,7 @@ jobs:
     runs-on: ubuntu-20.04
     permissions:
       checks: write
+      packages: read
     outputs:
       necessary_jobs: ${{ steps.check.outputs.necessary_jobs }}
     steps:
@@ -65,7 +66,7 @@ jobs:
               "summary": "Packages are built in another workflow.\n[**➜ See workflow run #${{ github.run_id }} for logs**](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})"
             }
 
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: Login to Google Cloud
         uses: ./.github/actions/gcloud-login
         with:
@@ -77,6 +78,9 @@ jobs:
       - name: Determine necessary jobs
         id: check
         run: ./internal-scripts/ci-cd/determine-necessary-jobs/determine-necessary-jobs.rb
+        env:
+          GITHUB_ACTOR: ${{ github.actor }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
 
   ### Jemalloc ###
@@ -85,16 +89,22 @@ jobs:
   build_jemalloc_centos_8:
     name: 'Build Jemalloc [centos-8]'
     runs-on: ubuntu-20.04
+    permissions:
+      packages: read
     needs:
       - determine_necessary_jobs
     if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Jemalloc [centos-8];')
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: Login to Google Cloud
         uses: ./.github/actions/gcloud-login
         with:
           private_key: ${{ secrets.GCLOUD_KEY }}
           write_keyfile_to: gcloud-credentials.json
+      - name: Login to Github Container Registry
+        run: docker login ghcr.io -u ${{ github.actor }} --password-stdin <<<"$GITHUB_TOKEN"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Dump Azure connection string
         run: echo -n "$CONNECTION_STRING" > azure-connection-string.txt
         env:
@@ -133,16 +143,22 @@ jobs:
   build_jemalloc_el_9:
     name: 'Build Jemalloc [el-9]'
     runs-on: ubuntu-20.04
+    permissions:
+      packages: read
     needs:
       - determine_necessary_jobs
     if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Jemalloc [el-9];')
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: Login to Google Cloud
         uses: ./.github/actions/gcloud-login
         with:
           private_key: ${{ secrets.GCLOUD_KEY }}
           write_keyfile_to: gcloud-credentials.json
+      - name: Login to Github Container Registry
+        run: docker login ghcr.io -u ${{ github.actor }} --password-stdin <<<"$GITHUB_TOKEN"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Dump Azure connection string
         run: echo -n "$CONNECTION_STRING" > azure-connection-string.txt
         env:
@@ -187,6 +203,8 @@ jobs:
   build_ruby_centos_8-3_1-normal:
     name: 'Build Ruby [centos-8/3.1/normal]'
     runs-on: ubuntu-20.04
+    permissions:
+      packages: read
     needs:
       - determine_necessary_jobs
       - build_jemalloc_centos_8
@@ -201,12 +219,16 @@ jobs:
           needs.build_jemalloc_centos_8.result == 'skipped'
           && contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Jemalloc [centos-8];')
 
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: Login to Google Cloud
         uses: ./.github/actions/gcloud-login
         with:
           private_key: ${{ secrets.GCLOUD_KEY }}
           write_keyfile_to: gcloud-credentials.json
+      - name: Login to Github Container Registry
+        run: docker login ghcr.io -u ${{ github.actor }} --password-stdin <<<"$GITHUB_TOKEN"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Dump Azure connection string
         run: echo -n "$CONNECTION_STRING" > azure-connection-string.txt
         env:
@@ -270,6 +292,8 @@ jobs:
   build_ruby_centos_8-3_1-jemalloc:
     name: 'Build Ruby [centos-8/3.1/jemalloc]'
     runs-on: ubuntu-20.04
+    permissions:
+      packages: read
     needs:
       - determine_necessary_jobs
       - build_jemalloc_centos_8
@@ -284,12 +308,16 @@ jobs:
           needs.build_jemalloc_centos_8.result == 'skipped'
           && contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Jemalloc [centos-8];')
 
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: Login to Google Cloud
         uses: ./.github/actions/gcloud-login
         with:
           private_key: ${{ secrets.GCLOUD_KEY }}
           write_keyfile_to: gcloud-credentials.json
+      - name: Login to Github Container Registry
+        run: docker login ghcr.io -u ${{ github.actor }} --password-stdin <<<"$GITHUB_TOKEN"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Dump Azure connection string
         run: echo -n "$CONNECTION_STRING" > azure-connection-string.txt
         env:
@@ -358,6 +386,8 @@ jobs:
   build_ruby_centos_8-3_1-malloctrim:
     name: 'Build Ruby [centos-8/3.1/malloctrim]'
     runs-on: ubuntu-20.04
+    permissions:
+      packages: read
     needs:
       - determine_necessary_jobs
       - build_jemalloc_centos_8
@@ -372,12 +402,16 @@ jobs:
           needs.build_jemalloc_centos_8.result == 'skipped'
           && contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Jemalloc [centos-8];')
 
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: Login to Google Cloud
         uses: ./.github/actions/gcloud-login
         with:
           private_key: ${{ secrets.GCLOUD_KEY }}
           write_keyfile_to: gcloud-credentials.json
+      - name: Login to Github Container Registry
+        run: docker login ghcr.io -u ${{ github.actor }} --password-stdin <<<"$GITHUB_TOKEN"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Dump Azure connection string
         run: echo -n "$CONNECTION_STRING" > azure-connection-string.txt
         env:
@@ -441,6 +475,8 @@ jobs:
   build_ruby_centos_8-3_0-normal:
     name: 'Build Ruby [centos-8/3.0/normal]'
     runs-on: ubuntu-20.04
+    permissions:
+      packages: read
     needs:
       - determine_necessary_jobs
       - build_jemalloc_centos_8
@@ -455,12 +491,16 @@ jobs:
           needs.build_jemalloc_centos_8.result == 'skipped'
           && contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Jemalloc [centos-8];')
 
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: Login to Google Cloud
         uses: ./.github/actions/gcloud-login
         with:
           private_key: ${{ secrets.GCLOUD_KEY }}
           write_keyfile_to: gcloud-credentials.json
+      - name: Login to Github Container Registry
+        run: docker login ghcr.io -u ${{ github.actor }} --password-stdin <<<"$GITHUB_TOKEN"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Dump Azure connection string
         run: echo -n "$CONNECTION_STRING" > azure-connection-string.txt
         env:
@@ -524,6 +564,8 @@ jobs:
   build_ruby_centos_8-3_0-jemalloc:
     name: 'Build Ruby [centos-8/3.0/jemalloc]'
     runs-on: ubuntu-20.04
+    permissions:
+      packages: read
     needs:
       - determine_necessary_jobs
       - build_jemalloc_centos_8
@@ -538,12 +580,16 @@ jobs:
           needs.build_jemalloc_centos_8.result == 'skipped'
           && contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Jemalloc [centos-8];')
 
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: Login to Google Cloud
         uses: ./.github/actions/gcloud-login
         with:
           private_key: ${{ secrets.GCLOUD_KEY }}
           write_keyfile_to: gcloud-credentials.json
+      - name: Login to Github Container Registry
+        run: docker login ghcr.io -u ${{ github.actor }} --password-stdin <<<"$GITHUB_TOKEN"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Dump Azure connection string
         run: echo -n "$CONNECTION_STRING" > azure-connection-string.txt
         env:
@@ -612,6 +658,8 @@ jobs:
   build_ruby_centos_8-3_0-malloctrim:
     name: 'Build Ruby [centos-8/3.0/malloctrim]'
     runs-on: ubuntu-20.04
+    permissions:
+      packages: read
     needs:
       - determine_necessary_jobs
       - build_jemalloc_centos_8
@@ -626,12 +674,16 @@ jobs:
           needs.build_jemalloc_centos_8.result == 'skipped'
           && contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Jemalloc [centos-8];')
 
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: Login to Google Cloud
         uses: ./.github/actions/gcloud-login
         with:
           private_key: ${{ secrets.GCLOUD_KEY }}
           write_keyfile_to: gcloud-credentials.json
+      - name: Login to Github Container Registry
+        run: docker login ghcr.io -u ${{ github.actor }} --password-stdin <<<"$GITHUB_TOKEN"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Dump Azure connection string
         run: echo -n "$CONNECTION_STRING" > azure-connection-string.txt
         env:
@@ -695,6 +747,8 @@ jobs:
   build_ruby_centos_8-2_7-normal:
     name: 'Build Ruby [centos-8/2.7/normal]'
     runs-on: ubuntu-20.04
+    permissions:
+      packages: read
     needs:
       - determine_necessary_jobs
       - build_jemalloc_centos_8
@@ -709,12 +763,16 @@ jobs:
           needs.build_jemalloc_centos_8.result == 'skipped'
           && contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Jemalloc [centos-8];')
 
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: Login to Google Cloud
         uses: ./.github/actions/gcloud-login
         with:
           private_key: ${{ secrets.GCLOUD_KEY }}
           write_keyfile_to: gcloud-credentials.json
+      - name: Login to Github Container Registry
+        run: docker login ghcr.io -u ${{ github.actor }} --password-stdin <<<"$GITHUB_TOKEN"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Dump Azure connection string
         run: echo -n "$CONNECTION_STRING" > azure-connection-string.txt
         env:
@@ -778,6 +836,8 @@ jobs:
   build_ruby_centos_8-2_7-jemalloc:
     name: 'Build Ruby [centos-8/2.7/jemalloc]'
     runs-on: ubuntu-20.04
+    permissions:
+      packages: read
     needs:
       - determine_necessary_jobs
       - build_jemalloc_centos_8
@@ -792,12 +852,16 @@ jobs:
           needs.build_jemalloc_centos_8.result == 'skipped'
           && contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Jemalloc [centos-8];')
 
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: Login to Google Cloud
         uses: ./.github/actions/gcloud-login
         with:
           private_key: ${{ secrets.GCLOUD_KEY }}
           write_keyfile_to: gcloud-credentials.json
+      - name: Login to Github Container Registry
+        run: docker login ghcr.io -u ${{ github.actor }} --password-stdin <<<"$GITHUB_TOKEN"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Dump Azure connection string
         run: echo -n "$CONNECTION_STRING" > azure-connection-string.txt
         env:
@@ -866,6 +930,8 @@ jobs:
   build_ruby_centos_8-2_7-malloctrim:
     name: 'Build Ruby [centos-8/2.7/malloctrim]'
     runs-on: ubuntu-20.04
+    permissions:
+      packages: read
     needs:
       - determine_necessary_jobs
       - build_jemalloc_centos_8
@@ -880,12 +946,16 @@ jobs:
           needs.build_jemalloc_centos_8.result == 'skipped'
           && contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Jemalloc [centos-8];')
 
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: Login to Google Cloud
         uses: ./.github/actions/gcloud-login
         with:
           private_key: ${{ secrets.GCLOUD_KEY }}
           write_keyfile_to: gcloud-credentials.json
+      - name: Login to Github Container Registry
+        run: docker login ghcr.io -u ${{ github.actor }} --password-stdin <<<"$GITHUB_TOKEN"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Dump Azure connection string
         run: echo -n "$CONNECTION_STRING" > azure-connection-string.txt
         env:
@@ -949,6 +1019,8 @@ jobs:
   build_ruby_centos_8-3_1_2-normal:
     name: 'Build Ruby [centos-8/3.1.2/normal]'
     runs-on: ubuntu-20.04
+    permissions:
+      packages: read
     needs:
       - determine_necessary_jobs
       - build_jemalloc_centos_8
@@ -963,12 +1035,16 @@ jobs:
           needs.build_jemalloc_centos_8.result == 'skipped'
           && contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Jemalloc [centos-8];')
 
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: Login to Google Cloud
         uses: ./.github/actions/gcloud-login
         with:
           private_key: ${{ secrets.GCLOUD_KEY }}
           write_keyfile_to: gcloud-credentials.json
+      - name: Login to Github Container Registry
+        run: docker login ghcr.io -u ${{ github.actor }} --password-stdin <<<"$GITHUB_TOKEN"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Dump Azure connection string
         run: echo -n "$CONNECTION_STRING" > azure-connection-string.txt
         env:
@@ -1032,6 +1108,8 @@ jobs:
   build_ruby_centos_8-3_1_2-jemalloc:
     name: 'Build Ruby [centos-8/3.1.2/jemalloc]'
     runs-on: ubuntu-20.04
+    permissions:
+      packages: read
     needs:
       - determine_necessary_jobs
       - build_jemalloc_centos_8
@@ -1046,12 +1124,16 @@ jobs:
           needs.build_jemalloc_centos_8.result == 'skipped'
           && contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Jemalloc [centos-8];')
 
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: Login to Google Cloud
         uses: ./.github/actions/gcloud-login
         with:
           private_key: ${{ secrets.GCLOUD_KEY }}
           write_keyfile_to: gcloud-credentials.json
+      - name: Login to Github Container Registry
+        run: docker login ghcr.io -u ${{ github.actor }} --password-stdin <<<"$GITHUB_TOKEN"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Dump Azure connection string
         run: echo -n "$CONNECTION_STRING" > azure-connection-string.txt
         env:
@@ -1120,6 +1202,8 @@ jobs:
   build_ruby_centos_8-3_1_2-malloctrim:
     name: 'Build Ruby [centos-8/3.1.2/malloctrim]'
     runs-on: ubuntu-20.04
+    permissions:
+      packages: read
     needs:
       - determine_necessary_jobs
       - build_jemalloc_centos_8
@@ -1134,12 +1218,16 @@ jobs:
           needs.build_jemalloc_centos_8.result == 'skipped'
           && contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Jemalloc [centos-8];')
 
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: Login to Google Cloud
         uses: ./.github/actions/gcloud-login
         with:
           private_key: ${{ secrets.GCLOUD_KEY }}
           write_keyfile_to: gcloud-credentials.json
+      - name: Login to Github Container Registry
+        run: docker login ghcr.io -u ${{ github.actor }} --password-stdin <<<"$GITHUB_TOKEN"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Dump Azure connection string
         run: echo -n "$CONNECTION_STRING" > azure-connection-string.txt
         env:
@@ -1203,6 +1291,8 @@ jobs:
   build_ruby_centos_8-3_0_4-normal:
     name: 'Build Ruby [centos-8/3.0.4/normal]'
     runs-on: ubuntu-20.04
+    permissions:
+      packages: read
     needs:
       - determine_necessary_jobs
       - build_jemalloc_centos_8
@@ -1217,12 +1307,16 @@ jobs:
           needs.build_jemalloc_centos_8.result == 'skipped'
           && contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Jemalloc [centos-8];')
 
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: Login to Google Cloud
         uses: ./.github/actions/gcloud-login
         with:
           private_key: ${{ secrets.GCLOUD_KEY }}
           write_keyfile_to: gcloud-credentials.json
+      - name: Login to Github Container Registry
+        run: docker login ghcr.io -u ${{ github.actor }} --password-stdin <<<"$GITHUB_TOKEN"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Dump Azure connection string
         run: echo -n "$CONNECTION_STRING" > azure-connection-string.txt
         env:
@@ -1286,6 +1380,8 @@ jobs:
   build_ruby_centos_8-3_0_4-jemalloc:
     name: 'Build Ruby [centos-8/3.0.4/jemalloc]'
     runs-on: ubuntu-20.04
+    permissions:
+      packages: read
     needs:
       - determine_necessary_jobs
       - build_jemalloc_centos_8
@@ -1300,12 +1396,16 @@ jobs:
           needs.build_jemalloc_centos_8.result == 'skipped'
           && contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Jemalloc [centos-8];')
 
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: Login to Google Cloud
         uses: ./.github/actions/gcloud-login
         with:
           private_key: ${{ secrets.GCLOUD_KEY }}
           write_keyfile_to: gcloud-credentials.json
+      - name: Login to Github Container Registry
+        run: docker login ghcr.io -u ${{ github.actor }} --password-stdin <<<"$GITHUB_TOKEN"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Dump Azure connection string
         run: echo -n "$CONNECTION_STRING" > azure-connection-string.txt
         env:
@@ -1374,6 +1474,8 @@ jobs:
   build_ruby_centos_8-3_0_4-malloctrim:
     name: 'Build Ruby [centos-8/3.0.4/malloctrim]'
     runs-on: ubuntu-20.04
+    permissions:
+      packages: read
     needs:
       - determine_necessary_jobs
       - build_jemalloc_centos_8
@@ -1388,12 +1490,16 @@ jobs:
           needs.build_jemalloc_centos_8.result == 'skipped'
           && contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Jemalloc [centos-8];')
 
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: Login to Google Cloud
         uses: ./.github/actions/gcloud-login
         with:
           private_key: ${{ secrets.GCLOUD_KEY }}
           write_keyfile_to: gcloud-credentials.json
+      - name: Login to Github Container Registry
+        run: docker login ghcr.io -u ${{ github.actor }} --password-stdin <<<"$GITHUB_TOKEN"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Dump Azure connection string
         run: echo -n "$CONNECTION_STRING" > azure-connection-string.txt
         env:
@@ -1457,6 +1563,8 @@ jobs:
   build_ruby_centos_8-2_7_6-normal:
     name: 'Build Ruby [centos-8/2.7.6/normal]'
     runs-on: ubuntu-20.04
+    permissions:
+      packages: read
     needs:
       - determine_necessary_jobs
       - build_jemalloc_centos_8
@@ -1471,12 +1579,16 @@ jobs:
           needs.build_jemalloc_centos_8.result == 'skipped'
           && contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Jemalloc [centos-8];')
 
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: Login to Google Cloud
         uses: ./.github/actions/gcloud-login
         with:
           private_key: ${{ secrets.GCLOUD_KEY }}
           write_keyfile_to: gcloud-credentials.json
+      - name: Login to Github Container Registry
+        run: docker login ghcr.io -u ${{ github.actor }} --password-stdin <<<"$GITHUB_TOKEN"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Dump Azure connection string
         run: echo -n "$CONNECTION_STRING" > azure-connection-string.txt
         env:
@@ -1540,6 +1652,8 @@ jobs:
   build_ruby_centos_8-2_7_6-jemalloc:
     name: 'Build Ruby [centos-8/2.7.6/jemalloc]'
     runs-on: ubuntu-20.04
+    permissions:
+      packages: read
     needs:
       - determine_necessary_jobs
       - build_jemalloc_centos_8
@@ -1554,12 +1668,16 @@ jobs:
           needs.build_jemalloc_centos_8.result == 'skipped'
           && contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Jemalloc [centos-8];')
 
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: Login to Google Cloud
         uses: ./.github/actions/gcloud-login
         with:
           private_key: ${{ secrets.GCLOUD_KEY }}
           write_keyfile_to: gcloud-credentials.json
+      - name: Login to Github Container Registry
+        run: docker login ghcr.io -u ${{ github.actor }} --password-stdin <<<"$GITHUB_TOKEN"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Dump Azure connection string
         run: echo -n "$CONNECTION_STRING" > azure-connection-string.txt
         env:
@@ -1628,6 +1746,8 @@ jobs:
   build_ruby_centos_8-2_7_6-malloctrim:
     name: 'Build Ruby [centos-8/2.7.6/malloctrim]'
     runs-on: ubuntu-20.04
+    permissions:
+      packages: read
     needs:
       - determine_necessary_jobs
       - build_jemalloc_centos_8
@@ -1642,12 +1762,16 @@ jobs:
           needs.build_jemalloc_centos_8.result == 'skipped'
           && contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Jemalloc [centos-8];')
 
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: Login to Google Cloud
         uses: ./.github/actions/gcloud-login
         with:
           private_key: ${{ secrets.GCLOUD_KEY }}
           write_keyfile_to: gcloud-credentials.json
+      - name: Login to Github Container Registry
+        run: docker login ghcr.io -u ${{ github.actor }} --password-stdin <<<"$GITHUB_TOKEN"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Dump Azure connection string
         run: echo -n "$CONNECTION_STRING" > azure-connection-string.txt
         env:
@@ -1712,6 +1836,8 @@ jobs:
   build_ruby_el_9-3_1-normal:
     name: 'Build Ruby [el-9/3.1/normal]'
     runs-on: ubuntu-20.04
+    permissions:
+      packages: read
     needs:
       - determine_necessary_jobs
       - build_jemalloc_el_9
@@ -1726,12 +1852,16 @@ jobs:
           needs.build_jemalloc_el_9.result == 'skipped'
           && contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Jemalloc [el-9];')
 
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: Login to Google Cloud
         uses: ./.github/actions/gcloud-login
         with:
           private_key: ${{ secrets.GCLOUD_KEY }}
           write_keyfile_to: gcloud-credentials.json
+      - name: Login to Github Container Registry
+        run: docker login ghcr.io -u ${{ github.actor }} --password-stdin <<<"$GITHUB_TOKEN"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Dump Azure connection string
         run: echo -n "$CONNECTION_STRING" > azure-connection-string.txt
         env:
@@ -1795,6 +1925,8 @@ jobs:
   build_ruby_el_9-3_1-jemalloc:
     name: 'Build Ruby [el-9/3.1/jemalloc]'
     runs-on: ubuntu-20.04
+    permissions:
+      packages: read
     needs:
       - determine_necessary_jobs
       - build_jemalloc_el_9
@@ -1809,12 +1941,16 @@ jobs:
           needs.build_jemalloc_el_9.result == 'skipped'
           && contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Jemalloc [el-9];')
 
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: Login to Google Cloud
         uses: ./.github/actions/gcloud-login
         with:
           private_key: ${{ secrets.GCLOUD_KEY }}
           write_keyfile_to: gcloud-credentials.json
+      - name: Login to Github Container Registry
+        run: docker login ghcr.io -u ${{ github.actor }} --password-stdin <<<"$GITHUB_TOKEN"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Dump Azure connection string
         run: echo -n "$CONNECTION_STRING" > azure-connection-string.txt
         env:
@@ -1883,6 +2019,8 @@ jobs:
   build_ruby_el_9-3_1-malloctrim:
     name: 'Build Ruby [el-9/3.1/malloctrim]'
     runs-on: ubuntu-20.04
+    permissions:
+      packages: read
     needs:
       - determine_necessary_jobs
       - build_jemalloc_el_9
@@ -1897,12 +2035,16 @@ jobs:
           needs.build_jemalloc_el_9.result == 'skipped'
           && contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Jemalloc [el-9];')
 
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: Login to Google Cloud
         uses: ./.github/actions/gcloud-login
         with:
           private_key: ${{ secrets.GCLOUD_KEY }}
           write_keyfile_to: gcloud-credentials.json
+      - name: Login to Github Container Registry
+        run: docker login ghcr.io -u ${{ github.actor }} --password-stdin <<<"$GITHUB_TOKEN"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Dump Azure connection string
         run: echo -n "$CONNECTION_STRING" > azure-connection-string.txt
         env:
@@ -1966,6 +2108,8 @@ jobs:
   build_ruby_el_9-3_1_2-normal:
     name: 'Build Ruby [el-9/3.1.2/normal]'
     runs-on: ubuntu-20.04
+    permissions:
+      packages: read
     needs:
       - determine_necessary_jobs
       - build_jemalloc_el_9
@@ -1980,12 +2124,16 @@ jobs:
           needs.build_jemalloc_el_9.result == 'skipped'
           && contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Jemalloc [el-9];')
 
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: Login to Google Cloud
         uses: ./.github/actions/gcloud-login
         with:
           private_key: ${{ secrets.GCLOUD_KEY }}
           write_keyfile_to: gcloud-credentials.json
+      - name: Login to Github Container Registry
+        run: docker login ghcr.io -u ${{ github.actor }} --password-stdin <<<"$GITHUB_TOKEN"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Dump Azure connection string
         run: echo -n "$CONNECTION_STRING" > azure-connection-string.txt
         env:
@@ -2049,6 +2197,8 @@ jobs:
   build_ruby_el_9-3_1_2-jemalloc:
     name: 'Build Ruby [el-9/3.1.2/jemalloc]'
     runs-on: ubuntu-20.04
+    permissions:
+      packages: read
     needs:
       - determine_necessary_jobs
       - build_jemalloc_el_9
@@ -2063,12 +2213,16 @@ jobs:
           needs.build_jemalloc_el_9.result == 'skipped'
           && contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Jemalloc [el-9];')
 
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: Login to Google Cloud
         uses: ./.github/actions/gcloud-login
         with:
           private_key: ${{ secrets.GCLOUD_KEY }}
           write_keyfile_to: gcloud-credentials.json
+      - name: Login to Github Container Registry
+        run: docker login ghcr.io -u ${{ github.actor }} --password-stdin <<<"$GITHUB_TOKEN"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Dump Azure connection string
         run: echo -n "$CONNECTION_STRING" > azure-connection-string.txt
         env:
@@ -2137,6 +2291,8 @@ jobs:
   build_ruby_el_9-3_1_2-malloctrim:
     name: 'Build Ruby [el-9/3.1.2/malloctrim]'
     runs-on: ubuntu-20.04
+    permissions:
+      packages: read
     needs:
       - determine_necessary_jobs
       - build_jemalloc_el_9
@@ -2151,12 +2307,16 @@ jobs:
           needs.build_jemalloc_el_9.result == 'skipped'
           && contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Jemalloc [el-9];')
 
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: Login to Google Cloud
         uses: ./.github/actions/gcloud-login
         with:
           private_key: ${{ secrets.GCLOUD_KEY }}
           write_keyfile_to: gcloud-credentials.json
+      - name: Login to Github Container Registry
+        run: docker login ghcr.io -u ${{ github.actor }} --password-stdin <<<"$GITHUB_TOKEN"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Dump Azure connection string
         run: echo -n "$CONNECTION_STRING" > azure-connection-string.txt
         env:
@@ -2266,7 +2426,7 @@ jobs:
     runs-on: ubuntu-20.04
     if: 'always()'
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: Login to Google Cloud
         uses: ./.github/actions/gcloud-login
         with:

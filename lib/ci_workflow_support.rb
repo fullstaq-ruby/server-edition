@@ -112,9 +112,9 @@ module CiWorkflowSupport
     end.sort.map do |path|
       id = File.basename(path)
       {
-        name: "fullstaq/ruby-build-env-#{id}",
+        name: "ghcr.io/fullstaq-ruby/server-edition-ci-images",
         id: id,
-        tag: read_single_value_file("#{path}/image_tag")
+        tag: id + '-v' + read_single_value_file("#{path}/image_tag")
       }
     end
   end

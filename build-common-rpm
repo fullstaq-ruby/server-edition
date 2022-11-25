@@ -19,7 +19,7 @@ function usage()
     echo "  -o PATH     Path to output package file"
     echo
     echo "Optional options:"
-    echo "  -v REVISION Package version number (default: $VERSION)"
+    echo "  -v VERSION  Package version number (default: $VERSION)"
     echo "  -r REVISION Package revision number (default: $REVISION)"
     echo "  -h          Show usage"
 }
@@ -86,7 +86,7 @@ verbose_run docker run --rm --init "${TTY_ARGS[@]}" \
     -e "VERSION=$VERSION" \
     -e "REVISION=$REVISION" \
     --user "$(id -u):$(id -g)" \
-    "fullstaq/ruby-build-env-utility:$IMAGE_VERSION" \
+    "ghcr.io/fullstaq-ruby/server-edition-ci-images:utility-v$IMAGE_VERSION" \
     /system/container-entrypoints/build-common-rpm
 
 function _cleanup() {
