@@ -110,7 +110,7 @@ distributions: all
 
 ## (Optional)
 ## Excludes certain Ruby minor versions from certain distributions.
-## Useful if certain older Ruby versions don't compile on newer distributions.
+## Useful if certain older Ruby versions don't compile on newer distributions or viceversa.
 distribution_exclusions:
   - ruby_minor_version: '2.7'
     distros:
@@ -120,3 +120,7 @@ distribution_exclusions:
     distros:
       - ubuntu-22.04
       - el-9
+      - centos-7
+  - ruby_minor_version: '3.1'
+    distros:
+      - centos-7
