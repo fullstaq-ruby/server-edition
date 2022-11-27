@@ -2447,12 +2447,12 @@ jobs:
           ARTIFACT_PATH: artifacts
           CLEAR: true
       - name: Archive Jemalloc binary artifact [centos-8] to Github
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: 'jemalloc-bin-centos-8'
           path: 'artifacts/jemalloc-bin-centos-8'
       - name: Archive Jemalloc binary artifact [el-9] to Github
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: 'jemalloc-bin-el-9'
           path: 'artifacts/jemalloc-bin-el-9'
@@ -2464,122 +2464,122 @@ jobs:
           ARTIFACT_PATH: artifacts
           CLEAR: true
       - name: Archive Ruby package artifact [ruby-pkg_3.1_centos-8_normal] to Github
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: ruby-pkg_3.1_centos-8_normal
           path: artifacts/ruby-pkg_3.1_centos-8_normal
       - name: Archive Ruby package artifact [ruby-pkg_3.1_centos-8_jemalloc] to Github
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: ruby-pkg_3.1_centos-8_jemalloc
           path: artifacts/ruby-pkg_3.1_centos-8_jemalloc
       - name: Archive Ruby package artifact [ruby-pkg_3.1_centos-8_malloctrim] to Github
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: ruby-pkg_3.1_centos-8_malloctrim
           path: artifacts/ruby-pkg_3.1_centos-8_malloctrim
       - name: Archive Ruby package artifact [ruby-pkg_3.0_centos-8_normal] to Github
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: ruby-pkg_3.0_centos-8_normal
           path: artifacts/ruby-pkg_3.0_centos-8_normal
       - name: Archive Ruby package artifact [ruby-pkg_3.0_centos-8_jemalloc] to Github
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: ruby-pkg_3.0_centos-8_jemalloc
           path: artifacts/ruby-pkg_3.0_centos-8_jemalloc
       - name: Archive Ruby package artifact [ruby-pkg_3.0_centos-8_malloctrim] to Github
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: ruby-pkg_3.0_centos-8_malloctrim
           path: artifacts/ruby-pkg_3.0_centos-8_malloctrim
       - name: Archive Ruby package artifact [ruby-pkg_2.7_centos-8_normal] to Github
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: ruby-pkg_2.7_centos-8_normal
           path: artifacts/ruby-pkg_2.7_centos-8_normal
       - name: Archive Ruby package artifact [ruby-pkg_2.7_centos-8_jemalloc] to Github
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: ruby-pkg_2.7_centos-8_jemalloc
           path: artifacts/ruby-pkg_2.7_centos-8_jemalloc
       - name: Archive Ruby package artifact [ruby-pkg_2.7_centos-8_malloctrim] to Github
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: ruby-pkg_2.7_centos-8_malloctrim
           path: artifacts/ruby-pkg_2.7_centos-8_malloctrim
       - name: Archive Ruby package artifact [ruby-pkg_3.1.2_centos-8_normal] to Github
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: ruby-pkg_3.1.2_centos-8_normal
           path: artifacts/ruby-pkg_3.1.2_centos-8_normal
       - name: Archive Ruby package artifact [ruby-pkg_3.1.2_centos-8_jemalloc] to Github
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: ruby-pkg_3.1.2_centos-8_jemalloc
           path: artifacts/ruby-pkg_3.1.2_centos-8_jemalloc
       - name: Archive Ruby package artifact [ruby-pkg_3.1.2_centos-8_malloctrim] to Github
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: ruby-pkg_3.1.2_centos-8_malloctrim
           path: artifacts/ruby-pkg_3.1.2_centos-8_malloctrim
       - name: Archive Ruby package artifact [ruby-pkg_3.0.4_centos-8_normal] to Github
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: ruby-pkg_3.0.4_centos-8_normal
           path: artifacts/ruby-pkg_3.0.4_centos-8_normal
       - name: Archive Ruby package artifact [ruby-pkg_3.0.4_centos-8_jemalloc] to Github
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: ruby-pkg_3.0.4_centos-8_jemalloc
           path: artifacts/ruby-pkg_3.0.4_centos-8_jemalloc
       - name: Archive Ruby package artifact [ruby-pkg_3.0.4_centos-8_malloctrim] to Github
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: ruby-pkg_3.0.4_centos-8_malloctrim
           path: artifacts/ruby-pkg_3.0.4_centos-8_malloctrim
       - name: Archive Ruby package artifact [ruby-pkg_2.7.6_centos-8_normal] to Github
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: ruby-pkg_2.7.6_centos-8_normal
           path: artifacts/ruby-pkg_2.7.6_centos-8_normal
       - name: Archive Ruby package artifact [ruby-pkg_2.7.6_centos-8_jemalloc] to Github
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: ruby-pkg_2.7.6_centos-8_jemalloc
           path: artifacts/ruby-pkg_2.7.6_centos-8_jemalloc
       - name: Archive Ruby package artifact [ruby-pkg_2.7.6_centos-8_malloctrim] to Github
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: ruby-pkg_2.7.6_centos-8_malloctrim
           path: artifacts/ruby-pkg_2.7.6_centos-8_malloctrim
       - name: Archive Ruby package artifact [ruby-pkg_3.1_el-9_normal] to Github
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: ruby-pkg_3.1_el-9_normal
           path: artifacts/ruby-pkg_3.1_el-9_normal
       - name: Archive Ruby package artifact [ruby-pkg_3.1_el-9_jemalloc] to Github
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: ruby-pkg_3.1_el-9_jemalloc
           path: artifacts/ruby-pkg_3.1_el-9_jemalloc
       - name: Archive Ruby package artifact [ruby-pkg_3.1_el-9_malloctrim] to Github
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: ruby-pkg_3.1_el-9_malloctrim
           path: artifacts/ruby-pkg_3.1_el-9_malloctrim
       - name: Archive Ruby package artifact [ruby-pkg_3.1.2_el-9_normal] to Github
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: ruby-pkg_3.1.2_el-9_normal
           path: artifacts/ruby-pkg_3.1.2_el-9_normal
       - name: Archive Ruby package artifact [ruby-pkg_3.1.2_el-9_jemalloc] to Github
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: ruby-pkg_3.1.2_el-9_jemalloc
           path: artifacts/ruby-pkg_3.1.2_el-9_jemalloc
       - name: Archive Ruby package artifact [ruby-pkg_3.1.2_el-9_malloctrim] to Github
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: ruby-pkg_3.1.2_el-9_malloctrim
           path: artifacts/ruby-pkg_3.1.2_el-9_malloctrim

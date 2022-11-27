@@ -287,7 +287,7 @@ jobs:
           CLEAR: true
       <%- distributions.each do |distribution| -%>
       - name: Archive Jemalloc binary artifact [<%= distribution[:name] %>] to Github
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: 'jemalloc-bin-<%= distribution[:name] %>'
           path: 'artifacts/jemalloc-bin-<%= distribution[:name] %>'
@@ -301,7 +301,7 @@ jobs:
           CLEAR: true
       <%- ruby_package_artifact_names.each do |artifact_name| -%>
       - name: Archive Ruby package artifact [<%= artifact_name %>] to Github
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: <%= artifact_name %>
           path: artifacts/<%= artifact_name %>

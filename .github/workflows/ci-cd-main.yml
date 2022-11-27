@@ -895,7 +895,7 @@ jobs:
         # with many files
         run: tar -C vendor -cf vendor/bundle.tar bundle
       - name: Archive gem bundle artifact to Github
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: gem-bundle
           path: vendor/bundle.tar
@@ -906,7 +906,7 @@ jobs:
           ARTIFACT_NAME: rbenv-src
           ARTIFACT_PATH: artifacts
       - name: Archive Rbenv source artifact to Github
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: rbenv-src
           path: artifacts
@@ -920,7 +920,7 @@ jobs:
           ARTIFACT_PATH: artifacts
           CLEAR: true
       - name: Archive Docker image artifact [centos-7] to Github
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Docker image centos-7;')
         with:
           name: 'docker-image-centos-7'
@@ -933,7 +933,7 @@ jobs:
           ARTIFACT_PATH: artifacts
           CLEAR: true
       - name: Archive Docker image artifact [centos-8] to Github
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Docker image centos-8;')
         with:
           name: 'docker-image-centos-8'
@@ -946,7 +946,7 @@ jobs:
           ARTIFACT_PATH: artifacts
           CLEAR: true
       - name: Archive Docker image artifact [debian-10] to Github
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Docker image debian-10;')
         with:
           name: 'docker-image-debian-10'
@@ -959,7 +959,7 @@ jobs:
           ARTIFACT_PATH: artifacts
           CLEAR: true
       - name: Archive Docker image artifact [debian-11] to Github
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Docker image debian-11;')
         with:
           name: 'docker-image-debian-11'
@@ -972,7 +972,7 @@ jobs:
           ARTIFACT_PATH: artifacts
           CLEAR: true
       - name: Archive Docker image artifact [debian-9] to Github
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Docker image debian-9;')
         with:
           name: 'docker-image-debian-9'
@@ -985,7 +985,7 @@ jobs:
           ARTIFACT_PATH: artifacts
           CLEAR: true
       - name: Archive Docker image artifact [el-9] to Github
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Docker image el-9;')
         with:
           name: 'docker-image-el-9'
@@ -998,7 +998,7 @@ jobs:
           ARTIFACT_PATH: artifacts
           CLEAR: true
       - name: Archive Docker image artifact [ubuntu-18.04] to Github
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Docker image ubuntu-18.04;')
         with:
           name: 'docker-image-ubuntu-18.04'
@@ -1011,7 +1011,7 @@ jobs:
           ARTIFACT_PATH: artifacts
           CLEAR: true
       - name: Archive Docker image artifact [ubuntu-20.04] to Github
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Docker image ubuntu-20.04;')
         with:
           name: 'docker-image-ubuntu-20.04'
@@ -1024,7 +1024,7 @@ jobs:
           ARTIFACT_PATH: artifacts
           CLEAR: true
       - name: Archive Docker image artifact [ubuntu-22.04] to Github
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Docker image ubuntu-22.04;')
         with:
           name: 'docker-image-ubuntu-22.04'
@@ -1037,7 +1037,7 @@ jobs:
           ARTIFACT_PATH: artifacts
           CLEAR: true
       - name: Archive Docker image artifact [utility] to Github
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Docker image utility;')
         with:
           name: 'docker-image-utility'
@@ -1051,7 +1051,7 @@ jobs:
           ARTIFACT_PATH: artifacts
           CLEAR: true
       - name: Archive Ruby source artifact [3.1.2] to Github
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: ruby-src-3.1.2
           path: artifacts
@@ -1062,7 +1062,7 @@ jobs:
           ARTIFACT_PATH: artifacts
           CLEAR: true
       - name: Archive Ruby source artifact [3.0.4] to Github
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: ruby-src-3.0.4
           path: artifacts
@@ -1073,7 +1073,7 @@ jobs:
           ARTIFACT_PATH: artifacts
           CLEAR: true
       - name: Archive Ruby source artifact [2.7.6] to Github
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: ruby-src-2.7.6
           path: artifacts
@@ -1085,7 +1085,7 @@ jobs:
           ARTIFACT_PATH: artifacts
           CLEAR: true
       - name: Archive common DEB artifact to Github
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: common-deb
           path: artifacts
@@ -1097,7 +1097,7 @@ jobs:
           ARTIFACT_PATH: artifacts
           CLEAR: true
       - name: Archive common RPM artifact to Github
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: common-rpm
           path: artifacts
@@ -1109,7 +1109,7 @@ jobs:
           ARTIFACT_PATH: artifacts
           CLEAR: true
       - name: Archive Rbenv DEB artifact to Github
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: rbenv-deb
           path: artifacts
@@ -1121,7 +1121,7 @@ jobs:
           ARTIFACT_PATH: artifacts
           CLEAR: true
       - name: Archive Rbenv RPM artifact to Github
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: rbenv-rpm
           path: artifacts

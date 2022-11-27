@@ -556,7 +556,7 @@ jobs:
         # with many files
         run: tar -C vendor -cf vendor/bundle.tar bundle
       - name: Archive gem bundle artifact to Github
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: gem-bundle
           path: vendor/bundle.tar
@@ -567,7 +567,7 @@ jobs:
           ARTIFACT_NAME: <%= rbenv_source_artifact_name %>
           ARTIFACT_PATH: artifacts
       - name: Archive Rbenv source artifact to Github
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: <%= rbenv_source_artifact_name %>
           path: artifacts
@@ -582,7 +582,7 @@ jobs:
             ARTIFACT_PATH: artifacts
             CLEAR: true
         - name: Archive Docker image artifact [<%= image[:id] %>] to Github
-          uses: actions/upload-artifact@v2
+          uses: actions/upload-artifact@v3
           if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Docker image <%= image[:id] %>;')
           with:
             name: '<%= docker_image_artifact_name(image[:id]) %>'
@@ -599,7 +599,7 @@ jobs:
             ARTIFACT_PATH: artifacts
             CLEAR: true
         - name: Archive Ruby source artifact [<%= ruby_version %>] to Github
-          uses: actions/upload-artifact@v2
+          uses: actions/upload-artifact@v3
           with:
             name: <%= ruby_source_artifact_name(ruby_version) %>
             path: artifacts
@@ -613,7 +613,7 @@ jobs:
           ARTIFACT_PATH: artifacts
           CLEAR: true
       - name: Archive common DEB artifact to Github
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: <%= common_deb_artifact_name %>
           path: artifacts
@@ -625,7 +625,7 @@ jobs:
           ARTIFACT_PATH: artifacts
           CLEAR: true
       - name: Archive common RPM artifact to Github
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: <%= common_rpm_artifact_name %>
           path: artifacts
@@ -637,7 +637,7 @@ jobs:
           ARTIFACT_PATH: artifacts
           CLEAR: true
       - name: Archive Rbenv DEB artifact to Github
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: <%= rbenv_deb_artifact_name %>
           path: artifacts
@@ -649,7 +649,7 @@ jobs:
           ARTIFACT_PATH: artifacts
           CLEAR: true
       - name: Archive Rbenv RPM artifact to Github
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: <%= rbenv_rpm_artifact_name %>
           path: artifacts

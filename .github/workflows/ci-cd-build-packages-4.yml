@@ -3551,12 +3551,12 @@ jobs:
           ARTIFACT_PATH: artifacts
           CLEAR: true
       - name: Archive Jemalloc binary artifact [debian-11] to Github
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: 'jemalloc-bin-debian-11'
           path: 'artifacts/jemalloc-bin-debian-11'
       - name: Archive Jemalloc binary artifact [ubuntu-20.04] to Github
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: 'jemalloc-bin-ubuntu-20.04'
           path: 'artifacts/jemalloc-bin-ubuntu-20.04'
@@ -3568,182 +3568,182 @@ jobs:
           ARTIFACT_PATH: artifacts
           CLEAR: true
       - name: Archive Ruby package artifact [ruby-pkg_3.1_debian-11_normal] to Github
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: ruby-pkg_3.1_debian-11_normal
           path: artifacts/ruby-pkg_3.1_debian-11_normal
       - name: Archive Ruby package artifact [ruby-pkg_3.1_debian-11_jemalloc] to Github
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: ruby-pkg_3.1_debian-11_jemalloc
           path: artifacts/ruby-pkg_3.1_debian-11_jemalloc
       - name: Archive Ruby package artifact [ruby-pkg_3.1_debian-11_malloctrim] to Github
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: ruby-pkg_3.1_debian-11_malloctrim
           path: artifacts/ruby-pkg_3.1_debian-11_malloctrim
       - name: Archive Ruby package artifact [ruby-pkg_3.0_debian-11_normal] to Github
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: ruby-pkg_3.0_debian-11_normal
           path: artifacts/ruby-pkg_3.0_debian-11_normal
       - name: Archive Ruby package artifact [ruby-pkg_3.0_debian-11_jemalloc] to Github
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: ruby-pkg_3.0_debian-11_jemalloc
           path: artifacts/ruby-pkg_3.0_debian-11_jemalloc
       - name: Archive Ruby package artifact [ruby-pkg_3.0_debian-11_malloctrim] to Github
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: ruby-pkg_3.0_debian-11_malloctrim
           path: artifacts/ruby-pkg_3.0_debian-11_malloctrim
       - name: Archive Ruby package artifact [ruby-pkg_2.7_debian-11_normal] to Github
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: ruby-pkg_2.7_debian-11_normal
           path: artifacts/ruby-pkg_2.7_debian-11_normal
       - name: Archive Ruby package artifact [ruby-pkg_2.7_debian-11_jemalloc] to Github
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: ruby-pkg_2.7_debian-11_jemalloc
           path: artifacts/ruby-pkg_2.7_debian-11_jemalloc
       - name: Archive Ruby package artifact [ruby-pkg_2.7_debian-11_malloctrim] to Github
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: ruby-pkg_2.7_debian-11_malloctrim
           path: artifacts/ruby-pkg_2.7_debian-11_malloctrim
       - name: Archive Ruby package artifact [ruby-pkg_3.1.2_debian-11_normal] to Github
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: ruby-pkg_3.1.2_debian-11_normal
           path: artifacts/ruby-pkg_3.1.2_debian-11_normal
       - name: Archive Ruby package artifact [ruby-pkg_3.1.2_debian-11_jemalloc] to Github
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: ruby-pkg_3.1.2_debian-11_jemalloc
           path: artifacts/ruby-pkg_3.1.2_debian-11_jemalloc
       - name: Archive Ruby package artifact [ruby-pkg_3.1.2_debian-11_malloctrim] to Github
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: ruby-pkg_3.1.2_debian-11_malloctrim
           path: artifacts/ruby-pkg_3.1.2_debian-11_malloctrim
       - name: Archive Ruby package artifact [ruby-pkg_3.0.4_debian-11_normal] to Github
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: ruby-pkg_3.0.4_debian-11_normal
           path: artifacts/ruby-pkg_3.0.4_debian-11_normal
       - name: Archive Ruby package artifact [ruby-pkg_3.0.4_debian-11_jemalloc] to Github
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: ruby-pkg_3.0.4_debian-11_jemalloc
           path: artifacts/ruby-pkg_3.0.4_debian-11_jemalloc
       - name: Archive Ruby package artifact [ruby-pkg_3.0.4_debian-11_malloctrim] to Github
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: ruby-pkg_3.0.4_debian-11_malloctrim
           path: artifacts/ruby-pkg_3.0.4_debian-11_malloctrim
       - name: Archive Ruby package artifact [ruby-pkg_2.7.6_debian-11_normal] to Github
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: ruby-pkg_2.7.6_debian-11_normal
           path: artifacts/ruby-pkg_2.7.6_debian-11_normal
       - name: Archive Ruby package artifact [ruby-pkg_2.7.6_debian-11_jemalloc] to Github
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: ruby-pkg_2.7.6_debian-11_jemalloc
           path: artifacts/ruby-pkg_2.7.6_debian-11_jemalloc
       - name: Archive Ruby package artifact [ruby-pkg_2.7.6_debian-11_malloctrim] to Github
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: ruby-pkg_2.7.6_debian-11_malloctrim
           path: artifacts/ruby-pkg_2.7.6_debian-11_malloctrim
       - name: Archive Ruby package artifact [ruby-pkg_3.1_ubuntu-20.04_normal] to Github
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: ruby-pkg_3.1_ubuntu-20.04_normal
           path: artifacts/ruby-pkg_3.1_ubuntu-20.04_normal
       - name: Archive Ruby package artifact [ruby-pkg_3.1_ubuntu-20.04_jemalloc] to Github
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: ruby-pkg_3.1_ubuntu-20.04_jemalloc
           path: artifacts/ruby-pkg_3.1_ubuntu-20.04_jemalloc
       - name: Archive Ruby package artifact [ruby-pkg_3.1_ubuntu-20.04_malloctrim] to Github
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: ruby-pkg_3.1_ubuntu-20.04_malloctrim
           path: artifacts/ruby-pkg_3.1_ubuntu-20.04_malloctrim
       - name: Archive Ruby package artifact [ruby-pkg_3.0_ubuntu-20.04_normal] to Github
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: ruby-pkg_3.0_ubuntu-20.04_normal
           path: artifacts/ruby-pkg_3.0_ubuntu-20.04_normal
       - name: Archive Ruby package artifact [ruby-pkg_3.0_ubuntu-20.04_jemalloc] to Github
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: ruby-pkg_3.0_ubuntu-20.04_jemalloc
           path: artifacts/ruby-pkg_3.0_ubuntu-20.04_jemalloc
       - name: Archive Ruby package artifact [ruby-pkg_3.0_ubuntu-20.04_malloctrim] to Github
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: ruby-pkg_3.0_ubuntu-20.04_malloctrim
           path: artifacts/ruby-pkg_3.0_ubuntu-20.04_malloctrim
       - name: Archive Ruby package artifact [ruby-pkg_2.7_ubuntu-20.04_normal] to Github
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: ruby-pkg_2.7_ubuntu-20.04_normal
           path: artifacts/ruby-pkg_2.7_ubuntu-20.04_normal
       - name: Archive Ruby package artifact [ruby-pkg_2.7_ubuntu-20.04_jemalloc] to Github
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: ruby-pkg_2.7_ubuntu-20.04_jemalloc
           path: artifacts/ruby-pkg_2.7_ubuntu-20.04_jemalloc
       - name: Archive Ruby package artifact [ruby-pkg_2.7_ubuntu-20.04_malloctrim] to Github
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: ruby-pkg_2.7_ubuntu-20.04_malloctrim
           path: artifacts/ruby-pkg_2.7_ubuntu-20.04_malloctrim
       - name: Archive Ruby package artifact [ruby-pkg_3.1.2_ubuntu-20.04_normal] to Github
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: ruby-pkg_3.1.2_ubuntu-20.04_normal
           path: artifacts/ruby-pkg_3.1.2_ubuntu-20.04_normal
       - name: Archive Ruby package artifact [ruby-pkg_3.1.2_ubuntu-20.04_jemalloc] to Github
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: ruby-pkg_3.1.2_ubuntu-20.04_jemalloc
           path: artifacts/ruby-pkg_3.1.2_ubuntu-20.04_jemalloc
       - name: Archive Ruby package artifact [ruby-pkg_3.1.2_ubuntu-20.04_malloctrim] to Github
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: ruby-pkg_3.1.2_ubuntu-20.04_malloctrim
           path: artifacts/ruby-pkg_3.1.2_ubuntu-20.04_malloctrim
       - name: Archive Ruby package artifact [ruby-pkg_3.0.4_ubuntu-20.04_normal] to Github
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: ruby-pkg_3.0.4_ubuntu-20.04_normal
           path: artifacts/ruby-pkg_3.0.4_ubuntu-20.04_normal
       - name: Archive Ruby package artifact [ruby-pkg_3.0.4_ubuntu-20.04_jemalloc] to Github
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: ruby-pkg_3.0.4_ubuntu-20.04_jemalloc
           path: artifacts/ruby-pkg_3.0.4_ubuntu-20.04_jemalloc
       - name: Archive Ruby package artifact [ruby-pkg_3.0.4_ubuntu-20.04_malloctrim] to Github
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: ruby-pkg_3.0.4_ubuntu-20.04_malloctrim
           path: artifacts/ruby-pkg_3.0.4_ubuntu-20.04_malloctrim
       - name: Archive Ruby package artifact [ruby-pkg_2.7.6_ubuntu-20.04_normal] to Github
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: ruby-pkg_2.7.6_ubuntu-20.04_normal
           path: artifacts/ruby-pkg_2.7.6_ubuntu-20.04_normal
       - name: Archive Ruby package artifact [ruby-pkg_2.7.6_ubuntu-20.04_jemalloc] to Github
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: ruby-pkg_2.7.6_ubuntu-20.04_jemalloc
           path: artifacts/ruby-pkg_2.7.6_ubuntu-20.04_jemalloc
       - name: Archive Ruby package artifact [ruby-pkg_2.7.6_ubuntu-20.04_malloctrim] to Github
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: ruby-pkg_2.7.6_ubuntu-20.04_malloctrim
           path: artifacts/ruby-pkg_2.7.6_ubuntu-20.04_malloctrim
