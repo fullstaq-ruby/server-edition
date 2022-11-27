@@ -480,12 +480,12 @@ jobs:
   ### Sources ###
 
 
-  download_ruby_source_3_1_2:
-    name: Download Ruby source [3.1.2]
+  download_ruby_source_3_1_3:
+    name: Download Ruby source [3.1.3]
     needs:
       - determine_necessary_jobs
     runs-on: ubuntu-20.04
-    if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Download Ruby source 3.1.2;')
+    if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Download Ruby source 3.1.3;')
     steps:
       - uses: actions/checkout@v3
       - name: Login to Google Cloud
@@ -497,19 +497,19 @@ jobs:
         run: ./internal-scripts/ci-cd/download-ruby-sources/download.sh
         if: steps.fetch_cache.outputs.cache-hit != 'true'
         env:
-          RUBY_VERSION: 3.1.2
+          RUBY_VERSION: 3.1.3
 
       - name: Archive artifact
         run: ./internal-scripts/ci-cd/upload-artifact.sh
         env:
-          ARTIFACT_NAME: ruby-src-3.1.2
+          ARTIFACT_NAME: ruby-src-3.1.3
           ARTIFACT_PATH: output
-  download_ruby_source_3_0_4:
-    name: Download Ruby source [3.0.4]
+  download_ruby_source_3_0_5:
+    name: Download Ruby source [3.0.5]
     needs:
       - determine_necessary_jobs
     runs-on: ubuntu-20.04
-    if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Download Ruby source 3.0.4;')
+    if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Download Ruby source 3.0.5;')
     steps:
       - uses: actions/checkout@v3
       - name: Login to Google Cloud
@@ -521,19 +521,19 @@ jobs:
         run: ./internal-scripts/ci-cd/download-ruby-sources/download.sh
         if: steps.fetch_cache.outputs.cache-hit != 'true'
         env:
-          RUBY_VERSION: 3.0.4
+          RUBY_VERSION: 3.0.5
 
       - name: Archive artifact
         run: ./internal-scripts/ci-cd/upload-artifact.sh
         env:
-          ARTIFACT_NAME: ruby-src-3.0.4
+          ARTIFACT_NAME: ruby-src-3.0.5
           ARTIFACT_PATH: output
-  download_ruby_source_2_7_6:
-    name: Download Ruby source [2.7.6]
+  download_ruby_source_2_7_7:
+    name: Download Ruby source [2.7.7]
     needs:
       - determine_necessary_jobs
     runs-on: ubuntu-20.04
-    if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Download Ruby source 2.7.6;')
+    if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Download Ruby source 2.7.7;')
     steps:
       - uses: actions/checkout@v3
       - name: Login to Google Cloud
@@ -545,12 +545,12 @@ jobs:
         run: ./internal-scripts/ci-cd/download-ruby-sources/download.sh
         if: steps.fetch_cache.outputs.cache-hit != 'true'
         env:
-          RUBY_VERSION: 2.7.6
+          RUBY_VERSION: 2.7.7
 
       - name: Archive artifact
         run: ./internal-scripts/ci-cd/upload-artifact.sh
         env:
-          ARTIFACT_NAME: ruby-src-2.7.6
+          ARTIFACT_NAME: ruby-src-2.7.7
           ARTIFACT_PATH: output
 
 
@@ -863,9 +863,9 @@ jobs:
       - build_docker_image_ubuntu_20_04
       - build_docker_image_ubuntu_22_04
       - build_docker_image_utility
-      - download_ruby_source_3_1_2
-      - download_ruby_source_3_0_4
-      - download_ruby_source_2_7_6
+      - download_ruby_source_3_1_3
+      - download_ruby_source_3_0_5
+      - download_ruby_source_2_7_7
       - build_common_deb
       - build_common_rpm
       - build_rbenv_deb
@@ -1044,38 +1044,38 @@ jobs:
           path: artifacts
 
 
-      - name: Download Ruby source artifact [3.1.2] from Google Cloud
+      - name: Download Ruby source artifact [3.1.3] from Google Cloud
         run: ./internal-scripts/ci-cd/download-artifact.sh
         env:
-          ARTIFACT_NAME: ruby-src-3.1.2
+          ARTIFACT_NAME: ruby-src-3.1.3
           ARTIFACT_PATH: artifacts
           CLEAR: true
-      - name: Archive Ruby source artifact [3.1.2] to Github
+      - name: Archive Ruby source artifact [3.1.3] to Github
         uses: actions/upload-artifact@v3
         with:
-          name: ruby-src-3.1.2
+          name: ruby-src-3.1.3
           path: artifacts
-      - name: Download Ruby source artifact [3.0.4] from Google Cloud
+      - name: Download Ruby source artifact [3.0.5] from Google Cloud
         run: ./internal-scripts/ci-cd/download-artifact.sh
         env:
-          ARTIFACT_NAME: ruby-src-3.0.4
+          ARTIFACT_NAME: ruby-src-3.0.5
           ARTIFACT_PATH: artifacts
           CLEAR: true
-      - name: Archive Ruby source artifact [3.0.4] to Github
+      - name: Archive Ruby source artifact [3.0.5] to Github
         uses: actions/upload-artifact@v3
         with:
-          name: ruby-src-3.0.4
+          name: ruby-src-3.0.5
           path: artifacts
-      - name: Download Ruby source artifact [2.7.6] from Google Cloud
+      - name: Download Ruby source artifact [2.7.7] from Google Cloud
         run: ./internal-scripts/ci-cd/download-artifact.sh
         env:
-          ARTIFACT_NAME: ruby-src-2.7.6
+          ARTIFACT_NAME: ruby-src-2.7.7
           ARTIFACT_PATH: artifacts
           CLEAR: true
-      - name: Archive Ruby source artifact [2.7.6] to Github
+      - name: Archive Ruby source artifact [2.7.7] to Github
         uses: actions/upload-artifact@v3
         with:
-          name: ruby-src-2.7.6
+          name: ruby-src-2.7.7
           path: artifacts
 
       - name: Download common DEB artifact from Google Cloud
@@ -1189,15 +1189,15 @@ jobs:
         run: 'false'
         if: |
           false
-            || (needs.download_ruby_source_3_1_2.result != 'success'
-              && (needs.download_ruby_source_3_1_2.result != 'skipped'
-                || contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Download Ruby source 3.1.2;')))
-            || (needs.download_ruby_source_3_0_4.result != 'success'
-              && (needs.download_ruby_source_3_0_4.result != 'skipped'
-                || contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Download Ruby source 3.0.4;')))
-            || (needs.download_ruby_source_2_7_6.result != 'success'
-              && (needs.download_ruby_source_2_7_6.result != 'skipped'
-                || contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Download Ruby source 2.7.6;')))
+            || (needs.download_ruby_source_3_1_3.result != 'success'
+              && (needs.download_ruby_source_3_1_3.result != 'skipped'
+                || contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Download Ruby source 3.1.3;')))
+            || (needs.download_ruby_source_3_0_5.result != 'success'
+              && (needs.download_ruby_source_3_0_5.result != 'skipped'
+                || contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Download Ruby source 3.0.5;')))
+            || (needs.download_ruby_source_2_7_7.result != 'success'
+              && (needs.download_ruby_source_2_7_7.result != 'skipped'
+                || contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Download Ruby source 2.7.7;')))
       - name: Check whether 'Build common DEB' did not fail
         run: 'false'
         if: |

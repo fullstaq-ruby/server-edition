@@ -107,7 +107,7 @@ jobs:
             common-rpm
             rbenv-deb
             rbenv-rpm
-            ruby-pkg_3.1_centos-7_normal ruby-pkg_3.1_centos-7_jemalloc ruby-pkg_3.1_centos-7_malloctrim ruby-pkg_3.0_centos-7_normal ruby-pkg_3.0_centos-7_jemalloc ruby-pkg_3.0_centos-7_malloctrim ruby-pkg_2.7_centos-7_normal ruby-pkg_2.7_centos-7_jemalloc ruby-pkg_2.7_centos-7_malloctrim ruby-pkg_3.1.2_centos-7_normal ruby-pkg_3.1.2_centos-7_jemalloc ruby-pkg_3.1.2_centos-7_malloctrim ruby-pkg_3.0.4_centos-7_normal ruby-pkg_3.0.4_centos-7_jemalloc ruby-pkg_3.0.4_centos-7_malloctrim ruby-pkg_2.7.6_centos-7_normal ruby-pkg_2.7.6_centos-7_jemalloc ruby-pkg_2.7.6_centos-7_malloctrim ruby-pkg_3.1_centos-8_normal ruby-pkg_3.1_centos-8_jemalloc ruby-pkg_3.1_centos-8_malloctrim ruby-pkg_3.0_centos-8_normal ruby-pkg_3.0_centos-8_jemalloc ruby-pkg_3.0_centos-8_malloctrim ruby-pkg_2.7_centos-8_normal ruby-pkg_2.7_centos-8_jemalloc ruby-pkg_2.7_centos-8_malloctrim ruby-pkg_3.1.2_centos-8_normal ruby-pkg_3.1.2_centos-8_jemalloc ruby-pkg_3.1.2_centos-8_malloctrim ruby-pkg_3.0.4_centos-8_normal ruby-pkg_3.0.4_centos-8_jemalloc ruby-pkg_3.0.4_centos-8_malloctrim ruby-pkg_2.7.6_centos-8_normal ruby-pkg_2.7.6_centos-8_jemalloc ruby-pkg_2.7.6_centos-8_malloctrim ruby-pkg_3.1_debian-10_normal ruby-pkg_3.1_debian-10_jemalloc ruby-pkg_3.1_debian-10_malloctrim ruby-pkg_3.0_debian-10_normal ruby-pkg_3.0_debian-10_jemalloc ruby-pkg_3.0_debian-10_malloctrim ruby-pkg_2.7_debian-10_normal ruby-pkg_2.7_debian-10_jemalloc ruby-pkg_2.7_debian-10_malloctrim ruby-pkg_3.1.2_debian-10_normal ruby-pkg_3.1.2_debian-10_jemalloc ruby-pkg_3.1.2_debian-10_malloctrim ruby-pkg_3.0.4_debian-10_normal ruby-pkg_3.0.4_debian-10_jemalloc ruby-pkg_3.0.4_debian-10_malloctrim ruby-pkg_2.7.6_debian-10_normal ruby-pkg_2.7.6_debian-10_jemalloc ruby-pkg_2.7.6_debian-10_malloctrim ruby-pkg_3.1_debian-11_normal ruby-pkg_3.1_debian-11_jemalloc ruby-pkg_3.1_debian-11_malloctrim ruby-pkg_3.0_debian-11_normal ruby-pkg_3.0_debian-11_jemalloc ruby-pkg_3.0_debian-11_malloctrim ruby-pkg_2.7_debian-11_normal ruby-pkg_2.7_debian-11_jemalloc ruby-pkg_2.7_debian-11_malloctrim ruby-pkg_3.1.2_debian-11_normal ruby-pkg_3.1.2_debian-11_jemalloc ruby-pkg_3.1.2_debian-11_malloctrim ruby-pkg_3.0.4_debian-11_normal ruby-pkg_3.0.4_debian-11_jemalloc ruby-pkg_3.0.4_debian-11_malloctrim ruby-pkg_2.7.6_debian-11_normal ruby-pkg_2.7.6_debian-11_jemalloc ruby-pkg_2.7.6_debian-11_malloctrim ruby-pkg_3.1_debian-9_normal ruby-pkg_3.1_debian-9_jemalloc ruby-pkg_3.1_debian-9_malloctrim ruby-pkg_3.0_debian-9_normal ruby-pkg_3.0_debian-9_jemalloc ruby-pkg_3.0_debian-9_malloctrim ruby-pkg_2.7_debian-9_normal ruby-pkg_2.7_debian-9_jemalloc ruby-pkg_2.7_debian-9_malloctrim ruby-pkg_3.1.2_debian-9_normal ruby-pkg_3.1.2_debian-9_jemalloc ruby-pkg_3.1.2_debian-9_malloctrim ruby-pkg_3.0.4_debian-9_normal ruby-pkg_3.0.4_debian-9_jemalloc ruby-pkg_3.0.4_debian-9_malloctrim ruby-pkg_2.7.6_debian-9_normal ruby-pkg_2.7.6_debian-9_jemalloc ruby-pkg_2.7.6_debian-9_malloctrim ruby-pkg_3.1_el-9_normal ruby-pkg_3.1_el-9_jemalloc ruby-pkg_3.1_el-9_malloctrim ruby-pkg_3.1.2_el-9_normal ruby-pkg_3.1.2_el-9_jemalloc ruby-pkg_3.1.2_el-9_malloctrim ruby-pkg_3.1_ubuntu-18.04_normal ruby-pkg_3.1_ubuntu-18.04_jemalloc ruby-pkg_3.1_ubuntu-18.04_malloctrim ruby-pkg_3.0_ubuntu-18.04_normal ruby-pkg_3.0_ubuntu-18.04_jemalloc ruby-pkg_3.0_ubuntu-18.04_malloctrim ruby-pkg_2.7_ubuntu-18.04_normal ruby-pkg_2.7_ubuntu-18.04_jemalloc ruby-pkg_2.7_ubuntu-18.04_malloctrim ruby-pkg_3.1.2_ubuntu-18.04_normal ruby-pkg_3.1.2_ubuntu-18.04_jemalloc ruby-pkg_3.1.2_ubuntu-18.04_malloctrim ruby-pkg_3.0.4_ubuntu-18.04_normal ruby-pkg_3.0.4_ubuntu-18.04_jemalloc ruby-pkg_3.0.4_ubuntu-18.04_malloctrim ruby-pkg_2.7.6_ubuntu-18.04_normal ruby-pkg_2.7.6_ubuntu-18.04_jemalloc ruby-pkg_2.7.6_ubuntu-18.04_malloctrim ruby-pkg_3.1_ubuntu-20.04_normal ruby-pkg_3.1_ubuntu-20.04_jemalloc ruby-pkg_3.1_ubuntu-20.04_malloctrim ruby-pkg_3.0_ubuntu-20.04_normal ruby-pkg_3.0_ubuntu-20.04_jemalloc ruby-pkg_3.0_ubuntu-20.04_malloctrim ruby-pkg_2.7_ubuntu-20.04_normal ruby-pkg_2.7_ubuntu-20.04_jemalloc ruby-pkg_2.7_ubuntu-20.04_malloctrim ruby-pkg_3.1.2_ubuntu-20.04_normal ruby-pkg_3.1.2_ubuntu-20.04_jemalloc ruby-pkg_3.1.2_ubuntu-20.04_malloctrim ruby-pkg_3.0.4_ubuntu-20.04_normal ruby-pkg_3.0.4_ubuntu-20.04_jemalloc ruby-pkg_3.0.4_ubuntu-20.04_malloctrim ruby-pkg_2.7.6_ubuntu-20.04_normal ruby-pkg_2.7.6_ubuntu-20.04_jemalloc ruby-pkg_2.7.6_ubuntu-20.04_malloctrim ruby-pkg_3.1_ubuntu-22.04_normal ruby-pkg_3.1_ubuntu-22.04_jemalloc ruby-pkg_3.1_ubuntu-22.04_malloctrim ruby-pkg_3.1.2_ubuntu-22.04_normal ruby-pkg_3.1.2_ubuntu-22.04_jemalloc ruby-pkg_3.1.2_ubuntu-22.04_malloctrim
+            ruby-pkg_3.1_centos-7_normal ruby-pkg_3.1_centos-7_jemalloc ruby-pkg_3.1_centos-7_malloctrim ruby-pkg_3.0_centos-7_normal ruby-pkg_3.0_centos-7_jemalloc ruby-pkg_3.0_centos-7_malloctrim ruby-pkg_2.7_centos-7_normal ruby-pkg_2.7_centos-7_jemalloc ruby-pkg_2.7_centos-7_malloctrim ruby-pkg_3.1.3_centos-7_normal ruby-pkg_3.1.3_centos-7_jemalloc ruby-pkg_3.1.3_centos-7_malloctrim ruby-pkg_3.0.5_centos-7_normal ruby-pkg_3.0.5_centos-7_jemalloc ruby-pkg_3.0.5_centos-7_malloctrim ruby-pkg_2.7.7_centos-7_normal ruby-pkg_2.7.7_centos-7_jemalloc ruby-pkg_2.7.7_centos-7_malloctrim ruby-pkg_3.1_centos-8_normal ruby-pkg_3.1_centos-8_jemalloc ruby-pkg_3.1_centos-8_malloctrim ruby-pkg_3.0_centos-8_normal ruby-pkg_3.0_centos-8_jemalloc ruby-pkg_3.0_centos-8_malloctrim ruby-pkg_2.7_centos-8_normal ruby-pkg_2.7_centos-8_jemalloc ruby-pkg_2.7_centos-8_malloctrim ruby-pkg_3.1.3_centos-8_normal ruby-pkg_3.1.3_centos-8_jemalloc ruby-pkg_3.1.3_centos-8_malloctrim ruby-pkg_3.0.5_centos-8_normal ruby-pkg_3.0.5_centos-8_jemalloc ruby-pkg_3.0.5_centos-8_malloctrim ruby-pkg_2.7.7_centos-8_normal ruby-pkg_2.7.7_centos-8_jemalloc ruby-pkg_2.7.7_centos-8_malloctrim ruby-pkg_3.1_debian-10_normal ruby-pkg_3.1_debian-10_jemalloc ruby-pkg_3.1_debian-10_malloctrim ruby-pkg_3.0_debian-10_normal ruby-pkg_3.0_debian-10_jemalloc ruby-pkg_3.0_debian-10_malloctrim ruby-pkg_2.7_debian-10_normal ruby-pkg_2.7_debian-10_jemalloc ruby-pkg_2.7_debian-10_malloctrim ruby-pkg_3.1.3_debian-10_normal ruby-pkg_3.1.3_debian-10_jemalloc ruby-pkg_3.1.3_debian-10_malloctrim ruby-pkg_3.0.5_debian-10_normal ruby-pkg_3.0.5_debian-10_jemalloc ruby-pkg_3.0.5_debian-10_malloctrim ruby-pkg_2.7.7_debian-10_normal ruby-pkg_2.7.7_debian-10_jemalloc ruby-pkg_2.7.7_debian-10_malloctrim ruby-pkg_3.1_debian-11_normal ruby-pkg_3.1_debian-11_jemalloc ruby-pkg_3.1_debian-11_malloctrim ruby-pkg_3.0_debian-11_normal ruby-pkg_3.0_debian-11_jemalloc ruby-pkg_3.0_debian-11_malloctrim ruby-pkg_2.7_debian-11_normal ruby-pkg_2.7_debian-11_jemalloc ruby-pkg_2.7_debian-11_malloctrim ruby-pkg_3.1.3_debian-11_normal ruby-pkg_3.1.3_debian-11_jemalloc ruby-pkg_3.1.3_debian-11_malloctrim ruby-pkg_3.0.5_debian-11_normal ruby-pkg_3.0.5_debian-11_jemalloc ruby-pkg_3.0.5_debian-11_malloctrim ruby-pkg_2.7.7_debian-11_normal ruby-pkg_2.7.7_debian-11_jemalloc ruby-pkg_2.7.7_debian-11_malloctrim ruby-pkg_3.1_debian-9_normal ruby-pkg_3.1_debian-9_jemalloc ruby-pkg_3.1_debian-9_malloctrim ruby-pkg_3.0_debian-9_normal ruby-pkg_3.0_debian-9_jemalloc ruby-pkg_3.0_debian-9_malloctrim ruby-pkg_2.7_debian-9_normal ruby-pkg_2.7_debian-9_jemalloc ruby-pkg_2.7_debian-9_malloctrim ruby-pkg_3.1.3_debian-9_normal ruby-pkg_3.1.3_debian-9_jemalloc ruby-pkg_3.1.3_debian-9_malloctrim ruby-pkg_3.0.5_debian-9_normal ruby-pkg_3.0.5_debian-9_jemalloc ruby-pkg_3.0.5_debian-9_malloctrim ruby-pkg_2.7.7_debian-9_normal ruby-pkg_2.7.7_debian-9_jemalloc ruby-pkg_2.7.7_debian-9_malloctrim ruby-pkg_3.1_el-9_normal ruby-pkg_3.1_el-9_jemalloc ruby-pkg_3.1_el-9_malloctrim ruby-pkg_3.1.3_el-9_normal ruby-pkg_3.1.3_el-9_jemalloc ruby-pkg_3.1.3_el-9_malloctrim ruby-pkg_3.1_ubuntu-18.04_normal ruby-pkg_3.1_ubuntu-18.04_jemalloc ruby-pkg_3.1_ubuntu-18.04_malloctrim ruby-pkg_3.0_ubuntu-18.04_normal ruby-pkg_3.0_ubuntu-18.04_jemalloc ruby-pkg_3.0_ubuntu-18.04_malloctrim ruby-pkg_2.7_ubuntu-18.04_normal ruby-pkg_2.7_ubuntu-18.04_jemalloc ruby-pkg_2.7_ubuntu-18.04_malloctrim ruby-pkg_3.1.3_ubuntu-18.04_normal ruby-pkg_3.1.3_ubuntu-18.04_jemalloc ruby-pkg_3.1.3_ubuntu-18.04_malloctrim ruby-pkg_3.0.5_ubuntu-18.04_normal ruby-pkg_3.0.5_ubuntu-18.04_jemalloc ruby-pkg_3.0.5_ubuntu-18.04_malloctrim ruby-pkg_2.7.7_ubuntu-18.04_normal ruby-pkg_2.7.7_ubuntu-18.04_jemalloc ruby-pkg_2.7.7_ubuntu-18.04_malloctrim ruby-pkg_3.1_ubuntu-20.04_normal ruby-pkg_3.1_ubuntu-20.04_jemalloc ruby-pkg_3.1_ubuntu-20.04_malloctrim ruby-pkg_3.0_ubuntu-20.04_normal ruby-pkg_3.0_ubuntu-20.04_jemalloc ruby-pkg_3.0_ubuntu-20.04_malloctrim ruby-pkg_2.7_ubuntu-20.04_normal ruby-pkg_2.7_ubuntu-20.04_jemalloc ruby-pkg_2.7_ubuntu-20.04_malloctrim ruby-pkg_3.1.3_ubuntu-20.04_normal ruby-pkg_3.1.3_ubuntu-20.04_jemalloc ruby-pkg_3.1.3_ubuntu-20.04_malloctrim ruby-pkg_3.0.5_ubuntu-20.04_normal ruby-pkg_3.0.5_ubuntu-20.04_jemalloc ruby-pkg_3.0.5_ubuntu-20.04_malloctrim ruby-pkg_2.7.7_ubuntu-20.04_normal ruby-pkg_2.7.7_ubuntu-20.04_jemalloc ruby-pkg_2.7.7_ubuntu-20.04_malloctrim ruby-pkg_3.1_ubuntu-22.04_normal ruby-pkg_3.1_ubuntu-22.04_jemalloc ruby-pkg_3.1_ubuntu-22.04_malloctrim ruby-pkg_3.1.3_ubuntu-22.04_normal ruby-pkg_3.1.3_ubuntu-22.04_jemalloc ruby-pkg_3.1.3_ubuntu-22.04_malloctrim
           ARTIFACT_PATH: pkgs
 
       - name: Download Docker image necessary for publishing
@@ -465,15 +465,15 @@ jobs:
         env:
           ARTIFACT_NAME: tested-against-production-centos-7_2.7_malloctrim
           ARTIFACT_PATH: mark-malloctrim
-  test_centos_7-3_1_2-normal:
-    name: 'Test [centos-7/3.1.2/normal]'
+  test_centos_7-3_1_3-normal:
+    name: 'Test [centos-7/3.1.3/normal]'
     runs-on: ubuntu-20.04
     needs:
       - determine_necessary_jobs
       - publish
     if: |
       github.ref == 'refs/heads/main'
-      && contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [centos-7/3.1.2/normal];')
+      && contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [centos-7/3.1.3/normal];')
     steps:
       - uses: actions/checkout@v3
       - name: Login to Google Cloud
@@ -485,7 +485,7 @@ jobs:
         run: ./internal-scripts/ci-cd/test-packages/run-tests.sh
         env:
           DISTRIBUTION_NAME: "centos-7"
-          RUBY_PACKAGE_ID: "3.1.2"
+          RUBY_PACKAGE_ID: "3.1.3"
           PACKAGE_FORMAT: "RPM"
           VARIANT_NAME: "normal"
           VARIANT_PACKAGE_SUFFIX: ""
@@ -498,17 +498,17 @@ jobs:
       - name: Mark job as done
         run: ./internal-scripts/ci-cd/upload-artifact.sh
         env:
-          ARTIFACT_NAME: tested-against-production-centos-7_3.1.2_normal
+          ARTIFACT_NAME: tested-against-production-centos-7_3.1.3_normal
           ARTIFACT_PATH: mark-normal
-  test_centos_7-3_1_2-jemalloc:
-    name: 'Test [centos-7/3.1.2/jemalloc]'
+  test_centos_7-3_1_3-jemalloc:
+    name: 'Test [centos-7/3.1.3/jemalloc]'
     runs-on: ubuntu-20.04
     needs:
       - determine_necessary_jobs
       - publish
     if: |
       github.ref == 'refs/heads/main'
-      && contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [centos-7/3.1.2/jemalloc];')
+      && contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [centos-7/3.1.3/jemalloc];')
     steps:
       - uses: actions/checkout@v3
       - name: Login to Google Cloud
@@ -520,7 +520,7 @@ jobs:
         run: ./internal-scripts/ci-cd/test-packages/run-tests.sh
         env:
           DISTRIBUTION_NAME: "centos-7"
-          RUBY_PACKAGE_ID: "3.1.2"
+          RUBY_PACKAGE_ID: "3.1.3"
           PACKAGE_FORMAT: "RPM"
           VARIANT_NAME: "jemalloc"
           VARIANT_PACKAGE_SUFFIX: "-jemalloc"
@@ -533,17 +533,17 @@ jobs:
       - name: Mark job as done
         run: ./internal-scripts/ci-cd/upload-artifact.sh
         env:
-          ARTIFACT_NAME: tested-against-production-centos-7_3.1.2_jemalloc
+          ARTIFACT_NAME: tested-against-production-centos-7_3.1.3_jemalloc
           ARTIFACT_PATH: mark-jemalloc
-  test_centos_7-3_1_2-malloctrim:
-    name: 'Test [centos-7/3.1.2/malloctrim]'
+  test_centos_7-3_1_3-malloctrim:
+    name: 'Test [centos-7/3.1.3/malloctrim]'
     runs-on: ubuntu-20.04
     needs:
       - determine_necessary_jobs
       - publish
     if: |
       github.ref == 'refs/heads/main'
-      && contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [centos-7/3.1.2/malloctrim];')
+      && contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [centos-7/3.1.3/malloctrim];')
     steps:
       - uses: actions/checkout@v3
       - name: Login to Google Cloud
@@ -555,7 +555,7 @@ jobs:
         run: ./internal-scripts/ci-cd/test-packages/run-tests.sh
         env:
           DISTRIBUTION_NAME: "centos-7"
-          RUBY_PACKAGE_ID: "3.1.2"
+          RUBY_PACKAGE_ID: "3.1.3"
           PACKAGE_FORMAT: "RPM"
           VARIANT_NAME: "malloctrim"
           VARIANT_PACKAGE_SUFFIX: "-malloctrim"
@@ -568,17 +568,17 @@ jobs:
       - name: Mark job as done
         run: ./internal-scripts/ci-cd/upload-artifact.sh
         env:
-          ARTIFACT_NAME: tested-against-production-centos-7_3.1.2_malloctrim
+          ARTIFACT_NAME: tested-against-production-centos-7_3.1.3_malloctrim
           ARTIFACT_PATH: mark-malloctrim
-  test_centos_7-3_0_4-normal:
-    name: 'Test [centos-7/3.0.4/normal]'
+  test_centos_7-3_0_5-normal:
+    name: 'Test [centos-7/3.0.5/normal]'
     runs-on: ubuntu-20.04
     needs:
       - determine_necessary_jobs
       - publish
     if: |
       github.ref == 'refs/heads/main'
-      && contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [centos-7/3.0.4/normal];')
+      && contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [centos-7/3.0.5/normal];')
     steps:
       - uses: actions/checkout@v3
       - name: Login to Google Cloud
@@ -590,7 +590,7 @@ jobs:
         run: ./internal-scripts/ci-cd/test-packages/run-tests.sh
         env:
           DISTRIBUTION_NAME: "centos-7"
-          RUBY_PACKAGE_ID: "3.0.4"
+          RUBY_PACKAGE_ID: "3.0.5"
           PACKAGE_FORMAT: "RPM"
           VARIANT_NAME: "normal"
           VARIANT_PACKAGE_SUFFIX: ""
@@ -603,17 +603,17 @@ jobs:
       - name: Mark job as done
         run: ./internal-scripts/ci-cd/upload-artifact.sh
         env:
-          ARTIFACT_NAME: tested-against-production-centos-7_3.0.4_normal
+          ARTIFACT_NAME: tested-against-production-centos-7_3.0.5_normal
           ARTIFACT_PATH: mark-normal
-  test_centos_7-3_0_4-jemalloc:
-    name: 'Test [centos-7/3.0.4/jemalloc]'
+  test_centos_7-3_0_5-jemalloc:
+    name: 'Test [centos-7/3.0.5/jemalloc]'
     runs-on: ubuntu-20.04
     needs:
       - determine_necessary_jobs
       - publish
     if: |
       github.ref == 'refs/heads/main'
-      && contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [centos-7/3.0.4/jemalloc];')
+      && contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [centos-7/3.0.5/jemalloc];')
     steps:
       - uses: actions/checkout@v3
       - name: Login to Google Cloud
@@ -625,7 +625,7 @@ jobs:
         run: ./internal-scripts/ci-cd/test-packages/run-tests.sh
         env:
           DISTRIBUTION_NAME: "centos-7"
-          RUBY_PACKAGE_ID: "3.0.4"
+          RUBY_PACKAGE_ID: "3.0.5"
           PACKAGE_FORMAT: "RPM"
           VARIANT_NAME: "jemalloc"
           VARIANT_PACKAGE_SUFFIX: "-jemalloc"
@@ -638,17 +638,17 @@ jobs:
       - name: Mark job as done
         run: ./internal-scripts/ci-cd/upload-artifact.sh
         env:
-          ARTIFACT_NAME: tested-against-production-centos-7_3.0.4_jemalloc
+          ARTIFACT_NAME: tested-against-production-centos-7_3.0.5_jemalloc
           ARTIFACT_PATH: mark-jemalloc
-  test_centos_7-3_0_4-malloctrim:
-    name: 'Test [centos-7/3.0.4/malloctrim]'
+  test_centos_7-3_0_5-malloctrim:
+    name: 'Test [centos-7/3.0.5/malloctrim]'
     runs-on: ubuntu-20.04
     needs:
       - determine_necessary_jobs
       - publish
     if: |
       github.ref == 'refs/heads/main'
-      && contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [centos-7/3.0.4/malloctrim];')
+      && contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [centos-7/3.0.5/malloctrim];')
     steps:
       - uses: actions/checkout@v3
       - name: Login to Google Cloud
@@ -660,7 +660,7 @@ jobs:
         run: ./internal-scripts/ci-cd/test-packages/run-tests.sh
         env:
           DISTRIBUTION_NAME: "centos-7"
-          RUBY_PACKAGE_ID: "3.0.4"
+          RUBY_PACKAGE_ID: "3.0.5"
           PACKAGE_FORMAT: "RPM"
           VARIANT_NAME: "malloctrim"
           VARIANT_PACKAGE_SUFFIX: "-malloctrim"
@@ -673,17 +673,17 @@ jobs:
       - name: Mark job as done
         run: ./internal-scripts/ci-cd/upload-artifact.sh
         env:
-          ARTIFACT_NAME: tested-against-production-centos-7_3.0.4_malloctrim
+          ARTIFACT_NAME: tested-against-production-centos-7_3.0.5_malloctrim
           ARTIFACT_PATH: mark-malloctrim
-  test_centos_7-2_7_6-normal:
-    name: 'Test [centos-7/2.7.6/normal]'
+  test_centos_7-2_7_7-normal:
+    name: 'Test [centos-7/2.7.7/normal]'
     runs-on: ubuntu-20.04
     needs:
       - determine_necessary_jobs
       - publish
     if: |
       github.ref == 'refs/heads/main'
-      && contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [centos-7/2.7.6/normal];')
+      && contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [centos-7/2.7.7/normal];')
     steps:
       - uses: actions/checkout@v3
       - name: Login to Google Cloud
@@ -695,7 +695,7 @@ jobs:
         run: ./internal-scripts/ci-cd/test-packages/run-tests.sh
         env:
           DISTRIBUTION_NAME: "centos-7"
-          RUBY_PACKAGE_ID: "2.7.6"
+          RUBY_PACKAGE_ID: "2.7.7"
           PACKAGE_FORMAT: "RPM"
           VARIANT_NAME: "normal"
           VARIANT_PACKAGE_SUFFIX: ""
@@ -708,17 +708,17 @@ jobs:
       - name: Mark job as done
         run: ./internal-scripts/ci-cd/upload-artifact.sh
         env:
-          ARTIFACT_NAME: tested-against-production-centos-7_2.7.6_normal
+          ARTIFACT_NAME: tested-against-production-centos-7_2.7.7_normal
           ARTIFACT_PATH: mark-normal
-  test_centos_7-2_7_6-jemalloc:
-    name: 'Test [centos-7/2.7.6/jemalloc]'
+  test_centos_7-2_7_7-jemalloc:
+    name: 'Test [centos-7/2.7.7/jemalloc]'
     runs-on: ubuntu-20.04
     needs:
       - determine_necessary_jobs
       - publish
     if: |
       github.ref == 'refs/heads/main'
-      && contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [centos-7/2.7.6/jemalloc];')
+      && contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [centos-7/2.7.7/jemalloc];')
     steps:
       - uses: actions/checkout@v3
       - name: Login to Google Cloud
@@ -730,7 +730,7 @@ jobs:
         run: ./internal-scripts/ci-cd/test-packages/run-tests.sh
         env:
           DISTRIBUTION_NAME: "centos-7"
-          RUBY_PACKAGE_ID: "2.7.6"
+          RUBY_PACKAGE_ID: "2.7.7"
           PACKAGE_FORMAT: "RPM"
           VARIANT_NAME: "jemalloc"
           VARIANT_PACKAGE_SUFFIX: "-jemalloc"
@@ -743,17 +743,17 @@ jobs:
       - name: Mark job as done
         run: ./internal-scripts/ci-cd/upload-artifact.sh
         env:
-          ARTIFACT_NAME: tested-against-production-centos-7_2.7.6_jemalloc
+          ARTIFACT_NAME: tested-against-production-centos-7_2.7.7_jemalloc
           ARTIFACT_PATH: mark-jemalloc
-  test_centos_7-2_7_6-malloctrim:
-    name: 'Test [centos-7/2.7.6/malloctrim]'
+  test_centos_7-2_7_7-malloctrim:
+    name: 'Test [centos-7/2.7.7/malloctrim]'
     runs-on: ubuntu-20.04
     needs:
       - determine_necessary_jobs
       - publish
     if: |
       github.ref == 'refs/heads/main'
-      && contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [centos-7/2.7.6/malloctrim];')
+      && contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [centos-7/2.7.7/malloctrim];')
     steps:
       - uses: actions/checkout@v3
       - name: Login to Google Cloud
@@ -765,7 +765,7 @@ jobs:
         run: ./internal-scripts/ci-cd/test-packages/run-tests.sh
         env:
           DISTRIBUTION_NAME: "centos-7"
-          RUBY_PACKAGE_ID: "2.7.6"
+          RUBY_PACKAGE_ID: "2.7.7"
           PACKAGE_FORMAT: "RPM"
           VARIANT_NAME: "malloctrim"
           VARIANT_PACKAGE_SUFFIX: "-malloctrim"
@@ -778,7 +778,7 @@ jobs:
       - name: Mark job as done
         run: ./internal-scripts/ci-cd/upload-artifact.sh
         env:
-          ARTIFACT_NAME: tested-against-production-centos-7_2.7.6_malloctrim
+          ARTIFACT_NAME: tested-against-production-centos-7_2.7.7_malloctrim
           ARTIFACT_PATH: mark-malloctrim
 
   test_centos_8-3_1-normal:
@@ -1096,15 +1096,15 @@ jobs:
         env:
           ARTIFACT_NAME: tested-against-production-centos-8_2.7_malloctrim
           ARTIFACT_PATH: mark-malloctrim
-  test_centos_8-3_1_2-normal:
-    name: 'Test [centos-8/3.1.2/normal]'
+  test_centos_8-3_1_3-normal:
+    name: 'Test [centos-8/3.1.3/normal]'
     runs-on: ubuntu-20.04
     needs:
       - determine_necessary_jobs
       - publish
     if: |
       github.ref == 'refs/heads/main'
-      && contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [centos-8/3.1.2/normal];')
+      && contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [centos-8/3.1.3/normal];')
     steps:
       - uses: actions/checkout@v3
       - name: Login to Google Cloud
@@ -1116,7 +1116,7 @@ jobs:
         run: ./internal-scripts/ci-cd/test-packages/run-tests.sh
         env:
           DISTRIBUTION_NAME: "centos-8"
-          RUBY_PACKAGE_ID: "3.1.2"
+          RUBY_PACKAGE_ID: "3.1.3"
           PACKAGE_FORMAT: "RPM"
           VARIANT_NAME: "normal"
           VARIANT_PACKAGE_SUFFIX: ""
@@ -1129,17 +1129,17 @@ jobs:
       - name: Mark job as done
         run: ./internal-scripts/ci-cd/upload-artifact.sh
         env:
-          ARTIFACT_NAME: tested-against-production-centos-8_3.1.2_normal
+          ARTIFACT_NAME: tested-against-production-centos-8_3.1.3_normal
           ARTIFACT_PATH: mark-normal
-  test_centos_8-3_1_2-jemalloc:
-    name: 'Test [centos-8/3.1.2/jemalloc]'
+  test_centos_8-3_1_3-jemalloc:
+    name: 'Test [centos-8/3.1.3/jemalloc]'
     runs-on: ubuntu-20.04
     needs:
       - determine_necessary_jobs
       - publish
     if: |
       github.ref == 'refs/heads/main'
-      && contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [centos-8/3.1.2/jemalloc];')
+      && contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [centos-8/3.1.3/jemalloc];')
     steps:
       - uses: actions/checkout@v3
       - name: Login to Google Cloud
@@ -1151,7 +1151,7 @@ jobs:
         run: ./internal-scripts/ci-cd/test-packages/run-tests.sh
         env:
           DISTRIBUTION_NAME: "centos-8"
-          RUBY_PACKAGE_ID: "3.1.2"
+          RUBY_PACKAGE_ID: "3.1.3"
           PACKAGE_FORMAT: "RPM"
           VARIANT_NAME: "jemalloc"
           VARIANT_PACKAGE_SUFFIX: "-jemalloc"
@@ -1164,17 +1164,17 @@ jobs:
       - name: Mark job as done
         run: ./internal-scripts/ci-cd/upload-artifact.sh
         env:
-          ARTIFACT_NAME: tested-against-production-centos-8_3.1.2_jemalloc
+          ARTIFACT_NAME: tested-against-production-centos-8_3.1.3_jemalloc
           ARTIFACT_PATH: mark-jemalloc
-  test_centos_8-3_1_2-malloctrim:
-    name: 'Test [centos-8/3.1.2/malloctrim]'
+  test_centos_8-3_1_3-malloctrim:
+    name: 'Test [centos-8/3.1.3/malloctrim]'
     runs-on: ubuntu-20.04
     needs:
       - determine_necessary_jobs
       - publish
     if: |
       github.ref == 'refs/heads/main'
-      && contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [centos-8/3.1.2/malloctrim];')
+      && contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [centos-8/3.1.3/malloctrim];')
     steps:
       - uses: actions/checkout@v3
       - name: Login to Google Cloud
@@ -1186,7 +1186,7 @@ jobs:
         run: ./internal-scripts/ci-cd/test-packages/run-tests.sh
         env:
           DISTRIBUTION_NAME: "centos-8"
-          RUBY_PACKAGE_ID: "3.1.2"
+          RUBY_PACKAGE_ID: "3.1.3"
           PACKAGE_FORMAT: "RPM"
           VARIANT_NAME: "malloctrim"
           VARIANT_PACKAGE_SUFFIX: "-malloctrim"
@@ -1199,17 +1199,17 @@ jobs:
       - name: Mark job as done
         run: ./internal-scripts/ci-cd/upload-artifact.sh
         env:
-          ARTIFACT_NAME: tested-against-production-centos-8_3.1.2_malloctrim
+          ARTIFACT_NAME: tested-against-production-centos-8_3.1.3_malloctrim
           ARTIFACT_PATH: mark-malloctrim
-  test_centos_8-3_0_4-normal:
-    name: 'Test [centos-8/3.0.4/normal]'
+  test_centos_8-3_0_5-normal:
+    name: 'Test [centos-8/3.0.5/normal]'
     runs-on: ubuntu-20.04
     needs:
       - determine_necessary_jobs
       - publish
     if: |
       github.ref == 'refs/heads/main'
-      && contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [centos-8/3.0.4/normal];')
+      && contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [centos-8/3.0.5/normal];')
     steps:
       - uses: actions/checkout@v3
       - name: Login to Google Cloud
@@ -1221,7 +1221,7 @@ jobs:
         run: ./internal-scripts/ci-cd/test-packages/run-tests.sh
         env:
           DISTRIBUTION_NAME: "centos-8"
-          RUBY_PACKAGE_ID: "3.0.4"
+          RUBY_PACKAGE_ID: "3.0.5"
           PACKAGE_FORMAT: "RPM"
           VARIANT_NAME: "normal"
           VARIANT_PACKAGE_SUFFIX: ""
@@ -1234,17 +1234,17 @@ jobs:
       - name: Mark job as done
         run: ./internal-scripts/ci-cd/upload-artifact.sh
         env:
-          ARTIFACT_NAME: tested-against-production-centos-8_3.0.4_normal
+          ARTIFACT_NAME: tested-against-production-centos-8_3.0.5_normal
           ARTIFACT_PATH: mark-normal
-  test_centos_8-3_0_4-jemalloc:
-    name: 'Test [centos-8/3.0.4/jemalloc]'
+  test_centos_8-3_0_5-jemalloc:
+    name: 'Test [centos-8/3.0.5/jemalloc]'
     runs-on: ubuntu-20.04
     needs:
       - determine_necessary_jobs
       - publish
     if: |
       github.ref == 'refs/heads/main'
-      && contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [centos-8/3.0.4/jemalloc];')
+      && contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [centos-8/3.0.5/jemalloc];')
     steps:
       - uses: actions/checkout@v3
       - name: Login to Google Cloud
@@ -1256,7 +1256,7 @@ jobs:
         run: ./internal-scripts/ci-cd/test-packages/run-tests.sh
         env:
           DISTRIBUTION_NAME: "centos-8"
-          RUBY_PACKAGE_ID: "3.0.4"
+          RUBY_PACKAGE_ID: "3.0.5"
           PACKAGE_FORMAT: "RPM"
           VARIANT_NAME: "jemalloc"
           VARIANT_PACKAGE_SUFFIX: "-jemalloc"
@@ -1269,17 +1269,17 @@ jobs:
       - name: Mark job as done
         run: ./internal-scripts/ci-cd/upload-artifact.sh
         env:
-          ARTIFACT_NAME: tested-against-production-centos-8_3.0.4_jemalloc
+          ARTIFACT_NAME: tested-against-production-centos-8_3.0.5_jemalloc
           ARTIFACT_PATH: mark-jemalloc
-  test_centos_8-3_0_4-malloctrim:
-    name: 'Test [centos-8/3.0.4/malloctrim]'
+  test_centos_8-3_0_5-malloctrim:
+    name: 'Test [centos-8/3.0.5/malloctrim]'
     runs-on: ubuntu-20.04
     needs:
       - determine_necessary_jobs
       - publish
     if: |
       github.ref == 'refs/heads/main'
-      && contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [centos-8/3.0.4/malloctrim];')
+      && contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [centos-8/3.0.5/malloctrim];')
     steps:
       - uses: actions/checkout@v3
       - name: Login to Google Cloud
@@ -1291,7 +1291,7 @@ jobs:
         run: ./internal-scripts/ci-cd/test-packages/run-tests.sh
         env:
           DISTRIBUTION_NAME: "centos-8"
-          RUBY_PACKAGE_ID: "3.0.4"
+          RUBY_PACKAGE_ID: "3.0.5"
           PACKAGE_FORMAT: "RPM"
           VARIANT_NAME: "malloctrim"
           VARIANT_PACKAGE_SUFFIX: "-malloctrim"
@@ -1304,17 +1304,17 @@ jobs:
       - name: Mark job as done
         run: ./internal-scripts/ci-cd/upload-artifact.sh
         env:
-          ARTIFACT_NAME: tested-against-production-centos-8_3.0.4_malloctrim
+          ARTIFACT_NAME: tested-against-production-centos-8_3.0.5_malloctrim
           ARTIFACT_PATH: mark-malloctrim
-  test_centos_8-2_7_6-normal:
-    name: 'Test [centos-8/2.7.6/normal]'
+  test_centos_8-2_7_7-normal:
+    name: 'Test [centos-8/2.7.7/normal]'
     runs-on: ubuntu-20.04
     needs:
       - determine_necessary_jobs
       - publish
     if: |
       github.ref == 'refs/heads/main'
-      && contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [centos-8/2.7.6/normal];')
+      && contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [centos-8/2.7.7/normal];')
     steps:
       - uses: actions/checkout@v3
       - name: Login to Google Cloud
@@ -1326,7 +1326,7 @@ jobs:
         run: ./internal-scripts/ci-cd/test-packages/run-tests.sh
         env:
           DISTRIBUTION_NAME: "centos-8"
-          RUBY_PACKAGE_ID: "2.7.6"
+          RUBY_PACKAGE_ID: "2.7.7"
           PACKAGE_FORMAT: "RPM"
           VARIANT_NAME: "normal"
           VARIANT_PACKAGE_SUFFIX: ""
@@ -1339,17 +1339,17 @@ jobs:
       - name: Mark job as done
         run: ./internal-scripts/ci-cd/upload-artifact.sh
         env:
-          ARTIFACT_NAME: tested-against-production-centos-8_2.7.6_normal
+          ARTIFACT_NAME: tested-against-production-centos-8_2.7.7_normal
           ARTIFACT_PATH: mark-normal
-  test_centos_8-2_7_6-jemalloc:
-    name: 'Test [centos-8/2.7.6/jemalloc]'
+  test_centos_8-2_7_7-jemalloc:
+    name: 'Test [centos-8/2.7.7/jemalloc]'
     runs-on: ubuntu-20.04
     needs:
       - determine_necessary_jobs
       - publish
     if: |
       github.ref == 'refs/heads/main'
-      && contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [centos-8/2.7.6/jemalloc];')
+      && contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [centos-8/2.7.7/jemalloc];')
     steps:
       - uses: actions/checkout@v3
       - name: Login to Google Cloud
@@ -1361,7 +1361,7 @@ jobs:
         run: ./internal-scripts/ci-cd/test-packages/run-tests.sh
         env:
           DISTRIBUTION_NAME: "centos-8"
-          RUBY_PACKAGE_ID: "2.7.6"
+          RUBY_PACKAGE_ID: "2.7.7"
           PACKAGE_FORMAT: "RPM"
           VARIANT_NAME: "jemalloc"
           VARIANT_PACKAGE_SUFFIX: "-jemalloc"
@@ -1374,17 +1374,17 @@ jobs:
       - name: Mark job as done
         run: ./internal-scripts/ci-cd/upload-artifact.sh
         env:
-          ARTIFACT_NAME: tested-against-production-centos-8_2.7.6_jemalloc
+          ARTIFACT_NAME: tested-against-production-centos-8_2.7.7_jemalloc
           ARTIFACT_PATH: mark-jemalloc
-  test_centos_8-2_7_6-malloctrim:
-    name: 'Test [centos-8/2.7.6/malloctrim]'
+  test_centos_8-2_7_7-malloctrim:
+    name: 'Test [centos-8/2.7.7/malloctrim]'
     runs-on: ubuntu-20.04
     needs:
       - determine_necessary_jobs
       - publish
     if: |
       github.ref == 'refs/heads/main'
-      && contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [centos-8/2.7.6/malloctrim];')
+      && contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [centos-8/2.7.7/malloctrim];')
     steps:
       - uses: actions/checkout@v3
       - name: Login to Google Cloud
@@ -1396,7 +1396,7 @@ jobs:
         run: ./internal-scripts/ci-cd/test-packages/run-tests.sh
         env:
           DISTRIBUTION_NAME: "centos-8"
-          RUBY_PACKAGE_ID: "2.7.6"
+          RUBY_PACKAGE_ID: "2.7.7"
           PACKAGE_FORMAT: "RPM"
           VARIANT_NAME: "malloctrim"
           VARIANT_PACKAGE_SUFFIX: "-malloctrim"
@@ -1409,7 +1409,7 @@ jobs:
       - name: Mark job as done
         run: ./internal-scripts/ci-cd/upload-artifact.sh
         env:
-          ARTIFACT_NAME: tested-against-production-centos-8_2.7.6_malloctrim
+          ARTIFACT_NAME: tested-against-production-centos-8_2.7.7_malloctrim
           ARTIFACT_PATH: mark-malloctrim
 
   test_debian_10-3_1-normal:
@@ -1727,15 +1727,15 @@ jobs:
         env:
           ARTIFACT_NAME: tested-against-production-debian-10_2.7_malloctrim
           ARTIFACT_PATH: mark-malloctrim
-  test_debian_10-3_1_2-normal:
-    name: 'Test [debian-10/3.1.2/normal]'
+  test_debian_10-3_1_3-normal:
+    name: 'Test [debian-10/3.1.3/normal]'
     runs-on: ubuntu-20.04
     needs:
       - determine_necessary_jobs
       - publish
     if: |
       github.ref == 'refs/heads/main'
-      && contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [debian-10/3.1.2/normal];')
+      && contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [debian-10/3.1.3/normal];')
     steps:
       - uses: actions/checkout@v3
       - name: Login to Google Cloud
@@ -1747,7 +1747,7 @@ jobs:
         run: ./internal-scripts/ci-cd/test-packages/run-tests.sh
         env:
           DISTRIBUTION_NAME: "debian-10"
-          RUBY_PACKAGE_ID: "3.1.2"
+          RUBY_PACKAGE_ID: "3.1.3"
           PACKAGE_FORMAT: "DEB"
           VARIANT_NAME: "normal"
           VARIANT_PACKAGE_SUFFIX: ""
@@ -1760,17 +1760,17 @@ jobs:
       - name: Mark job as done
         run: ./internal-scripts/ci-cd/upload-artifact.sh
         env:
-          ARTIFACT_NAME: tested-against-production-debian-10_3.1.2_normal
+          ARTIFACT_NAME: tested-against-production-debian-10_3.1.3_normal
           ARTIFACT_PATH: mark-normal
-  test_debian_10-3_1_2-jemalloc:
-    name: 'Test [debian-10/3.1.2/jemalloc]'
+  test_debian_10-3_1_3-jemalloc:
+    name: 'Test [debian-10/3.1.3/jemalloc]'
     runs-on: ubuntu-20.04
     needs:
       - determine_necessary_jobs
       - publish
     if: |
       github.ref == 'refs/heads/main'
-      && contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [debian-10/3.1.2/jemalloc];')
+      && contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [debian-10/3.1.3/jemalloc];')
     steps:
       - uses: actions/checkout@v3
       - name: Login to Google Cloud
@@ -1782,7 +1782,7 @@ jobs:
         run: ./internal-scripts/ci-cd/test-packages/run-tests.sh
         env:
           DISTRIBUTION_NAME: "debian-10"
-          RUBY_PACKAGE_ID: "3.1.2"
+          RUBY_PACKAGE_ID: "3.1.3"
           PACKAGE_FORMAT: "DEB"
           VARIANT_NAME: "jemalloc"
           VARIANT_PACKAGE_SUFFIX: "-jemalloc"
@@ -1795,17 +1795,17 @@ jobs:
       - name: Mark job as done
         run: ./internal-scripts/ci-cd/upload-artifact.sh
         env:
-          ARTIFACT_NAME: tested-against-production-debian-10_3.1.2_jemalloc
+          ARTIFACT_NAME: tested-against-production-debian-10_3.1.3_jemalloc
           ARTIFACT_PATH: mark-jemalloc
-  test_debian_10-3_1_2-malloctrim:
-    name: 'Test [debian-10/3.1.2/malloctrim]'
+  test_debian_10-3_1_3-malloctrim:
+    name: 'Test [debian-10/3.1.3/malloctrim]'
     runs-on: ubuntu-20.04
     needs:
       - determine_necessary_jobs
       - publish
     if: |
       github.ref == 'refs/heads/main'
-      && contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [debian-10/3.1.2/malloctrim];')
+      && contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [debian-10/3.1.3/malloctrim];')
     steps:
       - uses: actions/checkout@v3
       - name: Login to Google Cloud
@@ -1817,7 +1817,7 @@ jobs:
         run: ./internal-scripts/ci-cd/test-packages/run-tests.sh
         env:
           DISTRIBUTION_NAME: "debian-10"
-          RUBY_PACKAGE_ID: "3.1.2"
+          RUBY_PACKAGE_ID: "3.1.3"
           PACKAGE_FORMAT: "DEB"
           VARIANT_NAME: "malloctrim"
           VARIANT_PACKAGE_SUFFIX: "-malloctrim"
@@ -1830,17 +1830,17 @@ jobs:
       - name: Mark job as done
         run: ./internal-scripts/ci-cd/upload-artifact.sh
         env:
-          ARTIFACT_NAME: tested-against-production-debian-10_3.1.2_malloctrim
+          ARTIFACT_NAME: tested-against-production-debian-10_3.1.3_malloctrim
           ARTIFACT_PATH: mark-malloctrim
-  test_debian_10-3_0_4-normal:
-    name: 'Test [debian-10/3.0.4/normal]'
+  test_debian_10-3_0_5-normal:
+    name: 'Test [debian-10/3.0.5/normal]'
     runs-on: ubuntu-20.04
     needs:
       - determine_necessary_jobs
       - publish
     if: |
       github.ref == 'refs/heads/main'
-      && contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [debian-10/3.0.4/normal];')
+      && contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [debian-10/3.0.5/normal];')
     steps:
       - uses: actions/checkout@v3
       - name: Login to Google Cloud
@@ -1852,7 +1852,7 @@ jobs:
         run: ./internal-scripts/ci-cd/test-packages/run-tests.sh
         env:
           DISTRIBUTION_NAME: "debian-10"
-          RUBY_PACKAGE_ID: "3.0.4"
+          RUBY_PACKAGE_ID: "3.0.5"
           PACKAGE_FORMAT: "DEB"
           VARIANT_NAME: "normal"
           VARIANT_PACKAGE_SUFFIX: ""
@@ -1865,17 +1865,17 @@ jobs:
       - name: Mark job as done
         run: ./internal-scripts/ci-cd/upload-artifact.sh
         env:
-          ARTIFACT_NAME: tested-against-production-debian-10_3.0.4_normal
+          ARTIFACT_NAME: tested-against-production-debian-10_3.0.5_normal
           ARTIFACT_PATH: mark-normal
-  test_debian_10-3_0_4-jemalloc:
-    name: 'Test [debian-10/3.0.4/jemalloc]'
+  test_debian_10-3_0_5-jemalloc:
+    name: 'Test [debian-10/3.0.5/jemalloc]'
     runs-on: ubuntu-20.04
     needs:
       - determine_necessary_jobs
       - publish
     if: |
       github.ref == 'refs/heads/main'
-      && contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [debian-10/3.0.4/jemalloc];')
+      && contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [debian-10/3.0.5/jemalloc];')
     steps:
       - uses: actions/checkout@v3
       - name: Login to Google Cloud
@@ -1887,7 +1887,7 @@ jobs:
         run: ./internal-scripts/ci-cd/test-packages/run-tests.sh
         env:
           DISTRIBUTION_NAME: "debian-10"
-          RUBY_PACKAGE_ID: "3.0.4"
+          RUBY_PACKAGE_ID: "3.0.5"
           PACKAGE_FORMAT: "DEB"
           VARIANT_NAME: "jemalloc"
           VARIANT_PACKAGE_SUFFIX: "-jemalloc"
@@ -1900,17 +1900,17 @@ jobs:
       - name: Mark job as done
         run: ./internal-scripts/ci-cd/upload-artifact.sh
         env:
-          ARTIFACT_NAME: tested-against-production-debian-10_3.0.4_jemalloc
+          ARTIFACT_NAME: tested-against-production-debian-10_3.0.5_jemalloc
           ARTIFACT_PATH: mark-jemalloc
-  test_debian_10-3_0_4-malloctrim:
-    name: 'Test [debian-10/3.0.4/malloctrim]'
+  test_debian_10-3_0_5-malloctrim:
+    name: 'Test [debian-10/3.0.5/malloctrim]'
     runs-on: ubuntu-20.04
     needs:
       - determine_necessary_jobs
       - publish
     if: |
       github.ref == 'refs/heads/main'
-      && contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [debian-10/3.0.4/malloctrim];')
+      && contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [debian-10/3.0.5/malloctrim];')
     steps:
       - uses: actions/checkout@v3
       - name: Login to Google Cloud
@@ -1922,7 +1922,7 @@ jobs:
         run: ./internal-scripts/ci-cd/test-packages/run-tests.sh
         env:
           DISTRIBUTION_NAME: "debian-10"
-          RUBY_PACKAGE_ID: "3.0.4"
+          RUBY_PACKAGE_ID: "3.0.5"
           PACKAGE_FORMAT: "DEB"
           VARIANT_NAME: "malloctrim"
           VARIANT_PACKAGE_SUFFIX: "-malloctrim"
@@ -1935,17 +1935,17 @@ jobs:
       - name: Mark job as done
         run: ./internal-scripts/ci-cd/upload-artifact.sh
         env:
-          ARTIFACT_NAME: tested-against-production-debian-10_3.0.4_malloctrim
+          ARTIFACT_NAME: tested-against-production-debian-10_3.0.5_malloctrim
           ARTIFACT_PATH: mark-malloctrim
-  test_debian_10-2_7_6-normal:
-    name: 'Test [debian-10/2.7.6/normal]'
+  test_debian_10-2_7_7-normal:
+    name: 'Test [debian-10/2.7.7/normal]'
     runs-on: ubuntu-20.04
     needs:
       - determine_necessary_jobs
       - publish
     if: |
       github.ref == 'refs/heads/main'
-      && contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [debian-10/2.7.6/normal];')
+      && contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [debian-10/2.7.7/normal];')
     steps:
       - uses: actions/checkout@v3
       - name: Login to Google Cloud
@@ -1957,7 +1957,7 @@ jobs:
         run: ./internal-scripts/ci-cd/test-packages/run-tests.sh
         env:
           DISTRIBUTION_NAME: "debian-10"
-          RUBY_PACKAGE_ID: "2.7.6"
+          RUBY_PACKAGE_ID: "2.7.7"
           PACKAGE_FORMAT: "DEB"
           VARIANT_NAME: "normal"
           VARIANT_PACKAGE_SUFFIX: ""
@@ -1970,17 +1970,17 @@ jobs:
       - name: Mark job as done
         run: ./internal-scripts/ci-cd/upload-artifact.sh
         env:
-          ARTIFACT_NAME: tested-against-production-debian-10_2.7.6_normal
+          ARTIFACT_NAME: tested-against-production-debian-10_2.7.7_normal
           ARTIFACT_PATH: mark-normal
-  test_debian_10-2_7_6-jemalloc:
-    name: 'Test [debian-10/2.7.6/jemalloc]'
+  test_debian_10-2_7_7-jemalloc:
+    name: 'Test [debian-10/2.7.7/jemalloc]'
     runs-on: ubuntu-20.04
     needs:
       - determine_necessary_jobs
       - publish
     if: |
       github.ref == 'refs/heads/main'
-      && contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [debian-10/2.7.6/jemalloc];')
+      && contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [debian-10/2.7.7/jemalloc];')
     steps:
       - uses: actions/checkout@v3
       - name: Login to Google Cloud
@@ -1992,7 +1992,7 @@ jobs:
         run: ./internal-scripts/ci-cd/test-packages/run-tests.sh
         env:
           DISTRIBUTION_NAME: "debian-10"
-          RUBY_PACKAGE_ID: "2.7.6"
+          RUBY_PACKAGE_ID: "2.7.7"
           PACKAGE_FORMAT: "DEB"
           VARIANT_NAME: "jemalloc"
           VARIANT_PACKAGE_SUFFIX: "-jemalloc"
@@ -2005,17 +2005,17 @@ jobs:
       - name: Mark job as done
         run: ./internal-scripts/ci-cd/upload-artifact.sh
         env:
-          ARTIFACT_NAME: tested-against-production-debian-10_2.7.6_jemalloc
+          ARTIFACT_NAME: tested-against-production-debian-10_2.7.7_jemalloc
           ARTIFACT_PATH: mark-jemalloc
-  test_debian_10-2_7_6-malloctrim:
-    name: 'Test [debian-10/2.7.6/malloctrim]'
+  test_debian_10-2_7_7-malloctrim:
+    name: 'Test [debian-10/2.7.7/malloctrim]'
     runs-on: ubuntu-20.04
     needs:
       - determine_necessary_jobs
       - publish
     if: |
       github.ref == 'refs/heads/main'
-      && contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [debian-10/2.7.6/malloctrim];')
+      && contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [debian-10/2.7.7/malloctrim];')
     steps:
       - uses: actions/checkout@v3
       - name: Login to Google Cloud
@@ -2027,7 +2027,7 @@ jobs:
         run: ./internal-scripts/ci-cd/test-packages/run-tests.sh
         env:
           DISTRIBUTION_NAME: "debian-10"
-          RUBY_PACKAGE_ID: "2.7.6"
+          RUBY_PACKAGE_ID: "2.7.7"
           PACKAGE_FORMAT: "DEB"
           VARIANT_NAME: "malloctrim"
           VARIANT_PACKAGE_SUFFIX: "-malloctrim"
@@ -2040,7 +2040,7 @@ jobs:
       - name: Mark job as done
         run: ./internal-scripts/ci-cd/upload-artifact.sh
         env:
-          ARTIFACT_NAME: tested-against-production-debian-10_2.7.6_malloctrim
+          ARTIFACT_NAME: tested-against-production-debian-10_2.7.7_malloctrim
           ARTIFACT_PATH: mark-malloctrim
 
   test_debian_11-3_1-normal:
@@ -2358,15 +2358,15 @@ jobs:
         env:
           ARTIFACT_NAME: tested-against-production-debian-11_2.7_malloctrim
           ARTIFACT_PATH: mark-malloctrim
-  test_debian_11-3_1_2-normal:
-    name: 'Test [debian-11/3.1.2/normal]'
+  test_debian_11-3_1_3-normal:
+    name: 'Test [debian-11/3.1.3/normal]'
     runs-on: ubuntu-20.04
     needs:
       - determine_necessary_jobs
       - publish
     if: |
       github.ref == 'refs/heads/main'
-      && contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [debian-11/3.1.2/normal];')
+      && contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [debian-11/3.1.3/normal];')
     steps:
       - uses: actions/checkout@v3
       - name: Login to Google Cloud
@@ -2378,7 +2378,7 @@ jobs:
         run: ./internal-scripts/ci-cd/test-packages/run-tests.sh
         env:
           DISTRIBUTION_NAME: "debian-11"
-          RUBY_PACKAGE_ID: "3.1.2"
+          RUBY_PACKAGE_ID: "3.1.3"
           PACKAGE_FORMAT: "DEB"
           VARIANT_NAME: "normal"
           VARIANT_PACKAGE_SUFFIX: ""
@@ -2391,17 +2391,17 @@ jobs:
       - name: Mark job as done
         run: ./internal-scripts/ci-cd/upload-artifact.sh
         env:
-          ARTIFACT_NAME: tested-against-production-debian-11_3.1.2_normal
+          ARTIFACT_NAME: tested-against-production-debian-11_3.1.3_normal
           ARTIFACT_PATH: mark-normal
-  test_debian_11-3_1_2-jemalloc:
-    name: 'Test [debian-11/3.1.2/jemalloc]'
+  test_debian_11-3_1_3-jemalloc:
+    name: 'Test [debian-11/3.1.3/jemalloc]'
     runs-on: ubuntu-20.04
     needs:
       - determine_necessary_jobs
       - publish
     if: |
       github.ref == 'refs/heads/main'
-      && contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [debian-11/3.1.2/jemalloc];')
+      && contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [debian-11/3.1.3/jemalloc];')
     steps:
       - uses: actions/checkout@v3
       - name: Login to Google Cloud
@@ -2413,7 +2413,7 @@ jobs:
         run: ./internal-scripts/ci-cd/test-packages/run-tests.sh
         env:
           DISTRIBUTION_NAME: "debian-11"
-          RUBY_PACKAGE_ID: "3.1.2"
+          RUBY_PACKAGE_ID: "3.1.3"
           PACKAGE_FORMAT: "DEB"
           VARIANT_NAME: "jemalloc"
           VARIANT_PACKAGE_SUFFIX: "-jemalloc"
@@ -2426,17 +2426,17 @@ jobs:
       - name: Mark job as done
         run: ./internal-scripts/ci-cd/upload-artifact.sh
         env:
-          ARTIFACT_NAME: tested-against-production-debian-11_3.1.2_jemalloc
+          ARTIFACT_NAME: tested-against-production-debian-11_3.1.3_jemalloc
           ARTIFACT_PATH: mark-jemalloc
-  test_debian_11-3_1_2-malloctrim:
-    name: 'Test [debian-11/3.1.2/malloctrim]'
+  test_debian_11-3_1_3-malloctrim:
+    name: 'Test [debian-11/3.1.3/malloctrim]'
     runs-on: ubuntu-20.04
     needs:
       - determine_necessary_jobs
       - publish
     if: |
       github.ref == 'refs/heads/main'
-      && contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [debian-11/3.1.2/malloctrim];')
+      && contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [debian-11/3.1.3/malloctrim];')
     steps:
       - uses: actions/checkout@v3
       - name: Login to Google Cloud
@@ -2448,7 +2448,7 @@ jobs:
         run: ./internal-scripts/ci-cd/test-packages/run-tests.sh
         env:
           DISTRIBUTION_NAME: "debian-11"
-          RUBY_PACKAGE_ID: "3.1.2"
+          RUBY_PACKAGE_ID: "3.1.3"
           PACKAGE_FORMAT: "DEB"
           VARIANT_NAME: "malloctrim"
           VARIANT_PACKAGE_SUFFIX: "-malloctrim"
@@ -2461,17 +2461,17 @@ jobs:
       - name: Mark job as done
         run: ./internal-scripts/ci-cd/upload-artifact.sh
         env:
-          ARTIFACT_NAME: tested-against-production-debian-11_3.1.2_malloctrim
+          ARTIFACT_NAME: tested-against-production-debian-11_3.1.3_malloctrim
           ARTIFACT_PATH: mark-malloctrim
-  test_debian_11-3_0_4-normal:
-    name: 'Test [debian-11/3.0.4/normal]'
+  test_debian_11-3_0_5-normal:
+    name: 'Test [debian-11/3.0.5/normal]'
     runs-on: ubuntu-20.04
     needs:
       - determine_necessary_jobs
       - publish
     if: |
       github.ref == 'refs/heads/main'
-      && contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [debian-11/3.0.4/normal];')
+      && contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [debian-11/3.0.5/normal];')
     steps:
       - uses: actions/checkout@v3
       - name: Login to Google Cloud
@@ -2483,7 +2483,7 @@ jobs:
         run: ./internal-scripts/ci-cd/test-packages/run-tests.sh
         env:
           DISTRIBUTION_NAME: "debian-11"
-          RUBY_PACKAGE_ID: "3.0.4"
+          RUBY_PACKAGE_ID: "3.0.5"
           PACKAGE_FORMAT: "DEB"
           VARIANT_NAME: "normal"
           VARIANT_PACKAGE_SUFFIX: ""
@@ -2496,17 +2496,17 @@ jobs:
       - name: Mark job as done
         run: ./internal-scripts/ci-cd/upload-artifact.sh
         env:
-          ARTIFACT_NAME: tested-against-production-debian-11_3.0.4_normal
+          ARTIFACT_NAME: tested-against-production-debian-11_3.0.5_normal
           ARTIFACT_PATH: mark-normal
-  test_debian_11-3_0_4-jemalloc:
-    name: 'Test [debian-11/3.0.4/jemalloc]'
+  test_debian_11-3_0_5-jemalloc:
+    name: 'Test [debian-11/3.0.5/jemalloc]'
     runs-on: ubuntu-20.04
     needs:
       - determine_necessary_jobs
       - publish
     if: |
       github.ref == 'refs/heads/main'
-      && contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [debian-11/3.0.4/jemalloc];')
+      && contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [debian-11/3.0.5/jemalloc];')
     steps:
       - uses: actions/checkout@v3
       - name: Login to Google Cloud
@@ -2518,7 +2518,7 @@ jobs:
         run: ./internal-scripts/ci-cd/test-packages/run-tests.sh
         env:
           DISTRIBUTION_NAME: "debian-11"
-          RUBY_PACKAGE_ID: "3.0.4"
+          RUBY_PACKAGE_ID: "3.0.5"
           PACKAGE_FORMAT: "DEB"
           VARIANT_NAME: "jemalloc"
           VARIANT_PACKAGE_SUFFIX: "-jemalloc"
@@ -2531,17 +2531,17 @@ jobs:
       - name: Mark job as done
         run: ./internal-scripts/ci-cd/upload-artifact.sh
         env:
-          ARTIFACT_NAME: tested-against-production-debian-11_3.0.4_jemalloc
+          ARTIFACT_NAME: tested-against-production-debian-11_3.0.5_jemalloc
           ARTIFACT_PATH: mark-jemalloc
-  test_debian_11-3_0_4-malloctrim:
-    name: 'Test [debian-11/3.0.4/malloctrim]'
+  test_debian_11-3_0_5-malloctrim:
+    name: 'Test [debian-11/3.0.5/malloctrim]'
     runs-on: ubuntu-20.04
     needs:
       - determine_necessary_jobs
       - publish
     if: |
       github.ref == 'refs/heads/main'
-      && contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [debian-11/3.0.4/malloctrim];')
+      && contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [debian-11/3.0.5/malloctrim];')
     steps:
       - uses: actions/checkout@v3
       - name: Login to Google Cloud
@@ -2553,7 +2553,7 @@ jobs:
         run: ./internal-scripts/ci-cd/test-packages/run-tests.sh
         env:
           DISTRIBUTION_NAME: "debian-11"
-          RUBY_PACKAGE_ID: "3.0.4"
+          RUBY_PACKAGE_ID: "3.0.5"
           PACKAGE_FORMAT: "DEB"
           VARIANT_NAME: "malloctrim"
           VARIANT_PACKAGE_SUFFIX: "-malloctrim"
@@ -2566,17 +2566,17 @@ jobs:
       - name: Mark job as done
         run: ./internal-scripts/ci-cd/upload-artifact.sh
         env:
-          ARTIFACT_NAME: tested-against-production-debian-11_3.0.4_malloctrim
+          ARTIFACT_NAME: tested-against-production-debian-11_3.0.5_malloctrim
           ARTIFACT_PATH: mark-malloctrim
-  test_debian_11-2_7_6-normal:
-    name: 'Test [debian-11/2.7.6/normal]'
+  test_debian_11-2_7_7-normal:
+    name: 'Test [debian-11/2.7.7/normal]'
     runs-on: ubuntu-20.04
     needs:
       - determine_necessary_jobs
       - publish
     if: |
       github.ref == 'refs/heads/main'
-      && contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [debian-11/2.7.6/normal];')
+      && contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [debian-11/2.7.7/normal];')
     steps:
       - uses: actions/checkout@v3
       - name: Login to Google Cloud
@@ -2588,7 +2588,7 @@ jobs:
         run: ./internal-scripts/ci-cd/test-packages/run-tests.sh
         env:
           DISTRIBUTION_NAME: "debian-11"
-          RUBY_PACKAGE_ID: "2.7.6"
+          RUBY_PACKAGE_ID: "2.7.7"
           PACKAGE_FORMAT: "DEB"
           VARIANT_NAME: "normal"
           VARIANT_PACKAGE_SUFFIX: ""
@@ -2601,17 +2601,17 @@ jobs:
       - name: Mark job as done
         run: ./internal-scripts/ci-cd/upload-artifact.sh
         env:
-          ARTIFACT_NAME: tested-against-production-debian-11_2.7.6_normal
+          ARTIFACT_NAME: tested-against-production-debian-11_2.7.7_normal
           ARTIFACT_PATH: mark-normal
-  test_debian_11-2_7_6-jemalloc:
-    name: 'Test [debian-11/2.7.6/jemalloc]'
+  test_debian_11-2_7_7-jemalloc:
+    name: 'Test [debian-11/2.7.7/jemalloc]'
     runs-on: ubuntu-20.04
     needs:
       - determine_necessary_jobs
       - publish
     if: |
       github.ref == 'refs/heads/main'
-      && contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [debian-11/2.7.6/jemalloc];')
+      && contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [debian-11/2.7.7/jemalloc];')
     steps:
       - uses: actions/checkout@v3
       - name: Login to Google Cloud
@@ -2623,7 +2623,7 @@ jobs:
         run: ./internal-scripts/ci-cd/test-packages/run-tests.sh
         env:
           DISTRIBUTION_NAME: "debian-11"
-          RUBY_PACKAGE_ID: "2.7.6"
+          RUBY_PACKAGE_ID: "2.7.7"
           PACKAGE_FORMAT: "DEB"
           VARIANT_NAME: "jemalloc"
           VARIANT_PACKAGE_SUFFIX: "-jemalloc"
@@ -2636,17 +2636,17 @@ jobs:
       - name: Mark job as done
         run: ./internal-scripts/ci-cd/upload-artifact.sh
         env:
-          ARTIFACT_NAME: tested-against-production-debian-11_2.7.6_jemalloc
+          ARTIFACT_NAME: tested-against-production-debian-11_2.7.7_jemalloc
           ARTIFACT_PATH: mark-jemalloc
-  test_debian_11-2_7_6-malloctrim:
-    name: 'Test [debian-11/2.7.6/malloctrim]'
+  test_debian_11-2_7_7-malloctrim:
+    name: 'Test [debian-11/2.7.7/malloctrim]'
     runs-on: ubuntu-20.04
     needs:
       - determine_necessary_jobs
       - publish
     if: |
       github.ref == 'refs/heads/main'
-      && contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [debian-11/2.7.6/malloctrim];')
+      && contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [debian-11/2.7.7/malloctrim];')
     steps:
       - uses: actions/checkout@v3
       - name: Login to Google Cloud
@@ -2658,7 +2658,7 @@ jobs:
         run: ./internal-scripts/ci-cd/test-packages/run-tests.sh
         env:
           DISTRIBUTION_NAME: "debian-11"
-          RUBY_PACKAGE_ID: "2.7.6"
+          RUBY_PACKAGE_ID: "2.7.7"
           PACKAGE_FORMAT: "DEB"
           VARIANT_NAME: "malloctrim"
           VARIANT_PACKAGE_SUFFIX: "-malloctrim"
@@ -2671,7 +2671,7 @@ jobs:
       - name: Mark job as done
         run: ./internal-scripts/ci-cd/upload-artifact.sh
         env:
-          ARTIFACT_NAME: tested-against-production-debian-11_2.7.6_malloctrim
+          ARTIFACT_NAME: tested-against-production-debian-11_2.7.7_malloctrim
           ARTIFACT_PATH: mark-malloctrim
 
   test_debian_9-3_1-normal:
@@ -2989,15 +2989,15 @@ jobs:
         env:
           ARTIFACT_NAME: tested-against-production-debian-9_2.7_malloctrim
           ARTIFACT_PATH: mark-malloctrim
-  test_debian_9-3_1_2-normal:
-    name: 'Test [debian-9/3.1.2/normal]'
+  test_debian_9-3_1_3-normal:
+    name: 'Test [debian-9/3.1.3/normal]'
     runs-on: ubuntu-20.04
     needs:
       - determine_necessary_jobs
       - publish
     if: |
       github.ref == 'refs/heads/main'
-      && contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [debian-9/3.1.2/normal];')
+      && contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [debian-9/3.1.3/normal];')
     steps:
       - uses: actions/checkout@v3
       - name: Login to Google Cloud
@@ -3009,7 +3009,7 @@ jobs:
         run: ./internal-scripts/ci-cd/test-packages/run-tests.sh
         env:
           DISTRIBUTION_NAME: "debian-9"
-          RUBY_PACKAGE_ID: "3.1.2"
+          RUBY_PACKAGE_ID: "3.1.3"
           PACKAGE_FORMAT: "DEB"
           VARIANT_NAME: "normal"
           VARIANT_PACKAGE_SUFFIX: ""
@@ -3022,17 +3022,17 @@ jobs:
       - name: Mark job as done
         run: ./internal-scripts/ci-cd/upload-artifact.sh
         env:
-          ARTIFACT_NAME: tested-against-production-debian-9_3.1.2_normal
+          ARTIFACT_NAME: tested-against-production-debian-9_3.1.3_normal
           ARTIFACT_PATH: mark-normal
-  test_debian_9-3_1_2-jemalloc:
-    name: 'Test [debian-9/3.1.2/jemalloc]'
+  test_debian_9-3_1_3-jemalloc:
+    name: 'Test [debian-9/3.1.3/jemalloc]'
     runs-on: ubuntu-20.04
     needs:
       - determine_necessary_jobs
       - publish
     if: |
       github.ref == 'refs/heads/main'
-      && contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [debian-9/3.1.2/jemalloc];')
+      && contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [debian-9/3.1.3/jemalloc];')
     steps:
       - uses: actions/checkout@v3
       - name: Login to Google Cloud
@@ -3044,7 +3044,7 @@ jobs:
         run: ./internal-scripts/ci-cd/test-packages/run-tests.sh
         env:
           DISTRIBUTION_NAME: "debian-9"
-          RUBY_PACKAGE_ID: "3.1.2"
+          RUBY_PACKAGE_ID: "3.1.3"
           PACKAGE_FORMAT: "DEB"
           VARIANT_NAME: "jemalloc"
           VARIANT_PACKAGE_SUFFIX: "-jemalloc"
@@ -3057,17 +3057,17 @@ jobs:
       - name: Mark job as done
         run: ./internal-scripts/ci-cd/upload-artifact.sh
         env:
-          ARTIFACT_NAME: tested-against-production-debian-9_3.1.2_jemalloc
+          ARTIFACT_NAME: tested-against-production-debian-9_3.1.3_jemalloc
           ARTIFACT_PATH: mark-jemalloc
-  test_debian_9-3_1_2-malloctrim:
-    name: 'Test [debian-9/3.1.2/malloctrim]'
+  test_debian_9-3_1_3-malloctrim:
+    name: 'Test [debian-9/3.1.3/malloctrim]'
     runs-on: ubuntu-20.04
     needs:
       - determine_necessary_jobs
       - publish
     if: |
       github.ref == 'refs/heads/main'
-      && contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [debian-9/3.1.2/malloctrim];')
+      && contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [debian-9/3.1.3/malloctrim];')
     steps:
       - uses: actions/checkout@v3
       - name: Login to Google Cloud
@@ -3079,7 +3079,7 @@ jobs:
         run: ./internal-scripts/ci-cd/test-packages/run-tests.sh
         env:
           DISTRIBUTION_NAME: "debian-9"
-          RUBY_PACKAGE_ID: "3.1.2"
+          RUBY_PACKAGE_ID: "3.1.3"
           PACKAGE_FORMAT: "DEB"
           VARIANT_NAME: "malloctrim"
           VARIANT_PACKAGE_SUFFIX: "-malloctrim"
@@ -3092,17 +3092,17 @@ jobs:
       - name: Mark job as done
         run: ./internal-scripts/ci-cd/upload-artifact.sh
         env:
-          ARTIFACT_NAME: tested-against-production-debian-9_3.1.2_malloctrim
+          ARTIFACT_NAME: tested-against-production-debian-9_3.1.3_malloctrim
           ARTIFACT_PATH: mark-malloctrim
-  test_debian_9-3_0_4-normal:
-    name: 'Test [debian-9/3.0.4/normal]'
+  test_debian_9-3_0_5-normal:
+    name: 'Test [debian-9/3.0.5/normal]'
     runs-on: ubuntu-20.04
     needs:
       - determine_necessary_jobs
       - publish
     if: |
       github.ref == 'refs/heads/main'
-      && contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [debian-9/3.0.4/normal];')
+      && contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [debian-9/3.0.5/normal];')
     steps:
       - uses: actions/checkout@v3
       - name: Login to Google Cloud
@@ -3114,7 +3114,7 @@ jobs:
         run: ./internal-scripts/ci-cd/test-packages/run-tests.sh
         env:
           DISTRIBUTION_NAME: "debian-9"
-          RUBY_PACKAGE_ID: "3.0.4"
+          RUBY_PACKAGE_ID: "3.0.5"
           PACKAGE_FORMAT: "DEB"
           VARIANT_NAME: "normal"
           VARIANT_PACKAGE_SUFFIX: ""
@@ -3127,17 +3127,17 @@ jobs:
       - name: Mark job as done
         run: ./internal-scripts/ci-cd/upload-artifact.sh
         env:
-          ARTIFACT_NAME: tested-against-production-debian-9_3.0.4_normal
+          ARTIFACT_NAME: tested-against-production-debian-9_3.0.5_normal
           ARTIFACT_PATH: mark-normal
-  test_debian_9-3_0_4-jemalloc:
-    name: 'Test [debian-9/3.0.4/jemalloc]'
+  test_debian_9-3_0_5-jemalloc:
+    name: 'Test [debian-9/3.0.5/jemalloc]'
     runs-on: ubuntu-20.04
     needs:
       - determine_necessary_jobs
       - publish
     if: |
       github.ref == 'refs/heads/main'
-      && contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [debian-9/3.0.4/jemalloc];')
+      && contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [debian-9/3.0.5/jemalloc];')
     steps:
       - uses: actions/checkout@v3
       - name: Login to Google Cloud
@@ -3149,7 +3149,7 @@ jobs:
         run: ./internal-scripts/ci-cd/test-packages/run-tests.sh
         env:
           DISTRIBUTION_NAME: "debian-9"
-          RUBY_PACKAGE_ID: "3.0.4"
+          RUBY_PACKAGE_ID: "3.0.5"
           PACKAGE_FORMAT: "DEB"
           VARIANT_NAME: "jemalloc"
           VARIANT_PACKAGE_SUFFIX: "-jemalloc"
@@ -3162,17 +3162,17 @@ jobs:
       - name: Mark job as done
         run: ./internal-scripts/ci-cd/upload-artifact.sh
         env:
-          ARTIFACT_NAME: tested-against-production-debian-9_3.0.4_jemalloc
+          ARTIFACT_NAME: tested-against-production-debian-9_3.0.5_jemalloc
           ARTIFACT_PATH: mark-jemalloc
-  test_debian_9-3_0_4-malloctrim:
-    name: 'Test [debian-9/3.0.4/malloctrim]'
+  test_debian_9-3_0_5-malloctrim:
+    name: 'Test [debian-9/3.0.5/malloctrim]'
     runs-on: ubuntu-20.04
     needs:
       - determine_necessary_jobs
       - publish
     if: |
       github.ref == 'refs/heads/main'
-      && contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [debian-9/3.0.4/malloctrim];')
+      && contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [debian-9/3.0.5/malloctrim];')
     steps:
       - uses: actions/checkout@v3
       - name: Login to Google Cloud
@@ -3184,7 +3184,7 @@ jobs:
         run: ./internal-scripts/ci-cd/test-packages/run-tests.sh
         env:
           DISTRIBUTION_NAME: "debian-9"
-          RUBY_PACKAGE_ID: "3.0.4"
+          RUBY_PACKAGE_ID: "3.0.5"
           PACKAGE_FORMAT: "DEB"
           VARIANT_NAME: "malloctrim"
           VARIANT_PACKAGE_SUFFIX: "-malloctrim"
@@ -3197,17 +3197,17 @@ jobs:
       - name: Mark job as done
         run: ./internal-scripts/ci-cd/upload-artifact.sh
         env:
-          ARTIFACT_NAME: tested-against-production-debian-9_3.0.4_malloctrim
+          ARTIFACT_NAME: tested-against-production-debian-9_3.0.5_malloctrim
           ARTIFACT_PATH: mark-malloctrim
-  test_debian_9-2_7_6-normal:
-    name: 'Test [debian-9/2.7.6/normal]'
+  test_debian_9-2_7_7-normal:
+    name: 'Test [debian-9/2.7.7/normal]'
     runs-on: ubuntu-20.04
     needs:
       - determine_necessary_jobs
       - publish
     if: |
       github.ref == 'refs/heads/main'
-      && contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [debian-9/2.7.6/normal];')
+      && contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [debian-9/2.7.7/normal];')
     steps:
       - uses: actions/checkout@v3
       - name: Login to Google Cloud
@@ -3219,7 +3219,7 @@ jobs:
         run: ./internal-scripts/ci-cd/test-packages/run-tests.sh
         env:
           DISTRIBUTION_NAME: "debian-9"
-          RUBY_PACKAGE_ID: "2.7.6"
+          RUBY_PACKAGE_ID: "2.7.7"
           PACKAGE_FORMAT: "DEB"
           VARIANT_NAME: "normal"
           VARIANT_PACKAGE_SUFFIX: ""
@@ -3232,17 +3232,17 @@ jobs:
       - name: Mark job as done
         run: ./internal-scripts/ci-cd/upload-artifact.sh
         env:
-          ARTIFACT_NAME: tested-against-production-debian-9_2.7.6_normal
+          ARTIFACT_NAME: tested-against-production-debian-9_2.7.7_normal
           ARTIFACT_PATH: mark-normal
-  test_debian_9-2_7_6-jemalloc:
-    name: 'Test [debian-9/2.7.6/jemalloc]'
+  test_debian_9-2_7_7-jemalloc:
+    name: 'Test [debian-9/2.7.7/jemalloc]'
     runs-on: ubuntu-20.04
     needs:
       - determine_necessary_jobs
       - publish
     if: |
       github.ref == 'refs/heads/main'
-      && contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [debian-9/2.7.6/jemalloc];')
+      && contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [debian-9/2.7.7/jemalloc];')
     steps:
       - uses: actions/checkout@v3
       - name: Login to Google Cloud
@@ -3254,7 +3254,7 @@ jobs:
         run: ./internal-scripts/ci-cd/test-packages/run-tests.sh
         env:
           DISTRIBUTION_NAME: "debian-9"
-          RUBY_PACKAGE_ID: "2.7.6"
+          RUBY_PACKAGE_ID: "2.7.7"
           PACKAGE_FORMAT: "DEB"
           VARIANT_NAME: "jemalloc"
           VARIANT_PACKAGE_SUFFIX: "-jemalloc"
@@ -3267,17 +3267,17 @@ jobs:
       - name: Mark job as done
         run: ./internal-scripts/ci-cd/upload-artifact.sh
         env:
-          ARTIFACT_NAME: tested-against-production-debian-9_2.7.6_jemalloc
+          ARTIFACT_NAME: tested-against-production-debian-9_2.7.7_jemalloc
           ARTIFACT_PATH: mark-jemalloc
-  test_debian_9-2_7_6-malloctrim:
-    name: 'Test [debian-9/2.7.6/malloctrim]'
+  test_debian_9-2_7_7-malloctrim:
+    name: 'Test [debian-9/2.7.7/malloctrim]'
     runs-on: ubuntu-20.04
     needs:
       - determine_necessary_jobs
       - publish
     if: |
       github.ref == 'refs/heads/main'
-      && contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [debian-9/2.7.6/malloctrim];')
+      && contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [debian-9/2.7.7/malloctrim];')
     steps:
       - uses: actions/checkout@v3
       - name: Login to Google Cloud
@@ -3289,7 +3289,7 @@ jobs:
         run: ./internal-scripts/ci-cd/test-packages/run-tests.sh
         env:
           DISTRIBUTION_NAME: "debian-9"
-          RUBY_PACKAGE_ID: "2.7.6"
+          RUBY_PACKAGE_ID: "2.7.7"
           PACKAGE_FORMAT: "DEB"
           VARIANT_NAME: "malloctrim"
           VARIANT_PACKAGE_SUFFIX: "-malloctrim"
@@ -3302,7 +3302,7 @@ jobs:
       - name: Mark job as done
         run: ./internal-scripts/ci-cd/upload-artifact.sh
         env:
-          ARTIFACT_NAME: tested-against-production-debian-9_2.7.6_malloctrim
+          ARTIFACT_NAME: tested-against-production-debian-9_2.7.7_malloctrim
           ARTIFACT_PATH: mark-malloctrim
 
   test_el_9-3_1-normal:
@@ -3410,15 +3410,15 @@ jobs:
         env:
           ARTIFACT_NAME: tested-against-production-el-9_3.1_malloctrim
           ARTIFACT_PATH: mark-malloctrim
-  test_el_9-3_1_2-normal:
-    name: 'Test [el-9/3.1.2/normal]'
+  test_el_9-3_1_3-normal:
+    name: 'Test [el-9/3.1.3/normal]'
     runs-on: ubuntu-20.04
     needs:
       - determine_necessary_jobs
       - publish
     if: |
       github.ref == 'refs/heads/main'
-      && contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [el-9/3.1.2/normal];')
+      && contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [el-9/3.1.3/normal];')
     steps:
       - uses: actions/checkout@v3
       - name: Login to Google Cloud
@@ -3430,7 +3430,7 @@ jobs:
         run: ./internal-scripts/ci-cd/test-packages/run-tests.sh
         env:
           DISTRIBUTION_NAME: "el-9"
-          RUBY_PACKAGE_ID: "3.1.2"
+          RUBY_PACKAGE_ID: "3.1.3"
           PACKAGE_FORMAT: "RPM"
           VARIANT_NAME: "normal"
           VARIANT_PACKAGE_SUFFIX: ""
@@ -3443,17 +3443,17 @@ jobs:
       - name: Mark job as done
         run: ./internal-scripts/ci-cd/upload-artifact.sh
         env:
-          ARTIFACT_NAME: tested-against-production-el-9_3.1.2_normal
+          ARTIFACT_NAME: tested-against-production-el-9_3.1.3_normal
           ARTIFACT_PATH: mark-normal
-  test_el_9-3_1_2-jemalloc:
-    name: 'Test [el-9/3.1.2/jemalloc]'
+  test_el_9-3_1_3-jemalloc:
+    name: 'Test [el-9/3.1.3/jemalloc]'
     runs-on: ubuntu-20.04
     needs:
       - determine_necessary_jobs
       - publish
     if: |
       github.ref == 'refs/heads/main'
-      && contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [el-9/3.1.2/jemalloc];')
+      && contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [el-9/3.1.3/jemalloc];')
     steps:
       - uses: actions/checkout@v3
       - name: Login to Google Cloud
@@ -3465,7 +3465,7 @@ jobs:
         run: ./internal-scripts/ci-cd/test-packages/run-tests.sh
         env:
           DISTRIBUTION_NAME: "el-9"
-          RUBY_PACKAGE_ID: "3.1.2"
+          RUBY_PACKAGE_ID: "3.1.3"
           PACKAGE_FORMAT: "RPM"
           VARIANT_NAME: "jemalloc"
           VARIANT_PACKAGE_SUFFIX: "-jemalloc"
@@ -3478,17 +3478,17 @@ jobs:
       - name: Mark job as done
         run: ./internal-scripts/ci-cd/upload-artifact.sh
         env:
-          ARTIFACT_NAME: tested-against-production-el-9_3.1.2_jemalloc
+          ARTIFACT_NAME: tested-against-production-el-9_3.1.3_jemalloc
           ARTIFACT_PATH: mark-jemalloc
-  test_el_9-3_1_2-malloctrim:
-    name: 'Test [el-9/3.1.2/malloctrim]'
+  test_el_9-3_1_3-malloctrim:
+    name: 'Test [el-9/3.1.3/malloctrim]'
     runs-on: ubuntu-20.04
     needs:
       - determine_necessary_jobs
       - publish
     if: |
       github.ref == 'refs/heads/main'
-      && contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [el-9/3.1.2/malloctrim];')
+      && contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [el-9/3.1.3/malloctrim];')
     steps:
       - uses: actions/checkout@v3
       - name: Login to Google Cloud
@@ -3500,7 +3500,7 @@ jobs:
         run: ./internal-scripts/ci-cd/test-packages/run-tests.sh
         env:
           DISTRIBUTION_NAME: "el-9"
-          RUBY_PACKAGE_ID: "3.1.2"
+          RUBY_PACKAGE_ID: "3.1.3"
           PACKAGE_FORMAT: "RPM"
           VARIANT_NAME: "malloctrim"
           VARIANT_PACKAGE_SUFFIX: "-malloctrim"
@@ -3513,7 +3513,7 @@ jobs:
       - name: Mark job as done
         run: ./internal-scripts/ci-cd/upload-artifact.sh
         env:
-          ARTIFACT_NAME: tested-against-production-el-9_3.1.2_malloctrim
+          ARTIFACT_NAME: tested-against-production-el-9_3.1.3_malloctrim
           ARTIFACT_PATH: mark-malloctrim
 
   test_ubuntu_18_04-3_1-normal:
@@ -3831,15 +3831,15 @@ jobs:
         env:
           ARTIFACT_NAME: tested-against-production-ubuntu-18.04_2.7_malloctrim
           ARTIFACT_PATH: mark-malloctrim
-  test_ubuntu_18_04-3_1_2-normal:
-    name: 'Test [ubuntu-18.04/3.1.2/normal]'
+  test_ubuntu_18_04-3_1_3-normal:
+    name: 'Test [ubuntu-18.04/3.1.3/normal]'
     runs-on: ubuntu-20.04
     needs:
       - determine_necessary_jobs
       - publish
     if: |
       github.ref == 'refs/heads/main'
-      && contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [ubuntu-18.04/3.1.2/normal];')
+      && contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [ubuntu-18.04/3.1.3/normal];')
     steps:
       - uses: actions/checkout@v3
       - name: Login to Google Cloud
@@ -3851,7 +3851,7 @@ jobs:
         run: ./internal-scripts/ci-cd/test-packages/run-tests.sh
         env:
           DISTRIBUTION_NAME: "ubuntu-18.04"
-          RUBY_PACKAGE_ID: "3.1.2"
+          RUBY_PACKAGE_ID: "3.1.3"
           PACKAGE_FORMAT: "DEB"
           VARIANT_NAME: "normal"
           VARIANT_PACKAGE_SUFFIX: ""
@@ -3864,17 +3864,17 @@ jobs:
       - name: Mark job as done
         run: ./internal-scripts/ci-cd/upload-artifact.sh
         env:
-          ARTIFACT_NAME: tested-against-production-ubuntu-18.04_3.1.2_normal
+          ARTIFACT_NAME: tested-against-production-ubuntu-18.04_3.1.3_normal
           ARTIFACT_PATH: mark-normal
-  test_ubuntu_18_04-3_1_2-jemalloc:
-    name: 'Test [ubuntu-18.04/3.1.2/jemalloc]'
+  test_ubuntu_18_04-3_1_3-jemalloc:
+    name: 'Test [ubuntu-18.04/3.1.3/jemalloc]'
     runs-on: ubuntu-20.04
     needs:
       - determine_necessary_jobs
       - publish
     if: |
       github.ref == 'refs/heads/main'
-      && contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [ubuntu-18.04/3.1.2/jemalloc];')
+      && contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [ubuntu-18.04/3.1.3/jemalloc];')
     steps:
       - uses: actions/checkout@v3
       - name: Login to Google Cloud
@@ -3886,7 +3886,7 @@ jobs:
         run: ./internal-scripts/ci-cd/test-packages/run-tests.sh
         env:
           DISTRIBUTION_NAME: "ubuntu-18.04"
-          RUBY_PACKAGE_ID: "3.1.2"
+          RUBY_PACKAGE_ID: "3.1.3"
           PACKAGE_FORMAT: "DEB"
           VARIANT_NAME: "jemalloc"
           VARIANT_PACKAGE_SUFFIX: "-jemalloc"
@@ -3899,17 +3899,17 @@ jobs:
       - name: Mark job as done
         run: ./internal-scripts/ci-cd/upload-artifact.sh
         env:
-          ARTIFACT_NAME: tested-against-production-ubuntu-18.04_3.1.2_jemalloc
+          ARTIFACT_NAME: tested-against-production-ubuntu-18.04_3.1.3_jemalloc
           ARTIFACT_PATH: mark-jemalloc
-  test_ubuntu_18_04-3_1_2-malloctrim:
-    name: 'Test [ubuntu-18.04/3.1.2/malloctrim]'
+  test_ubuntu_18_04-3_1_3-malloctrim:
+    name: 'Test [ubuntu-18.04/3.1.3/malloctrim]'
     runs-on: ubuntu-20.04
     needs:
       - determine_necessary_jobs
       - publish
     if: |
       github.ref == 'refs/heads/main'
-      && contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [ubuntu-18.04/3.1.2/malloctrim];')
+      && contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [ubuntu-18.04/3.1.3/malloctrim];')
     steps:
       - uses: actions/checkout@v3
       - name: Login to Google Cloud
@@ -3921,7 +3921,7 @@ jobs:
         run: ./internal-scripts/ci-cd/test-packages/run-tests.sh
         env:
           DISTRIBUTION_NAME: "ubuntu-18.04"
-          RUBY_PACKAGE_ID: "3.1.2"
+          RUBY_PACKAGE_ID: "3.1.3"
           PACKAGE_FORMAT: "DEB"
           VARIANT_NAME: "malloctrim"
           VARIANT_PACKAGE_SUFFIX: "-malloctrim"
@@ -3934,17 +3934,17 @@ jobs:
       - name: Mark job as done
         run: ./internal-scripts/ci-cd/upload-artifact.sh
         env:
-          ARTIFACT_NAME: tested-against-production-ubuntu-18.04_3.1.2_malloctrim
+          ARTIFACT_NAME: tested-against-production-ubuntu-18.04_3.1.3_malloctrim
           ARTIFACT_PATH: mark-malloctrim
-  test_ubuntu_18_04-3_0_4-normal:
-    name: 'Test [ubuntu-18.04/3.0.4/normal]'
+  test_ubuntu_18_04-3_0_5-normal:
+    name: 'Test [ubuntu-18.04/3.0.5/normal]'
     runs-on: ubuntu-20.04
     needs:
       - determine_necessary_jobs
       - publish
     if: |
       github.ref == 'refs/heads/main'
-      && contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [ubuntu-18.04/3.0.4/normal];')
+      && contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [ubuntu-18.04/3.0.5/normal];')
     steps:
       - uses: actions/checkout@v3
       - name: Login to Google Cloud
@@ -3956,7 +3956,7 @@ jobs:
         run: ./internal-scripts/ci-cd/test-packages/run-tests.sh
         env:
           DISTRIBUTION_NAME: "ubuntu-18.04"
-          RUBY_PACKAGE_ID: "3.0.4"
+          RUBY_PACKAGE_ID: "3.0.5"
           PACKAGE_FORMAT: "DEB"
           VARIANT_NAME: "normal"
           VARIANT_PACKAGE_SUFFIX: ""
@@ -3969,17 +3969,17 @@ jobs:
       - name: Mark job as done
         run: ./internal-scripts/ci-cd/upload-artifact.sh
         env:
-          ARTIFACT_NAME: tested-against-production-ubuntu-18.04_3.0.4_normal
+          ARTIFACT_NAME: tested-against-production-ubuntu-18.04_3.0.5_normal
           ARTIFACT_PATH: mark-normal
-  test_ubuntu_18_04-3_0_4-jemalloc:
-    name: 'Test [ubuntu-18.04/3.0.4/jemalloc]'
+  test_ubuntu_18_04-3_0_5-jemalloc:
+    name: 'Test [ubuntu-18.04/3.0.5/jemalloc]'
     runs-on: ubuntu-20.04
     needs:
       - determine_necessary_jobs
       - publish
     if: |
       github.ref == 'refs/heads/main'
-      && contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [ubuntu-18.04/3.0.4/jemalloc];')
+      && contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [ubuntu-18.04/3.0.5/jemalloc];')
     steps:
       - uses: actions/checkout@v3
       - name: Login to Google Cloud
@@ -3991,7 +3991,7 @@ jobs:
         run: ./internal-scripts/ci-cd/test-packages/run-tests.sh
         env:
           DISTRIBUTION_NAME: "ubuntu-18.04"
-          RUBY_PACKAGE_ID: "3.0.4"
+          RUBY_PACKAGE_ID: "3.0.5"
           PACKAGE_FORMAT: "DEB"
           VARIANT_NAME: "jemalloc"
           VARIANT_PACKAGE_SUFFIX: "-jemalloc"
@@ -4004,17 +4004,17 @@ jobs:
       - name: Mark job as done
         run: ./internal-scripts/ci-cd/upload-artifact.sh
         env:
-          ARTIFACT_NAME: tested-against-production-ubuntu-18.04_3.0.4_jemalloc
+          ARTIFACT_NAME: tested-against-production-ubuntu-18.04_3.0.5_jemalloc
           ARTIFACT_PATH: mark-jemalloc
-  test_ubuntu_18_04-3_0_4-malloctrim:
-    name: 'Test [ubuntu-18.04/3.0.4/malloctrim]'
+  test_ubuntu_18_04-3_0_5-malloctrim:
+    name: 'Test [ubuntu-18.04/3.0.5/malloctrim]'
     runs-on: ubuntu-20.04
     needs:
       - determine_necessary_jobs
       - publish
     if: |
       github.ref == 'refs/heads/main'
-      && contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [ubuntu-18.04/3.0.4/malloctrim];')
+      && contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [ubuntu-18.04/3.0.5/malloctrim];')
     steps:
       - uses: actions/checkout@v3
       - name: Login to Google Cloud
@@ -4026,7 +4026,7 @@ jobs:
         run: ./internal-scripts/ci-cd/test-packages/run-tests.sh
         env:
           DISTRIBUTION_NAME: "ubuntu-18.04"
-          RUBY_PACKAGE_ID: "3.0.4"
+          RUBY_PACKAGE_ID: "3.0.5"
           PACKAGE_FORMAT: "DEB"
           VARIANT_NAME: "malloctrim"
           VARIANT_PACKAGE_SUFFIX: "-malloctrim"
@@ -4039,17 +4039,17 @@ jobs:
       - name: Mark job as done
         run: ./internal-scripts/ci-cd/upload-artifact.sh
         env:
-          ARTIFACT_NAME: tested-against-production-ubuntu-18.04_3.0.4_malloctrim
+          ARTIFACT_NAME: tested-against-production-ubuntu-18.04_3.0.5_malloctrim
           ARTIFACT_PATH: mark-malloctrim
-  test_ubuntu_18_04-2_7_6-normal:
-    name: 'Test [ubuntu-18.04/2.7.6/normal]'
+  test_ubuntu_18_04-2_7_7-normal:
+    name: 'Test [ubuntu-18.04/2.7.7/normal]'
     runs-on: ubuntu-20.04
     needs:
       - determine_necessary_jobs
       - publish
     if: |
       github.ref == 'refs/heads/main'
-      && contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [ubuntu-18.04/2.7.6/normal];')
+      && contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [ubuntu-18.04/2.7.7/normal];')
     steps:
       - uses: actions/checkout@v3
       - name: Login to Google Cloud
@@ -4061,7 +4061,7 @@ jobs:
         run: ./internal-scripts/ci-cd/test-packages/run-tests.sh
         env:
           DISTRIBUTION_NAME: "ubuntu-18.04"
-          RUBY_PACKAGE_ID: "2.7.6"
+          RUBY_PACKAGE_ID: "2.7.7"
           PACKAGE_FORMAT: "DEB"
           VARIANT_NAME: "normal"
           VARIANT_PACKAGE_SUFFIX: ""
@@ -4074,17 +4074,17 @@ jobs:
       - name: Mark job as done
         run: ./internal-scripts/ci-cd/upload-artifact.sh
         env:
-          ARTIFACT_NAME: tested-against-production-ubuntu-18.04_2.7.6_normal
+          ARTIFACT_NAME: tested-against-production-ubuntu-18.04_2.7.7_normal
           ARTIFACT_PATH: mark-normal
-  test_ubuntu_18_04-2_7_6-jemalloc:
-    name: 'Test [ubuntu-18.04/2.7.6/jemalloc]'
+  test_ubuntu_18_04-2_7_7-jemalloc:
+    name: 'Test [ubuntu-18.04/2.7.7/jemalloc]'
     runs-on: ubuntu-20.04
     needs:
       - determine_necessary_jobs
       - publish
     if: |
       github.ref == 'refs/heads/main'
-      && contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [ubuntu-18.04/2.7.6/jemalloc];')
+      && contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [ubuntu-18.04/2.7.7/jemalloc];')
     steps:
       - uses: actions/checkout@v3
       - name: Login to Google Cloud
@@ -4096,7 +4096,7 @@ jobs:
         run: ./internal-scripts/ci-cd/test-packages/run-tests.sh
         env:
           DISTRIBUTION_NAME: "ubuntu-18.04"
-          RUBY_PACKAGE_ID: "2.7.6"
+          RUBY_PACKAGE_ID: "2.7.7"
           PACKAGE_FORMAT: "DEB"
           VARIANT_NAME: "jemalloc"
           VARIANT_PACKAGE_SUFFIX: "-jemalloc"
@@ -4109,17 +4109,17 @@ jobs:
       - name: Mark job as done
         run: ./internal-scripts/ci-cd/upload-artifact.sh
         env:
-          ARTIFACT_NAME: tested-against-production-ubuntu-18.04_2.7.6_jemalloc
+          ARTIFACT_NAME: tested-against-production-ubuntu-18.04_2.7.7_jemalloc
           ARTIFACT_PATH: mark-jemalloc
-  test_ubuntu_18_04-2_7_6-malloctrim:
-    name: 'Test [ubuntu-18.04/2.7.6/malloctrim]'
+  test_ubuntu_18_04-2_7_7-malloctrim:
+    name: 'Test [ubuntu-18.04/2.7.7/malloctrim]'
     runs-on: ubuntu-20.04
     needs:
       - determine_necessary_jobs
       - publish
     if: |
       github.ref == 'refs/heads/main'
-      && contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [ubuntu-18.04/2.7.6/malloctrim];')
+      && contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [ubuntu-18.04/2.7.7/malloctrim];')
     steps:
       - uses: actions/checkout@v3
       - name: Login to Google Cloud
@@ -4131,7 +4131,7 @@ jobs:
         run: ./internal-scripts/ci-cd/test-packages/run-tests.sh
         env:
           DISTRIBUTION_NAME: "ubuntu-18.04"
-          RUBY_PACKAGE_ID: "2.7.6"
+          RUBY_PACKAGE_ID: "2.7.7"
           PACKAGE_FORMAT: "DEB"
           VARIANT_NAME: "malloctrim"
           VARIANT_PACKAGE_SUFFIX: "-malloctrim"
@@ -4144,7 +4144,7 @@ jobs:
       - name: Mark job as done
         run: ./internal-scripts/ci-cd/upload-artifact.sh
         env:
-          ARTIFACT_NAME: tested-against-production-ubuntu-18.04_2.7.6_malloctrim
+          ARTIFACT_NAME: tested-against-production-ubuntu-18.04_2.7.7_malloctrim
           ARTIFACT_PATH: mark-malloctrim
 
   test_ubuntu_20_04-3_1-normal:
@@ -4462,15 +4462,15 @@ jobs:
         env:
           ARTIFACT_NAME: tested-against-production-ubuntu-20.04_2.7_malloctrim
           ARTIFACT_PATH: mark-malloctrim
-  test_ubuntu_20_04-3_1_2-normal:
-    name: 'Test [ubuntu-20.04/3.1.2/normal]'
+  test_ubuntu_20_04-3_1_3-normal:
+    name: 'Test [ubuntu-20.04/3.1.3/normal]'
     runs-on: ubuntu-20.04
     needs:
       - determine_necessary_jobs
       - publish
     if: |
       github.ref == 'refs/heads/main'
-      && contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [ubuntu-20.04/3.1.2/normal];')
+      && contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [ubuntu-20.04/3.1.3/normal];')
     steps:
       - uses: actions/checkout@v3
       - name: Login to Google Cloud
@@ -4482,7 +4482,7 @@ jobs:
         run: ./internal-scripts/ci-cd/test-packages/run-tests.sh
         env:
           DISTRIBUTION_NAME: "ubuntu-20.04"
-          RUBY_PACKAGE_ID: "3.1.2"
+          RUBY_PACKAGE_ID: "3.1.3"
           PACKAGE_FORMAT: "DEB"
           VARIANT_NAME: "normal"
           VARIANT_PACKAGE_SUFFIX: ""
@@ -4495,17 +4495,17 @@ jobs:
       - name: Mark job as done
         run: ./internal-scripts/ci-cd/upload-artifact.sh
         env:
-          ARTIFACT_NAME: tested-against-production-ubuntu-20.04_3.1.2_normal
+          ARTIFACT_NAME: tested-against-production-ubuntu-20.04_3.1.3_normal
           ARTIFACT_PATH: mark-normal
-  test_ubuntu_20_04-3_1_2-jemalloc:
-    name: 'Test [ubuntu-20.04/3.1.2/jemalloc]'
+  test_ubuntu_20_04-3_1_3-jemalloc:
+    name: 'Test [ubuntu-20.04/3.1.3/jemalloc]'
     runs-on: ubuntu-20.04
     needs:
       - determine_necessary_jobs
       - publish
     if: |
       github.ref == 'refs/heads/main'
-      && contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [ubuntu-20.04/3.1.2/jemalloc];')
+      && contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [ubuntu-20.04/3.1.3/jemalloc];')
     steps:
       - uses: actions/checkout@v3
       - name: Login to Google Cloud
@@ -4517,7 +4517,7 @@ jobs:
         run: ./internal-scripts/ci-cd/test-packages/run-tests.sh
         env:
           DISTRIBUTION_NAME: "ubuntu-20.04"
-          RUBY_PACKAGE_ID: "3.1.2"
+          RUBY_PACKAGE_ID: "3.1.3"
           PACKAGE_FORMAT: "DEB"
           VARIANT_NAME: "jemalloc"
           VARIANT_PACKAGE_SUFFIX: "-jemalloc"
@@ -4530,17 +4530,17 @@ jobs:
       - name: Mark job as done
         run: ./internal-scripts/ci-cd/upload-artifact.sh
         env:
-          ARTIFACT_NAME: tested-against-production-ubuntu-20.04_3.1.2_jemalloc
+          ARTIFACT_NAME: tested-against-production-ubuntu-20.04_3.1.3_jemalloc
           ARTIFACT_PATH: mark-jemalloc
-  test_ubuntu_20_04-3_1_2-malloctrim:
-    name: 'Test [ubuntu-20.04/3.1.2/malloctrim]'
+  test_ubuntu_20_04-3_1_3-malloctrim:
+    name: 'Test [ubuntu-20.04/3.1.3/malloctrim]'
     runs-on: ubuntu-20.04
     needs:
       - determine_necessary_jobs
       - publish
     if: |
       github.ref == 'refs/heads/main'
-      && contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [ubuntu-20.04/3.1.2/malloctrim];')
+      && contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [ubuntu-20.04/3.1.3/malloctrim];')
     steps:
       - uses: actions/checkout@v3
       - name: Login to Google Cloud
@@ -4552,7 +4552,7 @@ jobs:
         run: ./internal-scripts/ci-cd/test-packages/run-tests.sh
         env:
           DISTRIBUTION_NAME: "ubuntu-20.04"
-          RUBY_PACKAGE_ID: "3.1.2"
+          RUBY_PACKAGE_ID: "3.1.3"
           PACKAGE_FORMAT: "DEB"
           VARIANT_NAME: "malloctrim"
           VARIANT_PACKAGE_SUFFIX: "-malloctrim"
@@ -4565,17 +4565,17 @@ jobs:
       - name: Mark job as done
         run: ./internal-scripts/ci-cd/upload-artifact.sh
         env:
-          ARTIFACT_NAME: tested-against-production-ubuntu-20.04_3.1.2_malloctrim
+          ARTIFACT_NAME: tested-against-production-ubuntu-20.04_3.1.3_malloctrim
           ARTIFACT_PATH: mark-malloctrim
-  test_ubuntu_20_04-3_0_4-normal:
-    name: 'Test [ubuntu-20.04/3.0.4/normal]'
+  test_ubuntu_20_04-3_0_5-normal:
+    name: 'Test [ubuntu-20.04/3.0.5/normal]'
     runs-on: ubuntu-20.04
     needs:
       - determine_necessary_jobs
       - publish
     if: |
       github.ref == 'refs/heads/main'
-      && contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [ubuntu-20.04/3.0.4/normal];')
+      && contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [ubuntu-20.04/3.0.5/normal];')
     steps:
       - uses: actions/checkout@v3
       - name: Login to Google Cloud
@@ -4587,7 +4587,7 @@ jobs:
         run: ./internal-scripts/ci-cd/test-packages/run-tests.sh
         env:
           DISTRIBUTION_NAME: "ubuntu-20.04"
-          RUBY_PACKAGE_ID: "3.0.4"
+          RUBY_PACKAGE_ID: "3.0.5"
           PACKAGE_FORMAT: "DEB"
           VARIANT_NAME: "normal"
           VARIANT_PACKAGE_SUFFIX: ""
@@ -4600,17 +4600,17 @@ jobs:
       - name: Mark job as done
         run: ./internal-scripts/ci-cd/upload-artifact.sh
         env:
-          ARTIFACT_NAME: tested-against-production-ubuntu-20.04_3.0.4_normal
+          ARTIFACT_NAME: tested-against-production-ubuntu-20.04_3.0.5_normal
           ARTIFACT_PATH: mark-normal
-  test_ubuntu_20_04-3_0_4-jemalloc:
-    name: 'Test [ubuntu-20.04/3.0.4/jemalloc]'
+  test_ubuntu_20_04-3_0_5-jemalloc:
+    name: 'Test [ubuntu-20.04/3.0.5/jemalloc]'
     runs-on: ubuntu-20.04
     needs:
       - determine_necessary_jobs
       - publish
     if: |
       github.ref == 'refs/heads/main'
-      && contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [ubuntu-20.04/3.0.4/jemalloc];')
+      && contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [ubuntu-20.04/3.0.5/jemalloc];')
     steps:
       - uses: actions/checkout@v3
       - name: Login to Google Cloud
@@ -4622,7 +4622,7 @@ jobs:
         run: ./internal-scripts/ci-cd/test-packages/run-tests.sh
         env:
           DISTRIBUTION_NAME: "ubuntu-20.04"
-          RUBY_PACKAGE_ID: "3.0.4"
+          RUBY_PACKAGE_ID: "3.0.5"
           PACKAGE_FORMAT: "DEB"
           VARIANT_NAME: "jemalloc"
           VARIANT_PACKAGE_SUFFIX: "-jemalloc"
@@ -4635,17 +4635,17 @@ jobs:
       - name: Mark job as done
         run: ./internal-scripts/ci-cd/upload-artifact.sh
         env:
-          ARTIFACT_NAME: tested-against-production-ubuntu-20.04_3.0.4_jemalloc
+          ARTIFACT_NAME: tested-against-production-ubuntu-20.04_3.0.5_jemalloc
           ARTIFACT_PATH: mark-jemalloc
-  test_ubuntu_20_04-3_0_4-malloctrim:
-    name: 'Test [ubuntu-20.04/3.0.4/malloctrim]'
+  test_ubuntu_20_04-3_0_5-malloctrim:
+    name: 'Test [ubuntu-20.04/3.0.5/malloctrim]'
     runs-on: ubuntu-20.04
     needs:
       - determine_necessary_jobs
       - publish
     if: |
       github.ref == 'refs/heads/main'
-      && contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [ubuntu-20.04/3.0.4/malloctrim];')
+      && contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [ubuntu-20.04/3.0.5/malloctrim];')
     steps:
       - uses: actions/checkout@v3
       - name: Login to Google Cloud
@@ -4657,7 +4657,7 @@ jobs:
         run: ./internal-scripts/ci-cd/test-packages/run-tests.sh
         env:
           DISTRIBUTION_NAME: "ubuntu-20.04"
-          RUBY_PACKAGE_ID: "3.0.4"
+          RUBY_PACKAGE_ID: "3.0.5"
           PACKAGE_FORMAT: "DEB"
           VARIANT_NAME: "malloctrim"
           VARIANT_PACKAGE_SUFFIX: "-malloctrim"
@@ -4670,17 +4670,17 @@ jobs:
       - name: Mark job as done
         run: ./internal-scripts/ci-cd/upload-artifact.sh
         env:
-          ARTIFACT_NAME: tested-against-production-ubuntu-20.04_3.0.4_malloctrim
+          ARTIFACT_NAME: tested-against-production-ubuntu-20.04_3.0.5_malloctrim
           ARTIFACT_PATH: mark-malloctrim
-  test_ubuntu_20_04-2_7_6-normal:
-    name: 'Test [ubuntu-20.04/2.7.6/normal]'
+  test_ubuntu_20_04-2_7_7-normal:
+    name: 'Test [ubuntu-20.04/2.7.7/normal]'
     runs-on: ubuntu-20.04
     needs:
       - determine_necessary_jobs
       - publish
     if: |
       github.ref == 'refs/heads/main'
-      && contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [ubuntu-20.04/2.7.6/normal];')
+      && contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [ubuntu-20.04/2.7.7/normal];')
     steps:
       - uses: actions/checkout@v3
       - name: Login to Google Cloud
@@ -4692,7 +4692,7 @@ jobs:
         run: ./internal-scripts/ci-cd/test-packages/run-tests.sh
         env:
           DISTRIBUTION_NAME: "ubuntu-20.04"
-          RUBY_PACKAGE_ID: "2.7.6"
+          RUBY_PACKAGE_ID: "2.7.7"
           PACKAGE_FORMAT: "DEB"
           VARIANT_NAME: "normal"
           VARIANT_PACKAGE_SUFFIX: ""
@@ -4705,17 +4705,17 @@ jobs:
       - name: Mark job as done
         run: ./internal-scripts/ci-cd/upload-artifact.sh
         env:
-          ARTIFACT_NAME: tested-against-production-ubuntu-20.04_2.7.6_normal
+          ARTIFACT_NAME: tested-against-production-ubuntu-20.04_2.7.7_normal
           ARTIFACT_PATH: mark-normal
-  test_ubuntu_20_04-2_7_6-jemalloc:
-    name: 'Test [ubuntu-20.04/2.7.6/jemalloc]'
+  test_ubuntu_20_04-2_7_7-jemalloc:
+    name: 'Test [ubuntu-20.04/2.7.7/jemalloc]'
     runs-on: ubuntu-20.04
     needs:
       - determine_necessary_jobs
       - publish
     if: |
       github.ref == 'refs/heads/main'
-      && contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [ubuntu-20.04/2.7.6/jemalloc];')
+      && contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [ubuntu-20.04/2.7.7/jemalloc];')
     steps:
       - uses: actions/checkout@v3
       - name: Login to Google Cloud
@@ -4727,7 +4727,7 @@ jobs:
         run: ./internal-scripts/ci-cd/test-packages/run-tests.sh
         env:
           DISTRIBUTION_NAME: "ubuntu-20.04"
-          RUBY_PACKAGE_ID: "2.7.6"
+          RUBY_PACKAGE_ID: "2.7.7"
           PACKAGE_FORMAT: "DEB"
           VARIANT_NAME: "jemalloc"
           VARIANT_PACKAGE_SUFFIX: "-jemalloc"
@@ -4740,17 +4740,17 @@ jobs:
       - name: Mark job as done
         run: ./internal-scripts/ci-cd/upload-artifact.sh
         env:
-          ARTIFACT_NAME: tested-against-production-ubuntu-20.04_2.7.6_jemalloc
+          ARTIFACT_NAME: tested-against-production-ubuntu-20.04_2.7.7_jemalloc
           ARTIFACT_PATH: mark-jemalloc
-  test_ubuntu_20_04-2_7_6-malloctrim:
-    name: 'Test [ubuntu-20.04/2.7.6/malloctrim]'
+  test_ubuntu_20_04-2_7_7-malloctrim:
+    name: 'Test [ubuntu-20.04/2.7.7/malloctrim]'
     runs-on: ubuntu-20.04
     needs:
       - determine_necessary_jobs
       - publish
     if: |
       github.ref == 'refs/heads/main'
-      && contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [ubuntu-20.04/2.7.6/malloctrim];')
+      && contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [ubuntu-20.04/2.7.7/malloctrim];')
     steps:
       - uses: actions/checkout@v3
       - name: Login to Google Cloud
@@ -4762,7 +4762,7 @@ jobs:
         run: ./internal-scripts/ci-cd/test-packages/run-tests.sh
         env:
           DISTRIBUTION_NAME: "ubuntu-20.04"
-          RUBY_PACKAGE_ID: "2.7.6"
+          RUBY_PACKAGE_ID: "2.7.7"
           PACKAGE_FORMAT: "DEB"
           VARIANT_NAME: "malloctrim"
           VARIANT_PACKAGE_SUFFIX: "-malloctrim"
@@ -4775,7 +4775,7 @@ jobs:
       - name: Mark job as done
         run: ./internal-scripts/ci-cd/upload-artifact.sh
         env:
-          ARTIFACT_NAME: tested-against-production-ubuntu-20.04_2.7.6_malloctrim
+          ARTIFACT_NAME: tested-against-production-ubuntu-20.04_2.7.7_malloctrim
           ARTIFACT_PATH: mark-malloctrim
 
   test_ubuntu_22_04-3_1-normal:
@@ -4883,15 +4883,15 @@ jobs:
         env:
           ARTIFACT_NAME: tested-against-production-ubuntu-22.04_3.1_malloctrim
           ARTIFACT_PATH: mark-malloctrim
-  test_ubuntu_22_04-3_1_2-normal:
-    name: 'Test [ubuntu-22.04/3.1.2/normal]'
+  test_ubuntu_22_04-3_1_3-normal:
+    name: 'Test [ubuntu-22.04/3.1.3/normal]'
     runs-on: ubuntu-20.04
     needs:
       - determine_necessary_jobs
       - publish
     if: |
       github.ref == 'refs/heads/main'
-      && contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [ubuntu-22.04/3.1.2/normal];')
+      && contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [ubuntu-22.04/3.1.3/normal];')
     steps:
       - uses: actions/checkout@v3
       - name: Login to Google Cloud
@@ -4903,7 +4903,7 @@ jobs:
         run: ./internal-scripts/ci-cd/test-packages/run-tests.sh
         env:
           DISTRIBUTION_NAME: "ubuntu-22.04"
-          RUBY_PACKAGE_ID: "3.1.2"
+          RUBY_PACKAGE_ID: "3.1.3"
           PACKAGE_FORMAT: "DEB"
           VARIANT_NAME: "normal"
           VARIANT_PACKAGE_SUFFIX: ""
@@ -4916,17 +4916,17 @@ jobs:
       - name: Mark job as done
         run: ./internal-scripts/ci-cd/upload-artifact.sh
         env:
-          ARTIFACT_NAME: tested-against-production-ubuntu-22.04_3.1.2_normal
+          ARTIFACT_NAME: tested-against-production-ubuntu-22.04_3.1.3_normal
           ARTIFACT_PATH: mark-normal
-  test_ubuntu_22_04-3_1_2-jemalloc:
-    name: 'Test [ubuntu-22.04/3.1.2/jemalloc]'
+  test_ubuntu_22_04-3_1_3-jemalloc:
+    name: 'Test [ubuntu-22.04/3.1.3/jemalloc]'
     runs-on: ubuntu-20.04
     needs:
       - determine_necessary_jobs
       - publish
     if: |
       github.ref == 'refs/heads/main'
-      && contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [ubuntu-22.04/3.1.2/jemalloc];')
+      && contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [ubuntu-22.04/3.1.3/jemalloc];')
     steps:
       - uses: actions/checkout@v3
       - name: Login to Google Cloud
@@ -4938,7 +4938,7 @@ jobs:
         run: ./internal-scripts/ci-cd/test-packages/run-tests.sh
         env:
           DISTRIBUTION_NAME: "ubuntu-22.04"
-          RUBY_PACKAGE_ID: "3.1.2"
+          RUBY_PACKAGE_ID: "3.1.3"
           PACKAGE_FORMAT: "DEB"
           VARIANT_NAME: "jemalloc"
           VARIANT_PACKAGE_SUFFIX: "-jemalloc"
@@ -4951,17 +4951,17 @@ jobs:
       - name: Mark job as done
         run: ./internal-scripts/ci-cd/upload-artifact.sh
         env:
-          ARTIFACT_NAME: tested-against-production-ubuntu-22.04_3.1.2_jemalloc
+          ARTIFACT_NAME: tested-against-production-ubuntu-22.04_3.1.3_jemalloc
           ARTIFACT_PATH: mark-jemalloc
-  test_ubuntu_22_04-3_1_2-malloctrim:
-    name: 'Test [ubuntu-22.04/3.1.2/malloctrim]'
+  test_ubuntu_22_04-3_1_3-malloctrim:
+    name: 'Test [ubuntu-22.04/3.1.3/malloctrim]'
     runs-on: ubuntu-20.04
     needs:
       - determine_necessary_jobs
       - publish
     if: |
       github.ref == 'refs/heads/main'
-      && contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [ubuntu-22.04/3.1.2/malloctrim];')
+      && contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [ubuntu-22.04/3.1.3/malloctrim];')
     steps:
       - uses: actions/checkout@v3
       - name: Login to Google Cloud
@@ -4973,7 +4973,7 @@ jobs:
         run: ./internal-scripts/ci-cd/test-packages/run-tests.sh
         env:
           DISTRIBUTION_NAME: "ubuntu-22.04"
-          RUBY_PACKAGE_ID: "3.1.2"
+          RUBY_PACKAGE_ID: "3.1.3"
           PACKAGE_FORMAT: "DEB"
           VARIANT_NAME: "malloctrim"
           VARIANT_PACKAGE_SUFFIX: "-malloctrim"
@@ -4986,7 +4986,7 @@ jobs:
       - name: Mark job as done
         run: ./internal-scripts/ci-cd/upload-artifact.sh
         env:
-          ARTIFACT_NAME: tested-against-production-ubuntu-22.04_3.1.2_malloctrim
+          ARTIFACT_NAME: tested-against-production-ubuntu-22.04_3.1.3_malloctrim
           ARTIFACT_PATH: mark-malloctrim
 
 
@@ -5011,15 +5011,15 @@ jobs:
       - test_centos_7-2_7-normal
       - test_centos_7-2_7-jemalloc
       - test_centos_7-2_7-malloctrim
-      - test_centos_7-3_1_2-normal
-      - test_centos_7-3_1_2-jemalloc
-      - test_centos_7-3_1_2-malloctrim
-      - test_centos_7-3_0_4-normal
-      - test_centos_7-3_0_4-jemalloc
-      - test_centos_7-3_0_4-malloctrim
-      - test_centos_7-2_7_6-normal
-      - test_centos_7-2_7_6-jemalloc
-      - test_centos_7-2_7_6-malloctrim
+      - test_centos_7-3_1_3-normal
+      - test_centos_7-3_1_3-jemalloc
+      - test_centos_7-3_1_3-malloctrim
+      - test_centos_7-3_0_5-normal
+      - test_centos_7-3_0_5-jemalloc
+      - test_centos_7-3_0_5-malloctrim
+      - test_centos_7-2_7_7-normal
+      - test_centos_7-2_7_7-jemalloc
+      - test_centos_7-2_7_7-malloctrim
       - test_centos_8-3_1-normal
       - test_centos_8-3_1-jemalloc
       - test_centos_8-3_1-malloctrim
@@ -5029,15 +5029,15 @@ jobs:
       - test_centos_8-2_7-normal
       - test_centos_8-2_7-jemalloc
       - test_centos_8-2_7-malloctrim
-      - test_centos_8-3_1_2-normal
-      - test_centos_8-3_1_2-jemalloc
-      - test_centos_8-3_1_2-malloctrim
-      - test_centos_8-3_0_4-normal
-      - test_centos_8-3_0_4-jemalloc
-      - test_centos_8-3_0_4-malloctrim
-      - test_centos_8-2_7_6-normal
-      - test_centos_8-2_7_6-jemalloc
-      - test_centos_8-2_7_6-malloctrim
+      - test_centos_8-3_1_3-normal
+      - test_centos_8-3_1_3-jemalloc
+      - test_centos_8-3_1_3-malloctrim
+      - test_centos_8-3_0_5-normal
+      - test_centos_8-3_0_5-jemalloc
+      - test_centos_8-3_0_5-malloctrim
+      - test_centos_8-2_7_7-normal
+      - test_centos_8-2_7_7-jemalloc
+      - test_centos_8-2_7_7-malloctrim
       - test_debian_10-3_1-normal
       - test_debian_10-3_1-jemalloc
       - test_debian_10-3_1-malloctrim
@@ -5047,15 +5047,15 @@ jobs:
       - test_debian_10-2_7-normal
       - test_debian_10-2_7-jemalloc
       - test_debian_10-2_7-malloctrim
-      - test_debian_10-3_1_2-normal
-      - test_debian_10-3_1_2-jemalloc
-      - test_debian_10-3_1_2-malloctrim
-      - test_debian_10-3_0_4-normal
-      - test_debian_10-3_0_4-jemalloc
-      - test_debian_10-3_0_4-malloctrim
-      - test_debian_10-2_7_6-normal
-      - test_debian_10-2_7_6-jemalloc
-      - test_debian_10-2_7_6-malloctrim
+      - test_debian_10-3_1_3-normal
+      - test_debian_10-3_1_3-jemalloc
+      - test_debian_10-3_1_3-malloctrim
+      - test_debian_10-3_0_5-normal
+      - test_debian_10-3_0_5-jemalloc
+      - test_debian_10-3_0_5-malloctrim
+      - test_debian_10-2_7_7-normal
+      - test_debian_10-2_7_7-jemalloc
+      - test_debian_10-2_7_7-malloctrim
       - test_debian_11-3_1-normal
       - test_debian_11-3_1-jemalloc
       - test_debian_11-3_1-malloctrim
@@ -5065,15 +5065,15 @@ jobs:
       - test_debian_11-2_7-normal
       - test_debian_11-2_7-jemalloc
       - test_debian_11-2_7-malloctrim
-      - test_debian_11-3_1_2-normal
-      - test_debian_11-3_1_2-jemalloc
-      - test_debian_11-3_1_2-malloctrim
-      - test_debian_11-3_0_4-normal
-      - test_debian_11-3_0_4-jemalloc
-      - test_debian_11-3_0_4-malloctrim
-      - test_debian_11-2_7_6-normal
-      - test_debian_11-2_7_6-jemalloc
-      - test_debian_11-2_7_6-malloctrim
+      - test_debian_11-3_1_3-normal
+      - test_debian_11-3_1_3-jemalloc
+      - test_debian_11-3_1_3-malloctrim
+      - test_debian_11-3_0_5-normal
+      - test_debian_11-3_0_5-jemalloc
+      - test_debian_11-3_0_5-malloctrim
+      - test_debian_11-2_7_7-normal
+      - test_debian_11-2_7_7-jemalloc
+      - test_debian_11-2_7_7-malloctrim
       - test_debian_9-3_1-normal
       - test_debian_9-3_1-jemalloc
       - test_debian_9-3_1-malloctrim
@@ -5083,21 +5083,21 @@ jobs:
       - test_debian_9-2_7-normal
       - test_debian_9-2_7-jemalloc
       - test_debian_9-2_7-malloctrim
-      - test_debian_9-3_1_2-normal
-      - test_debian_9-3_1_2-jemalloc
-      - test_debian_9-3_1_2-malloctrim
-      - test_debian_9-3_0_4-normal
-      - test_debian_9-3_0_4-jemalloc
-      - test_debian_9-3_0_4-malloctrim
-      - test_debian_9-2_7_6-normal
-      - test_debian_9-2_7_6-jemalloc
-      - test_debian_9-2_7_6-malloctrim
+      - test_debian_9-3_1_3-normal
+      - test_debian_9-3_1_3-jemalloc
+      - test_debian_9-3_1_3-malloctrim
+      - test_debian_9-3_0_5-normal
+      - test_debian_9-3_0_5-jemalloc
+      - test_debian_9-3_0_5-malloctrim
+      - test_debian_9-2_7_7-normal
+      - test_debian_9-2_7_7-jemalloc
+      - test_debian_9-2_7_7-malloctrim
       - test_el_9-3_1-normal
       - test_el_9-3_1-jemalloc
       - test_el_9-3_1-malloctrim
-      - test_el_9-3_1_2-normal
-      - test_el_9-3_1_2-jemalloc
-      - test_el_9-3_1_2-malloctrim
+      - test_el_9-3_1_3-normal
+      - test_el_9-3_1_3-jemalloc
+      - test_el_9-3_1_3-malloctrim
       - test_ubuntu_18_04-3_1-normal
       - test_ubuntu_18_04-3_1-jemalloc
       - test_ubuntu_18_04-3_1-malloctrim
@@ -5107,15 +5107,15 @@ jobs:
       - test_ubuntu_18_04-2_7-normal
       - test_ubuntu_18_04-2_7-jemalloc
       - test_ubuntu_18_04-2_7-malloctrim
-      - test_ubuntu_18_04-3_1_2-normal
-      - test_ubuntu_18_04-3_1_2-jemalloc
-      - test_ubuntu_18_04-3_1_2-malloctrim
-      - test_ubuntu_18_04-3_0_4-normal
-      - test_ubuntu_18_04-3_0_4-jemalloc
-      - test_ubuntu_18_04-3_0_4-malloctrim
-      - test_ubuntu_18_04-2_7_6-normal
-      - test_ubuntu_18_04-2_7_6-jemalloc
-      - test_ubuntu_18_04-2_7_6-malloctrim
+      - test_ubuntu_18_04-3_1_3-normal
+      - test_ubuntu_18_04-3_1_3-jemalloc
+      - test_ubuntu_18_04-3_1_3-malloctrim
+      - test_ubuntu_18_04-3_0_5-normal
+      - test_ubuntu_18_04-3_0_5-jemalloc
+      - test_ubuntu_18_04-3_0_5-malloctrim
+      - test_ubuntu_18_04-2_7_7-normal
+      - test_ubuntu_18_04-2_7_7-jemalloc
+      - test_ubuntu_18_04-2_7_7-malloctrim
       - test_ubuntu_20_04-3_1-normal
       - test_ubuntu_20_04-3_1-jemalloc
       - test_ubuntu_20_04-3_1-malloctrim
@@ -5125,21 +5125,21 @@ jobs:
       - test_ubuntu_20_04-2_7-normal
       - test_ubuntu_20_04-2_7-jemalloc
       - test_ubuntu_20_04-2_7-malloctrim
-      - test_ubuntu_20_04-3_1_2-normal
-      - test_ubuntu_20_04-3_1_2-jemalloc
-      - test_ubuntu_20_04-3_1_2-malloctrim
-      - test_ubuntu_20_04-3_0_4-normal
-      - test_ubuntu_20_04-3_0_4-jemalloc
-      - test_ubuntu_20_04-3_0_4-malloctrim
-      - test_ubuntu_20_04-2_7_6-normal
-      - test_ubuntu_20_04-2_7_6-jemalloc
-      - test_ubuntu_20_04-2_7_6-malloctrim
+      - test_ubuntu_20_04-3_1_3-normal
+      - test_ubuntu_20_04-3_1_3-jemalloc
+      - test_ubuntu_20_04-3_1_3-malloctrim
+      - test_ubuntu_20_04-3_0_5-normal
+      - test_ubuntu_20_04-3_0_5-jemalloc
+      - test_ubuntu_20_04-3_0_5-malloctrim
+      - test_ubuntu_20_04-2_7_7-normal
+      - test_ubuntu_20_04-2_7_7-jemalloc
+      - test_ubuntu_20_04-2_7_7-malloctrim
       - test_ubuntu_22_04-3_1-normal
       - test_ubuntu_22_04-3_1-jemalloc
       - test_ubuntu_22_04-3_1-malloctrim
-      - test_ubuntu_22_04-3_1_2-normal
-      - test_ubuntu_22_04-3_1_2-jemalloc
-      - test_ubuntu_22_04-3_1_2-malloctrim
+      - test_ubuntu_22_04-3_1_3-normal
+      - test_ubuntu_22_04-3_1_3-jemalloc
+      - test_ubuntu_22_04-3_1_3-malloctrim
     if: 'always()'
     steps:
       - uses: actions/checkout@v3
@@ -5217,69 +5217,69 @@ jobs:
           && needs.test_centos_7-2_7-malloctrim.result != 'success'
           && (needs.test_centos_7-2_7-malloctrim.result != 'skipped'
             || contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [centos-7/2.7/malloctrim];'))
-      - name: Check whether 'Test [centos-7/3.1.2/normal]' did not fail
+      - name: Check whether 'Test [centos-7/3.1.3/normal]' did not fail
         run: 'false'
         if: |
           github.ref == 'refs/heads/main'
-          && needs.test_centos_7-3_1_2-normal.result != 'success'
-          && (needs.test_centos_7-3_1_2-normal.result != 'skipped'
-            || contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [centos-7/3.1.2/normal];'))
-      - name: Check whether 'Test [centos-7/3.1.2/jemalloc]' did not fail
+          && needs.test_centos_7-3_1_3-normal.result != 'success'
+          && (needs.test_centos_7-3_1_3-normal.result != 'skipped'
+            || contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [centos-7/3.1.3/normal];'))
+      - name: Check whether 'Test [centos-7/3.1.3/jemalloc]' did not fail
         run: 'false'
         if: |
           github.ref == 'refs/heads/main'
-          && needs.test_centos_7-3_1_2-jemalloc.result != 'success'
-          && (needs.test_centos_7-3_1_2-jemalloc.result != 'skipped'
-            || contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [centos-7/3.1.2/jemalloc];'))
-      - name: Check whether 'Test [centos-7/3.1.2/malloctrim]' did not fail
+          && needs.test_centos_7-3_1_3-jemalloc.result != 'success'
+          && (needs.test_centos_7-3_1_3-jemalloc.result != 'skipped'
+            || contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [centos-7/3.1.3/jemalloc];'))
+      - name: Check whether 'Test [centos-7/3.1.3/malloctrim]' did not fail
         run: 'false'
         if: |
           github.ref == 'refs/heads/main'
-          && needs.test_centos_7-3_1_2-malloctrim.result != 'success'
-          && (needs.test_centos_7-3_1_2-malloctrim.result != 'skipped'
-            || contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [centos-7/3.1.2/malloctrim];'))
-      - name: Check whether 'Test [centos-7/3.0.4/normal]' did not fail
+          && needs.test_centos_7-3_1_3-malloctrim.result != 'success'
+          && (needs.test_centos_7-3_1_3-malloctrim.result != 'skipped'
+            || contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [centos-7/3.1.3/malloctrim];'))
+      - name: Check whether 'Test [centos-7/3.0.5/normal]' did not fail
         run: 'false'
         if: |
           github.ref == 'refs/heads/main'
-          && needs.test_centos_7-3_0_4-normal.result != 'success'
-          && (needs.test_centos_7-3_0_4-normal.result != 'skipped'
-            || contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [centos-7/3.0.4/normal];'))
-      - name: Check whether 'Test [centos-7/3.0.4/jemalloc]' did not fail
+          && needs.test_centos_7-3_0_5-normal.result != 'success'
+          && (needs.test_centos_7-3_0_5-normal.result != 'skipped'
+            || contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [centos-7/3.0.5/normal];'))
+      - name: Check whether 'Test [centos-7/3.0.5/jemalloc]' did not fail
         run: 'false'
         if: |
           github.ref == 'refs/heads/main'
-          && needs.test_centos_7-3_0_4-jemalloc.result != 'success'
-          && (needs.test_centos_7-3_0_4-jemalloc.result != 'skipped'
-            || contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [centos-7/3.0.4/jemalloc];'))
-      - name: Check whether 'Test [centos-7/3.0.4/malloctrim]' did not fail
+          && needs.test_centos_7-3_0_5-jemalloc.result != 'success'
+          && (needs.test_centos_7-3_0_5-jemalloc.result != 'skipped'
+            || contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [centos-7/3.0.5/jemalloc];'))
+      - name: Check whether 'Test [centos-7/3.0.5/malloctrim]' did not fail
         run: 'false'
         if: |
           github.ref == 'refs/heads/main'
-          && needs.test_centos_7-3_0_4-malloctrim.result != 'success'
-          && (needs.test_centos_7-3_0_4-malloctrim.result != 'skipped'
-            || contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [centos-7/3.0.4/malloctrim];'))
-      - name: Check whether 'Test [centos-7/2.7.6/normal]' did not fail
+          && needs.test_centos_7-3_0_5-malloctrim.result != 'success'
+          && (needs.test_centos_7-3_0_5-malloctrim.result != 'skipped'
+            || contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [centos-7/3.0.5/malloctrim];'))
+      - name: Check whether 'Test [centos-7/2.7.7/normal]' did not fail
         run: 'false'
         if: |
           github.ref == 'refs/heads/main'
-          && needs.test_centos_7-2_7_6-normal.result != 'success'
-          && (needs.test_centos_7-2_7_6-normal.result != 'skipped'
-            || contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [centos-7/2.7.6/normal];'))
-      - name: Check whether 'Test [centos-7/2.7.6/jemalloc]' did not fail
+          && needs.test_centos_7-2_7_7-normal.result != 'success'
+          && (needs.test_centos_7-2_7_7-normal.result != 'skipped'
+            || contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [centos-7/2.7.7/normal];'))
+      - name: Check whether 'Test [centos-7/2.7.7/jemalloc]' did not fail
         run: 'false'
         if: |
           github.ref == 'refs/heads/main'
-          && needs.test_centos_7-2_7_6-jemalloc.result != 'success'
-          && (needs.test_centos_7-2_7_6-jemalloc.result != 'skipped'
-            || contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [centos-7/2.7.6/jemalloc];'))
-      - name: Check whether 'Test [centos-7/2.7.6/malloctrim]' did not fail
+          && needs.test_centos_7-2_7_7-jemalloc.result != 'success'
+          && (needs.test_centos_7-2_7_7-jemalloc.result != 'skipped'
+            || contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [centos-7/2.7.7/jemalloc];'))
+      - name: Check whether 'Test [centos-7/2.7.7/malloctrim]' did not fail
         run: 'false'
         if: |
           github.ref == 'refs/heads/main'
-          && needs.test_centos_7-2_7_6-malloctrim.result != 'success'
-          && (needs.test_centos_7-2_7_6-malloctrim.result != 'skipped'
-            || contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [centos-7/2.7.6/malloctrim];'))
+          && needs.test_centos_7-2_7_7-malloctrim.result != 'success'
+          && (needs.test_centos_7-2_7_7-malloctrim.result != 'skipped'
+            || contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [centos-7/2.7.7/malloctrim];'))
       - name: Check whether 'Test [centos-8/3.1/normal]' did not fail
         run: 'false'
         if: |
@@ -5343,69 +5343,69 @@ jobs:
           && needs.test_centos_8-2_7-malloctrim.result != 'success'
           && (needs.test_centos_8-2_7-malloctrim.result != 'skipped'
             || contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [centos-8/2.7/malloctrim];'))
-      - name: Check whether 'Test [centos-8/3.1.2/normal]' did not fail
+      - name: Check whether 'Test [centos-8/3.1.3/normal]' did not fail
         run: 'false'
         if: |
           github.ref == 'refs/heads/main'
-          && needs.test_centos_8-3_1_2-normal.result != 'success'
-          && (needs.test_centos_8-3_1_2-normal.result != 'skipped'
-            || contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [centos-8/3.1.2/normal];'))
-      - name: Check whether 'Test [centos-8/3.1.2/jemalloc]' did not fail
+          && needs.test_centos_8-3_1_3-normal.result != 'success'
+          && (needs.test_centos_8-3_1_3-normal.result != 'skipped'
+            || contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [centos-8/3.1.3/normal];'))
+      - name: Check whether 'Test [centos-8/3.1.3/jemalloc]' did not fail
         run: 'false'
         if: |
           github.ref == 'refs/heads/main'
-          && needs.test_centos_8-3_1_2-jemalloc.result != 'success'
-          && (needs.test_centos_8-3_1_2-jemalloc.result != 'skipped'
-            || contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [centos-8/3.1.2/jemalloc];'))
-      - name: Check whether 'Test [centos-8/3.1.2/malloctrim]' did not fail
+          && needs.test_centos_8-3_1_3-jemalloc.result != 'success'
+          && (needs.test_centos_8-3_1_3-jemalloc.result != 'skipped'
+            || contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [centos-8/3.1.3/jemalloc];'))
+      - name: Check whether 'Test [centos-8/3.1.3/malloctrim]' did not fail
         run: 'false'
         if: |
           github.ref == 'refs/heads/main'
-          && needs.test_centos_8-3_1_2-malloctrim.result != 'success'
-          && (needs.test_centos_8-3_1_2-malloctrim.result != 'skipped'
-            || contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [centos-8/3.1.2/malloctrim];'))
-      - name: Check whether 'Test [centos-8/3.0.4/normal]' did not fail
+          && needs.test_centos_8-3_1_3-malloctrim.result != 'success'
+          && (needs.test_centos_8-3_1_3-malloctrim.result != 'skipped'
+            || contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [centos-8/3.1.3/malloctrim];'))
+      - name: Check whether 'Test [centos-8/3.0.5/normal]' did not fail
         run: 'false'
         if: |
           github.ref == 'refs/heads/main'
-          && needs.test_centos_8-3_0_4-normal.result != 'success'
-          && (needs.test_centos_8-3_0_4-normal.result != 'skipped'
-            || contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [centos-8/3.0.4/normal];'))
-      - name: Check whether 'Test [centos-8/3.0.4/jemalloc]' did not fail
+          && needs.test_centos_8-3_0_5-normal.result != 'success'
+          && (needs.test_centos_8-3_0_5-normal.result != 'skipped'
+            || contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [centos-8/3.0.5/normal];'))
+      - name: Check whether 'Test [centos-8/3.0.5/jemalloc]' did not fail
         run: 'false'
         if: |
           github.ref == 'refs/heads/main'
-          && needs.test_centos_8-3_0_4-jemalloc.result != 'success'
-          && (needs.test_centos_8-3_0_4-jemalloc.result != 'skipped'
-            || contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [centos-8/3.0.4/jemalloc];'))
-      - name: Check whether 'Test [centos-8/3.0.4/malloctrim]' did not fail
+          && needs.test_centos_8-3_0_5-jemalloc.result != 'success'
+          && (needs.test_centos_8-3_0_5-jemalloc.result != 'skipped'
+            || contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [centos-8/3.0.5/jemalloc];'))
+      - name: Check whether 'Test [centos-8/3.0.5/malloctrim]' did not fail
         run: 'false'
         if: |
           github.ref == 'refs/heads/main'
-          && needs.test_centos_8-3_0_4-malloctrim.result != 'success'
-          && (needs.test_centos_8-3_0_4-malloctrim.result != 'skipped'
-            || contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [centos-8/3.0.4/malloctrim];'))
-      - name: Check whether 'Test [centos-8/2.7.6/normal]' did not fail
+          && needs.test_centos_8-3_0_5-malloctrim.result != 'success'
+          && (needs.test_centos_8-3_0_5-malloctrim.result != 'skipped'
+            || contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [centos-8/3.0.5/malloctrim];'))
+      - name: Check whether 'Test [centos-8/2.7.7/normal]' did not fail
         run: 'false'
         if: |
           github.ref == 'refs/heads/main'
-          && needs.test_centos_8-2_7_6-normal.result != 'success'
-          && (needs.test_centos_8-2_7_6-normal.result != 'skipped'
-            || contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [centos-8/2.7.6/normal];'))
-      - name: Check whether 'Test [centos-8/2.7.6/jemalloc]' did not fail
+          && needs.test_centos_8-2_7_7-normal.result != 'success'
+          && (needs.test_centos_8-2_7_7-normal.result != 'skipped'
+            || contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [centos-8/2.7.7/normal];'))
+      - name: Check whether 'Test [centos-8/2.7.7/jemalloc]' did not fail
         run: 'false'
         if: |
           github.ref == 'refs/heads/main'
-          && needs.test_centos_8-2_7_6-jemalloc.result != 'success'
-          && (needs.test_centos_8-2_7_6-jemalloc.result != 'skipped'
-            || contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [centos-8/2.7.6/jemalloc];'))
-      - name: Check whether 'Test [centos-8/2.7.6/malloctrim]' did not fail
+          && needs.test_centos_8-2_7_7-jemalloc.result != 'success'
+          && (needs.test_centos_8-2_7_7-jemalloc.result != 'skipped'
+            || contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [centos-8/2.7.7/jemalloc];'))
+      - name: Check whether 'Test [centos-8/2.7.7/malloctrim]' did not fail
         run: 'false'
         if: |
           github.ref == 'refs/heads/main'
-          && needs.test_centos_8-2_7_6-malloctrim.result != 'success'
-          && (needs.test_centos_8-2_7_6-malloctrim.result != 'skipped'
-            || contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [centos-8/2.7.6/malloctrim];'))
+          && needs.test_centos_8-2_7_7-malloctrim.result != 'success'
+          && (needs.test_centos_8-2_7_7-malloctrim.result != 'skipped'
+            || contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [centos-8/2.7.7/malloctrim];'))
       - name: Check whether 'Test [debian-10/3.1/normal]' did not fail
         run: 'false'
         if: |
@@ -5469,69 +5469,69 @@ jobs:
           && needs.test_debian_10-2_7-malloctrim.result != 'success'
           && (needs.test_debian_10-2_7-malloctrim.result != 'skipped'
             || contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [debian-10/2.7/malloctrim];'))
-      - name: Check whether 'Test [debian-10/3.1.2/normal]' did not fail
+      - name: Check whether 'Test [debian-10/3.1.3/normal]' did not fail
         run: 'false'
         if: |
           github.ref == 'refs/heads/main'
-          && needs.test_debian_10-3_1_2-normal.result != 'success'
-          && (needs.test_debian_10-3_1_2-normal.result != 'skipped'
-            || contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [debian-10/3.1.2/normal];'))
-      - name: Check whether 'Test [debian-10/3.1.2/jemalloc]' did not fail
+          && needs.test_debian_10-3_1_3-normal.result != 'success'
+          && (needs.test_debian_10-3_1_3-normal.result != 'skipped'
+            || contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [debian-10/3.1.3/normal];'))
+      - name: Check whether 'Test [debian-10/3.1.3/jemalloc]' did not fail
         run: 'false'
         if: |
           github.ref == 'refs/heads/main'
-          && needs.test_debian_10-3_1_2-jemalloc.result != 'success'
-          && (needs.test_debian_10-3_1_2-jemalloc.result != 'skipped'
-            || contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [debian-10/3.1.2/jemalloc];'))
-      - name: Check whether 'Test [debian-10/3.1.2/malloctrim]' did not fail
+          && needs.test_debian_10-3_1_3-jemalloc.result != 'success'
+          && (needs.test_debian_10-3_1_3-jemalloc.result != 'skipped'
+            || contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [debian-10/3.1.3/jemalloc];'))
+      - name: Check whether 'Test [debian-10/3.1.3/malloctrim]' did not fail
         run: 'false'
         if: |
           github.ref == 'refs/heads/main'
-          && needs.test_debian_10-3_1_2-malloctrim.result != 'success'
-          && (needs.test_debian_10-3_1_2-malloctrim.result != 'skipped'
-            || contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [debian-10/3.1.2/malloctrim];'))
-      - name: Check whether 'Test [debian-10/3.0.4/normal]' did not fail
+          && needs.test_debian_10-3_1_3-malloctrim.result != 'success'
+          && (needs.test_debian_10-3_1_3-malloctrim.result != 'skipped'
+            || contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [debian-10/3.1.3/malloctrim];'))
+      - name: Check whether 'Test [debian-10/3.0.5/normal]' did not fail
         run: 'false'
         if: |
           github.ref == 'refs/heads/main'
-          && needs.test_debian_10-3_0_4-normal.result != 'success'
-          && (needs.test_debian_10-3_0_4-normal.result != 'skipped'
-            || contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [debian-10/3.0.4/normal];'))
-      - name: Check whether 'Test [debian-10/3.0.4/jemalloc]' did not fail
+          && needs.test_debian_10-3_0_5-normal.result != 'success'
+          && (needs.test_debian_10-3_0_5-normal.result != 'skipped'
+            || contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [debian-10/3.0.5/normal];'))
+      - name: Check whether 'Test [debian-10/3.0.5/jemalloc]' did not fail
         run: 'false'
         if: |
           github.ref == 'refs/heads/main'
-          && needs.test_debian_10-3_0_4-jemalloc.result != 'success'
-          && (needs.test_debian_10-3_0_4-jemalloc.result != 'skipped'
-            || contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [debian-10/3.0.4/jemalloc];'))
-      - name: Check whether 'Test [debian-10/3.0.4/malloctrim]' did not fail
+          && needs.test_debian_10-3_0_5-jemalloc.result != 'success'
+          && (needs.test_debian_10-3_0_5-jemalloc.result != 'skipped'
+            || contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [debian-10/3.0.5/jemalloc];'))
+      - name: Check whether 'Test [debian-10/3.0.5/malloctrim]' did not fail
         run: 'false'
         if: |
           github.ref == 'refs/heads/main'
-          && needs.test_debian_10-3_0_4-malloctrim.result != 'success'
-          && (needs.test_debian_10-3_0_4-malloctrim.result != 'skipped'
-            || contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [debian-10/3.0.4/malloctrim];'))
-      - name: Check whether 'Test [debian-10/2.7.6/normal]' did not fail
+          && needs.test_debian_10-3_0_5-malloctrim.result != 'success'
+          && (needs.test_debian_10-3_0_5-malloctrim.result != 'skipped'
+            || contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [debian-10/3.0.5/malloctrim];'))
+      - name: Check whether 'Test [debian-10/2.7.7/normal]' did not fail
         run: 'false'
         if: |
           github.ref == 'refs/heads/main'
-          && needs.test_debian_10-2_7_6-normal.result != 'success'
-          && (needs.test_debian_10-2_7_6-normal.result != 'skipped'
-            || contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [debian-10/2.7.6/normal];'))
-      - name: Check whether 'Test [debian-10/2.7.6/jemalloc]' did not fail
+          && needs.test_debian_10-2_7_7-normal.result != 'success'
+          && (needs.test_debian_10-2_7_7-normal.result != 'skipped'
+            || contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [debian-10/2.7.7/normal];'))
+      - name: Check whether 'Test [debian-10/2.7.7/jemalloc]' did not fail
         run: 'false'
         if: |
           github.ref == 'refs/heads/main'
-          && needs.test_debian_10-2_7_6-jemalloc.result != 'success'
-          && (needs.test_debian_10-2_7_6-jemalloc.result != 'skipped'
-            || contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [debian-10/2.7.6/jemalloc];'))
-      - name: Check whether 'Test [debian-10/2.7.6/malloctrim]' did not fail
+          && needs.test_debian_10-2_7_7-jemalloc.result != 'success'
+          && (needs.test_debian_10-2_7_7-jemalloc.result != 'skipped'
+            || contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [debian-10/2.7.7/jemalloc];'))
+      - name: Check whether 'Test [debian-10/2.7.7/malloctrim]' did not fail
         run: 'false'
         if: |
           github.ref == 'refs/heads/main'
-          && needs.test_debian_10-2_7_6-malloctrim.result != 'success'
-          && (needs.test_debian_10-2_7_6-malloctrim.result != 'skipped'
-            || contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [debian-10/2.7.6/malloctrim];'))
+          && needs.test_debian_10-2_7_7-malloctrim.result != 'success'
+          && (needs.test_debian_10-2_7_7-malloctrim.result != 'skipped'
+            || contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [debian-10/2.7.7/malloctrim];'))
       - name: Check whether 'Test [debian-11/3.1/normal]' did not fail
         run: 'false'
         if: |
@@ -5595,69 +5595,69 @@ jobs:
           && needs.test_debian_11-2_7-malloctrim.result != 'success'
           && (needs.test_debian_11-2_7-malloctrim.result != 'skipped'
             || contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [debian-11/2.7/malloctrim];'))
-      - name: Check whether 'Test [debian-11/3.1.2/normal]' did not fail
+      - name: Check whether 'Test [debian-11/3.1.3/normal]' did not fail
         run: 'false'
         if: |
           github.ref == 'refs/heads/main'
-          && needs.test_debian_11-3_1_2-normal.result != 'success'
-          && (needs.test_debian_11-3_1_2-normal.result != 'skipped'
-            || contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [debian-11/3.1.2/normal];'))
-      - name: Check whether 'Test [debian-11/3.1.2/jemalloc]' did not fail
+          && needs.test_debian_11-3_1_3-normal.result != 'success'
+          && (needs.test_debian_11-3_1_3-normal.result != 'skipped'
+            || contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [debian-11/3.1.3/normal];'))
+      - name: Check whether 'Test [debian-11/3.1.3/jemalloc]' did not fail
         run: 'false'
         if: |
           github.ref == 'refs/heads/main'
-          && needs.test_debian_11-3_1_2-jemalloc.result != 'success'
-          && (needs.test_debian_11-3_1_2-jemalloc.result != 'skipped'
-            || contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [debian-11/3.1.2/jemalloc];'))
-      - name: Check whether 'Test [debian-11/3.1.2/malloctrim]' did not fail
+          && needs.test_debian_11-3_1_3-jemalloc.result != 'success'
+          && (needs.test_debian_11-3_1_3-jemalloc.result != 'skipped'
+            || contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [debian-11/3.1.3/jemalloc];'))
+      - name: Check whether 'Test [debian-11/3.1.3/malloctrim]' did not fail
         run: 'false'
         if: |
           github.ref == 'refs/heads/main'
-          && needs.test_debian_11-3_1_2-malloctrim.result != 'success'
-          && (needs.test_debian_11-3_1_2-malloctrim.result != 'skipped'
-            || contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [debian-11/3.1.2/malloctrim];'))
-      - name: Check whether 'Test [debian-11/3.0.4/normal]' did not fail
+          && needs.test_debian_11-3_1_3-malloctrim.result != 'success'
+          && (needs.test_debian_11-3_1_3-malloctrim.result != 'skipped'
+            || contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [debian-11/3.1.3/malloctrim];'))
+      - name: Check whether 'Test [debian-11/3.0.5/normal]' did not fail
         run: 'false'
         if: |
           github.ref == 'refs/heads/main'
-          && needs.test_debian_11-3_0_4-normal.result != 'success'
-          && (needs.test_debian_11-3_0_4-normal.result != 'skipped'
-            || contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [debian-11/3.0.4/normal];'))
-      - name: Check whether 'Test [debian-11/3.0.4/jemalloc]' did not fail
+          && needs.test_debian_11-3_0_5-normal.result != 'success'
+          && (needs.test_debian_11-3_0_5-normal.result != 'skipped'
+            || contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [debian-11/3.0.5/normal];'))
+      - name: Check whether 'Test [debian-11/3.0.5/jemalloc]' did not fail
         run: 'false'
         if: |
           github.ref == 'refs/heads/main'
-          && needs.test_debian_11-3_0_4-jemalloc.result != 'success'
-          && (needs.test_debian_11-3_0_4-jemalloc.result != 'skipped'
-            || contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [debian-11/3.0.4/jemalloc];'))
-      - name: Check whether 'Test [debian-11/3.0.4/malloctrim]' did not fail
+          && needs.test_debian_11-3_0_5-jemalloc.result != 'success'
+          && (needs.test_debian_11-3_0_5-jemalloc.result != 'skipped'
+            || contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [debian-11/3.0.5/jemalloc];'))
+      - name: Check whether 'Test [debian-11/3.0.5/malloctrim]' did not fail
         run: 'false'
         if: |
           github.ref == 'refs/heads/main'
-          && needs.test_debian_11-3_0_4-malloctrim.result != 'success'
-          && (needs.test_debian_11-3_0_4-malloctrim.result != 'skipped'
-            || contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [debian-11/3.0.4/malloctrim];'))
-      - name: Check whether 'Test [debian-11/2.7.6/normal]' did not fail
+          && needs.test_debian_11-3_0_5-malloctrim.result != 'success'
+          && (needs.test_debian_11-3_0_5-malloctrim.result != 'skipped'
+            || contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [debian-11/3.0.5/malloctrim];'))
+      - name: Check whether 'Test [debian-11/2.7.7/normal]' did not fail
         run: 'false'
         if: |
           github.ref == 'refs/heads/main'
-          && needs.test_debian_11-2_7_6-normal.result != 'success'
-          && (needs.test_debian_11-2_7_6-normal.result != 'skipped'
-            || contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [debian-11/2.7.6/normal];'))
-      - name: Check whether 'Test [debian-11/2.7.6/jemalloc]' did not fail
+          && needs.test_debian_11-2_7_7-normal.result != 'success'
+          && (needs.test_debian_11-2_7_7-normal.result != 'skipped'
+            || contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [debian-11/2.7.7/normal];'))
+      - name: Check whether 'Test [debian-11/2.7.7/jemalloc]' did not fail
         run: 'false'
         if: |
           github.ref == 'refs/heads/main'
-          && needs.test_debian_11-2_7_6-jemalloc.result != 'success'
-          && (needs.test_debian_11-2_7_6-jemalloc.result != 'skipped'
-            || contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [debian-11/2.7.6/jemalloc];'))
-      - name: Check whether 'Test [debian-11/2.7.6/malloctrim]' did not fail
+          && needs.test_debian_11-2_7_7-jemalloc.result != 'success'
+          && (needs.test_debian_11-2_7_7-jemalloc.result != 'skipped'
+            || contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [debian-11/2.7.7/jemalloc];'))
+      - name: Check whether 'Test [debian-11/2.7.7/malloctrim]' did not fail
         run: 'false'
         if: |
           github.ref == 'refs/heads/main'
-          && needs.test_debian_11-2_7_6-malloctrim.result != 'success'
-          && (needs.test_debian_11-2_7_6-malloctrim.result != 'skipped'
-            || contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [debian-11/2.7.6/malloctrim];'))
+          && needs.test_debian_11-2_7_7-malloctrim.result != 'success'
+          && (needs.test_debian_11-2_7_7-malloctrim.result != 'skipped'
+            || contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [debian-11/2.7.7/malloctrim];'))
       - name: Check whether 'Test [debian-9/3.1/normal]' did not fail
         run: 'false'
         if: |
@@ -5721,69 +5721,69 @@ jobs:
           && needs.test_debian_9-2_7-malloctrim.result != 'success'
           && (needs.test_debian_9-2_7-malloctrim.result != 'skipped'
             || contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [debian-9/2.7/malloctrim];'))
-      - name: Check whether 'Test [debian-9/3.1.2/normal]' did not fail
+      - name: Check whether 'Test [debian-9/3.1.3/normal]' did not fail
         run: 'false'
         if: |
           github.ref == 'refs/heads/main'
-          && needs.test_debian_9-3_1_2-normal.result != 'success'
-          && (needs.test_debian_9-3_1_2-normal.result != 'skipped'
-            || contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [debian-9/3.1.2/normal];'))
-      - name: Check whether 'Test [debian-9/3.1.2/jemalloc]' did not fail
+          && needs.test_debian_9-3_1_3-normal.result != 'success'
+          && (needs.test_debian_9-3_1_3-normal.result != 'skipped'
+            || contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [debian-9/3.1.3/normal];'))
+      - name: Check whether 'Test [debian-9/3.1.3/jemalloc]' did not fail
         run: 'false'
         if: |
           github.ref == 'refs/heads/main'
-          && needs.test_debian_9-3_1_2-jemalloc.result != 'success'
-          && (needs.test_debian_9-3_1_2-jemalloc.result != 'skipped'
-            || contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [debian-9/3.1.2/jemalloc];'))
-      - name: Check whether 'Test [debian-9/3.1.2/malloctrim]' did not fail
+          && needs.test_debian_9-3_1_3-jemalloc.result != 'success'
+          && (needs.test_debian_9-3_1_3-jemalloc.result != 'skipped'
+            || contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [debian-9/3.1.3/jemalloc];'))
+      - name: Check whether 'Test [debian-9/3.1.3/malloctrim]' did not fail
         run: 'false'
         if: |
           github.ref == 'refs/heads/main'
-          && needs.test_debian_9-3_1_2-malloctrim.result != 'success'
-          && (needs.test_debian_9-3_1_2-malloctrim.result != 'skipped'
-            || contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [debian-9/3.1.2/malloctrim];'))
-      - name: Check whether 'Test [debian-9/3.0.4/normal]' did not fail
+          && needs.test_debian_9-3_1_3-malloctrim.result != 'success'
+          && (needs.test_debian_9-3_1_3-malloctrim.result != 'skipped'
+            || contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [debian-9/3.1.3/malloctrim];'))
+      - name: Check whether 'Test [debian-9/3.0.5/normal]' did not fail
         run: 'false'
         if: |
           github.ref == 'refs/heads/main'
-          && needs.test_debian_9-3_0_4-normal.result != 'success'
-          && (needs.test_debian_9-3_0_4-normal.result != 'skipped'
-            || contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [debian-9/3.0.4/normal];'))
-      - name: Check whether 'Test [debian-9/3.0.4/jemalloc]' did not fail
+          && needs.test_debian_9-3_0_5-normal.result != 'success'
+          && (needs.test_debian_9-3_0_5-normal.result != 'skipped'
+            || contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [debian-9/3.0.5/normal];'))
+      - name: Check whether 'Test [debian-9/3.0.5/jemalloc]' did not fail
         run: 'false'
         if: |
           github.ref == 'refs/heads/main'
-          && needs.test_debian_9-3_0_4-jemalloc.result != 'success'
-          && (needs.test_debian_9-3_0_4-jemalloc.result != 'skipped'
-            || contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [debian-9/3.0.4/jemalloc];'))
-      - name: Check whether 'Test [debian-9/3.0.4/malloctrim]' did not fail
+          && needs.test_debian_9-3_0_5-jemalloc.result != 'success'
+          && (needs.test_debian_9-3_0_5-jemalloc.result != 'skipped'
+            || contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [debian-9/3.0.5/jemalloc];'))
+      - name: Check whether 'Test [debian-9/3.0.5/malloctrim]' did not fail
         run: 'false'
         if: |
           github.ref == 'refs/heads/main'
-          && needs.test_debian_9-3_0_4-malloctrim.result != 'success'
-          && (needs.test_debian_9-3_0_4-malloctrim.result != 'skipped'
-            || contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [debian-9/3.0.4/malloctrim];'))
-      - name: Check whether 'Test [debian-9/2.7.6/normal]' did not fail
+          && needs.test_debian_9-3_0_5-malloctrim.result != 'success'
+          && (needs.test_debian_9-3_0_5-malloctrim.result != 'skipped'
+            || contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [debian-9/3.0.5/malloctrim];'))
+      - name: Check whether 'Test [debian-9/2.7.7/normal]' did not fail
         run: 'false'
         if: |
           github.ref == 'refs/heads/main'
-          && needs.test_debian_9-2_7_6-normal.result != 'success'
-          && (needs.test_debian_9-2_7_6-normal.result != 'skipped'
-            || contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [debian-9/2.7.6/normal];'))
-      - name: Check whether 'Test [debian-9/2.7.6/jemalloc]' did not fail
+          && needs.test_debian_9-2_7_7-normal.result != 'success'
+          && (needs.test_debian_9-2_7_7-normal.result != 'skipped'
+            || contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [debian-9/2.7.7/normal];'))
+      - name: Check whether 'Test [debian-9/2.7.7/jemalloc]' did not fail
         run: 'false'
         if: |
           github.ref == 'refs/heads/main'
-          && needs.test_debian_9-2_7_6-jemalloc.result != 'success'
-          && (needs.test_debian_9-2_7_6-jemalloc.result != 'skipped'
-            || contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [debian-9/2.7.6/jemalloc];'))
-      - name: Check whether 'Test [debian-9/2.7.6/malloctrim]' did not fail
+          && needs.test_debian_9-2_7_7-jemalloc.result != 'success'
+          && (needs.test_debian_9-2_7_7-jemalloc.result != 'skipped'
+            || contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [debian-9/2.7.7/jemalloc];'))
+      - name: Check whether 'Test [debian-9/2.7.7/malloctrim]' did not fail
         run: 'false'
         if: |
           github.ref == 'refs/heads/main'
-          && needs.test_debian_9-2_7_6-malloctrim.result != 'success'
-          && (needs.test_debian_9-2_7_6-malloctrim.result != 'skipped'
-            || contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [debian-9/2.7.6/malloctrim];'))
+          && needs.test_debian_9-2_7_7-malloctrim.result != 'success'
+          && (needs.test_debian_9-2_7_7-malloctrim.result != 'skipped'
+            || contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [debian-9/2.7.7/malloctrim];'))
       - name: Check whether 'Test [el-9/3.1/normal]' did not fail
         run: 'false'
         if: |
@@ -5805,27 +5805,27 @@ jobs:
           && needs.test_el_9-3_1-malloctrim.result != 'success'
           && (needs.test_el_9-3_1-malloctrim.result != 'skipped'
             || contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [el-9/3.1/malloctrim];'))
-      - name: Check whether 'Test [el-9/3.1.2/normal]' did not fail
+      - name: Check whether 'Test [el-9/3.1.3/normal]' did not fail
         run: 'false'
         if: |
           github.ref == 'refs/heads/main'
-          && needs.test_el_9-3_1_2-normal.result != 'success'
-          && (needs.test_el_9-3_1_2-normal.result != 'skipped'
-            || contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [el-9/3.1.2/normal];'))
-      - name: Check whether 'Test [el-9/3.1.2/jemalloc]' did not fail
+          && needs.test_el_9-3_1_3-normal.result != 'success'
+          && (needs.test_el_9-3_1_3-normal.result != 'skipped'
+            || contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [el-9/3.1.3/normal];'))
+      - name: Check whether 'Test [el-9/3.1.3/jemalloc]' did not fail
         run: 'false'
         if: |
           github.ref == 'refs/heads/main'
-          && needs.test_el_9-3_1_2-jemalloc.result != 'success'
-          && (needs.test_el_9-3_1_2-jemalloc.result != 'skipped'
-            || contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [el-9/3.1.2/jemalloc];'))
-      - name: Check whether 'Test [el-9/3.1.2/malloctrim]' did not fail
+          && needs.test_el_9-3_1_3-jemalloc.result != 'success'
+          && (needs.test_el_9-3_1_3-jemalloc.result != 'skipped'
+            || contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [el-9/3.1.3/jemalloc];'))
+      - name: Check whether 'Test [el-9/3.1.3/malloctrim]' did not fail
         run: 'false'
         if: |
           github.ref == 'refs/heads/main'
-          && needs.test_el_9-3_1_2-malloctrim.result != 'success'
-          && (needs.test_el_9-3_1_2-malloctrim.result != 'skipped'
-            || contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [el-9/3.1.2/malloctrim];'))
+          && needs.test_el_9-3_1_3-malloctrim.result != 'success'
+          && (needs.test_el_9-3_1_3-malloctrim.result != 'skipped'
+            || contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [el-9/3.1.3/malloctrim];'))
       - name: Check whether 'Test [ubuntu-18.04/3.1/normal]' did not fail
         run: 'false'
         if: |
@@ -5889,69 +5889,69 @@ jobs:
           && needs.test_ubuntu_18_04-2_7-malloctrim.result != 'success'
           && (needs.test_ubuntu_18_04-2_7-malloctrim.result != 'skipped'
             || contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [ubuntu-18.04/2.7/malloctrim];'))
-      - name: Check whether 'Test [ubuntu-18.04/3.1.2/normal]' did not fail
+      - name: Check whether 'Test [ubuntu-18.04/3.1.3/normal]' did not fail
         run: 'false'
         if: |
           github.ref == 'refs/heads/main'
-          && needs.test_ubuntu_18_04-3_1_2-normal.result != 'success'
-          && (needs.test_ubuntu_18_04-3_1_2-normal.result != 'skipped'
-            || contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [ubuntu-18.04/3.1.2/normal];'))
-      - name: Check whether 'Test [ubuntu-18.04/3.1.2/jemalloc]' did not fail
+          && needs.test_ubuntu_18_04-3_1_3-normal.result != 'success'
+          && (needs.test_ubuntu_18_04-3_1_3-normal.result != 'skipped'
+            || contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [ubuntu-18.04/3.1.3/normal];'))
+      - name: Check whether 'Test [ubuntu-18.04/3.1.3/jemalloc]' did not fail
         run: 'false'
         if: |
           github.ref == 'refs/heads/main'
-          && needs.test_ubuntu_18_04-3_1_2-jemalloc.result != 'success'
-          && (needs.test_ubuntu_18_04-3_1_2-jemalloc.result != 'skipped'
-            || contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [ubuntu-18.04/3.1.2/jemalloc];'))
-      - name: Check whether 'Test [ubuntu-18.04/3.1.2/malloctrim]' did not fail
+          && needs.test_ubuntu_18_04-3_1_3-jemalloc.result != 'success'
+          && (needs.test_ubuntu_18_04-3_1_3-jemalloc.result != 'skipped'
+            || contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [ubuntu-18.04/3.1.3/jemalloc];'))
+      - name: Check whether 'Test [ubuntu-18.04/3.1.3/malloctrim]' did not fail
         run: 'false'
         if: |
           github.ref == 'refs/heads/main'
-          && needs.test_ubuntu_18_04-3_1_2-malloctrim.result != 'success'
-          && (needs.test_ubuntu_18_04-3_1_2-malloctrim.result != 'skipped'
-            || contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [ubuntu-18.04/3.1.2/malloctrim];'))
-      - name: Check whether 'Test [ubuntu-18.04/3.0.4/normal]' did not fail
+          && needs.test_ubuntu_18_04-3_1_3-malloctrim.result != 'success'
+          && (needs.test_ubuntu_18_04-3_1_3-malloctrim.result != 'skipped'
+            || contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [ubuntu-18.04/3.1.3/malloctrim];'))
+      - name: Check whether 'Test [ubuntu-18.04/3.0.5/normal]' did not fail
         run: 'false'
         if: |
           github.ref == 'refs/heads/main'
-          && needs.test_ubuntu_18_04-3_0_4-normal.result != 'success'
-          && (needs.test_ubuntu_18_04-3_0_4-normal.result != 'skipped'
-            || contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [ubuntu-18.04/3.0.4/normal];'))
-      - name: Check whether 'Test [ubuntu-18.04/3.0.4/jemalloc]' did not fail
+          && needs.test_ubuntu_18_04-3_0_5-normal.result != 'success'
+          && (needs.test_ubuntu_18_04-3_0_5-normal.result != 'skipped'
+            || contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [ubuntu-18.04/3.0.5/normal];'))
+      - name: Check whether 'Test [ubuntu-18.04/3.0.5/jemalloc]' did not fail
         run: 'false'
         if: |
           github.ref == 'refs/heads/main'
-          && needs.test_ubuntu_18_04-3_0_4-jemalloc.result != 'success'
-          && (needs.test_ubuntu_18_04-3_0_4-jemalloc.result != 'skipped'
-            || contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [ubuntu-18.04/3.0.4/jemalloc];'))
-      - name: Check whether 'Test [ubuntu-18.04/3.0.4/malloctrim]' did not fail
+          && needs.test_ubuntu_18_04-3_0_5-jemalloc.result != 'success'
+          && (needs.test_ubuntu_18_04-3_0_5-jemalloc.result != 'skipped'
+            || contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [ubuntu-18.04/3.0.5/jemalloc];'))
+      - name: Check whether 'Test [ubuntu-18.04/3.0.5/malloctrim]' did not fail
         run: 'false'
         if: |
           github.ref == 'refs/heads/main'
-          && needs.test_ubuntu_18_04-3_0_4-malloctrim.result != 'success'
-          && (needs.test_ubuntu_18_04-3_0_4-malloctrim.result != 'skipped'
-            || contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [ubuntu-18.04/3.0.4/malloctrim];'))
-      - name: Check whether 'Test [ubuntu-18.04/2.7.6/normal]' did not fail
+          && needs.test_ubuntu_18_04-3_0_5-malloctrim.result != 'success'
+          && (needs.test_ubuntu_18_04-3_0_5-malloctrim.result != 'skipped'
+            || contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [ubuntu-18.04/3.0.5/malloctrim];'))
+      - name: Check whether 'Test [ubuntu-18.04/2.7.7/normal]' did not fail
         run: 'false'
         if: |
           github.ref == 'refs/heads/main'
-          && needs.test_ubuntu_18_04-2_7_6-normal.result != 'success'
-          && (needs.test_ubuntu_18_04-2_7_6-normal.result != 'skipped'
-            || contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [ubuntu-18.04/2.7.6/normal];'))
-      - name: Check whether 'Test [ubuntu-18.04/2.7.6/jemalloc]' did not fail
+          && needs.test_ubuntu_18_04-2_7_7-normal.result != 'success'
+          && (needs.test_ubuntu_18_04-2_7_7-normal.result != 'skipped'
+            || contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [ubuntu-18.04/2.7.7/normal];'))
+      - name: Check whether 'Test [ubuntu-18.04/2.7.7/jemalloc]' did not fail
         run: 'false'
         if: |
           github.ref == 'refs/heads/main'
-          && needs.test_ubuntu_18_04-2_7_6-jemalloc.result != 'success'
-          && (needs.test_ubuntu_18_04-2_7_6-jemalloc.result != 'skipped'
-            || contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [ubuntu-18.04/2.7.6/jemalloc];'))
-      - name: Check whether 'Test [ubuntu-18.04/2.7.6/malloctrim]' did not fail
+          && needs.test_ubuntu_18_04-2_7_7-jemalloc.result != 'success'
+          && (needs.test_ubuntu_18_04-2_7_7-jemalloc.result != 'skipped'
+            || contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [ubuntu-18.04/2.7.7/jemalloc];'))
+      - name: Check whether 'Test [ubuntu-18.04/2.7.7/malloctrim]' did not fail
         run: 'false'
         if: |
           github.ref == 'refs/heads/main'
-          && needs.test_ubuntu_18_04-2_7_6-malloctrim.result != 'success'
-          && (needs.test_ubuntu_18_04-2_7_6-malloctrim.result != 'skipped'
-            || contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [ubuntu-18.04/2.7.6/malloctrim];'))
+          && needs.test_ubuntu_18_04-2_7_7-malloctrim.result != 'success'
+          && (needs.test_ubuntu_18_04-2_7_7-malloctrim.result != 'skipped'
+            || contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [ubuntu-18.04/2.7.7/malloctrim];'))
       - name: Check whether 'Test [ubuntu-20.04/3.1/normal]' did not fail
         run: 'false'
         if: |
@@ -6015,69 +6015,69 @@ jobs:
           && needs.test_ubuntu_20_04-2_7-malloctrim.result != 'success'
           && (needs.test_ubuntu_20_04-2_7-malloctrim.result != 'skipped'
             || contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [ubuntu-20.04/2.7/malloctrim];'))
-      - name: Check whether 'Test [ubuntu-20.04/3.1.2/normal]' did not fail
+      - name: Check whether 'Test [ubuntu-20.04/3.1.3/normal]' did not fail
         run: 'false'
         if: |
           github.ref == 'refs/heads/main'
-          && needs.test_ubuntu_20_04-3_1_2-normal.result != 'success'
-          && (needs.test_ubuntu_20_04-3_1_2-normal.result != 'skipped'
-            || contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [ubuntu-20.04/3.1.2/normal];'))
-      - name: Check whether 'Test [ubuntu-20.04/3.1.2/jemalloc]' did not fail
+          && needs.test_ubuntu_20_04-3_1_3-normal.result != 'success'
+          && (needs.test_ubuntu_20_04-3_1_3-normal.result != 'skipped'
+            || contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [ubuntu-20.04/3.1.3/normal];'))
+      - name: Check whether 'Test [ubuntu-20.04/3.1.3/jemalloc]' did not fail
         run: 'false'
         if: |
           github.ref == 'refs/heads/main'
-          && needs.test_ubuntu_20_04-3_1_2-jemalloc.result != 'success'
-          && (needs.test_ubuntu_20_04-3_1_2-jemalloc.result != 'skipped'
-            || contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [ubuntu-20.04/3.1.2/jemalloc];'))
-      - name: Check whether 'Test [ubuntu-20.04/3.1.2/malloctrim]' did not fail
+          && needs.test_ubuntu_20_04-3_1_3-jemalloc.result != 'success'
+          && (needs.test_ubuntu_20_04-3_1_3-jemalloc.result != 'skipped'
+            || contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [ubuntu-20.04/3.1.3/jemalloc];'))
+      - name: Check whether 'Test [ubuntu-20.04/3.1.3/malloctrim]' did not fail
         run: 'false'
         if: |
           github.ref == 'refs/heads/main'
-          && needs.test_ubuntu_20_04-3_1_2-malloctrim.result != 'success'
-          && (needs.test_ubuntu_20_04-3_1_2-malloctrim.result != 'skipped'
-            || contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [ubuntu-20.04/3.1.2/malloctrim];'))
-      - name: Check whether 'Test [ubuntu-20.04/3.0.4/normal]' did not fail
+          && needs.test_ubuntu_20_04-3_1_3-malloctrim.result != 'success'
+          && (needs.test_ubuntu_20_04-3_1_3-malloctrim.result != 'skipped'
+            || contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [ubuntu-20.04/3.1.3/malloctrim];'))
+      - name: Check whether 'Test [ubuntu-20.04/3.0.5/normal]' did not fail
         run: 'false'
         if: |
           github.ref == 'refs/heads/main'
-          && needs.test_ubuntu_20_04-3_0_4-normal.result != 'success'
-          && (needs.test_ubuntu_20_04-3_0_4-normal.result != 'skipped'
-            || contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [ubuntu-20.04/3.0.4/normal];'))
-      - name: Check whether 'Test [ubuntu-20.04/3.0.4/jemalloc]' did not fail
+          && needs.test_ubuntu_20_04-3_0_5-normal.result != 'success'
+          && (needs.test_ubuntu_20_04-3_0_5-normal.result != 'skipped'
+            || contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [ubuntu-20.04/3.0.5/normal];'))
+      - name: Check whether 'Test [ubuntu-20.04/3.0.5/jemalloc]' did not fail
         run: 'false'
         if: |
           github.ref == 'refs/heads/main'
-          && needs.test_ubuntu_20_04-3_0_4-jemalloc.result != 'success'
-          && (needs.test_ubuntu_20_04-3_0_4-jemalloc.result != 'skipped'
-            || contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [ubuntu-20.04/3.0.4/jemalloc];'))
-      - name: Check whether 'Test [ubuntu-20.04/3.0.4/malloctrim]' did not fail
+          && needs.test_ubuntu_20_04-3_0_5-jemalloc.result != 'success'
+          && (needs.test_ubuntu_20_04-3_0_5-jemalloc.result != 'skipped'
+            || contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [ubuntu-20.04/3.0.5/jemalloc];'))
+      - name: Check whether 'Test [ubuntu-20.04/3.0.5/malloctrim]' did not fail
         run: 'false'
         if: |
           github.ref == 'refs/heads/main'
-          && needs.test_ubuntu_20_04-3_0_4-malloctrim.result != 'success'
-          && (needs.test_ubuntu_20_04-3_0_4-malloctrim.result != 'skipped'
-            || contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [ubuntu-20.04/3.0.4/malloctrim];'))
-      - name: Check whether 'Test [ubuntu-20.04/2.7.6/normal]' did not fail
+          && needs.test_ubuntu_20_04-3_0_5-malloctrim.result != 'success'
+          && (needs.test_ubuntu_20_04-3_0_5-malloctrim.result != 'skipped'
+            || contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [ubuntu-20.04/3.0.5/malloctrim];'))
+      - name: Check whether 'Test [ubuntu-20.04/2.7.7/normal]' did not fail
         run: 'false'
         if: |
           github.ref == 'refs/heads/main'
-          && needs.test_ubuntu_20_04-2_7_6-normal.result != 'success'
-          && (needs.test_ubuntu_20_04-2_7_6-normal.result != 'skipped'
-            || contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [ubuntu-20.04/2.7.6/normal];'))
-      - name: Check whether 'Test [ubuntu-20.04/2.7.6/jemalloc]' did not fail
+          && needs.test_ubuntu_20_04-2_7_7-normal.result != 'success'
+          && (needs.test_ubuntu_20_04-2_7_7-normal.result != 'skipped'
+            || contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [ubuntu-20.04/2.7.7/normal];'))
+      - name: Check whether 'Test [ubuntu-20.04/2.7.7/jemalloc]' did not fail
         run: 'false'
         if: |
           github.ref == 'refs/heads/main'
-          && needs.test_ubuntu_20_04-2_7_6-jemalloc.result != 'success'
-          && (needs.test_ubuntu_20_04-2_7_6-jemalloc.result != 'skipped'
-            || contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [ubuntu-20.04/2.7.6/jemalloc];'))
-      - name: Check whether 'Test [ubuntu-20.04/2.7.6/malloctrim]' did not fail
+          && needs.test_ubuntu_20_04-2_7_7-jemalloc.result != 'success'
+          && (needs.test_ubuntu_20_04-2_7_7-jemalloc.result != 'skipped'
+            || contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [ubuntu-20.04/2.7.7/jemalloc];'))
+      - name: Check whether 'Test [ubuntu-20.04/2.7.7/malloctrim]' did not fail
         run: 'false'
         if: |
           github.ref == 'refs/heads/main'
-          && needs.test_ubuntu_20_04-2_7_6-malloctrim.result != 'success'
-          && (needs.test_ubuntu_20_04-2_7_6-malloctrim.result != 'skipped'
-            || contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [ubuntu-20.04/2.7.6/malloctrim];'))
+          && needs.test_ubuntu_20_04-2_7_7-malloctrim.result != 'success'
+          && (needs.test_ubuntu_20_04-2_7_7-malloctrim.result != 'skipped'
+            || contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [ubuntu-20.04/2.7.7/malloctrim];'))
       - name: Check whether 'Test [ubuntu-22.04/3.1/normal]' did not fail
         run: 'false'
         if: |
@@ -6099,27 +6099,27 @@ jobs:
           && needs.test_ubuntu_22_04-3_1-malloctrim.result != 'success'
           && (needs.test_ubuntu_22_04-3_1-malloctrim.result != 'skipped'
             || contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [ubuntu-22.04/3.1/malloctrim];'))
-      - name: Check whether 'Test [ubuntu-22.04/3.1.2/normal]' did not fail
+      - name: Check whether 'Test [ubuntu-22.04/3.1.3/normal]' did not fail
         run: 'false'
         if: |
           github.ref == 'refs/heads/main'
-          && needs.test_ubuntu_22_04-3_1_2-normal.result != 'success'
-          && (needs.test_ubuntu_22_04-3_1_2-normal.result != 'skipped'
-            || contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [ubuntu-22.04/3.1.2/normal];'))
-      - name: Check whether 'Test [ubuntu-22.04/3.1.2/jemalloc]' did not fail
+          && needs.test_ubuntu_22_04-3_1_3-normal.result != 'success'
+          && (needs.test_ubuntu_22_04-3_1_3-normal.result != 'skipped'
+            || contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [ubuntu-22.04/3.1.3/normal];'))
+      - name: Check whether 'Test [ubuntu-22.04/3.1.3/jemalloc]' did not fail
         run: 'false'
         if: |
           github.ref == 'refs/heads/main'
-          && needs.test_ubuntu_22_04-3_1_2-jemalloc.result != 'success'
-          && (needs.test_ubuntu_22_04-3_1_2-jemalloc.result != 'skipped'
-            || contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [ubuntu-22.04/3.1.2/jemalloc];'))
-      - name: Check whether 'Test [ubuntu-22.04/3.1.2/malloctrim]' did not fail
+          && needs.test_ubuntu_22_04-3_1_3-jemalloc.result != 'success'
+          && (needs.test_ubuntu_22_04-3_1_3-jemalloc.result != 'skipped'
+            || contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [ubuntu-22.04/3.1.3/jemalloc];'))
+      - name: Check whether 'Test [ubuntu-22.04/3.1.3/malloctrim]' did not fail
         run: 'false'
         if: |
           github.ref == 'refs/heads/main'
-          && needs.test_ubuntu_22_04-3_1_2-malloctrim.result != 'success'
-          && (needs.test_ubuntu_22_04-3_1_2-malloctrim.result != 'skipped'
-            || contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [ubuntu-22.04/3.1.2/malloctrim];'))
+          && needs.test_ubuntu_22_04-3_1_3-malloctrim.result != 'success'
+          && (needs.test_ubuntu_22_04-3_1_3-malloctrim.result != 'skipped'
+            || contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against production repo [ubuntu-22.04/3.1.3/malloctrim];'))
 
 
       ### Create Git tag ###
