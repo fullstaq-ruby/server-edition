@@ -1,0 +1,17 @@
+diff --git a/version.c b/version.c
+index 7d4478eeb6..5f42c02b1a 100644
+--- a/version.c
++++ b/version.c
+@@ -41,9 +41,9 @@ const char ruby_revision[] = RUBY_FULL_REVISION;
+ const char ruby_release_date[] = RUBY_RELEASE_DATE;
+ const char ruby_platform[] = RUBY_PLATFORM;
+ const int ruby_patchlevel = RUBY_PATCHLEVEL;
+-const char ruby_description[] = RUBY_DESCRIPTION_WITH("");
+-static const char ruby_description_with_mjit[] = RUBY_DESCRIPTION_WITH(" +MJIT");
+-static const char ruby_description_with_yjit[] = RUBY_DESCRIPTION_WITH(YJIT_DESCRIPTION);
++const char ruby_description[] = RUBY_DESCRIPTION_WITH(" +malloctrim");
++static const char ruby_description_with_mjit[] = RUBY_DESCRIPTION_WITH(" +malloctrim +MJIT");
++static const char ruby_description_with_yjit[] = RUBY_DESCRIPTION_WITH(" +malloctrim " YJIT_DESCRIPTION);
+ const char ruby_copyright[] = RUBY_COPYRIGHT;
+ const char ruby_engine[] = "ruby";
+ 
