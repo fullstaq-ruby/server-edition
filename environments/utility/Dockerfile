@@ -29,7 +29,7 @@ RUN set -x && \
     usermod -L utility
 
 RUN set -x && \
-    gem install bundler --no-document -v 2.2.28 && \
+    gem install bundler --no-document -v 2.4.1 && \
     mkdir /bundle && \
     chown utility: /bundle && \
     cp /utility_build/* /home/utility/ && \
