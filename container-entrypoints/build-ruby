@@ -102,7 +102,7 @@ else
 fi
 run ./configure --prefix="$INSTALL_PREFIX" \
     --enable-shared --disable-install-static-library \
-    --disable-install-rdoc "${EXTRA_CONFIGURE_ARGS[@]}"
+    --disable-install-doc "${EXTRA_CONFIGURE_ARGS[@]}"
 run make "-j$BUILD_CONCURRENCY"
 echo
 
