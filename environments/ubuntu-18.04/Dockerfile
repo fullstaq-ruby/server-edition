@@ -12,8 +12,9 @@ RUN set -x && \
     apt update && \
     apt install -y autoconf bison bzip2 build-essential \
         dpkg-dev curl ca-certificates \
-    	libssl-dev libyaml-dev libreadline-dev zlib1g-dev \
-    	libncurses5-dev libffi-dev libgdbm5 libgdbm-dev && \
+        libssl-dev libyaml-dev libreadline-dev zlib1g-dev \
+        libncurses5-dev libffi-dev libgdbm5 libgdbm-dev && \
+        rustc && \
     apt clean && \
     rm -rf /tmp/* /var/tmp/* /var/lib/apt/lists/*
 
