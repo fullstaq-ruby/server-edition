@@ -89,6 +89,7 @@ if [[ "$VARIANT" = jemalloc ]]; then
     elif [[ "$PACKAGE_VERSION" =~ ^3\.1 ]]; then
         run patch -p1 -ti /system/resources/ruby_31_jemalloc.patch
     else
+        EXTRA_CONFIGURE_ARGS+=(--enable-yjit)
         run patch -p1 -ti /system/resources/ruby_32_jemalloc.patch
     fi
 elif [[ "$VARIANT" = malloctrim ]]; then
@@ -99,6 +100,7 @@ elif [[ "$VARIANT" = malloctrim ]]; then
     elif [[ "$PACKAGE_VERSION" =~ ^3\.1 ]]; then
         run patch -p1 -ti /system/resources/ruby_31_malloctrim.patch
     else
+        EXTRA_CONFIGURE_ARGS+=(--enable-yjit)
         run patch -p1 -ti /system/resources/ruby_32_malloctrim.patch
     fi
 else
