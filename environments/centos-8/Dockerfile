@@ -13,8 +13,8 @@ RUN set -x && \
     dnf install -y --enablerepo epel --enablerepo powertools \
         findutils gcc gcc-c++ make patch bzip2 curl autoconf automake \
         openssl-devel libyaml-devel libffi-devel readline-devel zlib-devel \
-        gdbm-devel ncurses-devel && \
-        rustc && \
+        gdbm-devel ncurses-devel \
+        rust-toolchain && \
     dnf clean all && \
     rm -rf /tmp/* /var/tmp/*
 
