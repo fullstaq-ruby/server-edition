@@ -296,6 +296,17 @@ if [[ "$VARIANT" = jemalloc ]]; then
     run c++ "-I$INCLUDE_DIR" -Wall /system/resources/test-env/jemalloc-cxx.cpp -o /tmp/jemalloc_cxx
 fi
 
+if [[ "$RUBY_PACKAGE_VERSION" =~ ^3\.2 ]]; then
+    header "Test Ruby 3.2 YJIT"
+
+    echo -n "Checking whether Ruby YJIT is disabled... "
+    output=$(ruby -e 'puts RubyVM::YJIT.enabled?')
+    assert_equals "$output" "false"
+
+    echo -n "Checking whether Ruby YJIT is enabled... "
+    output=$(ruby --yjit -e 'puts RubyVM::YJIT.enabled?')
+    assert_equals "$output" "true"
+fi
 
 echo
 echo "All tests pass."
