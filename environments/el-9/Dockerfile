@@ -14,7 +14,7 @@ RUN set -x && \
         findutils gcc gcc-c++ make patch bzip2 curl autoconf automake \
         openssl-devel libyaml-devel libffi-devel readline-devel zlib-devel \
         gdbm-devel ncurses-devel \
-        rustc && \
+        rust-toolchain && \
     dnf clean all && \
     rm -rf /tmp/* /var/tmp/*
 

@@ -213,14 +213,14 @@ jobs:
         run: ./internal-scripts/ci-cd/build-docker-images/build.sh
         env:
           IMAGE_NAME: 'ghcr.io/fullstaq-ruby/server-edition-ci-images'
-          IMAGE_TAG: 'centos-8-v1'
+          IMAGE_TAG: 'centos-8-v2'
           SOURCE_DIR: 'environments/centos-8'
 
       - name: Dump image
         run: ./internal-scripts/ci-cd/build-docker-images/dump-image.sh
         env:
           IMAGE_NAME: 'ghcr.io/fullstaq-ruby/server-edition-ci-images'
-          IMAGE_TAG: 'centos-8-v1'
+          IMAGE_TAG: 'centos-8-v2'
       - name: Archive artifact
         run: ./internal-scripts/ci-cd/upload-artifact.sh
         env:
@@ -244,14 +244,14 @@ jobs:
         run: ./internal-scripts/ci-cd/build-docker-images/build.sh
         env:
           IMAGE_NAME: 'ghcr.io/fullstaq-ruby/server-edition-ci-images'
-          IMAGE_TAG: 'debian-10-v1'
+          IMAGE_TAG: 'debian-10-v2'
           SOURCE_DIR: 'environments/debian-10'
 
       - name: Dump image
         run: ./internal-scripts/ci-cd/build-docker-images/dump-image.sh
         env:
           IMAGE_NAME: 'ghcr.io/fullstaq-ruby/server-edition-ci-images'
-          IMAGE_TAG: 'debian-10-v1'
+          IMAGE_TAG: 'debian-10-v2'
       - name: Archive artifact
         run: ./internal-scripts/ci-cd/upload-artifact.sh
         env:
@@ -275,14 +275,14 @@ jobs:
         run: ./internal-scripts/ci-cd/build-docker-images/build.sh
         env:
           IMAGE_NAME: 'ghcr.io/fullstaq-ruby/server-edition-ci-images'
-          IMAGE_TAG: 'debian-11-v1'
+          IMAGE_TAG: 'debian-11-v2'
           SOURCE_DIR: 'environments/debian-11'
 
       - name: Dump image
         run: ./internal-scripts/ci-cd/build-docker-images/dump-image.sh
         env:
           IMAGE_NAME: 'ghcr.io/fullstaq-ruby/server-edition-ci-images'
-          IMAGE_TAG: 'debian-11-v1'
+          IMAGE_TAG: 'debian-11-v2'
       - name: Archive artifact
         run: ./internal-scripts/ci-cd/upload-artifact.sh
         env:
@@ -306,14 +306,14 @@ jobs:
         run: ./internal-scripts/ci-cd/build-docker-images/build.sh
         env:
           IMAGE_NAME: 'ghcr.io/fullstaq-ruby/server-edition-ci-images'
-          IMAGE_TAG: 'debian-9-v1'
+          IMAGE_TAG: 'debian-9-v2'
           SOURCE_DIR: 'environments/debian-9'
 
       - name: Dump image
         run: ./internal-scripts/ci-cd/build-docker-images/dump-image.sh
         env:
           IMAGE_NAME: 'ghcr.io/fullstaq-ruby/server-edition-ci-images'
-          IMAGE_TAG: 'debian-9-v1'
+          IMAGE_TAG: 'debian-9-v2'
       - name: Archive artifact
         run: ./internal-scripts/ci-cd/upload-artifact.sh
         env:
@@ -337,14 +337,14 @@ jobs:
         run: ./internal-scripts/ci-cd/build-docker-images/build.sh
         env:
           IMAGE_NAME: 'ghcr.io/fullstaq-ruby/server-edition-ci-images'
-          IMAGE_TAG: 'el-9-v1'
+          IMAGE_TAG: 'el-9-v2'
           SOURCE_DIR: 'environments/el-9'
 
       - name: Dump image
         run: ./internal-scripts/ci-cd/build-docker-images/dump-image.sh
         env:
           IMAGE_NAME: 'ghcr.io/fullstaq-ruby/server-edition-ci-images'
-          IMAGE_TAG: 'el-9-v1'
+          IMAGE_TAG: 'el-9-v2'
       - name: Archive artifact
         run: ./internal-scripts/ci-cd/upload-artifact.sh
         env:
@@ -368,14 +368,14 @@ jobs:
         run: ./internal-scripts/ci-cd/build-docker-images/build.sh
         env:
           IMAGE_NAME: 'ghcr.io/fullstaq-ruby/server-edition-ci-images'
-          IMAGE_TAG: 'ubuntu-18.04-v1'
+          IMAGE_TAG: 'ubuntu-18.04-v2'
           SOURCE_DIR: 'environments/ubuntu-18.04'
 
       - name: Dump image
         run: ./internal-scripts/ci-cd/build-docker-images/dump-image.sh
         env:
           IMAGE_NAME: 'ghcr.io/fullstaq-ruby/server-edition-ci-images'
-          IMAGE_TAG: 'ubuntu-18.04-v1'
+          IMAGE_TAG: 'ubuntu-18.04-v2'
       - name: Archive artifact
         run: ./internal-scripts/ci-cd/upload-artifact.sh
         env:
@@ -399,14 +399,14 @@ jobs:
         run: ./internal-scripts/ci-cd/build-docker-images/build.sh
         env:
           IMAGE_NAME: 'ghcr.io/fullstaq-ruby/server-edition-ci-images'
-          IMAGE_TAG: 'ubuntu-20.04-v1'
+          IMAGE_TAG: 'ubuntu-20.04-v2'
           SOURCE_DIR: 'environments/ubuntu-20.04'
 
       - name: Dump image
         run: ./internal-scripts/ci-cd/build-docker-images/dump-image.sh
         env:
           IMAGE_NAME: 'ghcr.io/fullstaq-ruby/server-edition-ci-images'
-          IMAGE_TAG: 'ubuntu-20.04-v1'
+          IMAGE_TAG: 'ubuntu-20.04-v2'
       - name: Archive artifact
         run: ./internal-scripts/ci-cd/upload-artifact.sh
         env:
@@ -430,14 +430,14 @@ jobs:
         run: ./internal-scripts/ci-cd/build-docker-images/build.sh
         env:
           IMAGE_NAME: 'ghcr.io/fullstaq-ruby/server-edition-ci-images'
-          IMAGE_TAG: 'ubuntu-22.04-v1'
+          IMAGE_TAG: 'ubuntu-22.04-v2'
           SOURCE_DIR: 'environments/ubuntu-22.04'
 
       - name: Dump image
         run: ./internal-scripts/ci-cd/build-docker-images/dump-image.sh
         env:
           IMAGE_NAME: 'ghcr.io/fullstaq-ruby/server-edition-ci-images'
-          IMAGE_TAG: 'ubuntu-22.04-v1'
+          IMAGE_TAG: 'ubuntu-22.04-v2'
       - name: Archive artifact
         run: ./internal-scripts/ci-cd/upload-artifact.sh
         env:
@@ -461,14 +461,14 @@ jobs:
         run: ./internal-scripts/ci-cd/build-docker-images/build.sh
         env:
           IMAGE_NAME: 'ghcr.io/fullstaq-ruby/server-edition-ci-images'
-          IMAGE_TAG: 'utility-v1'
+          IMAGE_TAG: 'utility-v2'
           SOURCE_DIR: 'environments/utility'
 
       - name: Dump image
         run: ./internal-scripts/ci-cd/build-docker-images/dump-image.sh
         env:
           IMAGE_NAME: 'ghcr.io/fullstaq-ruby/server-edition-ci-images'
-          IMAGE_TAG: 'utility-v1'
+          IMAGE_TAG: 'utility-v2'
       - name: Archive artifact
         run: ./internal-scripts/ci-cd/upload-artifact.sh
         env:
