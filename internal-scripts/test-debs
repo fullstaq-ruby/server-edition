@@ -280,8 +280,8 @@ if [[ "$VARIANT" = jemalloc ]]; then
     run c++ "-I$INCLUDE_DIR" -Wall /system/resources/test-env/jemalloc-cxx.cpp -o /tmp/jemalloc_cxx
 fi
 
-MAJOR_VERSION=`cut -d '.' -f 1 <<< "$RUBY_PACKAGE_VERSION"`
-MINOR_VERSION=`cut -d '.' -f 2 <<< "$RUBY_PACKAGE_VERSION"`
+MAJOR_VERSION=$(cut -d '.' -f 1 <<< "$RUBY_PACKAGE_VERSION")
+MINOR_VERSION=$(cut -d '.' -f 2 <<< "$RUBY_PACKAGE_VERSION")
 if [[ ("$MAJOR_VERSION" = 3 && $MINOR_VERSION -ge 2) || "$MAJOR_VERSION" -ge 4 ]]; then
 
     header "Test Ruby >= v3.2 YJIT"
