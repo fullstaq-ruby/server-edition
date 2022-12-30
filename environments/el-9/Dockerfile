@@ -10,11 +10,11 @@ LABEL org.opencontainers.image.source https://github.com/fullstaq-ruby/server-ed
 
 RUN set -x && \
     dnf install -y dnf-plugins-core epel-release && \
-    dnf install -y --enablerepo epel --enablerepo devel  \
+    dnf install -y --enablerepo epel --enablerepo devel --allowerasing \
         findutils gcc gcc-c++ make patch bzip2 curl autoconf automake \
         openssl-devel libyaml-devel libffi-devel readline-devel zlib-devel \
         gdbm-devel ncurses-devel \
-        rust-toolchain && \
+        rust-toolset && \
     dnf clean all && \
     rm -rf /tmp/* /var/tmp/*
 
