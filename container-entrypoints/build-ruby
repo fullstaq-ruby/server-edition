@@ -94,7 +94,6 @@ if [[ "$VARIANT" = jemalloc ]]; then
     fi
 elif [[ "$VARIANT" = malloctrim ]]; then
     EXTRA_CONFIGURE_ARGS=()
-    run patch -p1 -ti /system/resources/ruby_malloctrim.patch
     if [[ "$PACKAGE_VERSION" =~ ^2\. || "$PACKAGE_VERSION" =~ ^3\.0 ]]; then
         run patch -p1 -ti /system/resources/ruby_26_malloctrim.patch
     elif [[ "$PACKAGE_VERSION" =~ ^3\.1 ]]; then
