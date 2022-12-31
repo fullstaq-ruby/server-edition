@@ -96,6 +96,9 @@ function assert_equals()
     fi
 }
 
+RUBY_MAJOR_VERSION=$(cut -d '.' -f 1 <<< "$RUBY_PACKAGE_VERSION")
+RUBY_MINOR_VERSION=$(cut -d '.' -f 2 <<< "$RUBY_PACKAGE_VERSION")
+
 echo -n "Checking whether variant is $EXPECTED_VARIANT... "
 assert_equals "$VARIANT" "$EXPECTED_VARIANT"
 
@@ -240,6 +243,16 @@ else
     fi
 fi
 
+if [[ ("$RUBY_MAJOR_VERSION" = 3 && "$RUBY_MINOR_VERSION" -ge 2) || "$RUBY_MAJOR_VERSION" -ge 4 ]]; then
+    echo -n "Checking whether YJIT can be disabled... "
+    output=$(ruby -e 'puts RubyVM::YJIT.enabled?')
+    assert_equals "$output" "false"
+
+    echo -n "Checking whether YJIT can be enabled... "
+    output=$(ruby --yjit -e 'puts RubyVM::YJIT.enabled?')
+    assert_equals "$output" "true"
+fi
+
 echo -n "Checking whether package contains no static libraries... "
 shopt -s nullglob
 static_libs=("/usr/lib/rbenv/versions/$RUBY_PACKAGE_VERSION/lib"/*.a)
@@ -294,21 +307,6 @@ if [[ "$VARIANT" = jemalloc ]]; then
     header "Test Jemalloc C++ compatibility"
     INCLUDE_DIR=$(ruby -rrbconfig -e 'puts RbConfig::CONFIG["rubyhdrdir"]')
     run c++ "-I$INCLUDE_DIR" -Wall /system/resources/test-env/jemalloc-cxx.cpp -o /tmp/jemalloc_cxx
-fi
-
-MAJOR_VERSION=$(cut -d '.' -f 1 <<< "$RUBY_PACKAGE_VERSION")
-MINOR_VERSION=$(cut -d '.' -f 2 <<< "$RUBY_PACKAGE_VERSION")
-if [[ ("$MAJOR_VERSION" = 3 && $MINOR_VERSION -ge 2) || "$MAJOR_VERSION" -ge 4 ]]; then
-
-    header "Test Ruby >= v3.2 YJIT"
-
-    echo -n "Checking whether Ruby YJIT is disabled... "
-    output=$(ruby -e 'puts RubyVM::YJIT.enabled?')
-    assert_equals "$output" "false"
-
-    echo -n "Checking whether Ruby YJIT is enabled... "
-    output=$(ruby --yjit -e 'puts RubyVM::YJIT.enabled?')
-    assert_equals "$output" "true"
 fi
 
 echo
