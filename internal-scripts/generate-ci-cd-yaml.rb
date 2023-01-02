@@ -50,7 +50,7 @@ private
     puts "Regenerating #{WORKFLOWS_SUBPATH}/#{output_name || template_name}.yml"
 
     template_src = File.read(input_path, mode: 'r:utf-8')
-    erb = ERB.new(template_src, nil, '-', '@erb_out')
+    erb = ERB.new(template_src, trim_mode: '-', eoutvar: '@erb_out')
     erb.location = input_path
 
     context = TemplateContext.new

@@ -23,6 +23,10 @@ indent_size = 2
 indent_style = space
 indent_size = 2
 
+[*.patch]
+trim_trailing_whitespace = false
+insert_final_newline = false
+
 [container-entrypoints/*]
 indent_style = space
 indent_size = 4

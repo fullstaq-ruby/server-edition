@@ -39,7 +39,12 @@ RUN curl -fsSLo sccache.tar.gz https://github.com/mozilla/sccache/releases/downl
     addgroup --gid 9999 builder && \
     adduser --uid 9999 --gid 9999 --disabled-password --gecos Builder builder && \
     usermod -L builder && \
+    \
+    curl -o /tmp/rustup-init.sh --proto '=https' --tlsv1.2 -fsSL https://sh.rustup.rs && \
+    su builder -c 'bash /tmp/rustup-init.sh -y --no-modify-path --profile minimal --default-toolchain 1.61' && \
+    \
     rm -rf /tmp/* /var/tmp/*
 
 USER builder
+ENV PATH /home/builder/.cargo/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
 ENTRYPOINT ["/sbin/matchhostfsowner"]

@@ -11,15 +11,13 @@ index d251da9915..5e2a67db1b 100644
  AC_CHECK_FUNCS(memalign)
  AC_CHECK_FUNCS(memset_s)
 diff --git a/gc.c b/gc.c
-index 1331ef21dc..12caa162e7 100644
+index 0fccc17..ec46289 100644
 --- a/gc.c
 +++ b/gc.c
-@@ -6660,7 +6660,15 @@ gc_start(rb_objspace_t *objspace, int reason)
- 
+@@ -9545,6 +9545,14 @@ gc_start(rb_objspace_t *objspace, unsigned int reason)
      gc_prof_timer_start(objspace);
      {
--	gc_marks(objspace, do_full_mark);
-+        gc_marks(objspace, do_full_mark);
+         gc_marks(objspace, do_full_mark);
 +#ifdef HAVE_MALLOC_TRIM
 +        /* [Experimental] Explicitly free all eligible pages to the kernel.  See:
 +         *
@@ -31,22 +29,23 @@ index 1331ef21dc..12caa162e7 100644
      }
      gc_prof_timer_stop(objspace);
  
-
-diff --git a/version.c b/version.c
-index 3215368e20..9eebdbf6be 100644
---- a/version.c
+diff --git a/version-old.c b/version.c
+index 653a423..92ed984 100644
+--- a/version-old.c
 +++ b/version.c
-@@ -32,8 +32,13 @@ const char ruby_version[] = RUBY_VERSION;
+@@ -70,9 +70,15 @@ const char ruby_revision[] = RUBY_FULL_REVISION;
  const char ruby_release_date[] = RUBY_RELEASE_DATE;
  const char ruby_platform[] = RUBY_PLATFORM;
  const int ruby_patchlevel = RUBY_PATCHLEVEL;
 +#ifdef HAVE_MALLOC_TRIM
-+const char ruby_description[] = RUBY_DESCRIPTION_WITH("+malloctrim");
-+static const char ruby_description_with_jit[] = RUBY_DESCRIPTION_WITH(" +JIT +malloctrim");
++const char ruby_description[] = RUBY_DESCRIPTION_WITH(" +malloctrim");
++static const char ruby_description_with_mjit[] = RUBY_DESCRIPTION_WITH(" +malloctrim +MJIT");
++static const char ruby_description_with_yjit[] = RUBY_DESCRIPTION_WITH(" +malloctrim " YJIT_DESCRIPTION);
 +#else
  const char ruby_description[] = RUBY_DESCRIPTION_WITH("");
- static const char ruby_description_with_jit[] = RUBY_DESCRIPTION_WITH(" +JIT");
+ static const char ruby_description_with_mjit[] = RUBY_DESCRIPTION_WITH(" +MJIT");
+ static const char ruby_description_with_yjit[] = RUBY_DESCRIPTION_WITH(YJIT_DESCRIPTION);
 +#endif
- const char ruby_copyright[] = RUBY_COPYRIGHT;
- const char ruby_engine[] = "ruby";
- 
+ const char ruby_copyright[] = "ruby - Copyright (C) "
+     RUBY_BIRTH_YEAR_STR "-" RUBY_RELEASE_YEAR_STR " "
+     RUBY_AUTHOR;

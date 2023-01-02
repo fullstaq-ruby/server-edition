@@ -1,17 +1,54 @@
+diff --git a/configure.ac b/configure.ac
+index d251da9915..5e2a67db1b 100644
+--- a/configure.ac
++++ b/configure.ac
+@@ -1825,6 +1825,7 @@ AC_CHECK_FUNCS(lstat)
+ AC_CHECK_FUNCS(lutimes)
+ AC_CHECK_FUNCS(malloc_usable_size)
+ AC_CHECK_FUNCS(malloc_size)
++AC_CHECK_FUNCS(malloc_trim)
+ AC_CHECK_FUNCS(mblen)
+ AC_CHECK_FUNCS(memalign)
+ AC_CHECK_FUNCS(memset_s)
+diff --git a/gc.c b/gc.c
+index 1331ef21dc..12caa162e7 100644
+--- a/gc.c
++++ b/gc.c
+@@ -6660,7 +6660,15 @@ gc_start(rb_objspace_t *objspace, int reason)
+ 
+     gc_prof_timer_start(objspace);
+     {
+-	gc_marks(objspace, do_full_mark);
++        gc_marks(objspace, do_full_mark);
++#ifdef HAVE_MALLOC_TRIM
++        /* [Experimental] Explicitly free all eligible pages to the kernel.  See:
++         *
++         * - https://www.joyfulbikeshedding.com/blog/2019-03-14-what-causes-ruby-memory-bloat.html
++         * - https://bugs.ruby-lang.org/issues/15667
++         */
++        if (do_full_mark) malloc_trim(0);
++#endif
+     }
+     gc_prof_timer_stop(objspace);
+ 
+
 diff --git a/version.c b/version.c
 index 7d4478eeb6..5f42c02b1a 100644
 --- a/version.c
 +++ b/version.c
-@@ -41,9 +41,9 @@ const char ruby_revision[] = RUBY_FULL_REVISION;
+@@ -41,9 +41,15 @@ const char ruby_revision[] = RUBY_FULL_REVISION;
  const char ruby_release_date[] = RUBY_RELEASE_DATE;
  const char ruby_platform[] = RUBY_PLATFORM;
  const int ruby_patchlevel = RUBY_PATCHLEVEL;
--const char ruby_description[] = RUBY_DESCRIPTION_WITH("");
--static const char ruby_description_with_mjit[] = RUBY_DESCRIPTION_WITH(" +MJIT");
--static const char ruby_description_with_yjit[] = RUBY_DESCRIPTION_WITH(" +YJIT");
++#ifdef HAVE_MALLOC_TRIM
 +const char ruby_description[] = RUBY_DESCRIPTION_WITH(" +malloctrim");
 +static const char ruby_description_with_mjit[] = RUBY_DESCRIPTION_WITH(" +malloctrim +MJIT");
 +static const char ruby_description_with_yjit[] = RUBY_DESCRIPTION_WITH(" +malloctrim +YJIT");
++#else
+ const char ruby_description[] = RUBY_DESCRIPTION_WITH("");
+ static const char ruby_description_with_mjit[] = RUBY_DESCRIPTION_WITH(" +MJIT");
+ static const char ruby_description_with_yjit[] = RUBY_DESCRIPTION_WITH(" +YJIT");
++#endif
  const char ruby_copyright[] = RUBY_COPYRIGHT;
  const char ruby_engine[] = "ruby";
  
