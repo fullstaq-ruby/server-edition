@@ -68,7 +68,8 @@ jobs:
 
   publish:
     name: Publish packages
-    runs-on: ubuntu-20.04
+    # Ubuntu 22.04 runner has more free disk space than 20.04
+    runs-on: ubuntu-22.04
     environment: Production repos
     permissions:
       packages: read
@@ -126,6 +127,11 @@ jobs:
           TESTING: false
           OVERWRITE_EXISTING: false
           DRY_RUN: ${{ github.ref != 'refs/heads/main' }}
+          CLEANUP: true
+
+      - name: Free up disk space
+        run: sudo rm -rf /usr/share/dotnet "$AGENT_TOOLSDIRECTORY"
+
       - name: Upload RPMs to repo
         run: ./internal-scripts/ci-cd/publish/publish-rpms.rb pkgs/*/*.rpm
         env:

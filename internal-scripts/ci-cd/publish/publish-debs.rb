@@ -24,6 +24,7 @@ class PublishDebs
       require_envvar 'CI_ARTIFACTS_RUN_NUMBER'
     end
     optional_envvar 'DRY_RUN'
+    optional_envvar 'CLEANUP'
     optional_envvar 'REMOTE_STATE_URL'
     optional_envvar 'LATEST_PRODUCTION_REPO_VERSION'
     @package_paths = ARGV
@@ -84,6 +85,8 @@ class PublishDebs
     else
       print_conclusion(version + 1)
     end
+
+    maybe_cleanup
   end
 
 private
@@ -638,6 +641,13 @@ private
 
   def print_conclusion(version)
     log_notice "The APT repository is now live at: #{remote_repo_public_url(version)}"
+  end
+
+  def maybe_cleanup
+    if getenv_boolean('CLEANUP')
+      log_info "Cleaning up #{@temp_dir}"
+      FileUtils.remove_entry_secure(@temp_dir)
+    end
   end
 end
 

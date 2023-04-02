@@ -78,7 +78,8 @@ jobs:
 
   publish:
     name: Publish packages
-    runs-on: ubuntu-20.04
+    # Ubuntu 22.04 runner has more free disk space than 20.04
+    runs-on: ubuntu-22.04
     permissions:
       packages: read
     needs:
@@ -134,6 +135,11 @@ jobs:
           CI_ARTIFACTS_BUCKET_NAME: ${{ env.CI_ARTIFACTS_BUCKET }}
           TESTING: true
           OVERWRITE_EXISTING: false
+          CLEANUP: true
+
+      - name: Free up disk space
+        run: sudo rm -rf /usr/share/dotnet "$AGENT_TOOLSDIRECTORY"
+
       - name: Upload RPMs to repo
         run: ./internal-scripts/ci-cd/publish/publish-rpms.rb pkgs/*/*.rpm
         env:
