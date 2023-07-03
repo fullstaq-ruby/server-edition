@@ -482,11 +482,10 @@ deb https://apt.fullstaqruby.org debian-11 main
 deb https://apt.fullstaqruby.org debian-10 main
 ~~~
 
-Then run:
+Then download the Fullstaq Ruby public key and update APT:
 
 ~~~bash
-curl -SLfO https://raw.githubusercontent.com/fullstaq-labs/fullstaq-ruby-server-edition/main/fullstaq-ruby.asc
-sudo apt-key add fullstaq-ruby.asc
+curl -SLfo /etc/apt/trusted.gpg.d/fullstaq-ruby.asc https://raw.githubusercontent.com/fullstaq-labs/fullstaq-ruby-server-edition/main/fullstaq-ruby.asc
 sudo apt update
 ~~~
 
