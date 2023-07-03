@@ -2,6 +2,9 @@
 # when running a test suite.
 source 'https://rubygems.org'
 
+# Must allow for the minimum Ruby version that we support in config.yml.
+ruby '>= 2.7'
+
 # Test engine to use
 gem 'rspec'
 
