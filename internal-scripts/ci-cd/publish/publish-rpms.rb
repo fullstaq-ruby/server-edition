@@ -354,7 +354,7 @@ private
       '-v', "#{dir}:/input:delegated",
       '--user', "#{Process.uid}:#{Process.gid}",
       utility_image_name,
-      'createrepo',
+      'createrepo_c',
       *update_arg,
       '/input',
       log_invocation: true,

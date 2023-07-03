@@ -1,5 +1,6 @@
 source 'https://rubygems.org'
 
-ruby '>= 2.5'
+# Must match Ruby version installed in the utility image.
+ruby '>= 3.0'
 
 gem 'fpm'

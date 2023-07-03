@@ -1,4 +1,4 @@
-FROM ubuntu:18.04
+FROM ubuntu:22.04
 
 # Used to link container image to the repo:
 # https://docs.github.com/en/free-pro-team@latest/packages/managing-container-images-with-github-container-registry/connecting-a-repository-to-a-container-image#connecting-a-repository-to-a-container-image-on-the-command-line
@@ -14,7 +14,7 @@ RUN set -x && \
     apt update && \
     apt install -y wget ca-certificates binutils build-essential \
         curl ca-certificates rpm file ruby ruby-dev rubygems sudo \
-        aptly createrepo parallel && \
+        aptly createrepo-c parallel && \
     apt clean && \
     rm -rf /tmp/* /var/tmp/* /var/lib/apt/lists/*
 
@@ -28,8 +28,9 @@ RUN set -x && \
     adduser --uid 9999 --gid 9999 --disabled-password --gecos Utility utility && \
     usermod -L utility
 
+# Bundler version must match the one in Gemfile.lock.
 RUN set -x && \
-    gem install bundler --no-document -v 2.2.28 && \
+    gem install bundler --no-document -v "$(grep -A 1 'BUNDLED WITH' /utility_build/Gemfile.lock | tail -n 1)" && \
     mkdir /bundle && \
     chown utility: /bundle && \
     cp /utility_build/* /home/utility/ && \
