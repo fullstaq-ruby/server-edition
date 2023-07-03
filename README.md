@@ -43,6 +43,7 @@ You can think of Fullstaq Ruby as a competitor of `apt/yum install ruby`, `rbenv
    - [Passenger for Nginx/Apache integration](#passenger-for-nginxapache-integration)
    - [Puma, Unicorn or Passenger Standalone integration](#puma-unicorn-or-passenger-standalone-integration)
    - [Capistrano integration](#capistrano-integration)
+   - [Automatic updates (unattended upgrades)](#automatic-updates-unattended-upgrades)
  * [FAQ](#faq)
    - [What is Jemalloc and how does it benefit me?](#what-is-jemalloc-and-how-does-it-benefit-me)
    - [What is malloc_trim and how does it benefit me?](#what-is-malloc_trim-and-how-does-it-benefit-me)
@@ -265,6 +266,8 @@ You activate a specific version by using regular Rbenv commands:
 
     - /usr/lib/rbenv/versions/3.0/bin/ruby
     - /usr/lib/rbenv/versions/3.0/lib/ruby/gems/3.0.0
+
+> **Tip:** You should also configure [automatic updates (unattended upgrades)](#automatic-updates-unattended-upgrades).
 
 ### About variants
 
@@ -744,6 +747,25 @@ set :rbenv_ruby, '3.1.1'
 # Use Ruby 3.1.1, jemalloc variant
 set :rbenv_ruby, '3.1.1-jemalloc'
 ~~~
+
+### Automatic updates (unattended upgrades)
+
+On Debian/Ubuntu, you can configure automatic updates using `unattended-upgrades`. This is especially useful in combination with [minor version packages](#minor-version-packages-a-great-way-to-keep-ruby-security-patched) so that you can automatically upgrade Ruby from, say, 3.2.1 to 3.2.2 (but not 3.3).
+
+Make sure unattended-upgrades are installed:
+
+~~~bash
+sudo apt install unattended-upgrades
+~~~
+
+Then in `/etc/apt/apt.conf.d/50unattended-upgrades`, add `origin=Fullstaq Ruby` to `Unattended-Upgrade::Origins-Pattern`, like this:
+
+```
+Unattended-Upgrade::Origins-Pattern {
+    ...
+    "origin=Fullstaq Ruby";
+}
+```
 
 ## FAQ
 

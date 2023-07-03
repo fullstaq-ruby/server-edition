@@ -11,6 +11,9 @@ require 'tmpdir'
 require 'set'
 
 class PublishDebs
+  REPO_ORIGIN = 'Fullstaq Ruby'
+  REPO_LABEL = 'Fullstaq Ruby'
+
   include CiWorkflowSupport
   include ShellScriptingSupport
   include PublishingSupport
@@ -529,6 +532,8 @@ private
       "-config=#{@aptly_config_path}",
       "-gpg-key=#{@gpg_key_id}",
       "-distribution=#{distro}",
+      "-origin=#{REPO_ORIGIN}",
+      "-label=#{REPO_LABEL}",
       aptly_repo_name(distro), 'filesystem:main:.',
       log_invocation: true,
       check_error: false
@@ -541,6 +546,8 @@ private
           "-config=#{@aptly_config_path}",
           "-gpg-key=#{@gpg_key_id}",
           "-distribution=#{distro}",
+          "-origin=#{REPO_ORIGIN}",
+          "-label=#{REPO_LABEL}",
           aptly_repo_name(distro), 'filesystem:main:.',
           log_invocation: true,
           check_error: true
