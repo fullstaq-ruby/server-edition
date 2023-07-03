@@ -28,7 +28,7 @@ jobs:
   # exist in this run.
   determine_necessary_jobs:
     name: Determine necessary jobs
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     outputs:
       necessary_jobs: ${{ steps.check.outputs.necessary_jobs }}
     permissions:
@@ -59,7 +59,7 @@ jobs:
 
   check_workflow_uptodate:
     name: Check whether workflow is up-to-date
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     steps:
       - uses: actions/checkout@v3
       - name: Check
@@ -71,7 +71,7 @@ jobs:
     needs:
       - determine_necessary_jobs
       - download_rbenv_source
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     # Run even if a dependent job has been skipped
     if: '!failure() && !cancelled()'
     steps:
@@ -86,7 +86,7 @@ jobs:
           fetch-depth: 0
       - uses: ruby/setup-ruby@v1
         with:
-          ruby-version: '2.6'
+          ruby-version: '3.2'
       - name: Login to Google Cloud
         uses: ./.github/actions/gcloud-login
         with:
@@ -129,7 +129,7 @@ jobs:
   bundle_install:
     name: Install gem bundle
     needs: determine_necessary_jobs
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Install gem bundle;')
     steps:
       - uses: actions/checkout@v3
@@ -139,7 +139,7 @@ jobs:
           private_key: ${{ secrets.GCLOUD_KEY }}
       - uses: ruby/setup-ruby@v1
         with:
-          ruby-version: 2.7
+          ruby-version: 3.2
           bundler-cache: true
         env:
           BUNDLE_CLEAN: true
@@ -158,7 +158,7 @@ jobs:
   <%- unindent(2) do -%>
     build_docker_image_<%= slug(image[:id]) %>:
       name: 'Build Docker image [<%= image[:id] %>]'
-      runs-on: ubuntu-20.04
+      runs-on: ubuntu-22.04
       needs:
         - determine_necessary_jobs
       if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Docker image <%= image[:id] %>;')
@@ -198,7 +198,7 @@ jobs:
       name: Download Ruby source [<%= ruby_version %>]
       needs:
         - determine_necessary_jobs
-      runs-on: ubuntu-20.04
+      runs-on: ubuntu-22.04
       if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Download Ruby source <%= ruby_version %>;')
       steps:
         - uses: actions/checkout@v3
@@ -226,7 +226,7 @@ jobs:
     name: Download Rbenv source
     needs:
       - determine_necessary_jobs
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Download Rbenv source;')
     steps:
       - uses: actions/checkout@v3
@@ -255,7 +255,7 @@ jobs:
 
   build_common_deb:
     name: Build common DEB
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     permissions:
       packages: read
     needs:
@@ -315,7 +315,7 @@ jobs:
 
   build_common_rpm:
     name: Build common RPM
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     permissions:
       packages: read
     needs:
@@ -377,7 +377,7 @@ jobs:
 
   build_rbenv_deb:
     name: Build Rbenv DEB
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     permissions:
       packages: read
     needs:
@@ -444,7 +444,7 @@ jobs:
 
   build_rbenv_rpm:
     name: Build Rbenv RPM
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     permissions:
       packages: read
     needs:
@@ -531,7 +531,7 @@ jobs:
       - build_common_rpm
       - build_rbenv_deb
       - build_rbenv_rpm
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     if: 'always()'
     steps:
       - uses: actions/checkout@v3
@@ -727,7 +727,7 @@ jobs:
 
       - uses: ruby/setup-ruby@v1
         with:
-          ruby-version: 2.7
+          ruby-version: 3.2
 
       - run: bundle install --local
         env:

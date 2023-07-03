@@ -32,7 +32,7 @@ jobs:
   # exist in this run.
   determine_necessary_jobs:
     name: Determine necessary jobs
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     permissions:
       checks: write
       packages: read
@@ -155,7 +155,7 @@ jobs:
 
   test_centos_7-2_7-normal:
     name: 'Test [centos-7/2.7/normal]'
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     needs:
       - determine_necessary_jobs
       - publish
@@ -189,7 +189,7 @@ jobs:
 
   test_centos_7-2_7-jemalloc:
     name: 'Test [centos-7/2.7/jemalloc]'
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     needs:
       - determine_necessary_jobs
       - publish
@@ -223,7 +223,7 @@ jobs:
 
   test_centos_7-2_7-malloctrim:
     name: 'Test [centos-7/2.7/malloctrim]'
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     needs:
       - determine_necessary_jobs
       - publish
@@ -257,7 +257,7 @@ jobs:
 
   test_centos_7-2_7_8-normal:
     name: 'Test [centos-7/2.7.8/normal]'
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     needs:
       - determine_necessary_jobs
       - publish
@@ -291,7 +291,7 @@ jobs:
 
   test_centos_7-2_7_8-jemalloc:
     name: 'Test [centos-7/2.7.8/jemalloc]'
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     needs:
       - determine_necessary_jobs
       - publish
@@ -325,7 +325,7 @@ jobs:
 
   test_centos_7-2_7_8-malloctrim:
     name: 'Test [centos-7/2.7.8/malloctrim]'
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     needs:
       - determine_necessary_jobs
       - publish
@@ -360,7 +360,7 @@ jobs:
 
   test_centos_8-3_2-normal:
     name: 'Test [centos-8/3.2/normal]'
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     needs:
       - determine_necessary_jobs
       - publish
@@ -394,7 +394,7 @@ jobs:
 
   test_centos_8-3_2-jemalloc:
     name: 'Test [centos-8/3.2/jemalloc]'
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     needs:
       - determine_necessary_jobs
       - publish
@@ -428,7 +428,7 @@ jobs:
 
   test_centos_8-3_2-malloctrim:
     name: 'Test [centos-8/3.2/malloctrim]'
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     needs:
       - determine_necessary_jobs
       - publish
@@ -462,7 +462,7 @@ jobs:
 
   test_centos_8-3_1-normal:
     name: 'Test [centos-8/3.1/normal]'
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     needs:
       - determine_necessary_jobs
       - publish
@@ -496,7 +496,7 @@ jobs:
 
   test_centos_8-3_1-jemalloc:
     name: 'Test [centos-8/3.1/jemalloc]'
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     needs:
       - determine_necessary_jobs
       - publish
@@ -530,7 +530,7 @@ jobs:
 
   test_centos_8-3_1-malloctrim:
     name: 'Test [centos-8/3.1/malloctrim]'
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     needs:
       - determine_necessary_jobs
       - publish
@@ -564,7 +564,7 @@ jobs:
 
   test_centos_8-3_0-normal:
     name: 'Test [centos-8/3.0/normal]'
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     needs:
       - determine_necessary_jobs
       - publish
@@ -598,7 +598,7 @@ jobs:
 
   test_centos_8-3_0-jemalloc:
     name: 'Test [centos-8/3.0/jemalloc]'
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     needs:
       - determine_necessary_jobs
       - publish
@@ -632,7 +632,7 @@ jobs:
 
   test_centos_8-3_0-malloctrim:
     name: 'Test [centos-8/3.0/malloctrim]'
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     needs:
       - determine_necessary_jobs
       - publish
@@ -666,7 +666,7 @@ jobs:
 
   test_centos_8-2_7-normal:
     name: 'Test [centos-8/2.7/normal]'
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     needs:
       - determine_necessary_jobs
       - publish
@@ -700,7 +700,7 @@ jobs:
 
   test_centos_8-2_7-jemalloc:
     name: 'Test [centos-8/2.7/jemalloc]'
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     needs:
       - determine_necessary_jobs
       - publish
@@ -734,7 +734,7 @@ jobs:
 
   test_centos_8-2_7-malloctrim:
     name: 'Test [centos-8/2.7/malloctrim]'
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     needs:
       - determine_necessary_jobs
       - publish
@@ -768,7 +768,7 @@ jobs:
 
   test_centos_8-3_2_2-normal:
     name: 'Test [centos-8/3.2.2/normal]'
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     needs:
       - determine_necessary_jobs
       - publish
@@ -802,7 +802,7 @@ jobs:
 
   test_centos_8-3_2_2-jemalloc:
     name: 'Test [centos-8/3.2.2/jemalloc]'
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     needs:
       - determine_necessary_jobs
       - publish
@@ -836,7 +836,7 @@ jobs:
 
   test_centos_8-3_2_2-malloctrim:
     name: 'Test [centos-8/3.2.2/malloctrim]'
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     needs:
       - determine_necessary_jobs
       - publish
@@ -870,7 +870,7 @@ jobs:
 
   test_centos_8-3_1_4-normal:
     name: 'Test [centos-8/3.1.4/normal]'
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     needs:
       - determine_necessary_jobs
       - publish
@@ -904,7 +904,7 @@ jobs:
 
   test_centos_8-3_1_4-jemalloc:
     name: 'Test [centos-8/3.1.4/jemalloc]'
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     needs:
       - determine_necessary_jobs
       - publish
@@ -938,7 +938,7 @@ jobs:
 
   test_centos_8-3_1_4-malloctrim:
     name: 'Test [centos-8/3.1.4/malloctrim]'
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     needs:
       - determine_necessary_jobs
       - publish
@@ -972,7 +972,7 @@ jobs:
 
   test_centos_8-3_0_6-normal:
     name: 'Test [centos-8/3.0.6/normal]'
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     needs:
       - determine_necessary_jobs
       - publish
@@ -1006,7 +1006,7 @@ jobs:
 
   test_centos_8-3_0_6-jemalloc:
     name: 'Test [centos-8/3.0.6/jemalloc]'
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     needs:
       - determine_necessary_jobs
       - publish
@@ -1040,7 +1040,7 @@ jobs:
 
   test_centos_8-3_0_6-malloctrim:
     name: 'Test [centos-8/3.0.6/malloctrim]'
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     needs:
       - determine_necessary_jobs
       - publish
@@ -1074,7 +1074,7 @@ jobs:
 
   test_centos_8-2_7_8-normal:
     name: 'Test [centos-8/2.7.8/normal]'
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     needs:
       - determine_necessary_jobs
       - publish
@@ -1108,7 +1108,7 @@ jobs:
 
   test_centos_8-2_7_8-jemalloc:
     name: 'Test [centos-8/2.7.8/jemalloc]'
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     needs:
       - determine_necessary_jobs
       - publish
@@ -1142,7 +1142,7 @@ jobs:
 
   test_centos_8-2_7_8-malloctrim:
     name: 'Test [centos-8/2.7.8/malloctrim]'
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     needs:
       - determine_necessary_jobs
       - publish
@@ -1177,7 +1177,7 @@ jobs:
 
   test_debian_10-3_2-normal:
     name: 'Test [debian-10/3.2/normal]'
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     needs:
       - determine_necessary_jobs
       - publish
@@ -1211,7 +1211,7 @@ jobs:
 
   test_debian_10-3_2-jemalloc:
     name: 'Test [debian-10/3.2/jemalloc]'
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     needs:
       - determine_necessary_jobs
       - publish
@@ -1245,7 +1245,7 @@ jobs:
 
   test_debian_10-3_2-malloctrim:
     name: 'Test [debian-10/3.2/malloctrim]'
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     needs:
       - determine_necessary_jobs
       - publish
@@ -1279,7 +1279,7 @@ jobs:
 
   test_debian_10-3_1-normal:
     name: 'Test [debian-10/3.1/normal]'
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     needs:
       - determine_necessary_jobs
       - publish
@@ -1313,7 +1313,7 @@ jobs:
 
   test_debian_10-3_1-jemalloc:
     name: 'Test [debian-10/3.1/jemalloc]'
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     needs:
       - determine_necessary_jobs
       - publish
@@ -1347,7 +1347,7 @@ jobs:
 
   test_debian_10-3_1-malloctrim:
     name: 'Test [debian-10/3.1/malloctrim]'
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     needs:
       - determine_necessary_jobs
       - publish
@@ -1381,7 +1381,7 @@ jobs:
 
   test_debian_10-3_0-normal:
     name: 'Test [debian-10/3.0/normal]'
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     needs:
       - determine_necessary_jobs
       - publish
@@ -1415,7 +1415,7 @@ jobs:
 
   test_debian_10-3_0-jemalloc:
     name: 'Test [debian-10/3.0/jemalloc]'
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     needs:
       - determine_necessary_jobs
       - publish
@@ -1449,7 +1449,7 @@ jobs:
 
   test_debian_10-3_0-malloctrim:
     name: 'Test [debian-10/3.0/malloctrim]'
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     needs:
       - determine_necessary_jobs
       - publish
@@ -1483,7 +1483,7 @@ jobs:
 
   test_debian_10-2_7-normal:
     name: 'Test [debian-10/2.7/normal]'
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     needs:
       - determine_necessary_jobs
       - publish
@@ -1517,7 +1517,7 @@ jobs:
 
   test_debian_10-2_7-jemalloc:
     name: 'Test [debian-10/2.7/jemalloc]'
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     needs:
       - determine_necessary_jobs
       - publish
@@ -1551,7 +1551,7 @@ jobs:
 
   test_debian_10-2_7-malloctrim:
     name: 'Test [debian-10/2.7/malloctrim]'
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     needs:
       - determine_necessary_jobs
       - publish
@@ -1585,7 +1585,7 @@ jobs:
 
   test_debian_10-3_2_2-normal:
     name: 'Test [debian-10/3.2.2/normal]'
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     needs:
       - determine_necessary_jobs
       - publish
@@ -1619,7 +1619,7 @@ jobs:
 
   test_debian_10-3_2_2-jemalloc:
     name: 'Test [debian-10/3.2.2/jemalloc]'
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     needs:
       - determine_necessary_jobs
       - publish
@@ -1653,7 +1653,7 @@ jobs:
 
   test_debian_10-3_2_2-malloctrim:
     name: 'Test [debian-10/3.2.2/malloctrim]'
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     needs:
       - determine_necessary_jobs
       - publish
@@ -1687,7 +1687,7 @@ jobs:
 
   test_debian_10-3_1_4-normal:
     name: 'Test [debian-10/3.1.4/normal]'
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     needs:
       - determine_necessary_jobs
       - publish
@@ -1721,7 +1721,7 @@ jobs:
 
   test_debian_10-3_1_4-jemalloc:
     name: 'Test [debian-10/3.1.4/jemalloc]'
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     needs:
       - determine_necessary_jobs
       - publish
@@ -1755,7 +1755,7 @@ jobs:
 
   test_debian_10-3_1_4-malloctrim:
     name: 'Test [debian-10/3.1.4/malloctrim]'
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     needs:
       - determine_necessary_jobs
       - publish
@@ -1789,7 +1789,7 @@ jobs:
 
   test_debian_10-3_0_6-normal:
     name: 'Test [debian-10/3.0.6/normal]'
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     needs:
       - determine_necessary_jobs
       - publish
@@ -1823,7 +1823,7 @@ jobs:
 
   test_debian_10-3_0_6-jemalloc:
     name: 'Test [debian-10/3.0.6/jemalloc]'
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     needs:
       - determine_necessary_jobs
       - publish
@@ -1857,7 +1857,7 @@ jobs:
 
   test_debian_10-3_0_6-malloctrim:
     name: 'Test [debian-10/3.0.6/malloctrim]'
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     needs:
       - determine_necessary_jobs
       - publish
@@ -1891,7 +1891,7 @@ jobs:
 
   test_debian_10-2_7_8-normal:
     name: 'Test [debian-10/2.7.8/normal]'
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     needs:
       - determine_necessary_jobs
       - publish
@@ -1925,7 +1925,7 @@ jobs:
 
   test_debian_10-2_7_8-jemalloc:
     name: 'Test [debian-10/2.7.8/jemalloc]'
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     needs:
       - determine_necessary_jobs
       - publish
@@ -1959,7 +1959,7 @@ jobs:
 
   test_debian_10-2_7_8-malloctrim:
     name: 'Test [debian-10/2.7.8/malloctrim]'
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     needs:
       - determine_necessary_jobs
       - publish
@@ -1994,7 +1994,7 @@ jobs:
 
   test_debian_11-3_2-normal:
     name: 'Test [debian-11/3.2/normal]'
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     needs:
       - determine_necessary_jobs
       - publish
@@ -2028,7 +2028,7 @@ jobs:
 
   test_debian_11-3_2-jemalloc:
     name: 'Test [debian-11/3.2/jemalloc]'
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     needs:
       - determine_necessary_jobs
       - publish
@@ -2062,7 +2062,7 @@ jobs:
 
   test_debian_11-3_2-malloctrim:
     name: 'Test [debian-11/3.2/malloctrim]'
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     needs:
       - determine_necessary_jobs
       - publish
@@ -2096,7 +2096,7 @@ jobs:
 
   test_debian_11-3_1-normal:
     name: 'Test [debian-11/3.1/normal]'
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     needs:
       - determine_necessary_jobs
       - publish
@@ -2130,7 +2130,7 @@ jobs:
 
   test_debian_11-3_1-jemalloc:
     name: 'Test [debian-11/3.1/jemalloc]'
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     needs:
       - determine_necessary_jobs
       - publish
@@ -2164,7 +2164,7 @@ jobs:
 
   test_debian_11-3_1-malloctrim:
     name: 'Test [debian-11/3.1/malloctrim]'
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     needs:
       - determine_necessary_jobs
       - publish
@@ -2198,7 +2198,7 @@ jobs:
 
   test_debian_11-3_0-normal:
     name: 'Test [debian-11/3.0/normal]'
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     needs:
       - determine_necessary_jobs
       - publish
@@ -2232,7 +2232,7 @@ jobs:
 
   test_debian_11-3_0-jemalloc:
     name: 'Test [debian-11/3.0/jemalloc]'
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     needs:
       - determine_necessary_jobs
       - publish
@@ -2266,7 +2266,7 @@ jobs:
 
   test_debian_11-3_0-malloctrim:
     name: 'Test [debian-11/3.0/malloctrim]'
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     needs:
       - determine_necessary_jobs
       - publish
@@ -2300,7 +2300,7 @@ jobs:
 
   test_debian_11-2_7-normal:
     name: 'Test [debian-11/2.7/normal]'
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     needs:
       - determine_necessary_jobs
       - publish
@@ -2334,7 +2334,7 @@ jobs:
 
   test_debian_11-2_7-jemalloc:
     name: 'Test [debian-11/2.7/jemalloc]'
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     needs:
       - determine_necessary_jobs
       - publish
@@ -2368,7 +2368,7 @@ jobs:
 
   test_debian_11-2_7-malloctrim:
     name: 'Test [debian-11/2.7/malloctrim]'
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     needs:
       - determine_necessary_jobs
       - publish
@@ -2402,7 +2402,7 @@ jobs:
 
   test_debian_11-3_2_2-normal:
     name: 'Test [debian-11/3.2.2/normal]'
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     needs:
       - determine_necessary_jobs
       - publish
@@ -2436,7 +2436,7 @@ jobs:
 
   test_debian_11-3_2_2-jemalloc:
     name: 'Test [debian-11/3.2.2/jemalloc]'
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     needs:
       - determine_necessary_jobs
       - publish
@@ -2470,7 +2470,7 @@ jobs:
 
   test_debian_11-3_2_2-malloctrim:
     name: 'Test [debian-11/3.2.2/malloctrim]'
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     needs:
       - determine_necessary_jobs
       - publish
@@ -2504,7 +2504,7 @@ jobs:
 
   test_debian_11-3_1_4-normal:
     name: 'Test [debian-11/3.1.4/normal]'
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     needs:
       - determine_necessary_jobs
       - publish
@@ -2538,7 +2538,7 @@ jobs:
 
   test_debian_11-3_1_4-jemalloc:
     name: 'Test [debian-11/3.1.4/jemalloc]'
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     needs:
       - determine_necessary_jobs
       - publish
@@ -2572,7 +2572,7 @@ jobs:
 
   test_debian_11-3_1_4-malloctrim:
     name: 'Test [debian-11/3.1.4/malloctrim]'
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     needs:
       - determine_necessary_jobs
       - publish
@@ -2606,7 +2606,7 @@ jobs:
 
   test_debian_11-3_0_6-normal:
     name: 'Test [debian-11/3.0.6/normal]'
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     needs:
       - determine_necessary_jobs
       - publish
@@ -2640,7 +2640,7 @@ jobs:
 
   test_debian_11-3_0_6-jemalloc:
     name: 'Test [debian-11/3.0.6/jemalloc]'
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     needs:
       - determine_necessary_jobs
       - publish
@@ -2674,7 +2674,7 @@ jobs:
 
   test_debian_11-3_0_6-malloctrim:
     name: 'Test [debian-11/3.0.6/malloctrim]'
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     needs:
       - determine_necessary_jobs
       - publish
@@ -2708,7 +2708,7 @@ jobs:
 
   test_debian_11-2_7_8-normal:
     name: 'Test [debian-11/2.7.8/normal]'
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     needs:
       - determine_necessary_jobs
       - publish
@@ -2742,7 +2742,7 @@ jobs:
 
   test_debian_11-2_7_8-jemalloc:
     name: 'Test [debian-11/2.7.8/jemalloc]'
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     needs:
       - determine_necessary_jobs
       - publish
@@ -2776,7 +2776,7 @@ jobs:
 
   test_debian_11-2_7_8-malloctrim:
     name: 'Test [debian-11/2.7.8/malloctrim]'
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     needs:
       - determine_necessary_jobs
       - publish
@@ -2811,7 +2811,7 @@ jobs:
 
   test_debian_9-3_2-normal:
     name: 'Test [debian-9/3.2/normal]'
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     needs:
       - determine_necessary_jobs
       - publish
@@ -2845,7 +2845,7 @@ jobs:
 
   test_debian_9-3_2-jemalloc:
     name: 'Test [debian-9/3.2/jemalloc]'
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     needs:
       - determine_necessary_jobs
       - publish
@@ -2879,7 +2879,7 @@ jobs:
 
   test_debian_9-3_2-malloctrim:
     name: 'Test [debian-9/3.2/malloctrim]'
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     needs:
       - determine_necessary_jobs
       - publish
@@ -2913,7 +2913,7 @@ jobs:
 
   test_debian_9-3_1-normal:
     name: 'Test [debian-9/3.1/normal]'
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     needs:
       - determine_necessary_jobs
       - publish
@@ -2947,7 +2947,7 @@ jobs:
 
   test_debian_9-3_1-jemalloc:
     name: 'Test [debian-9/3.1/jemalloc]'
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     needs:
       - determine_necessary_jobs
       - publish
@@ -2981,7 +2981,7 @@ jobs:
 
   test_debian_9-3_1-malloctrim:
     name: 'Test [debian-9/3.1/malloctrim]'
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     needs:
       - determine_necessary_jobs
       - publish
@@ -3015,7 +3015,7 @@ jobs:
 
   test_debian_9-3_0-normal:
     name: 'Test [debian-9/3.0/normal]'
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     needs:
       - determine_necessary_jobs
       - publish
@@ -3049,7 +3049,7 @@ jobs:
 
   test_debian_9-3_0-jemalloc:
     name: 'Test [debian-9/3.0/jemalloc]'
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     needs:
       - determine_necessary_jobs
       - publish
@@ -3083,7 +3083,7 @@ jobs:
 
   test_debian_9-3_0-malloctrim:
     name: 'Test [debian-9/3.0/malloctrim]'
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     needs:
       - determine_necessary_jobs
       - publish
@@ -3117,7 +3117,7 @@ jobs:
 
   test_debian_9-2_7-normal:
     name: 'Test [debian-9/2.7/normal]'
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     needs:
       - determine_necessary_jobs
       - publish
@@ -3151,7 +3151,7 @@ jobs:
 
   test_debian_9-2_7-jemalloc:
     name: 'Test [debian-9/2.7/jemalloc]'
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     needs:
       - determine_necessary_jobs
       - publish
@@ -3185,7 +3185,7 @@ jobs:
 
   test_debian_9-2_7-malloctrim:
     name: 'Test [debian-9/2.7/malloctrim]'
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     needs:
       - determine_necessary_jobs
       - publish
@@ -3219,7 +3219,7 @@ jobs:
 
   test_debian_9-3_2_2-normal:
     name: 'Test [debian-9/3.2.2/normal]'
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     needs:
       - determine_necessary_jobs
       - publish
@@ -3253,7 +3253,7 @@ jobs:
 
   test_debian_9-3_2_2-jemalloc:
     name: 'Test [debian-9/3.2.2/jemalloc]'
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     needs:
       - determine_necessary_jobs
       - publish
@@ -3287,7 +3287,7 @@ jobs:
 
   test_debian_9-3_2_2-malloctrim:
     name: 'Test [debian-9/3.2.2/malloctrim]'
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     needs:
       - determine_necessary_jobs
       - publish
@@ -3321,7 +3321,7 @@ jobs:
 
   test_debian_9-3_1_4-normal:
     name: 'Test [debian-9/3.1.4/normal]'
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     needs:
       - determine_necessary_jobs
       - publish
@@ -3355,7 +3355,7 @@ jobs:
 
   test_debian_9-3_1_4-jemalloc:
     name: 'Test [debian-9/3.1.4/jemalloc]'
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     needs:
       - determine_necessary_jobs
       - publish
@@ -3389,7 +3389,7 @@ jobs:
 
   test_debian_9-3_1_4-malloctrim:
     name: 'Test [debian-9/3.1.4/malloctrim]'
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     needs:
       - determine_necessary_jobs
       - publish
@@ -3423,7 +3423,7 @@ jobs:
 
   test_debian_9-3_0_6-normal:
     name: 'Test [debian-9/3.0.6/normal]'
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     needs:
       - determine_necessary_jobs
       - publish
@@ -3457,7 +3457,7 @@ jobs:
 
   test_debian_9-3_0_6-jemalloc:
     name: 'Test [debian-9/3.0.6/jemalloc]'
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     needs:
       - determine_necessary_jobs
       - publish
@@ -3491,7 +3491,7 @@ jobs:
 
   test_debian_9-3_0_6-malloctrim:
     name: 'Test [debian-9/3.0.6/malloctrim]'
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     needs:
       - determine_necessary_jobs
       - publish
@@ -3525,7 +3525,7 @@ jobs:
 
   test_debian_9-2_7_8-normal:
     name: 'Test [debian-9/2.7.8/normal]'
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     needs:
       - determine_necessary_jobs
       - publish
@@ -3559,7 +3559,7 @@ jobs:
 
   test_debian_9-2_7_8-jemalloc:
     name: 'Test [debian-9/2.7.8/jemalloc]'
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     needs:
       - determine_necessary_jobs
       - publish
@@ -3593,7 +3593,7 @@ jobs:
 
   test_debian_9-2_7_8-malloctrim:
     name: 'Test [debian-9/2.7.8/malloctrim]'
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     needs:
       - determine_necessary_jobs
       - publish
@@ -3628,7 +3628,7 @@ jobs:
 
   test_el_9-3_2-normal:
     name: 'Test [el-9/3.2/normal]'
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     needs:
       - determine_necessary_jobs
       - publish
@@ -3662,7 +3662,7 @@ jobs:
 
   test_el_9-3_2-jemalloc:
     name: 'Test [el-9/3.2/jemalloc]'
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     needs:
       - determine_necessary_jobs
       - publish
@@ -3696,7 +3696,7 @@ jobs:
 
   test_el_9-3_2-malloctrim:
     name: 'Test [el-9/3.2/malloctrim]'
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     needs:
       - determine_necessary_jobs
       - publish
@@ -3730,7 +3730,7 @@ jobs:
 
   test_el_9-3_1-normal:
     name: 'Test [el-9/3.1/normal]'
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     needs:
       - determine_necessary_jobs
       - publish
@@ -3764,7 +3764,7 @@ jobs:
 
   test_el_9-3_1-jemalloc:
     name: 'Test [el-9/3.1/jemalloc]'
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     needs:
       - determine_necessary_jobs
       - publish
@@ -3798,7 +3798,7 @@ jobs:
 
   test_el_9-3_1-malloctrim:
     name: 'Test [el-9/3.1/malloctrim]'
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     needs:
       - determine_necessary_jobs
       - publish
@@ -3832,7 +3832,7 @@ jobs:
 
   test_el_9-3_2_2-normal:
     name: 'Test [el-9/3.2.2/normal]'
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     needs:
       - determine_necessary_jobs
       - publish
@@ -3866,7 +3866,7 @@ jobs:
 
   test_el_9-3_2_2-jemalloc:
     name: 'Test [el-9/3.2.2/jemalloc]'
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     needs:
       - determine_necessary_jobs
       - publish
@@ -3900,7 +3900,7 @@ jobs:
 
   test_el_9-3_2_2-malloctrim:
     name: 'Test [el-9/3.2.2/malloctrim]'
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     needs:
       - determine_necessary_jobs
       - publish
@@ -3934,7 +3934,7 @@ jobs:
 
   test_el_9-3_1_4-normal:
     name: 'Test [el-9/3.1.4/normal]'
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     needs:
       - determine_necessary_jobs
       - publish
@@ -3968,7 +3968,7 @@ jobs:
 
   test_el_9-3_1_4-jemalloc:
     name: 'Test [el-9/3.1.4/jemalloc]'
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     needs:
       - determine_necessary_jobs
       - publish
@@ -4002,7 +4002,7 @@ jobs:
 
   test_el_9-3_1_4-malloctrim:
     name: 'Test [el-9/3.1.4/malloctrim]'
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     needs:
       - determine_necessary_jobs
       - publish
@@ -4037,7 +4037,7 @@ jobs:
 
   test_ubuntu_18_04-3_2-normal:
     name: 'Test [ubuntu-18.04/3.2/normal]'
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     needs:
       - determine_necessary_jobs
       - publish
@@ -4071,7 +4071,7 @@ jobs:
 
   test_ubuntu_18_04-3_2-jemalloc:
     name: 'Test [ubuntu-18.04/3.2/jemalloc]'
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     needs:
       - determine_necessary_jobs
       - publish
@@ -4105,7 +4105,7 @@ jobs:
 
   test_ubuntu_18_04-3_2-malloctrim:
     name: 'Test [ubuntu-18.04/3.2/malloctrim]'
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     needs:
       - determine_necessary_jobs
       - publish
@@ -4139,7 +4139,7 @@ jobs:
 
   test_ubuntu_18_04-3_1-normal:
     name: 'Test [ubuntu-18.04/3.1/normal]'
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     needs:
       - determine_necessary_jobs
       - publish
@@ -4173,7 +4173,7 @@ jobs:
 
   test_ubuntu_18_04-3_1-jemalloc:
     name: 'Test [ubuntu-18.04/3.1/jemalloc]'
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     needs:
       - determine_necessary_jobs
       - publish
@@ -4207,7 +4207,7 @@ jobs:
 
   test_ubuntu_18_04-3_1-malloctrim:
     name: 'Test [ubuntu-18.04/3.1/malloctrim]'
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     needs:
       - determine_necessary_jobs
       - publish
@@ -4241,7 +4241,7 @@ jobs:
 
   test_ubuntu_18_04-3_0-normal:
     name: 'Test [ubuntu-18.04/3.0/normal]'
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     needs:
       - determine_necessary_jobs
       - publish
@@ -4275,7 +4275,7 @@ jobs:
 
   test_ubuntu_18_04-3_0-jemalloc:
     name: 'Test [ubuntu-18.04/3.0/jemalloc]'
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     needs:
       - determine_necessary_jobs
       - publish
@@ -4309,7 +4309,7 @@ jobs:
 
   test_ubuntu_18_04-3_0-malloctrim:
     name: 'Test [ubuntu-18.04/3.0/malloctrim]'
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     needs:
       - determine_necessary_jobs
       - publish
@@ -4343,7 +4343,7 @@ jobs:
 
   test_ubuntu_18_04-2_7-normal:
     name: 'Test [ubuntu-18.04/2.7/normal]'
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     needs:
       - determine_necessary_jobs
       - publish
@@ -4377,7 +4377,7 @@ jobs:
 
   test_ubuntu_18_04-2_7-jemalloc:
     name: 'Test [ubuntu-18.04/2.7/jemalloc]'
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     needs:
       - determine_necessary_jobs
       - publish
@@ -4411,7 +4411,7 @@ jobs:
 
   test_ubuntu_18_04-2_7-malloctrim:
     name: 'Test [ubuntu-18.04/2.7/malloctrim]'
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     needs:
       - determine_necessary_jobs
       - publish
@@ -4445,7 +4445,7 @@ jobs:
 
   test_ubuntu_18_04-3_2_2-normal:
     name: 'Test [ubuntu-18.04/3.2.2/normal]'
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     needs:
       - determine_necessary_jobs
       - publish
@@ -4479,7 +4479,7 @@ jobs:
 
   test_ubuntu_18_04-3_2_2-jemalloc:
     name: 'Test [ubuntu-18.04/3.2.2/jemalloc]'
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     needs:
       - determine_necessary_jobs
       - publish
@@ -4513,7 +4513,7 @@ jobs:
 
   test_ubuntu_18_04-3_2_2-malloctrim:
     name: 'Test [ubuntu-18.04/3.2.2/malloctrim]'
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     needs:
       - determine_necessary_jobs
       - publish
@@ -4547,7 +4547,7 @@ jobs:
 
   test_ubuntu_18_04-3_1_4-normal:
     name: 'Test [ubuntu-18.04/3.1.4/normal]'
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     needs:
       - determine_necessary_jobs
       - publish
@@ -4581,7 +4581,7 @@ jobs:
 
   test_ubuntu_18_04-3_1_4-jemalloc:
     name: 'Test [ubuntu-18.04/3.1.4/jemalloc]'
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     needs:
       - determine_necessary_jobs
       - publish
@@ -4615,7 +4615,7 @@ jobs:
 
   test_ubuntu_18_04-3_1_4-malloctrim:
     name: 'Test [ubuntu-18.04/3.1.4/malloctrim]'
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     needs:
       - determine_necessary_jobs
       - publish
@@ -4649,7 +4649,7 @@ jobs:
 
   test_ubuntu_18_04-3_0_6-normal:
     name: 'Test [ubuntu-18.04/3.0.6/normal]'
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     needs:
       - determine_necessary_jobs
       - publish
@@ -4683,7 +4683,7 @@ jobs:
 
   test_ubuntu_18_04-3_0_6-jemalloc:
     name: 'Test [ubuntu-18.04/3.0.6/jemalloc]'
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     needs:
       - determine_necessary_jobs
       - publish
@@ -4717,7 +4717,7 @@ jobs:
 
   test_ubuntu_18_04-3_0_6-malloctrim:
     name: 'Test [ubuntu-18.04/3.0.6/malloctrim]'
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     needs:
       - determine_necessary_jobs
       - publish
@@ -4751,7 +4751,7 @@ jobs:
 
   test_ubuntu_18_04-2_7_8-normal:
     name: 'Test [ubuntu-18.04/2.7.8/normal]'
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     needs:
       - determine_necessary_jobs
       - publish
@@ -4785,7 +4785,7 @@ jobs:
 
   test_ubuntu_18_04-2_7_8-jemalloc:
     name: 'Test [ubuntu-18.04/2.7.8/jemalloc]'
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     needs:
       - determine_necessary_jobs
       - publish
@@ -4819,7 +4819,7 @@ jobs:
 
   test_ubuntu_18_04-2_7_8-malloctrim:
     name: 'Test [ubuntu-18.04/2.7.8/malloctrim]'
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     needs:
       - determine_necessary_jobs
       - publish
@@ -4854,7 +4854,7 @@ jobs:
 
   test_ubuntu_20_04-3_2-normal:
     name: 'Test [ubuntu-20.04/3.2/normal]'
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     needs:
       - determine_necessary_jobs
       - publish
@@ -4888,7 +4888,7 @@ jobs:
 
   test_ubuntu_20_04-3_2-jemalloc:
     name: 'Test [ubuntu-20.04/3.2/jemalloc]'
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     needs:
       - determine_necessary_jobs
       - publish
@@ -4922,7 +4922,7 @@ jobs:
 
   test_ubuntu_20_04-3_2-malloctrim:
     name: 'Test [ubuntu-20.04/3.2/malloctrim]'
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     needs:
       - determine_necessary_jobs
       - publish
@@ -4956,7 +4956,7 @@ jobs:
 
   test_ubuntu_20_04-3_1-normal:
     name: 'Test [ubuntu-20.04/3.1/normal]'
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     needs:
       - determine_necessary_jobs
       - publish
@@ -4990,7 +4990,7 @@ jobs:
 
   test_ubuntu_20_04-3_1-jemalloc:
     name: 'Test [ubuntu-20.04/3.1/jemalloc]'
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     needs:
       - determine_necessary_jobs
       - publish
@@ -5024,7 +5024,7 @@ jobs:
 
   test_ubuntu_20_04-3_1-malloctrim:
     name: 'Test [ubuntu-20.04/3.1/malloctrim]'
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     needs:
       - determine_necessary_jobs
       - publish
@@ -5058,7 +5058,7 @@ jobs:
 
   test_ubuntu_20_04-3_0-normal:
     name: 'Test [ubuntu-20.04/3.0/normal]'
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     needs:
       - determine_necessary_jobs
       - publish
@@ -5092,7 +5092,7 @@ jobs:
 
   test_ubuntu_20_04-3_0-jemalloc:
     name: 'Test [ubuntu-20.04/3.0/jemalloc]'
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     needs:
       - determine_necessary_jobs
       - publish
@@ -5126,7 +5126,7 @@ jobs:
 
   test_ubuntu_20_04-3_0-malloctrim:
     name: 'Test [ubuntu-20.04/3.0/malloctrim]'
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     needs:
       - determine_necessary_jobs
       - publish
@@ -5160,7 +5160,7 @@ jobs:
 
   test_ubuntu_20_04-2_7-normal:
     name: 'Test [ubuntu-20.04/2.7/normal]'
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     needs:
       - determine_necessary_jobs
       - publish
@@ -5194,7 +5194,7 @@ jobs:
 
   test_ubuntu_20_04-2_7-jemalloc:
     name: 'Test [ubuntu-20.04/2.7/jemalloc]'
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     needs:
       - determine_necessary_jobs
       - publish
@@ -5228,7 +5228,7 @@ jobs:
 
   test_ubuntu_20_04-2_7-malloctrim:
     name: 'Test [ubuntu-20.04/2.7/malloctrim]'
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     needs:
       - determine_necessary_jobs
       - publish
@@ -5262,7 +5262,7 @@ jobs:
 
   test_ubuntu_20_04-3_2_2-normal:
     name: 'Test [ubuntu-20.04/3.2.2/normal]'
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     needs:
       - determine_necessary_jobs
       - publish
@@ -5296,7 +5296,7 @@ jobs:
 
   test_ubuntu_20_04-3_2_2-jemalloc:
     name: 'Test [ubuntu-20.04/3.2.2/jemalloc]'
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     needs:
       - determine_necessary_jobs
       - publish
@@ -5330,7 +5330,7 @@ jobs:
 
   test_ubuntu_20_04-3_2_2-malloctrim:
     name: 'Test [ubuntu-20.04/3.2.2/malloctrim]'
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     needs:
       - determine_necessary_jobs
       - publish
@@ -5364,7 +5364,7 @@ jobs:
 
   test_ubuntu_20_04-3_1_4-normal:
     name: 'Test [ubuntu-20.04/3.1.4/normal]'
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     needs:
       - determine_necessary_jobs
       - publish
@@ -5398,7 +5398,7 @@ jobs:
 
   test_ubuntu_20_04-3_1_4-jemalloc:
     name: 'Test [ubuntu-20.04/3.1.4/jemalloc]'
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     needs:
       - determine_necessary_jobs
       - publish
@@ -5432,7 +5432,7 @@ jobs:
 
   test_ubuntu_20_04-3_1_4-malloctrim:
     name: 'Test [ubuntu-20.04/3.1.4/malloctrim]'
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     needs:
       - determine_necessary_jobs
       - publish
@@ -5466,7 +5466,7 @@ jobs:
 
   test_ubuntu_20_04-3_0_6-normal:
     name: 'Test [ubuntu-20.04/3.0.6/normal]'
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     needs:
       - determine_necessary_jobs
       - publish
@@ -5500,7 +5500,7 @@ jobs:
 
   test_ubuntu_20_04-3_0_6-jemalloc:
     name: 'Test [ubuntu-20.04/3.0.6/jemalloc]'
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     needs:
       - determine_necessary_jobs
       - publish
@@ -5534,7 +5534,7 @@ jobs:
 
   test_ubuntu_20_04-3_0_6-malloctrim:
     name: 'Test [ubuntu-20.04/3.0.6/malloctrim]'
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     needs:
       - determine_necessary_jobs
       - publish
@@ -5568,7 +5568,7 @@ jobs:
 
   test_ubuntu_20_04-2_7_8-normal:
     name: 'Test [ubuntu-20.04/2.7.8/normal]'
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     needs:
       - determine_necessary_jobs
       - publish
@@ -5602,7 +5602,7 @@ jobs:
 
   test_ubuntu_20_04-2_7_8-jemalloc:
     name: 'Test [ubuntu-20.04/2.7.8/jemalloc]'
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     needs:
       - determine_necessary_jobs
       - publish
@@ -5636,7 +5636,7 @@ jobs:
 
   test_ubuntu_20_04-2_7_8-malloctrim:
     name: 'Test [ubuntu-20.04/2.7.8/malloctrim]'
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     needs:
       - determine_necessary_jobs
       - publish
@@ -5671,7 +5671,7 @@ jobs:
 
   test_ubuntu_22_04-3_2-normal:
     name: 'Test [ubuntu-22.04/3.2/normal]'
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     needs:
       - determine_necessary_jobs
       - publish
@@ -5705,7 +5705,7 @@ jobs:
 
   test_ubuntu_22_04-3_2-jemalloc:
     name: 'Test [ubuntu-22.04/3.2/jemalloc]'
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     needs:
       - determine_necessary_jobs
       - publish
@@ -5739,7 +5739,7 @@ jobs:
 
   test_ubuntu_22_04-3_2-malloctrim:
     name: 'Test [ubuntu-22.04/3.2/malloctrim]'
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     needs:
       - determine_necessary_jobs
       - publish
@@ -5773,7 +5773,7 @@ jobs:
 
   test_ubuntu_22_04-3_1-normal:
     name: 'Test [ubuntu-22.04/3.1/normal]'
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     needs:
       - determine_necessary_jobs
       - publish
@@ -5807,7 +5807,7 @@ jobs:
 
   test_ubuntu_22_04-3_1-jemalloc:
     name: 'Test [ubuntu-22.04/3.1/jemalloc]'
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     needs:
       - determine_necessary_jobs
       - publish
@@ -5841,7 +5841,7 @@ jobs:
 
   test_ubuntu_22_04-3_1-malloctrim:
     name: 'Test [ubuntu-22.04/3.1/malloctrim]'
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     needs:
       - determine_necessary_jobs
       - publish
@@ -5875,7 +5875,7 @@ jobs:
 
   test_ubuntu_22_04-3_2_2-normal:
     name: 'Test [ubuntu-22.04/3.2.2/normal]'
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     needs:
       - determine_necessary_jobs
       - publish
@@ -5909,7 +5909,7 @@ jobs:
 
   test_ubuntu_22_04-3_2_2-jemalloc:
     name: 'Test [ubuntu-22.04/3.2.2/jemalloc]'
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     needs:
       - determine_necessary_jobs
       - publish
@@ -5943,7 +5943,7 @@ jobs:
 
   test_ubuntu_22_04-3_2_2-malloctrim:
     name: 'Test [ubuntu-22.04/3.2.2/malloctrim]'
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     needs:
       - determine_necessary_jobs
       - publish
@@ -5977,7 +5977,7 @@ jobs:
 
   test_ubuntu_22_04-3_1_4-normal:
     name: 'Test [ubuntu-22.04/3.1.4/normal]'
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     needs:
       - determine_necessary_jobs
       - publish
@@ -6011,7 +6011,7 @@ jobs:
 
   test_ubuntu_22_04-3_1_4-jemalloc:
     name: 'Test [ubuntu-22.04/3.1.4/jemalloc]'
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     needs:
       - determine_necessary_jobs
       - publish
@@ -6045,7 +6045,7 @@ jobs:
 
   test_ubuntu_22_04-3_1_4-malloctrim:
     name: 'Test [ubuntu-22.04/3.1.4/malloctrim]'
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     needs:
       - determine_necessary_jobs
       - publish
@@ -6262,7 +6262,7 @@ jobs:
       - test_ubuntu_22_04-3_1_4-normal
       - test_ubuntu_22_04-3_1_4-jemalloc
       - test_ubuntu_22_04-3_1_4-malloctrim
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     if: 'always()'
     steps:
       - uses: actions/checkout@v3

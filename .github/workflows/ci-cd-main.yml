@@ -38,7 +38,7 @@ jobs:
   # exist in this run.
   determine_necessary_jobs:
     name: Determine necessary jobs
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     outputs:
       necessary_jobs: ${{ steps.check.outputs.necessary_jobs }}
     permissions:
@@ -69,7 +69,7 @@ jobs:
 
   check_workflow_uptodate:
     name: Check whether workflow is up-to-date
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     steps:
       - uses: actions/checkout@v3
       - name: Check
@@ -81,7 +81,7 @@ jobs:
     needs:
       - determine_necessary_jobs
       - download_rbenv_source
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     # Run even if a dependent job has been skipped
     if: '!failure() && !cancelled()'
     steps:
@@ -96,7 +96,7 @@ jobs:
           fetch-depth: 0
       - uses: ruby/setup-ruby@v1
         with:
-          ruby-version: '2.6'
+          ruby-version: '3.2'
       - name: Login to Google Cloud
         uses: ./.github/actions/gcloud-login
         with:
@@ -139,7 +139,7 @@ jobs:
   bundle_install:
     name: Install gem bundle
     needs: determine_necessary_jobs
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Install gem bundle;')
     steps:
       - uses: actions/checkout@v3
@@ -149,7 +149,7 @@ jobs:
           private_key: ${{ secrets.GCLOUD_KEY }}
       - uses: ruby/setup-ruby@v1
         with:
-          ruby-version: 2.7
+          ruby-version: 3.2
           bundler-cache: true
         env:
           BUNDLE_CLEAN: true
@@ -167,7 +167,7 @@ jobs:
 
   build_docker_image_centos_7:
     name: 'Build Docker image [centos-7]'
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     needs:
       - determine_necessary_jobs
     if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Docker image centos-7;')
@@ -198,7 +198,7 @@ jobs:
 
   build_docker_image_centos_8:
     name: 'Build Docker image [centos-8]'
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     needs:
       - determine_necessary_jobs
     if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Docker image centos-8;')
@@ -229,7 +229,7 @@ jobs:
 
   build_docker_image_debian_10:
     name: 'Build Docker image [debian-10]'
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     needs:
       - determine_necessary_jobs
     if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Docker image debian-10;')
@@ -260,7 +260,7 @@ jobs:
 
   build_docker_image_debian_11:
     name: 'Build Docker image [debian-11]'
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     needs:
       - determine_necessary_jobs
     if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Docker image debian-11;')
@@ -291,7 +291,7 @@ jobs:
 
   build_docker_image_debian_9:
     name: 'Build Docker image [debian-9]'
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     needs:
       - determine_necessary_jobs
     if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Docker image debian-9;')
@@ -322,7 +322,7 @@ jobs:
 
   build_docker_image_el_9:
     name: 'Build Docker image [el-9]'
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     needs:
       - determine_necessary_jobs
     if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Docker image el-9;')
@@ -353,7 +353,7 @@ jobs:
 
   build_docker_image_ubuntu_18_04:
     name: 'Build Docker image [ubuntu-18.04]'
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     needs:
       - determine_necessary_jobs
     if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Docker image ubuntu-18.04;')
@@ -384,7 +384,7 @@ jobs:
 
   build_docker_image_ubuntu_20_04:
     name: 'Build Docker image [ubuntu-20.04]'
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     needs:
       - determine_necessary_jobs
     if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Docker image ubuntu-20.04;')
@@ -415,7 +415,7 @@ jobs:
 
   build_docker_image_ubuntu_22_04:
     name: 'Build Docker image [ubuntu-22.04]'
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     needs:
       - determine_necessary_jobs
     if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Docker image ubuntu-22.04;')
@@ -446,7 +446,7 @@ jobs:
 
   build_docker_image_utility:
     name: 'Build Docker image [utility]'
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     needs:
       - determine_necessary_jobs
     if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Docker image utility;')
@@ -461,14 +461,14 @@ jobs:
         run: ./internal-scripts/ci-cd/build-docker-images/build.sh
         env:
           IMAGE_NAME: 'ghcr.io/fullstaq-ruby/server-edition-ci-images'
-          IMAGE_TAG: 'utility-v1'
+          IMAGE_TAG: 'utility-v2'
           SOURCE_DIR: 'environments/utility'
 
       - name: Dump image
         run: ./internal-scripts/ci-cd/build-docker-images/dump-image.sh
         env:
           IMAGE_NAME: 'ghcr.io/fullstaq-ruby/server-edition-ci-images'
-          IMAGE_TAG: 'utility-v1'
+          IMAGE_TAG: 'utility-v2'
       - name: Archive artifact
         run: ./internal-scripts/ci-cd/upload-artifact.sh
         env:
@@ -484,7 +484,7 @@ jobs:
     name: Download Ruby source [3.2.2]
     needs:
       - determine_necessary_jobs
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Download Ruby source 3.2.2;')
     steps:
       - uses: actions/checkout@v3
@@ -508,7 +508,7 @@ jobs:
     name: Download Ruby source [3.1.4]
     needs:
       - determine_necessary_jobs
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Download Ruby source 3.1.4;')
     steps:
       - uses: actions/checkout@v3
@@ -532,7 +532,7 @@ jobs:
     name: Download Ruby source [3.0.6]
     needs:
       - determine_necessary_jobs
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Download Ruby source 3.0.6;')
     steps:
       - uses: actions/checkout@v3
@@ -556,7 +556,7 @@ jobs:
     name: Download Ruby source [2.7.8]
     needs:
       - determine_necessary_jobs
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Download Ruby source 2.7.8;')
     steps:
       - uses: actions/checkout@v3
@@ -582,7 +582,7 @@ jobs:
     name: Download Rbenv source
     needs:
       - determine_necessary_jobs
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Download Rbenv source;')
     steps:
       - uses: actions/checkout@v3
@@ -611,7 +611,7 @@ jobs:
 
   build_common_deb:
     name: Build common DEB
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     permissions:
       packages: read
     needs:
@@ -671,7 +671,7 @@ jobs:
 
   build_common_rpm:
     name: Build common RPM
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     permissions:
       packages: read
     needs:
@@ -733,7 +733,7 @@ jobs:
 
   build_rbenv_deb:
     name: Build Rbenv DEB
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     permissions:
       packages: read
     needs:
@@ -800,7 +800,7 @@ jobs:
 
   build_rbenv_rpm:
     name: Build Rbenv RPM
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     permissions:
       packages: read
     needs:
@@ -895,7 +895,7 @@ jobs:
       - build_common_rpm
       - build_rbenv_deb
       - build_rbenv_rpm
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     if: 'always()'
     steps:
       - uses: actions/checkout@v3
@@ -1267,7 +1267,7 @@ jobs:
 
       - uses: ruby/setup-ruby@v1
         with:
-          ruby-version: 2.7
+          ruby-version: 3.2
 
       - run: bundle install --local
         env:

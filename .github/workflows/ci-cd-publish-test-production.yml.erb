@@ -22,7 +22,7 @@ jobs:
   # exist in this run.
   determine_necessary_jobs:
     name: Determine necessary jobs
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     permissions:
       checks: write
       packages: read
@@ -150,7 +150,7 @@ jobs:
   <%- unindent(2) do %>
     test_<%= slug(distribution[:name]) %>-<%= slug(ruby_package_version[:id]) %>-<%= slug(variant[:name]) %>:
       name: 'Test [<%= distribution[:name] %>/<%= ruby_package_version[:id] %>/<%= variant[:name] %>]'
-      runs-on: ubuntu-20.04
+      runs-on: ubuntu-22.04
       needs:
         - determine_necessary_jobs
         - publish
@@ -193,7 +193,7 @@ jobs:
 
   finalize:
     name: Finalize
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     environment: Github releases
     permissions:
       contents: write

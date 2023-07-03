@@ -35,7 +35,7 @@ jobs:
   # exist in this run.
   determine_necessary_jobs:
     name: Determine necessary jobs
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     permissions:
       checks: write
       packages: read
@@ -88,7 +88,7 @@ jobs:
 
   build_jemalloc_debian_10:
     name: 'Build Jemalloc [debian-10]'
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     permissions:
       packages: read
     needs:
@@ -142,7 +142,7 @@ jobs:
           ARTIFACT_PATH: output
   build_jemalloc_ubuntu_18_04:
     name: 'Build Jemalloc [ubuntu-18.04]'
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     permissions:
       packages: read
     needs:
@@ -202,7 +202,7 @@ jobs:
 
   build_ruby_debian_10-3_2-normal:
     name: 'Build Ruby [debian-10/3.2/normal]'
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     permissions:
       packages: read
     needs:
@@ -291,7 +291,7 @@ jobs:
 
   build_ruby_debian_10-3_2-jemalloc:
     name: 'Build Ruby [debian-10/3.2/jemalloc]'
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     permissions:
       packages: read
     needs:
@@ -385,7 +385,7 @@ jobs:
 
   build_ruby_debian_10-3_2-malloctrim:
     name: 'Build Ruby [debian-10/3.2/malloctrim]'
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     permissions:
       packages: read
     needs:
@@ -474,7 +474,7 @@ jobs:
 
   build_ruby_debian_10-3_1-normal:
     name: 'Build Ruby [debian-10/3.1/normal]'
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     permissions:
       packages: read
     needs:
@@ -563,7 +563,7 @@ jobs:
 
   build_ruby_debian_10-3_1-jemalloc:
     name: 'Build Ruby [debian-10/3.1/jemalloc]'
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     permissions:
       packages: read
     needs:
@@ -657,7 +657,7 @@ jobs:
 
   build_ruby_debian_10-3_1-malloctrim:
     name: 'Build Ruby [debian-10/3.1/malloctrim]'
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     permissions:
       packages: read
     needs:
@@ -746,7 +746,7 @@ jobs:
 
   build_ruby_debian_10-3_0-normal:
     name: 'Build Ruby [debian-10/3.0/normal]'
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     permissions:
       packages: read
     needs:
@@ -835,7 +835,7 @@ jobs:
 
   build_ruby_debian_10-3_0-jemalloc:
     name: 'Build Ruby [debian-10/3.0/jemalloc]'
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     permissions:
       packages: read
     needs:
@@ -929,7 +929,7 @@ jobs:
 
   build_ruby_debian_10-3_0-malloctrim:
     name: 'Build Ruby [debian-10/3.0/malloctrim]'
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     permissions:
       packages: read
     needs:
@@ -1018,7 +1018,7 @@ jobs:
 
   build_ruby_debian_10-2_7-normal:
     name: 'Build Ruby [debian-10/2.7/normal]'
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     permissions:
       packages: read
     needs:
@@ -1107,7 +1107,7 @@ jobs:
 
   build_ruby_debian_10-2_7-jemalloc:
     name: 'Build Ruby [debian-10/2.7/jemalloc]'
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     permissions:
       packages: read
     needs:
@@ -1201,7 +1201,7 @@ jobs:
 
   build_ruby_debian_10-2_7-malloctrim:
     name: 'Build Ruby [debian-10/2.7/malloctrim]'
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     permissions:
       packages: read
     needs:
@@ -1290,7 +1290,7 @@ jobs:
 
   build_ruby_debian_10-3_2_2-normal:
     name: 'Build Ruby [debian-10/3.2.2/normal]'
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     permissions:
       packages: read
     needs:
@@ -1379,7 +1379,7 @@ jobs:
 
   build_ruby_debian_10-3_2_2-jemalloc:
     name: 'Build Ruby [debian-10/3.2.2/jemalloc]'
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     permissions:
       packages: read
     needs:
@@ -1473,7 +1473,7 @@ jobs:
 
   build_ruby_debian_10-3_2_2-malloctrim:
     name: 'Build Ruby [debian-10/3.2.2/malloctrim]'
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     permissions:
       packages: read
     needs:
@@ -1562,7 +1562,7 @@ jobs:
 
   build_ruby_debian_10-3_1_4-normal:
     name: 'Build Ruby [debian-10/3.1.4/normal]'
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     permissions:
       packages: read
     needs:
@@ -1651,7 +1651,7 @@ jobs:
 
   build_ruby_debian_10-3_1_4-jemalloc:
     name: 'Build Ruby [debian-10/3.1.4/jemalloc]'
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     permissions:
       packages: read
     needs:
@@ -1745,7 +1745,7 @@ jobs:
 
   build_ruby_debian_10-3_1_4-malloctrim:
     name: 'Build Ruby [debian-10/3.1.4/malloctrim]'
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     permissions:
       packages: read
     needs:
@@ -1834,7 +1834,7 @@ jobs:
 
   build_ruby_debian_10-3_0_6-normal:
     name: 'Build Ruby [debian-10/3.0.6/normal]'
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     permissions:
       packages: read
     needs:
@@ -1923,7 +1923,7 @@ jobs:
 
   build_ruby_debian_10-3_0_6-jemalloc:
     name: 'Build Ruby [debian-10/3.0.6/jemalloc]'
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     permissions:
       packages: read
     needs:
@@ -2017,7 +2017,7 @@ jobs:
 
   build_ruby_debian_10-3_0_6-malloctrim:
     name: 'Build Ruby [debian-10/3.0.6/malloctrim]'
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     permissions:
       packages: read
     needs:
@@ -2106,7 +2106,7 @@ jobs:
 
   build_ruby_debian_10-2_7_8-normal:
     name: 'Build Ruby [debian-10/2.7.8/normal]'
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     permissions:
       packages: read
     needs:
@@ -2195,7 +2195,7 @@ jobs:
 
   build_ruby_debian_10-2_7_8-jemalloc:
     name: 'Build Ruby [debian-10/2.7.8/jemalloc]'
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     permissions:
       packages: read
     needs:
@@ -2289,7 +2289,7 @@ jobs:
 
   build_ruby_debian_10-2_7_8-malloctrim:
     name: 'Build Ruby [debian-10/2.7.8/malloctrim]'
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     permissions:
       packages: read
     needs:
@@ -2379,7 +2379,7 @@ jobs:
 
   build_ruby_ubuntu_18_04-3_2-normal:
     name: 'Build Ruby [ubuntu-18.04/3.2/normal]'
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     permissions:
       packages: read
     needs:
@@ -2468,7 +2468,7 @@ jobs:
 
   build_ruby_ubuntu_18_04-3_2-jemalloc:
     name: 'Build Ruby [ubuntu-18.04/3.2/jemalloc]'
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     permissions:
       packages: read
     needs:
@@ -2562,7 +2562,7 @@ jobs:
 
   build_ruby_ubuntu_18_04-3_2-malloctrim:
     name: 'Build Ruby [ubuntu-18.04/3.2/malloctrim]'
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     permissions:
       packages: read
     needs:
@@ -2651,7 +2651,7 @@ jobs:
 
   build_ruby_ubuntu_18_04-3_1-normal:
     name: 'Build Ruby [ubuntu-18.04/3.1/normal]'
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     permissions:
       packages: read
     needs:
@@ -2740,7 +2740,7 @@ jobs:
 
   build_ruby_ubuntu_18_04-3_1-jemalloc:
     name: 'Build Ruby [ubuntu-18.04/3.1/jemalloc]'
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     permissions:
       packages: read
     needs:
@@ -2834,7 +2834,7 @@ jobs:
 
   build_ruby_ubuntu_18_04-3_1-malloctrim:
     name: 'Build Ruby [ubuntu-18.04/3.1/malloctrim]'
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     permissions:
       packages: read
     needs:
@@ -2923,7 +2923,7 @@ jobs:
 
   build_ruby_ubuntu_18_04-3_0-normal:
     name: 'Build Ruby [ubuntu-18.04/3.0/normal]'
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     permissions:
       packages: read
     needs:
@@ -3012,7 +3012,7 @@ jobs:
 
   build_ruby_ubuntu_18_04-3_0-jemalloc:
     name: 'Build Ruby [ubuntu-18.04/3.0/jemalloc]'
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     permissions:
       packages: read
     needs:
@@ -3106,7 +3106,7 @@ jobs:
 
   build_ruby_ubuntu_18_04-3_0-malloctrim:
     name: 'Build Ruby [ubuntu-18.04/3.0/malloctrim]'
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     permissions:
       packages: read
     needs:
@@ -3195,7 +3195,7 @@ jobs:
 
   build_ruby_ubuntu_18_04-2_7-normal:
     name: 'Build Ruby [ubuntu-18.04/2.7/normal]'
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     permissions:
       packages: read
     needs:
@@ -3284,7 +3284,7 @@ jobs:
 
   build_ruby_ubuntu_18_04-2_7-jemalloc:
     name: 'Build Ruby [ubuntu-18.04/2.7/jemalloc]'
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     permissions:
       packages: read
     needs:
@@ -3378,7 +3378,7 @@ jobs:
 
   build_ruby_ubuntu_18_04-2_7-malloctrim:
     name: 'Build Ruby [ubuntu-18.04/2.7/malloctrim]'
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     permissions:
       packages: read
     needs:
@@ -3467,7 +3467,7 @@ jobs:
 
   build_ruby_ubuntu_18_04-3_2_2-normal:
     name: 'Build Ruby [ubuntu-18.04/3.2.2/normal]'
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     permissions:
       packages: read
     needs:
@@ -3556,7 +3556,7 @@ jobs:
 
   build_ruby_ubuntu_18_04-3_2_2-jemalloc:
     name: 'Build Ruby [ubuntu-18.04/3.2.2/jemalloc]'
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     permissions:
       packages: read
     needs:
@@ -3650,7 +3650,7 @@ jobs:
 
   build_ruby_ubuntu_18_04-3_2_2-malloctrim:
     name: 'Build Ruby [ubuntu-18.04/3.2.2/malloctrim]'
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     permissions:
       packages: read
     needs:
@@ -3739,7 +3739,7 @@ jobs:
 
   build_ruby_ubuntu_18_04-3_1_4-normal:
     name: 'Build Ruby [ubuntu-18.04/3.1.4/normal]'
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     permissions:
       packages: read
     needs:
@@ -3828,7 +3828,7 @@ jobs:
 
   build_ruby_ubuntu_18_04-3_1_4-jemalloc:
     name: 'Build Ruby [ubuntu-18.04/3.1.4/jemalloc]'
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     permissions:
       packages: read
     needs:
@@ -3922,7 +3922,7 @@ jobs:
 
   build_ruby_ubuntu_18_04-3_1_4-malloctrim:
     name: 'Build Ruby [ubuntu-18.04/3.1.4/malloctrim]'
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     permissions:
       packages: read
     needs:
@@ -4011,7 +4011,7 @@ jobs:
 
   build_ruby_ubuntu_18_04-3_0_6-normal:
     name: 'Build Ruby [ubuntu-18.04/3.0.6/normal]'
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     permissions:
       packages: read
     needs:
@@ -4100,7 +4100,7 @@ jobs:
 
   build_ruby_ubuntu_18_04-3_0_6-jemalloc:
     name: 'Build Ruby [ubuntu-18.04/3.0.6/jemalloc]'
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     permissions:
       packages: read
     needs:
@@ -4194,7 +4194,7 @@ jobs:
 
   build_ruby_ubuntu_18_04-3_0_6-malloctrim:
     name: 'Build Ruby [ubuntu-18.04/3.0.6/malloctrim]'
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     permissions:
       packages: read
     needs:
@@ -4283,7 +4283,7 @@ jobs:
 
   build_ruby_ubuntu_18_04-2_7_8-normal:
     name: 'Build Ruby [ubuntu-18.04/2.7.8/normal]'
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     permissions:
       packages: read
     needs:
@@ -4372,7 +4372,7 @@ jobs:
 
   build_ruby_ubuntu_18_04-2_7_8-jemalloc:
     name: 'Build Ruby [ubuntu-18.04/2.7.8/jemalloc]'
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     permissions:
       packages: read
     needs:
@@ -4466,7 +4466,7 @@ jobs:
 
   build_ruby_ubuntu_18_04-2_7_8-malloctrim:
     name: 'Build Ruby [ubuntu-18.04/2.7.8/malloctrim]'
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     permissions:
       packages: read
     needs:
@@ -4631,7 +4631,7 @@ jobs:
       - build_ruby_ubuntu_18_04-2_7_8-normal
       - build_ruby_ubuntu_18_04-2_7_8-jemalloc
       - build_ruby_ubuntu_18_04-2_7_8-malloctrim
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     if: 'always()'
     steps:
       - uses: actions/checkout@v3
@@ -5093,7 +5093,7 @@ jobs:
 
       - uses: ruby/setup-ruby@v1
         with:
-          ruby-version: 2.7
+          ruby-version: 3.2
 
       - run: bundle install --local
         env:
