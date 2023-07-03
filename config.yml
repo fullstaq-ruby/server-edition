@@ -103,13 +103,10 @@ distributions: all
 ## The names must match the folder names found in the environments/
 ## directory in this project.
 # distributions:
-#   - centos-7
 #   - centos-8
 #   - el-9
-#   - debian-9
 #   - debian-10
 #   - debian-11
-#   - ubuntu-18.04
 #   - ubuntu-20.04
 #   - ubuntu-22.04
 
@@ -125,10 +122,3 @@ distribution_exclusions:
     distros:
       - ubuntu-22.04
       - el-9
-      - centos-7
-  - ruby_minor_version: '3.1'
-    distros:
-      - centos-7
-  - ruby_minor_version: '3.2'
-    distros:
-      - centos-7

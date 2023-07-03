@@ -408,17 +408,6 @@ Enterprise Linux 8:
     gpgkey=https://raw.githubusercontent.com/fullstaq-labs/fullstaq-ruby-server-edition/main/fullstaq-ruby.asc
     sslverify=1
 
-Enterprise Linux 7:
-
-    [fullstaq-ruby]
-    name=fullstaq-ruby
-    baseurl=https://yum.fullstaqruby.org/centos-7/$basearch
-    gpgcheck=0
-    repo_gpgcheck=1
-    enabled=1
-    gpgkey=https://raw.githubusercontent.com/fullstaq-labs/fullstaq-ruby-server-edition/main/fullstaq-ruby.asc
-    sslverify=1
-
 Then install `fullstaq-ruby-common`:
 
     sudo yum install fullstaq-ruby-common
@@ -486,17 +475,11 @@ deb https://apt.fullstaqruby.org ubuntu-22.04 main
 # Ubuntu 20.04
 deb https://apt.fullstaqruby.org ubuntu-20.04 main
 
-# Ubuntu 18.04
-deb https://apt.fullstaqruby.org ubuntu-18.04 main
-
 # Debian 11
 deb https://apt.fullstaqruby.org debian-11 main
 
 # Debian 10
 deb https://apt.fullstaqruby.org debian-10 main
-
-# Debian 9
-deb https://apt.fullstaqruby.org debian-9 main
 ~~~
 
 Then run:

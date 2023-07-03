@@ -22,8 +22,8 @@ function usage()
     echo
     echo "Required options:"
     echo "  -S URL      Test packages on the given YUM server, not local files"
-    echo "              (e.g. https://yum.fullstaqruby.org/centos-7)"
-    echo "  -i IMAGE    Image name to run test in (e.g. centos:7)"
+    echo "              (e.g. https://yum.fullstaqruby.org/el-9)"
+    echo "  -i IMAGE    Image name to run test in (e.g. rockylinux:9)"
     echo "  -v VARIANT  Expected variant name (one of: normal, jemalloc, malloctrim)"
     echo
     echo "Required options (local file mode):"
@@ -33,7 +33,7 @@ function usage()
     echo
     echo "Required options (server mode):"
     echo "  -n VERSION  Ruby package version to test against"
-    echo "              (e.g. 2.6; 2.6-jemalloc)"
+    echo "              (e.g. 3.2; 3.2-jemalloc)"
     echo
     echo "Optional options:"
     echo "  -D          Open a debug shell after tests have run"

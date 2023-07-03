@@ -1,6 +1,6 @@
 # Fixing bugs
 
-This guide demonstrates how to analyze and fix bugs. We use [issue #44](https://github.com/fullstaq-labs/fullstaq-ruby-server-edition/issues/44) as a case study.
+This guide demonstrates how to analyze and fix bugs. We use [issue #44](https://github.com/fullstaq-labs/fullstaq-ruby-server-edition/issues/44) as a case study. We no longer support CentOS 7 or Ruby 2.6 but that doesn't matter for the purpose of learning.
 
 ## The bug report
 
