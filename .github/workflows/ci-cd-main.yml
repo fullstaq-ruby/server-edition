@@ -433,7 +433,6 @@ jobs:
 
       - name: Download
         run: ./internal-scripts/ci-cd/download-ruby-sources/download.sh
-        if: steps.fetch_cache.outputs.cache-hit != 'true'
         env:
           RUBY_VERSION: 3.2.2
 
@@ -457,7 +456,6 @@ jobs:
 
       - name: Download
         run: ./internal-scripts/ci-cd/download-ruby-sources/download.sh
-        if: steps.fetch_cache.outputs.cache-hit != 'true'
         env:
           RUBY_VERSION: 3.1.4
 
@@ -481,7 +479,6 @@ jobs:
 
       - name: Download
         run: ./internal-scripts/ci-cd/download-ruby-sources/download.sh
-        if: steps.fetch_cache.outputs.cache-hit != 'true'
         env:
           RUBY_VERSION: 3.0.6
 
@@ -505,7 +502,6 @@ jobs:
 
       - name: Download
         run: ./internal-scripts/ci-cd/download-ruby-sources/download.sh
-        if: steps.fetch_cache.outputs.cache-hit != 'true'
         env:
           RUBY_VERSION: 2.7.8
 
@@ -563,13 +559,8 @@ jobs:
       - name: Check whether dependent jobs did not fail
         run: 'false'
         if: |
-          (
-            needs.download_rbenv_source.result == 'skipped'
-            && contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Download Rbenv source;')
-          ) || (
-            needs.build_docker_image_utility.result == 'skipped'
-            && contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Docker image utility;')
-          )
+          needs.build_docker_image_utility.result == 'skipped'
+          && contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Docker image utility;')
 
       - uses: actions/checkout@v3
       - name: Login to Google Cloud
@@ -623,13 +614,8 @@ jobs:
       - name: Check whether dependent jobs did not fail
         run: 'false'
         if: |
-          (
-            needs.download_rbenv_source.result == 'skipped'
-            && contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Download Rbenv source;')
-          ) || (
-            needs.build_docker_image_utility.result == 'skipped'
-            && contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Docker image utility;')
-          )
+          needs.build_docker_image_utility.result == 'skipped'
+          && contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Docker image utility;')
 
       - uses: actions/checkout@v3
       - name: Login to Google Cloud
