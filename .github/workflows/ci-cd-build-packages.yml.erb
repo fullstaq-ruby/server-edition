@@ -148,17 +148,25 @@ jobs:
         packages: read
       needs:
         - determine_necessary_jobs
-        - build_jemalloc_<%= slug(distribution[:name]) %>
+        <% if variant[:name] == 'jemalloc' %>
+        <%- unindent(2) do -%>
+          - build_jemalloc_<%= slug(distribution[:name]) %>
+        <%- end -%>
+        <% end %>
       # Run even if a dependent job has been skipped
       if: |
         contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Ruby [<%= distribution[:name] %>/<%= ruby_package_version[:id] %>/<%= variant[:name] %>];')
         && !failure() && !cancelled()
       steps:
-        - name: Check whether 'Build Jemalloc [<%= distribution[:name] %>]' did not fail
-          run: 'false'
-          if: |
-            needs.build_jemalloc_<%= slug(distribution[:name]) %>.result == 'skipped'
-            && contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Jemalloc [<%= distribution[:name] %>];')
+        <% if variant[:name] == 'jemalloc' %>
+        <%- unindent(2) do -%>
+          - name: Check whether 'Build Jemalloc [<%= distribution[:name] %>]' did not fail
+            run: 'false'
+            if: |
+              needs.build_jemalloc_<%= slug(distribution[:name]) %>.result == 'skipped'
+              && contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Jemalloc [<%= distribution[:name] %>];')
+        <%- end -%>
+        <% end %>
 
         - uses: actions/checkout@v3
         - name: Login to Google Cloud
