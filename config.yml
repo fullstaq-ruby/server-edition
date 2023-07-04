@@ -20,9 +20,6 @@ ruby:
     - minor_version: '3.0'
       full_version: '3.0.6'
       package_revision: '10'
-    - minor_version: '2.7'
-      full_version: '2.7.8'
-      package_revision: '12'
 
   ## (Optional)
   ## Which tiny Ruby version packages to build.
@@ -33,8 +30,6 @@ ruby:
       package_revision: '7'
     - full_version: '3.0.6'
       package_revision: '10'
-    - full_version: '2.7.8'
-      package_revision: '11'
 
 ## (Required)
 ## Which Rbenv version to package.
@@ -115,11 +110,6 @@ distributions: all
 ## Excludes certain Ruby minor versions from certain distributions.
 ## Useful if certain older Ruby versions don't compile on newer distributions or viceversa.
 distribution_exclusions:
-  - ruby_minor_version: '2.7'
-    distros:
-      - debian-12
-      - ubuntu-22.04
-      - el-9
   - ruby_minor_version: '3.0'
     distros:
       - debian-12
