@@ -107,7 +107,7 @@ jobs:
             common-rpm
             rbenv-deb
             rbenv-rpm
-            ruby-pkg_3.2_centos-8_normal ruby-pkg_3.2_centos-8_jemalloc ruby-pkg_3.2_centos-8_malloctrim ruby-pkg_3.1_centos-8_normal ruby-pkg_3.1_centos-8_jemalloc ruby-pkg_3.1_centos-8_malloctrim ruby-pkg_3.0_centos-8_normal ruby-pkg_3.0_centos-8_jemalloc ruby-pkg_3.0_centos-8_malloctrim ruby-pkg_2.7_centos-8_normal ruby-pkg_2.7_centos-8_jemalloc ruby-pkg_2.7_centos-8_malloctrim ruby-pkg_3.2.2_centos-8_normal ruby-pkg_3.2.2_centos-8_jemalloc ruby-pkg_3.2.2_centos-8_malloctrim ruby-pkg_3.1.4_centos-8_normal ruby-pkg_3.1.4_centos-8_jemalloc ruby-pkg_3.1.4_centos-8_malloctrim ruby-pkg_3.0.6_centos-8_normal ruby-pkg_3.0.6_centos-8_jemalloc ruby-pkg_3.0.6_centos-8_malloctrim ruby-pkg_2.7.8_centos-8_normal ruby-pkg_2.7.8_centos-8_jemalloc ruby-pkg_2.7.8_centos-8_malloctrim ruby-pkg_3.2_debian-10_normal ruby-pkg_3.2_debian-10_jemalloc ruby-pkg_3.2_debian-10_malloctrim ruby-pkg_3.1_debian-10_normal ruby-pkg_3.1_debian-10_jemalloc ruby-pkg_3.1_debian-10_malloctrim ruby-pkg_3.0_debian-10_normal ruby-pkg_3.0_debian-10_jemalloc ruby-pkg_3.0_debian-10_malloctrim ruby-pkg_2.7_debian-10_normal ruby-pkg_2.7_debian-10_jemalloc ruby-pkg_2.7_debian-10_malloctrim ruby-pkg_3.2.2_debian-10_normal ruby-pkg_3.2.2_debian-10_jemalloc ruby-pkg_3.2.2_debian-10_malloctrim ruby-pkg_3.1.4_debian-10_normal ruby-pkg_3.1.4_debian-10_jemalloc ruby-pkg_3.1.4_debian-10_malloctrim ruby-pkg_3.0.6_debian-10_normal ruby-pkg_3.0.6_debian-10_jemalloc ruby-pkg_3.0.6_debian-10_malloctrim ruby-pkg_2.7.8_debian-10_normal ruby-pkg_2.7.8_debian-10_jemalloc ruby-pkg_2.7.8_debian-10_malloctrim ruby-pkg_3.2_debian-11_normal ruby-pkg_3.2_debian-11_jemalloc ruby-pkg_3.2_debian-11_malloctrim ruby-pkg_3.1_debian-11_normal ruby-pkg_3.1_debian-11_jemalloc ruby-pkg_3.1_debian-11_malloctrim ruby-pkg_3.0_debian-11_normal ruby-pkg_3.0_debian-11_jemalloc ruby-pkg_3.0_debian-11_malloctrim ruby-pkg_2.7_debian-11_normal ruby-pkg_2.7_debian-11_jemalloc ruby-pkg_2.7_debian-11_malloctrim ruby-pkg_3.2.2_debian-11_normal ruby-pkg_3.2.2_debian-11_jemalloc ruby-pkg_3.2.2_debian-11_malloctrim ruby-pkg_3.1.4_debian-11_normal ruby-pkg_3.1.4_debian-11_jemalloc ruby-pkg_3.1.4_debian-11_malloctrim ruby-pkg_3.0.6_debian-11_normal ruby-pkg_3.0.6_debian-11_jemalloc ruby-pkg_3.0.6_debian-11_malloctrim ruby-pkg_2.7.8_debian-11_normal ruby-pkg_2.7.8_debian-11_jemalloc ruby-pkg_2.7.8_debian-11_malloctrim ruby-pkg_3.2_el-9_normal ruby-pkg_3.2_el-9_jemalloc ruby-pkg_3.2_el-9_malloctrim ruby-pkg_3.1_el-9_normal ruby-pkg_3.1_el-9_jemalloc ruby-pkg_3.1_el-9_malloctrim ruby-pkg_3.2.2_el-9_normal ruby-pkg_3.2.2_el-9_jemalloc ruby-pkg_3.2.2_el-9_malloctrim ruby-pkg_3.1.4_el-9_normal ruby-pkg_3.1.4_el-9_jemalloc ruby-pkg_3.1.4_el-9_malloctrim ruby-pkg_3.2_ubuntu-20.04_normal ruby-pkg_3.2_ubuntu-20.04_jemalloc ruby-pkg_3.2_ubuntu-20.04_malloctrim ruby-pkg_3.1_ubuntu-20.04_normal ruby-pkg_3.1_ubuntu-20.04_jemalloc ruby-pkg_3.1_ubuntu-20.04_malloctrim ruby-pkg_3.0_ubuntu-20.04_normal ruby-pkg_3.0_ubuntu-20.04_jemalloc ruby-pkg_3.0_ubuntu-20.04_malloctrim ruby-pkg_2.7_ubuntu-20.04_normal ruby-pkg_2.7_ubuntu-20.04_jemalloc ruby-pkg_2.7_ubuntu-20.04_malloctrim ruby-pkg_3.2.2_ubuntu-20.04_normal ruby-pkg_3.2.2_ubuntu-20.04_jemalloc ruby-pkg_3.2.2_ubuntu-20.04_malloctrim ruby-pkg_3.1.4_ubuntu-20.04_normal ruby-pkg_3.1.4_ubuntu-20.04_jemalloc ruby-pkg_3.1.4_ubuntu-20.04_malloctrim ruby-pkg_3.0.6_ubuntu-20.04_normal ruby-pkg_3.0.6_ubuntu-20.04_jemalloc ruby-pkg_3.0.6_ubuntu-20.04_malloctrim ruby-pkg_2.7.8_ubuntu-20.04_normal ruby-pkg_2.7.8_ubuntu-20.04_jemalloc ruby-pkg_2.7.8_ubuntu-20.04_malloctrim ruby-pkg_3.2_ubuntu-22.04_normal ruby-pkg_3.2_ubuntu-22.04_jemalloc ruby-pkg_3.2_ubuntu-22.04_malloctrim ruby-pkg_3.1_ubuntu-22.04_normal ruby-pkg_3.1_ubuntu-22.04_jemalloc ruby-pkg_3.1_ubuntu-22.04_malloctrim ruby-pkg_3.2.2_ubuntu-22.04_normal ruby-pkg_3.2.2_ubuntu-22.04_jemalloc ruby-pkg_3.2.2_ubuntu-22.04_malloctrim ruby-pkg_3.1.4_ubuntu-22.04_normal ruby-pkg_3.1.4_ubuntu-22.04_jemalloc ruby-pkg_3.1.4_ubuntu-22.04_malloctrim
+            ruby-pkg_3.2_centos-8_normal ruby-pkg_3.2_centos-8_jemalloc ruby-pkg_3.2_centos-8_malloctrim ruby-pkg_3.1_centos-8_normal ruby-pkg_3.1_centos-8_jemalloc ruby-pkg_3.1_centos-8_malloctrim ruby-pkg_3.0_centos-8_normal ruby-pkg_3.0_centos-8_jemalloc ruby-pkg_3.0_centos-8_malloctrim ruby-pkg_2.7_centos-8_normal ruby-pkg_2.7_centos-8_jemalloc ruby-pkg_2.7_centos-8_malloctrim ruby-pkg_3.2.2_centos-8_normal ruby-pkg_3.2.2_centos-8_jemalloc ruby-pkg_3.2.2_centos-8_malloctrim ruby-pkg_3.1.4_centos-8_normal ruby-pkg_3.1.4_centos-8_jemalloc ruby-pkg_3.1.4_centos-8_malloctrim ruby-pkg_3.0.6_centos-8_normal ruby-pkg_3.0.6_centos-8_jemalloc ruby-pkg_3.0.6_centos-8_malloctrim ruby-pkg_2.7.8_centos-8_normal ruby-pkg_2.7.8_centos-8_jemalloc ruby-pkg_2.7.8_centos-8_malloctrim ruby-pkg_3.2_debian-10_normal ruby-pkg_3.2_debian-10_jemalloc ruby-pkg_3.2_debian-10_malloctrim ruby-pkg_3.1_debian-10_normal ruby-pkg_3.1_debian-10_jemalloc ruby-pkg_3.1_debian-10_malloctrim ruby-pkg_3.0_debian-10_normal ruby-pkg_3.0_debian-10_jemalloc ruby-pkg_3.0_debian-10_malloctrim ruby-pkg_2.7_debian-10_normal ruby-pkg_2.7_debian-10_jemalloc ruby-pkg_2.7_debian-10_malloctrim ruby-pkg_3.2.2_debian-10_normal ruby-pkg_3.2.2_debian-10_jemalloc ruby-pkg_3.2.2_debian-10_malloctrim ruby-pkg_3.1.4_debian-10_normal ruby-pkg_3.1.4_debian-10_jemalloc ruby-pkg_3.1.4_debian-10_malloctrim ruby-pkg_3.0.6_debian-10_normal ruby-pkg_3.0.6_debian-10_jemalloc ruby-pkg_3.0.6_debian-10_malloctrim ruby-pkg_2.7.8_debian-10_normal ruby-pkg_2.7.8_debian-10_jemalloc ruby-pkg_2.7.8_debian-10_malloctrim ruby-pkg_3.2_debian-11_normal ruby-pkg_3.2_debian-11_jemalloc ruby-pkg_3.2_debian-11_malloctrim ruby-pkg_3.1_debian-11_normal ruby-pkg_3.1_debian-11_jemalloc ruby-pkg_3.1_debian-11_malloctrim ruby-pkg_3.0_debian-11_normal ruby-pkg_3.0_debian-11_jemalloc ruby-pkg_3.0_debian-11_malloctrim ruby-pkg_2.7_debian-11_normal ruby-pkg_2.7_debian-11_jemalloc ruby-pkg_2.7_debian-11_malloctrim ruby-pkg_3.2.2_debian-11_normal ruby-pkg_3.2.2_debian-11_jemalloc ruby-pkg_3.2.2_debian-11_malloctrim ruby-pkg_3.1.4_debian-11_normal ruby-pkg_3.1.4_debian-11_jemalloc ruby-pkg_3.1.4_debian-11_malloctrim ruby-pkg_3.0.6_debian-11_normal ruby-pkg_3.0.6_debian-11_jemalloc ruby-pkg_3.0.6_debian-11_malloctrim ruby-pkg_2.7.8_debian-11_normal ruby-pkg_2.7.8_debian-11_jemalloc ruby-pkg_2.7.8_debian-11_malloctrim ruby-pkg_3.2_debian-12_normal ruby-pkg_3.2_debian-12_jemalloc ruby-pkg_3.2_debian-12_malloctrim ruby-pkg_3.2.2_debian-12_normal ruby-pkg_3.2.2_debian-12_jemalloc ruby-pkg_3.2.2_debian-12_malloctrim ruby-pkg_3.2_el-9_normal ruby-pkg_3.2_el-9_jemalloc ruby-pkg_3.2_el-9_malloctrim ruby-pkg_3.1_el-9_normal ruby-pkg_3.1_el-9_jemalloc ruby-pkg_3.1_el-9_malloctrim ruby-pkg_3.2.2_el-9_normal ruby-pkg_3.2.2_el-9_jemalloc ruby-pkg_3.2.2_el-9_malloctrim ruby-pkg_3.1.4_el-9_normal ruby-pkg_3.1.4_el-9_jemalloc ruby-pkg_3.1.4_el-9_malloctrim ruby-pkg_3.2_ubuntu-20.04_normal ruby-pkg_3.2_ubuntu-20.04_jemalloc ruby-pkg_3.2_ubuntu-20.04_malloctrim ruby-pkg_3.1_ubuntu-20.04_normal ruby-pkg_3.1_ubuntu-20.04_jemalloc ruby-pkg_3.1_ubuntu-20.04_malloctrim ruby-pkg_3.0_ubuntu-20.04_normal ruby-pkg_3.0_ubuntu-20.04_jemalloc ruby-pkg_3.0_ubuntu-20.04_malloctrim ruby-pkg_2.7_ubuntu-20.04_normal ruby-pkg_2.7_ubuntu-20.04_jemalloc ruby-pkg_2.7_ubuntu-20.04_malloctrim ruby-pkg_3.2.2_ubuntu-20.04_normal ruby-pkg_3.2.2_ubuntu-20.04_jemalloc ruby-pkg_3.2.2_ubuntu-20.04_malloctrim ruby-pkg_3.1.4_ubuntu-20.04_normal ruby-pkg_3.1.4_ubuntu-20.04_jemalloc ruby-pkg_3.1.4_ubuntu-20.04_malloctrim ruby-pkg_3.0.6_ubuntu-20.04_normal ruby-pkg_3.0.6_ubuntu-20.04_jemalloc ruby-pkg_3.0.6_ubuntu-20.04_malloctrim ruby-pkg_2.7.8_ubuntu-20.04_normal ruby-pkg_2.7.8_ubuntu-20.04_jemalloc ruby-pkg_2.7.8_ubuntu-20.04_malloctrim ruby-pkg_3.2_ubuntu-22.04_normal ruby-pkg_3.2_ubuntu-22.04_jemalloc ruby-pkg_3.2_ubuntu-22.04_malloctrim ruby-pkg_3.1_ubuntu-22.04_normal ruby-pkg_3.1_ubuntu-22.04_jemalloc ruby-pkg_3.1_ubuntu-22.04_malloctrim ruby-pkg_3.2.2_ubuntu-22.04_normal ruby-pkg_3.2.2_ubuntu-22.04_jemalloc ruby-pkg_3.2.2_ubuntu-22.04_malloctrim ruby-pkg_3.1.4_ubuntu-22.04_normal ruby-pkg_3.1.4_ubuntu-22.04_jemalloc ruby-pkg_3.1.4_ubuntu-22.04_malloctrim
           ARTIFACT_PATH: pkgs
 
       - name: Download Docker image necessary for publishing
@@ -2604,6 +2604,211 @@ jobs:
           ARTIFACT_PATH: mark-malloctrim
 
 
+  test_debian_12-3_2-normal:
+    name: 'Test [debian-12/3.2/normal]'
+    runs-on: ubuntu-22.04
+    needs:
+      - determine_necessary_jobs
+      - publish
+    if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against test repo [debian-12/3.2/normal];')
+    steps:
+      - uses: actions/checkout@v3
+      - name: Login to Google Cloud
+        uses: ./.github/actions/gcloud-login
+        with:
+          private_key: ${{ secrets.GCLOUD_KEY }}
+
+      - name: Run tests
+        run: ./internal-scripts/ci-cd/test-packages/run-tests.sh
+        env:
+          DISTRIBUTION_NAME: "debian-12"
+          RUBY_PACKAGE_ID: "3.2"
+          PACKAGE_FORMAT: "DEB"
+          VARIANT_NAME: "normal"
+          VARIANT_PACKAGE_SUFFIX: ""
+          TEST_IMAGE_NAME: "debian:12"
+          APT_REPO_URL: https://storage.googleapis.com/${{ env.CI_ARTIFACTS_BUCKET }}/${{ env.CI_ARTIFACTS_RUN_NUMBER }}/apt-repo/versions/singleton/public
+          YUM_REPO_URL: https://storage.googleapis.com/${{ env.CI_ARTIFACTS_BUCKET }}/${{ env.CI_ARTIFACTS_RUN_NUMBER }}/yum-repo/versions/singleton/public
+
+      - name: Create mark file
+        run: mkdir mark-normal && touch mark-normal/done.txt
+      - name: Mark job as done
+        run: ./internal-scripts/ci-cd/upload-artifact.sh
+        env:
+          ARTIFACT_NAME: tested-against-test-debian-12_3.2_normal
+          ARTIFACT_PATH: mark-normal
+
+  test_debian_12-3_2-jemalloc:
+    name: 'Test [debian-12/3.2/jemalloc]'
+    runs-on: ubuntu-22.04
+    needs:
+      - determine_necessary_jobs
+      - publish
+    if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against test repo [debian-12/3.2/jemalloc];')
+    steps:
+      - uses: actions/checkout@v3
+      - name: Login to Google Cloud
+        uses: ./.github/actions/gcloud-login
+        with:
+          private_key: ${{ secrets.GCLOUD_KEY }}
+
+      - name: Run tests
+        run: ./internal-scripts/ci-cd/test-packages/run-tests.sh
+        env:
+          DISTRIBUTION_NAME: "debian-12"
+          RUBY_PACKAGE_ID: "3.2"
+          PACKAGE_FORMAT: "DEB"
+          VARIANT_NAME: "jemalloc"
+          VARIANT_PACKAGE_SUFFIX: "-jemalloc"
+          TEST_IMAGE_NAME: "debian:12"
+          APT_REPO_URL: https://storage.googleapis.com/${{ env.CI_ARTIFACTS_BUCKET }}/${{ env.CI_ARTIFACTS_RUN_NUMBER }}/apt-repo/versions/singleton/public
+          YUM_REPO_URL: https://storage.googleapis.com/${{ env.CI_ARTIFACTS_BUCKET }}/${{ env.CI_ARTIFACTS_RUN_NUMBER }}/yum-repo/versions/singleton/public
+
+      - name: Create mark file
+        run: mkdir mark-jemalloc && touch mark-jemalloc/done.txt
+      - name: Mark job as done
+        run: ./internal-scripts/ci-cd/upload-artifact.sh
+        env:
+          ARTIFACT_NAME: tested-against-test-debian-12_3.2_jemalloc
+          ARTIFACT_PATH: mark-jemalloc
+
+  test_debian_12-3_2-malloctrim:
+    name: 'Test [debian-12/3.2/malloctrim]'
+    runs-on: ubuntu-22.04
+    needs:
+      - determine_necessary_jobs
+      - publish
+    if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against test repo [debian-12/3.2/malloctrim];')
+    steps:
+      - uses: actions/checkout@v3
+      - name: Login to Google Cloud
+        uses: ./.github/actions/gcloud-login
+        with:
+          private_key: ${{ secrets.GCLOUD_KEY }}
+
+      - name: Run tests
+        run: ./internal-scripts/ci-cd/test-packages/run-tests.sh
+        env:
+          DISTRIBUTION_NAME: "debian-12"
+          RUBY_PACKAGE_ID: "3.2"
+          PACKAGE_FORMAT: "DEB"
+          VARIANT_NAME: "malloctrim"
+          VARIANT_PACKAGE_SUFFIX: "-malloctrim"
+          TEST_IMAGE_NAME: "debian:12"
+          APT_REPO_URL: https://storage.googleapis.com/${{ env.CI_ARTIFACTS_BUCKET }}/${{ env.CI_ARTIFACTS_RUN_NUMBER }}/apt-repo/versions/singleton/public
+          YUM_REPO_URL: https://storage.googleapis.com/${{ env.CI_ARTIFACTS_BUCKET }}/${{ env.CI_ARTIFACTS_RUN_NUMBER }}/yum-repo/versions/singleton/public
+
+      - name: Create mark file
+        run: mkdir mark-malloctrim && touch mark-malloctrim/done.txt
+      - name: Mark job as done
+        run: ./internal-scripts/ci-cd/upload-artifact.sh
+        env:
+          ARTIFACT_NAME: tested-against-test-debian-12_3.2_malloctrim
+          ARTIFACT_PATH: mark-malloctrim
+
+  test_debian_12-3_2_2-normal:
+    name: 'Test [debian-12/3.2.2/normal]'
+    runs-on: ubuntu-22.04
+    needs:
+      - determine_necessary_jobs
+      - publish
+    if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against test repo [debian-12/3.2.2/normal];')
+    steps:
+      - uses: actions/checkout@v3
+      - name: Login to Google Cloud
+        uses: ./.github/actions/gcloud-login
+        with:
+          private_key: ${{ secrets.GCLOUD_KEY }}
+
+      - name: Run tests
+        run: ./internal-scripts/ci-cd/test-packages/run-tests.sh
+        env:
+          DISTRIBUTION_NAME: "debian-12"
+          RUBY_PACKAGE_ID: "3.2.2"
+          PACKAGE_FORMAT: "DEB"
+          VARIANT_NAME: "normal"
+          VARIANT_PACKAGE_SUFFIX: ""
+          TEST_IMAGE_NAME: "debian:12"
+          APT_REPO_URL: https://storage.googleapis.com/${{ env.CI_ARTIFACTS_BUCKET }}/${{ env.CI_ARTIFACTS_RUN_NUMBER }}/apt-repo/versions/singleton/public
+          YUM_REPO_URL: https://storage.googleapis.com/${{ env.CI_ARTIFACTS_BUCKET }}/${{ env.CI_ARTIFACTS_RUN_NUMBER }}/yum-repo/versions/singleton/public
+
+      - name: Create mark file
+        run: mkdir mark-normal && touch mark-normal/done.txt
+      - name: Mark job as done
+        run: ./internal-scripts/ci-cd/upload-artifact.sh
+        env:
+          ARTIFACT_NAME: tested-against-test-debian-12_3.2.2_normal
+          ARTIFACT_PATH: mark-normal
+
+  test_debian_12-3_2_2-jemalloc:
+    name: 'Test [debian-12/3.2.2/jemalloc]'
+    runs-on: ubuntu-22.04
+    needs:
+      - determine_necessary_jobs
+      - publish
+    if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against test repo [debian-12/3.2.2/jemalloc];')
+    steps:
+      - uses: actions/checkout@v3
+      - name: Login to Google Cloud
+        uses: ./.github/actions/gcloud-login
+        with:
+          private_key: ${{ secrets.GCLOUD_KEY }}
+
+      - name: Run tests
+        run: ./internal-scripts/ci-cd/test-packages/run-tests.sh
+        env:
+          DISTRIBUTION_NAME: "debian-12"
+          RUBY_PACKAGE_ID: "3.2.2"
+          PACKAGE_FORMAT: "DEB"
+          VARIANT_NAME: "jemalloc"
+          VARIANT_PACKAGE_SUFFIX: "-jemalloc"
+          TEST_IMAGE_NAME: "debian:12"
+          APT_REPO_URL: https://storage.googleapis.com/${{ env.CI_ARTIFACTS_BUCKET }}/${{ env.CI_ARTIFACTS_RUN_NUMBER }}/apt-repo/versions/singleton/public
+          YUM_REPO_URL: https://storage.googleapis.com/${{ env.CI_ARTIFACTS_BUCKET }}/${{ env.CI_ARTIFACTS_RUN_NUMBER }}/yum-repo/versions/singleton/public
+
+      - name: Create mark file
+        run: mkdir mark-jemalloc && touch mark-jemalloc/done.txt
+      - name: Mark job as done
+        run: ./internal-scripts/ci-cd/upload-artifact.sh
+        env:
+          ARTIFACT_NAME: tested-against-test-debian-12_3.2.2_jemalloc
+          ARTIFACT_PATH: mark-jemalloc
+
+  test_debian_12-3_2_2-malloctrim:
+    name: 'Test [debian-12/3.2.2/malloctrim]'
+    runs-on: ubuntu-22.04
+    needs:
+      - determine_necessary_jobs
+      - publish
+    if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against test repo [debian-12/3.2.2/malloctrim];')
+    steps:
+      - uses: actions/checkout@v3
+      - name: Login to Google Cloud
+        uses: ./.github/actions/gcloud-login
+        with:
+          private_key: ${{ secrets.GCLOUD_KEY }}
+
+      - name: Run tests
+        run: ./internal-scripts/ci-cd/test-packages/run-tests.sh
+        env:
+          DISTRIBUTION_NAME: "debian-12"
+          RUBY_PACKAGE_ID: "3.2.2"
+          PACKAGE_FORMAT: "DEB"
+          VARIANT_NAME: "malloctrim"
+          VARIANT_PACKAGE_SUFFIX: "-malloctrim"
+          TEST_IMAGE_NAME: "debian:12"
+          APT_REPO_URL: https://storage.googleapis.com/${{ env.CI_ARTIFACTS_BUCKET }}/${{ env.CI_ARTIFACTS_RUN_NUMBER }}/apt-repo/versions/singleton/public
+          YUM_REPO_URL: https://storage.googleapis.com/${{ env.CI_ARTIFACTS_BUCKET }}/${{ env.CI_ARTIFACTS_RUN_NUMBER }}/yum-repo/versions/singleton/public
+
+      - name: Create mark file
+        run: mkdir mark-malloctrim && touch mark-malloctrim/done.txt
+      - name: Mark job as done
+        run: ./internal-scripts/ci-cd/upload-artifact.sh
+        env:
+          ARTIFACT_NAME: tested-against-test-debian-12_3.2.2_malloctrim
+          ARTIFACT_PATH: mark-malloctrim
+
+
   test_el_9-3_2-normal:
     name: 'Test [el-9/3.2/normal]'
     runs-on: ubuntu-22.04
@@ -4321,6 +4526,12 @@ jobs:
       - test_debian_11-2_7_8-normal
       - test_debian_11-2_7_8-jemalloc
       - test_debian_11-2_7_8-malloctrim
+      - test_debian_12-3_2-normal
+      - test_debian_12-3_2-jemalloc
+      - test_debian_12-3_2-malloctrim
+      - test_debian_12-3_2_2-normal
+      - test_debian_12-3_2_2-jemalloc
+      - test_debian_12-3_2_2-malloctrim
       - test_el_9-3_2-normal
       - test_el_9-3_2-jemalloc
       - test_el_9-3_2-malloctrim
@@ -4818,6 +5029,42 @@ jobs:
           needs.test_debian_11-2_7_8-malloctrim.result != 'success'
           && (needs.test_debian_11-2_7_8-malloctrim.result != 'skipped'
             || contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against test repo [debian-11/2.7.8/malloctrim];'))
+      - name: Check whether 'Test [debian-12/3.2/normal]' did not fail
+        run: 'false'
+        if: |
+          needs.test_debian_12-3_2-normal.result != 'success'
+          && (needs.test_debian_12-3_2-normal.result != 'skipped'
+            || contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against test repo [debian-12/3.2/normal];'))
+      - name: Check whether 'Test [debian-12/3.2/jemalloc]' did not fail
+        run: 'false'
+        if: |
+          needs.test_debian_12-3_2-jemalloc.result != 'success'
+          && (needs.test_debian_12-3_2-jemalloc.result != 'skipped'
+            || contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against test repo [debian-12/3.2/jemalloc];'))
+      - name: Check whether 'Test [debian-12/3.2/malloctrim]' did not fail
+        run: 'false'
+        if: |
+          needs.test_debian_12-3_2-malloctrim.result != 'success'
+          && (needs.test_debian_12-3_2-malloctrim.result != 'skipped'
+            || contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against test repo [debian-12/3.2/malloctrim];'))
+      - name: Check whether 'Test [debian-12/3.2.2/normal]' did not fail
+        run: 'false'
+        if: |
+          needs.test_debian_12-3_2_2-normal.result != 'success'
+          && (needs.test_debian_12-3_2_2-normal.result != 'skipped'
+            || contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against test repo [debian-12/3.2.2/normal];'))
+      - name: Check whether 'Test [debian-12/3.2.2/jemalloc]' did not fail
+        run: 'false'
+        if: |
+          needs.test_debian_12-3_2_2-jemalloc.result != 'success'
+          && (needs.test_debian_12-3_2_2-jemalloc.result != 'skipped'
+            || contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against test repo [debian-12/3.2.2/jemalloc];'))
+      - name: Check whether 'Test [debian-12/3.2.2/malloctrim]' did not fail
+        run: 'false'
+        if: |
+          needs.test_debian_12-3_2_2-malloctrim.result != 'success'
+          && (needs.test_debian_12-3_2_2-malloctrim.result != 'skipped'
+            || contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against test repo [debian-12/3.2.2/malloctrim];'))
       - name: Check whether 'Test [el-9/3.2/normal]' did not fail
         run: 'false'
         if: |

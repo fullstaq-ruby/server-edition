@@ -133,7 +133,7 @@ Fullstaq Ruby came about for two reasons:
     + _RVM/Rbenv (whether compilation or precompiled binaries) drawbacks:_
 
         - Keeping Ruby security-patched is a hassle.
-        - Upgrading to a new Ruby tiny version (e.g. 3.1.0 -> 3.1.1) requires explicit intervention.
+        - Upgrading to a new Ruby tiny version (e.g. 3.3.0 -> 3.3.1) requires explicit intervention.
         - After upgrading the Ruby tiny version, you need to update all your application servers and deployment code to explicitly use that new version, and you need to reinstall all your gems.
 
    Fullstaq Ruby addresses all of these problems by combining native OS packages and Rbenv. See [How it works](#how-it-works)
@@ -157,7 +157,7 @@ The Fullstaq Ruby native OS packages allow you to install Rubies by adding our r
 
  * **We supply packages for each minor version.**
 
-   For example, there are packages for Ruby 3.0 and 3.1. These packages always contain the most recent tiny version. Learn more below in subsection [Minor version packages](#minor_version_packages).
+   For example, there are packages for Ruby 3.1 and 3.2. These packages always contain the most recent tiny version. Learn more below in subsection [Minor version packages](#minor_version_packages).
 
  * **We _also_ supply packages for each tiny version.**
 
@@ -475,6 +475,9 @@ deb https://apt.fullstaqruby.org ubuntu-22.04 main
 # Ubuntu 20.04
 deb https://apt.fullstaqruby.org ubuntu-20.04 main
 
+# Debian 12
+deb https://apt.fullstaqruby.org debian-12 main
+
 # Debian 11
 deb https://apt.fullstaqruby.org debian-11 main
 
@@ -585,12 +588,12 @@ Adding to .bashrc/.bash_profile only activates the shell integration for that sp
 
 Ruby versions are installed to `/usr/lib/fullstaq-ruby/versions/<VERSION>`. Each such directory has a `bin` subdirectory which contains `ruby`, `irb`, `gem`, etc.
 
-Suppose you installed Ruby 3.1 (normal variant). You can execute it directly:
+Suppose you installed Ruby 3.3 (normal variant). You can execute it directly:
 
-    $ /usr/lib/fullstaq-ruby/versions/3.1/bin/ruby --version
-    ruby 3.1.0
+    $ /usr/lib/fullstaq-ruby/versions/3.3/bin/ruby --version
+    ruby 3.3.0
 
-    $ /usr/lib/fullstaq-ruby/versions/3.1/bin/gem install --no-document nokogiri
+    $ /usr/lib/fullstaq-ruby/versions/3.3/bin/gem install --no-document nokogiri
     ...
 
 But for convenience, it's better to add `/usr/lib/fullstaq-ruby/versions/<VERSION>/bin` to your PATH so that you don't have to specify the full path every time. See [Activate Rbenv shell integration (optional)](#activate-rbenv-shell-integration-optional).
@@ -599,19 +602,19 @@ But for convenience, it's better to add `/usr/lib/fullstaq-ruby/versions/<VERSIO
 
 The recommended way to use Fullstaq Ruby is through the Rbenv integration. You should [learn Rbenv](https://github.com/rbenv/rbenv#readme) if you are not familiar with it. Here is a handy [cheat sheet](https://devhints.io/rbenv).
 
-Suppose you installed Ruby 3.1 (normal variant). You can run that Ruby by setting `RBENV_VERSION` and prefixing yours commands with `rbenv exec`:
+Suppose you installed Ruby 3.3 (normal variant). You can run that Ruby by setting `RBENV_VERSION` and prefixing yours commands with `rbenv exec`:
 
-    $ export RBENV_VERSION=3.1
+    $ export RBENV_VERSION=3.3
     $ rbenv exec ruby --version
-    ruby 3.1.0
+    ruby 3.3.0
     $ rbenv exec gem env
     ...
 
 Or, if you've activated the Rbenv shell integration, just running `ruby`, `gem` and various other Ruby would also work, provided that you've activated a certain version and that there's an [Rbenv shim](https://github.com/rbenv/rbenv#understanding-shims) available:
 
-    $ rbenv local 3.1
+    $ rbenv local 3.3
     $ ruby --version
-    ruby 3.1.0
+    ruby 3.3.0
     $ gem env
     ...
 
@@ -690,7 +693,7 @@ After=network.target
 Type=simple
 User=app
 WorkingDirectory=<YOUR_APP_PATH>
-ExecStart=/home/app/.rbenv/versions/3.1.0/bin/ruby -S bundle exec puma -C puma.rb
+ExecStart=/home/app/.rbenv/versions/3.3.0/bin/ruby -S bundle exec puma -C puma.rb
 Restart=always
 
 [Install]
@@ -700,7 +703,7 @@ WantedBy=multi-user.target
 Make sure that your `ExecStart` command is prefixed by a call to `/full-path-to-ruby -S`, like this:
 
 ~~~ini
-ExecStart=/usr/lib/fullstaq-ruby/versions/3.1.0-jemalloc/bin/ruby -S bundle exec puma -C puma.rb
+ExecStart=/usr/lib/fullstaq-ruby/versions/3.3.0-jemalloc/bin/ruby -S bundle exec puma -C puma.rb
 ~~~
 
 > Don't forget the `-S`!
@@ -720,14 +723,14 @@ In your deploy/config.rb make sure you set `rbenv_type` to `:fullstaq`, and `rbe
 set :rbenv_type, :fullstaq
 
 
-# Use Ruby 3.1 (latest tiny version), normal variant
-set :rbenv_ruby, '3.1'
+# Use Ruby 3.3 (latest tiny version), normal variant
+set :rbenv_ruby, '3.3'
 
-# Use Ruby 3.1.1, normal variant
-set :rbenv_ruby, '3.1.1'
+# Use Ruby 3.3.1, normal variant
+set :rbenv_ruby, '3.3.1'
 
-# Use Ruby 3.1.1, jemalloc variant
-set :rbenv_ruby, '3.1.1-jemalloc'
+# Use Ruby 3.3.1, jemalloc variant
+set :rbenv_ruby, '3.3.1-jemalloc'
 ~~~
 
 ### Automatic updates (unattended upgrades)

@@ -31,7 +31,7 @@ When done, build this build environment locally by running:
 For example:
 
 ~~~bash
-./build-environment-image centos-16
+./build-environment-image debian-13
 ~~~
 
 ## Step 2: Updating config.yml
