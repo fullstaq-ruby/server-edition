@@ -745,10 +745,10 @@ sudo apt install unattended-upgrades
 
 Then in `/etc/apt/apt.conf.d/50unattended-upgrades`, add `origin=Fullstaq Ruby` to `Unattended-Upgrade::Origins-Pattern`, like this:
 
-```
+```python
 Unattended-Upgrade::Origins-Pattern {
     ...
-    "origin=Fullstaq Ruby";
+    "origin='Fullstaq Ruby'";
 }
 ```
 
