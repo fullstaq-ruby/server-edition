@@ -510,8 +510,25 @@ private
     distro
   end
 
+  # All distribution names for which we should have APT repos.
+  # This includes not just all distributions we currently support,
+  # but also all distributions that we've published packages for
+  # in the past.
+  def all_publishable_distros
+    stdout_output, _, status = run_command_capture_output(
+      'aptly',
+      'repo',
+      'list',
+      "-config=#{@aptly_config_path}",
+      '-raw',
+      log_invocation: true,
+      check_error: true,
+    )
+    (stdout_output.split("\n") + @packages_by_distro.keys).uniq.sort
+  end
+
   def create_repo
-    @packages_by_distro.each_key do |distro|
+    all_publishable_distros.each do |distro|
       create_repo_for_distro(distro)
     end
   end
