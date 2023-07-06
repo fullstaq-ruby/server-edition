@@ -154,7 +154,7 @@ private
       if package[:distro]
         distros = [package[:distro]]
       else
-        distros = all_supported_distros
+        distros = all_publishable_distros
       end
 
       distros.each do |distro|
@@ -173,7 +173,28 @@ private
   end
 
   def all_supported_distros
-    distributions.find_all{ |d| d[:package_format] == :DEB }.map{ |d| d[:name] }
+    @all_supported_distros ||= distributions.find_all{ |d| d[:package_format] == :DEB }.map{ |d| d[:name] }
+  end
+
+  # Names of all distributions for which we have previously published.
+  # This may include distributions we no longer support.
+  def all_published_distros
+    @all_published_distros ||= begin
+      stdout_output, _, status = run_command_capture_output(
+        'aptly',
+        'repo',
+        'list',
+        "-config=#{@aptly_config_path}",
+        '-raw',
+        log_invocation: true,
+        check_error: true,
+      )
+      stdout_output.split("\n")
+    end
+  end
+
+  def all_publishable_distros
+    (all_published_distros + all_supported_distros).sort.uniq
   end
 
   def create_temp_dirs
@@ -348,7 +369,7 @@ private
   def analyze_existing_repositories
     log_notice "Analyzing existing repositories"
     @existing_packages = {}
-    @packages_by_distro.each_key do |distro|
+    all_publishable_distros.each do |distro|
       if aptly_repo_exists?(distro)
         packages = Set.new(list_aptly_packages(distro))
         @existing_packages[distro] = packages
@@ -423,9 +444,11 @@ private
         else
           log_info "       #{YELLOW}SKIP#{RESET} #{package[:path]}: package already in repository"
         end
-      else
+      elsif all_supported_distros.include?(distro)
         log_info "    #{GREEN}INCLUDE#{RESET} #{package[:path]}"
         result << package[:path]
+      else
+        log_info "       #{YELLOW}SKIP#{RESET} #{package[:path]}: not importing new packages into unsupported repositories"
       end
     end
 
@@ -508,23 +531,6 @@ private
 
   def aptly_repo_name(distro)
     distro
-  end
-
-  # All distribution names for which we should have APT repos.
-  # This includes not just all distributions we currently support,
-  # but also all distributions that we've published packages for
-  # in the past.
-  def all_publishable_distros
-    stdout_output, _, status = run_command_capture_output(
-      'aptly',
-      'repo',
-      'list',
-      "-config=#{@aptly_config_path}",
-      '-raw',
-      log_invocation: true,
-      check_error: true,
-    )
-    (stdout_output.split("\n") + @packages_by_distro.keys).uniq.sort
   end
 
   def create_repo
