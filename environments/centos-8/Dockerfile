@@ -13,10 +13,24 @@ RUN set -x && \
     dnf install -y --enablerepo epel --enablerepo powertools \
         findutils gcc gcc-c++ make patch bzip2 curl autoconf automake \
         openssl-devel libyaml-devel libffi-devel readline-devel zlib-devel \
-        gdbm-devel ncurses-devel \
+        gdbm-devel ncurses-devel libtool \
         rust-toolset && \
     dnf clean all && \
     rm -rf /tmp/* /var/tmp/*
+
+# Ruby checks for pkg-config usability by running `pkg-config --print-errors --version`.
+# EL8 ships pkgconf 1.7.3 which doesn't support this combination of flags.
+# So we upgrade it.
+RUN curl -fsSLo pkgconf.tar.gz https://github.com/pkgconf/pkgconf/archive/refs/tags/pkgconf-1.7.3.tar.gz && \
+    tar xzf pkgconf.tar.gz && \
+    cd pkgconf-* && \
+    ./autogen.sh && \
+    ./configure --prefix=/usr && \
+    make -j$(nproc) && \
+    make install-strip && \
+    pkg-config --print-errors --version && \
+    cd .. && \
+    rm -rf pkgconf-*
 
 RUN curl -fsSLo sccache.tar.gz https://github.com/mozilla/sccache/releases/download/v0.3.1/sccache-v0.3.1-x86_64-unknown-linux-musl.tar.gz && \
     tar xzf sccache.tar.gz && \

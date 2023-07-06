@@ -9,12 +9,12 @@ LABEL org.opencontainers.image.source https://github.com/fullstaq-ruby/server-ed
 # breaking), then bump the version number in the `image_tag` file.
 
 RUN set -x && \
+    export DEBIAN_FRONTEND=noninteractive && \
     apt update && \
     apt install -y autoconf bison bzip2 build-essential \
-        dpkg-dev curl ca-certificates \
+        dpkg-dev curl ca-certificates pkg-config rustc \
         libssl-dev libyaml-dev libreadline-dev zlib1g-dev \
-        libncurses5-dev libffi-dev libgdbm6 libgdbm-dev \
-        rustc && \
+        libncurses5-dev libffi-dev libgdbm6 libgdbm-dev && \
     apt clean && \
     rm -rf /tmp/* /var/tmp/* /var/lib/apt/lists/*
 
