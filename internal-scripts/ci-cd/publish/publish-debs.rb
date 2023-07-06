@@ -11,8 +11,9 @@ require 'tmpdir'
 require 'set'
 
 class PublishDebs
-  REPO_ORIGIN = 'Fullstaq Ruby'
-  REPO_LABEL = 'Fullstaq Ruby'
+  # Must not contain spaces: https://github.com/fullstaq-ruby/server-edition/pull/129
+  REPO_ORIGIN = 'Fullstaq-Ruby'
+  REPO_LABEL = 'Fullstaq-Ruby'
 
   include CiWorkflowSupport
   include ShellScriptingSupport

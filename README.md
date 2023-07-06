@@ -743,12 +743,12 @@ Make sure unattended-upgrades are installed:
 sudo apt install unattended-upgrades
 ~~~
 
-Then in `/etc/apt/apt.conf.d/50unattended-upgrades`, add `origin=Fullstaq Ruby` to `Unattended-Upgrade::Origins-Pattern`, like this:
+Then in `/etc/apt/apt.conf.d/50unattended-upgrades`, add `origin=Fullstaq-Ruby` to `Unattended-Upgrade::Origins-Pattern`, like this:
 
 ```
 Unattended-Upgrade::Origins-Pattern {
     ...
-    "origin=Fullstaq Ruby";
+    "origin=Fullstaq-Ruby";
 }
 ```
 
