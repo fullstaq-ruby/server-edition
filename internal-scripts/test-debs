@@ -164,6 +164,11 @@ echo -n "Checking whether Ruby has detected grep in /bin... "
 output=$(ruby -rrbconfig -e 'puts RbConfig::CONFIG["GREP"]')
 assert_equals "$output" "/bin/grep"
 
+# https://github.com/fullstaq-ruby/server-edition/issues/118
+echo -n "Checking whether Ruby has pkg-config support... "
+output=$(ruby -rrbconfig -e 'puts RbConfig::CONFIG["PKG_CONFIG"]')
+assert_equals "$output" "pkg-config"
+
 echo -n "Checking whether gem works... "
 output=$(gem env)
 if grep -Fq "RUBY VERSION: $RUBY_PACKAGE_VERSION_WITHOUT_VARIANT_SUFFIX" <<<"$output"; then

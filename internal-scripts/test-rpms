@@ -160,6 +160,11 @@ echo -n "Checking whether Ruby native libraries work... "
 output=$(ruby -rbigdecimal -e "puts BigDecimal(0)")
 assert_equals "$output" "0.0"
 
+# https://github.com/fullstaq-ruby/server-edition/issues/118
+echo -n "Checking whether Ruby has pkg-config support... "
+output=$(ruby -rrbconfig -e 'puts RbConfig::CONFIG["PKG_CONFIG"]')
+assert_equals "$output" "pkg-config"
+
 echo -n "Checking whether irb works... "
 output=$(irb <<<'puts "hello world"')
 if [[ "$output" =~ "hello world" ]]; then
