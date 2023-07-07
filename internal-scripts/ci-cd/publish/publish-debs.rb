@@ -36,7 +36,6 @@ class PublishDebs
     print_header 'Initializing'
     load_config
     analyze_packages
-    group_packages_by_distro
     create_temp_dirs
     ensure_gpg_state_isolated
     activate_wrappers_bin_dir
@@ -51,6 +50,7 @@ class PublishDebs
     synchronize do
       version = @orig_version = get_latest_production_repo_version
       fetch_state(version) if version != 0
+      group_packages_by_distro
       analyze_existing_repositories
 
       print_header 'Modifying repository state'
@@ -180,6 +180,7 @@ private
   # Names of all distributions for which we have previously published.
   # This may include distributions we no longer support.
   def all_published_distros
+    raise 'Aptly not yet initialized' if @aptly_config_path.nil?
     @all_published_distros ||= begin
       stdout_output, _, status = run_command_capture_output(
         'aptly',
@@ -195,7 +196,7 @@ private
   end
 
   def all_publishable_distros
-    (all_published_distros + all_supported_distros).sort.uniq
+    (all_published_distros + all_supported_distros).uniq.sort
   end
 
   def create_temp_dirs
@@ -511,13 +512,7 @@ private
   end
 
   def aptly_repo_exists?(distro)
-    stdout_output, _, _ = run_command_capture_output(
-      'aptly', 'repo', 'list', '-raw',
-      "-config=#{@aptly_config_path}",
-      log_invocation: false,
-      check_error: true
-    )
-    stdout_output.split("\n").include?(distro)
+    all_published_distros.include?(distro)
   end
 
   def create_aptly_repo(distro)
