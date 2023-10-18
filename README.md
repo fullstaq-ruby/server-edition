@@ -748,12 +748,14 @@ Make sure unattended-upgrades are installed:
 sudo apt install unattended-upgrades
 ~~~
 
-Then in `/etc/apt/apt.conf.d/50unattended-upgrades`, add `origin=Fullstaq-Ruby` to `Unattended-Upgrade::Origins-Pattern`, like this:
+Then in `/etc/apt/apt.conf.d/50unattended-upgrades`, add `Fullstaq-Ruby:<DISTRO AND VERSION>` to `Unattended-Upgrade::Origins-Pattern`. `DISTRO AND VERSION` should equal one of the APT repository suite names listed in [the Debian/Ubuntu installation instructions](#debianubuntu).
+
+Example:
 
 ```
 Unattended-Upgrade::Origins-Pattern {
     ...
-    "origin=Fullstaq-Ruby";
+    "Fullstaq-Ruby:ubuntu-22.04";
 }
 ```
 
