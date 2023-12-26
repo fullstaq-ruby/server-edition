@@ -418,6 +418,29 @@ jobs:
   ### Sources ###
 
 
+  download_ruby_source_3_3_0:
+    name: Download Ruby source [3.3.0]
+    needs:
+      - determine_necessary_jobs
+    runs-on: ubuntu-22.04
+    if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Download Ruby source 3.3.0;')
+    steps:
+      - uses: actions/checkout@v3
+      - name: Login to Google Cloud
+        uses: ./.github/actions/gcloud-login
+        with:
+          private_key: ${{ secrets.GCLOUD_KEY }}
+
+      - name: Download
+        run: ./internal-scripts/ci-cd/download-ruby-sources/download.sh
+        env:
+          RUBY_VERSION: 3.3.0
+
+      - name: Archive artifact
+        run: ./internal-scripts/ci-cd/upload-artifact.sh
+        env:
+          ARTIFACT_NAME: ruby-src-3.3.0
+          ARTIFACT_PATH: output
   download_ruby_source_3_2_2:
     name: Download Ruby source [3.2.2]
     needs:
@@ -786,6 +809,7 @@ jobs:
       - build_docker_image_ubuntu_20_04
       - build_docker_image_ubuntu_22_04
       - build_docker_image_utility
+      - download_ruby_source_3_3_0
       - download_ruby_source_3_2_2
       - download_ruby_source_3_1_4
       - download_ruby_source_3_0_6
@@ -941,6 +965,17 @@ jobs:
           path: artifacts
 
 
+      - name: Download Ruby source artifact [3.3.0] from Google Cloud
+        run: ./internal-scripts/ci-cd/download-artifact.sh
+        env:
+          ARTIFACT_NAME: ruby-src-3.3.0
+          ARTIFACT_PATH: artifacts
+          CLEAR: true
+      - name: Archive Ruby source artifact [3.3.0] to Github
+        uses: actions/upload-artifact@v3
+        with:
+          name: ruby-src-3.3.0
+          path: artifacts
       - name: Download Ruby source artifact [3.2.2] from Google Cloud
         run: ./internal-scripts/ci-cd/download-artifact.sh
         env:
@@ -1080,6 +1115,9 @@ jobs:
         run: 'false'
         if: |
           false
+            || (needs.download_ruby_source_3_3_0.result != 'success'
+              && (needs.download_ruby_source_3_3_0.result != 'skipped'
+                || contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Download Ruby source 3.3.0;')))
             || (needs.download_ruby_source_3_2_2.result != 'success'
               && (needs.download_ruby_source_3_2_2.result != 'skipped'
                 || contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Download Ruby source 3.2.2;')))
