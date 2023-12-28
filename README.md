@@ -9,7 +9,7 @@ Fullstaq Ruby is a Ruby distribution that's optimized for use in servers. It is 
 
 You can think of Fullstaq Ruby as a competitor of `apt/yum install ruby`, `rbenv install` and `rvm install`. We supply [native OS packages](#how-it-works) for various Ruby versions, which are optionally compiled with [Jemalloc](#what-is-jemalloc-and-how-does-it-benefit-me) or [malloc_trim](#what-is-malloc_trim-and-how-does-it-benefit-me), allowing for lower memory usage and potentially increased performance. Our [packaging method](#minor_version_packages) allows much easier security patching.
 
-> Fullstaq Ruby is a work-in-progress! Features like editions optimized for containers and Heroku, better system integration, and much more, are planned. Please see [our roadmap](https://github.com/fullstaq-labs/fullstaq-ruby-umbrella/projects).
+> Fullstaq Ruby is a work-in-progress! Features like editions optimized for containers and Heroku, better system integration, and much more, are planned. Please see [our roadmap](https://github.com/fullstaq-ruby/umbrella/projects).
 
 **Table of contents:**
 
@@ -394,7 +394,7 @@ Enterprise Linux 9:
     gpgcheck=0
     repo_gpgcheck=1
     enabled=1
-    gpgkey=https://raw.githubusercontent.com/fullstaq-labs/fullstaq-ruby-server-edition/main/fullstaq-ruby.asc
+    gpgkey=https://raw.githubusercontent.com/fullstaq-ruby/server-edition/main/fullstaq-ruby.asc
     sslverify=1
 
 Enterprise Linux 8:
@@ -405,7 +405,7 @@ Enterprise Linux 8:
     gpgcheck=0
     repo_gpgcheck=1
     enabled=1
-    gpgkey=https://raw.githubusercontent.com/fullstaq-labs/fullstaq-ruby-server-edition/main/fullstaq-ruby.asc
+    gpgkey=https://raw.githubusercontent.com/fullstaq-ruby/server-edition/main/fullstaq-ruby.asc
     sslverify=1
 
 Then install `fullstaq-ruby-common`:
@@ -489,11 +489,11 @@ Then download the Fullstaq Ruby public key and update APT:
 
 ~~~bash
 # On Debian >= 12 and Ubuntu >= 24.04:
-sudo curl -SLfo /etc/apt/fullstaq-ruby.asc https://raw.githubusercontent.com/fullstaq-labs/fullstaq-ruby-server-edition/main/fullstaq-ruby.asc
+sudo curl -SLfo /etc/apt/fullstaq-ruby.asc https://raw.githubusercontent.com/fullstaq-ruby/server-edition/main/fullstaq-ruby.asc
 sudo apt update
 
 # Otherwise:
-sudo curl -SLfo /etc/apt/trusted.gpg.d/fullstaq-ruby.asc https://raw.githubusercontent.com/fullstaq-labs/fullstaq-ruby-server-edition/main/fullstaq-ruby.asc
+sudo curl -SLfo /etc/apt/trusted.gpg.d/fullstaq-ruby.asc https://raw.githubusercontent.com/fullstaq-ruby/server-edition/main/fullstaq-ruby.asc
 sudo apt update
 ~~~
 
@@ -720,7 +720,7 @@ Restart your application server after you've made a change, for example `sudo sy
 If you use Capistrano to deploy your app, then you should use the [capistrano-rbenv](https://github.com/capistrano/rbenv) plugin. Requirements:
 
  * capistrano-rbenv 2.1.7 or later (due to [pull request #92](https://github.com/capistrano/rbenv/pull/92))
- * Fullstaq Ruby epic 3.3 or later (more info: [issue #47](https://github.com/fullstaq-labs/fullstaq-ruby-server-edition/pull/47#issuecomment-634063302))
+ * Fullstaq Ruby epic 3.3 or later (more info: [issue #47](https://github.com/fullstaq-ruby/server-edition/pull/47#issuecomment-634063302))
 
 In your deploy/config.rb make sure you set `rbenv_type` to `:fullstaq`, and `rbenv_ruby` to the Ruby version to you want, possibly with a [variant suffix](#about-variants). Examples:
 
@@ -823,7 +823,7 @@ We have architected our systems in such a way that anyone will be able to build 
 
 This is achieved by automating the entire build process, and by releasing the making the build tooling as open source. There are almost no manual processes. Please take a look at this repository's source code.
 
-Because Fullstaq Ruby is still a work-in-progress, we don't have documentation yet on how to build packages yourself. Such documentation is [planned](https://github.com/fullstaq-labs/fullstaq-ruby-server-edition/issues/1) for [epic 5 of the roadmap](https://github.com/fullstaq-labs/fullstaq-ruby-umbrella/projects).
+Because Fullstaq Ruby is still a work-in-progress, we don't have documentation yet on how to build packages yourself. Such documentation is [planned](https://github.com/fullstaq-ruby/server-edition/issues/1) for [epic 5 of the roadmap](https://github.com/fullstaq-labs/fullstaq-ruby-umbrella/projects).
 
 ## Contributing
 
@@ -833,5 +833,5 @@ If you're interested in contributing to Fullstaq Ruby, please check out our [con
 
 To engage with our community, please visit:
 
- * [The issue tracker](https://github.com/fullstaq-labs/fullstaq-ruby-server-edition/issues)
- * [The discussion forum](https://github.com/fullstaq-labs/fullstaq-ruby-server-edition/discussions)
+ * [The issue tracker](https://github.com/fullstaq-ruby/server-edition/issues)
+ * [The discussion forum](https://github.com/fullstaq-ruby/server-edition/discussions)

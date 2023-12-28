@@ -1,6 +1,6 @@
 # Fixing bugs
 
-This guide demonstrates how to analyze and fix bugs. We use [issue #44](https://github.com/fullstaq-labs/fullstaq-ruby-server-edition/issues/44) as a case study. We no longer support CentOS 7 or Ruby 2.6 but that doesn't matter for the purpose of learning.
+This guide demonstrates how to analyze and fix bugs. We use [issue #44](https://github.com/fullstaq-ruby/server-edition/issues/44) as a case study. We no longer support CentOS 7 or Ruby 2.6 but that doesn't matter for the purpose of learning.
 
 ## The bug report
 
@@ -73,22 +73,22 @@ When we Google for "RPM build-id", we find this Stack Overflow question: [What i
 
 To answer question 2, we investigate the scripts that compile binaries and that generate Ruby RPM packages. As we can see in [Package organization](package-organization) and [Source organization](source-organization.md), the following files are involved in this process:
 
- * [build-jemalloc](https://github.com/fullstaq-labs/fullstaq-ruby-server-edition/blob/epic-3.0/build-jemalloc) — Just a wrapper script that delegates the real work to another script. This file is not interesting, so we skip this.
- * [build-ruby](https://github.com/fullstaq-labs/fullstaq-ruby-server-edition/blob/epic-3.0/build-ruby) — ditto.
- * [build-ruby-rpm](https://github.com/fullstaq-labs/fullstaq-ruby-server-edition/blob/epic-3.0/build-ruby-rpm) — ditto.
- * [container-entrypoints/build-jemalloc](https://github.com/fullstaq-labs/fullstaq-ruby-server-edition/blob/epic-3.0/container-entrypoints/build-jemalloc) — This script compiles Jemalloc.
- * [container-entrypoints/build-ruby](https://github.com/fullstaq-labs/fullstaq-ruby-server-edition/blob/epic-3.0/container-entrypoints/build-ruby) — This script compiles Ruby.
- * [container-entrypoints/build-ruby-rpm](https://github.com/fullstaq-labs/fullstaq-ruby-server-edition/blob/epic-3.0/container-entrypoints/build-ruby-rpm) — This script turns the Ruby binary tarball into an RPM.
+ * [build-jemalloc](https://github.com/fullstaq-ruby/server-edition/blob/epic-3.0/build-jemalloc) — Just a wrapper script that delegates the real work to another script. This file is not interesting, so we skip this.
+ * [build-ruby](https://github.com/fullstaq-ruby/server-edition/blob/epic-3.0/build-ruby) — ditto.
+ * [build-ruby-rpm](https://github.com/fullstaq-ruby/server-edition/blob/epic-3.0/build-ruby-rpm) — ditto.
+ * [container-entrypoints/build-jemalloc](https://github.com/fullstaq-ruby/server-edition/blob/epic-3.0/container-entrypoints/build-jemalloc) — This script compiles Jemalloc.
+ * [container-entrypoints/build-ruby](https://github.com/fullstaq-ruby/server-edition/blob/epic-3.0/container-entrypoints/build-ruby) — This script compiles Ruby.
+ * [container-entrypoints/build-ruby-rpm](https://github.com/fullstaq-ruby/server-edition/blob/epic-3.0/container-entrypoints/build-ruby-rpm) — This script turns the Ruby binary tarball into an RPM.
 
 Let's investigate the latter three scripts one by one, by [running them locally](building-packages-locally.md) and inspecting the results.
 
-First, we need to check out the right version of the source tree. At the time the bug was reported, we were on [epic-3.0](https://github.com/fullstaq-labs/fullstaq-ruby-server-edition/tree/epic-3.0). So in the fullstaq-ruby-server-edition repo, we checkout that tag:
+First, we need to check out the right version of the source tree. At the time the bug was reported, we were on [epic-3.0](https://github.com/fullstaq-ruby/server-edition/tree/epic-3.0). So in the fullstaq-ruby-server-edition repo, we checkout that tag:
 
 ~~~bash
 git checkout epic-3.0
 ~~~
 
-Next, we download the necessary source code, as described in [Building packages locally, step 1](building-packages-locally.md#step-1-download-source-code). Because [config.yml](https://github.com/fullstaq-labs/fullstaq-ruby-server-edition/blob/epic-3.0/config.yml#L28) says that epic-3.0 came with Ruby 2.6.6 and Ruby 2.7.1, we download these Ruby versions' source code.
+Next, we download the necessary source code, as described in [Building packages locally, step 1](building-packages-locally.md#step-1-download-source-code). Because [config.yml](https://github.com/fullstaq-ruby/server-edition/blob/epic-3.0/config.yml#L28) says that epic-3.0 came with Ruby 2.6.6 and Ruby 2.7.1, we download these Ruby versions' source code.
 
 Next, we compile Jemalloc, for CentOS 7:
 
@@ -234,4 +234,4 @@ We then rebuild the RPMs, and verify that the build-id files are gone:
 rpm -qpl fullstaq-ruby-2.6-jemalloc-rev5-centos7.x86_64.rpm | grep build-id
 ~~~
 
-The result is [commit 2a17ca0f4493](https://github.com/fullstaq-labs/fullstaq-ruby-server-edition/commit/2a17ca0f4493c1ea5738d7d92555337425f7cc43), which not only introduces this fix, but also introduces a test case in order to prevent this problem from reoccurring in the future.
+The result is [commit 2a17ca0f4493](https://github.com/fullstaq-ruby/server-edition/commit/2a17ca0f4493c1ea5738d7d92555337425f7cc43), which not only introduces this fix, but also introduces a test case in order to prevent this problem from reoccurring in the future.

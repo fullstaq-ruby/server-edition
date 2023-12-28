@@ -16,25 +16,25 @@ ruby:
       package_revision: '0'
     - minor_version: '3.2'
       full_version: '3.2.2'
-      package_revision: '4'
+      package_revision: '5'
     - minor_version: '3.1'
       full_version: '3.1.4'
-      package_revision: '12'
+      package_revision: '13'
     - minor_version: '3.0'
       full_version: '3.0.6'
-      package_revision: '11'
+      package_revision: '12'
 
   ## (Optional)
   ## Which tiny Ruby version packages to build.
   tiny_version_packages:
     - full_version: '3.3.0'
-      package_revision: '0'
+      package_revision: '1'
     - full_version: '3.2.2'
-      package_revision: '4'
+      package_revision: '5'
     - full_version: '3.1.4'
-      package_revision: '8'
+      package_revision: '9'
     - full_version: '3.0.6'
-      package_revision: '11'
+      package_revision: '12'
 
 ## (Required)
 ## Which Rbenv version to package.
@@ -47,7 +47,7 @@ rbenv:
   ## NOTE: if you change one of these, but the Rbenv version number hasn't
   ## changed since the last fullstaq-rbenv package release, then be sure to
   ## bump `package_revision`!
-  repo: https://github.com/fullstaq-labs/fullstaq-rbenv.git
+  repo: https://github.com/fullstaq-ruby/rbenv.git
   ref: fbaa15993171bf
 
   ## Or package Rbenv from the following local directory.
@@ -76,10 +76,10 @@ rbenv:
 common:
   rpm:
     version: '1.0'
-    package_revision: '0'
+    package_revision: '1'
   deb:
     version: '1.0'
-    package_revision: '0'
+    package_revision: '1'
 
 ## (Required)
 ## Which variants to build.

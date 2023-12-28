@@ -1,6 +1,6 @@
 # Contribution guide
 
-> You are reading the contribution guide for the **Server Edition**. Interested in contributing to other parts of Fullstaq Ruby? Check the [Fullstaq Ruby Umbrella contribution guide](https://github.com/fullstaq-labs/fullstaq-ruby-umbrella/blob/main/CONTRIBUTING.md).
+> You are reading the contribution guide for the **Server Edition**. Interested in contributing to other parts of Fullstaq Ruby? Check the [Fullstaq Ruby Umbrella contribution guide](https://github.com/fullstaq-ruby/umbrella/blob/main/CONTRIBUTING.md).
 
 Thanks for considering to contribute! 😀 Your help is essential to [keeping Fullstaq Ruby great](https://www.joyfulbikeshedding.com/blog/2020-05-15-why-fullstaq-ruby.html). We welcome all contributions, no matter who you are, and no matter whether it's big or small (see also our [Code of Conduct](CODE_OF_CONDUCT.md)). With this guide, we aim to make contributing as clear and easy as possible.
 
@@ -17,7 +17,7 @@ Anything that helps improving the project, whether directly (through a pull requ
 
 ## Not sure how to get started?
 
-Have a look at our [issue tracker](https://github.com/fullstaq-labs/fullstaq-ruby-server-edition/issues). Issues with the following labels are good starting points:
+Have a look at our [issue tracker](https://github.com/fullstaq-ruby/server-edition/issues). Issues with the following labels are good starting points:
 
  * "good first issue" if you're looking for something easy.
  * "help wanted" if you're in for a challenge, or if you want to help with a high-impact issue.
@@ -28,7 +28,7 @@ To learn how the Fullstaq Ruby Server Edition codebase works and how to develop 
 
 ## Stuck? Need help?
 
-Please post something on our [discussion forum](https://github.com/fullstaq-labs/fullstaq-ruby-server-edition/discussions).
+Please post something on our [discussion forum](https://github.com/fullstaq-ruby/server-edition/discussions).
 
 ## Joining the team
 
@@ -45,4 +45,4 @@ Because joining the team means gaining access to protected resources, trust is e
 
 ### Apply
 
-If you wish to join, please [apply by submitting an issue](https://github.com/fullstaq-labs/fullstaq-ruby-server-edition/issues/new?template=apply_join_team.md).
+If you wish to join, please [apply by submitting an issue](https://github.com/fullstaq-ruby/server-edition/issues/new?template=apply_join_team.md).

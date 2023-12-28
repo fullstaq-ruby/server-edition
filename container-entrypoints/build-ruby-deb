@@ -51,7 +51,7 @@ Package version with variant suffix: $PACKAGE_VERSION_WITH_SUFFIX
 Package version without variant suffix: $PACKAGE_VERSION_WITHOUT_SUFFIX
 Variant: $VARIANT
 Distribution: $ENVIRONMENT" \
-    --url "https://github.com/fullstaq-labs/fullstaq-ruby-server-edition" \
+    --url "https://github.com/fullstaq-ruby/server-edition" \
     --depends "$DEPS" \
     --provides fullstaq-ruby \
     --deb-recommends fullstaq-ruby-common \

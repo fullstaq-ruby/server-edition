@@ -587,9 +587,9 @@ jobs:
       - name: Build package
         run: ./internal-scripts/ci-cd/build-common-deb/build-package.sh
         env:
-          PACKAGE_BASENAME: "fullstaq-ruby-common_1.0-0_all.deb"
+          PACKAGE_BASENAME: "fullstaq-ruby-common_1.0-1_all.deb"
           VERSION: "1.0"
-          REVISION: "0"
+          REVISION: "1"
 
       - name: Archive artifact
         run: ./internal-scripts/ci-cd/upload-artifact.sh
@@ -642,9 +642,9 @@ jobs:
       - name: Build package
         run: ./internal-scripts/ci-cd/build-common-rpm/build-package.sh
         env:
-          PACKAGE_BASENAME: "fullstaq-ruby-common-1.0-0.noarch.rpm"
+          PACKAGE_BASENAME: "fullstaq-ruby-common-1.0-1.noarch.rpm"
           VERSION: "1.0"
-          REVISION: "0"
+          REVISION: "1"
 
       - name: Archive artifact
         run: ./internal-scripts/ci-cd/upload-artifact.sh

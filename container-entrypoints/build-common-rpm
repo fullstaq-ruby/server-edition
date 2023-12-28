@@ -35,7 +35,7 @@ bundle exec fpm -s dir -t rpm -f --log info \
     --vendor Fullstaq \
     --maintainer "Fullstaq <info@fullstaq.com>" \
     --description "Fullstaq Ruby common dependencies" \
-    --url "https://github.com/fullstaq-labs/fullstaq-ruby-server-edition" \
+    --url "https://github.com/fullstaq-ruby/server-edition" \
     --depends "fullstaq-rbenv" \
     .
 set +x

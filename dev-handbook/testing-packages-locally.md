@@ -34,7 +34,7 @@ Inside the Docker container, the source tree is mounted under /system.
 Make sure you've [set up the development environment](dev-environment-setup.md) and that you've cloned the Fullstaq Ruby repository:
 
 ~~~bash
-git clone https://github.com/fullstaq-labs/fullstaq-ruby-server-edition.git
+git clone https://github.com/fullstaq-ruby/server-edition.git
 cd fullstaq-ruby-server-edition
 ~~~
 

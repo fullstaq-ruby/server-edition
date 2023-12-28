@@ -439,7 +439,7 @@ private
         # is imported into some repos but not all of them, then the repos for which it's not
         # imported will have outdated metadata.
         #
-        # https://github.com/fullstaq-labs/fullstaq-ruby-server-edition/pull/85#issuecomment-940273331
+        # https://github.com/fullstaq-ruby/server-edition/pull/85#issuecomment-940273331
         if package_is_arch_independent?(package) && package_missing_in_one_distro?(package)
           log_info "  #{CYAN}REINCLUDE#{RESET} #{package[:path]}: force regenerating package metadata"
           result << package[:path]

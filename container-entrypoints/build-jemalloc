@@ -49,8 +49,8 @@ echo
 
 header "Compiling..."
 
-# https://github.com/fullstaq-labs/fullstaq-ruby-server-edition/issues/34
-# https://github.com/fullstaq-labs/fullstaq-ruby-server-edition/pull/32#issuecomment-554764548
+# https://github.com/fullstaq-ruby/server-edition/issues/34
+# https://github.com/fullstaq-ruby/server-edition/pull/32#issuecomment-554764548
 echo "+ patch -p1 < /system/resources/jemalloc_cxx_fix.patch"
 patch -t -p1 < /system/resources/jemalloc_cxx_fix.patch
 

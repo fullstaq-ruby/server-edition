@@ -14,4 +14,4 @@
 
 ## Communication
 
-We communicate publicly as much as possible. All such public communication happens through [our issue tracker](https://github.com/fullstaq-labs/fullstaq-ruby-server-edition/issues) and our [discussion forum](https://github.com/fullstaq-labs/fullstaq-ruby-server-edition/discussions), so be sure to subscribe for notifications.
+We communicate publicly as much as possible. All such public communication happens through [our issue tracker](https://github.com/fullstaq-ruby/server-edition/issues) and our [discussion forum](https://github.com/fullstaq-ruby/server-edition/discussions), so be sure to subscribe for notifications.

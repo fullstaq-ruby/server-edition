@@ -56,7 +56,7 @@ There are three buckets:
 
 We don't let users use the production bucket URLs directly. Instead, we let users use `https://apt.fullstaqruby.org` and `https://yum.fullstaqruby.org`. These domains redirect to the appropriate bucket URLs. We do this so that we avoid strongly coupling users with Google Cloud Storage. If in the future we want to move off Google Cloud, we can do so without breaking users' URLs.
 
-For some historical perspective, consider the fact that we used to host our packages on Bintray. In early 2021, JFrog sunsetted Bintray. Because users only used `https://{apt,yum}.fullstaqruby.org`, we were able to [migrate away from Bintray](https://github.com/fullstaq-labs/fullstaq-ruby-server-edition/issues/70) without breaking users' URLs and without downtime.
+For some historical perspective, consider the fact that we used to host our packages on Bintray. In early 2021, JFrog sunsetted Bintray. Because users only used `https://{apt,yum}.fullstaqruby.org`, we were able to [migrate away from Bintray](https://github.com/fullstaq-ruby/server-edition/issues/70) without breaking users' URLs and without downtime.
 
 The web servers do not proxy data. Instead, they perform HTTP 302 redirects. This allows us to save on latency and bandwidth. HTTP 302 redirects are compatible with the APT and YUM clients in all distributions that we support. Very old versions of APT (for example, Ubuntu 12.04) didn't support redirects, but we don't care about that.
 
@@ -140,7 +140,7 @@ This approach also allows atomically publishing multiple packages.
 
 `/latest_version.txt` contains the latest version number. The web server (`{apt,yum}.fullstaqruby.org`) reads its contents during startup in order to determine which Google Cloud Storage directory to redirect to. This is why we need to restart the web server every time we publish a new version.
 
-A downside of this versioning approach is that each version consumes a lot of space. For now, this is not a problem because cloud storage is cheap enough. [There's a todo item to garbage collect older repository versions.](https://github.com/fullstaq-labs/fullstaq-ruby-server-edition/issues/77)
+A downside of this versioning approach is that each version consumes a lot of space. For now, this is not a problem because cloud storage is cheap enough. [There's a todo item to garbage collect older repository versions.](https://github.com/fullstaq-ruby/server-edition/issues/77)
 
 ### CI bucket
 
