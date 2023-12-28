@@ -1,0 +1,13 @@
+diff --git a/version.c b/version.c
+index e719a59..05544ad 100644
+--- a/version.c
++++ b/version.c
+@@ -67,7 +67,7 @@ const char ruby_platform[] = RUBY_PLATFORM;
+ const int ruby_patchlevel = RUBY_PATCHLEVEL;
+ const char ruby_description[] =
+     "ruby " RUBY_VERSION RUBY_PATCHLEVEL_STR " "
+-    "(" RUBY_RELEASE_DATETIME RUBY_REVISION_STR ") "
++    "(" RUBY_RELEASE_DATETIME RUBY_REVISION_STR ") +jemalloc "
+     "[" RUBY_PLATFORM "]";
+ static const int ruby_description_opt_point =
+     (int)(sizeof(ruby_description) - sizeof(" [" RUBY_PLATFORM "]"));

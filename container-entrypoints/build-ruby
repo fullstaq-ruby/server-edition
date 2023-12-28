@@ -88,9 +88,12 @@ if [[ "$VARIANT" = jemalloc ]]; then
         run patch -p1 -ti /system/resources/ruby_26_jemalloc.patch
     elif [[ "$PACKAGE_VERSION" =~ ^3\.1 ]]; then
         run patch -p1 -ti /system/resources/ruby_31_jemalloc.patch
-    else
+    elif [[ "$PACKAGE_VERSION" =~ ^3\.2 ]]; then
         EXTRA_CONFIGURE_ARGS+=(--enable-yjit)
         run patch -p1 -ti /system/resources/ruby_32_jemalloc.patch
+    else
+        EXTRA_CONFIGURE_ARGS+=(--enable-yjit)
+        run patch -p1 -ti /system/resources/ruby_33_jemalloc.patch
     fi
 elif [[ "$VARIANT" = malloctrim ]]; then
     EXTRA_CONFIGURE_ARGS=()
@@ -98,9 +101,12 @@ elif [[ "$VARIANT" = malloctrim ]]; then
         run patch -p1 -ti /system/resources/ruby_26_malloctrim.patch
     elif [[ "$PACKAGE_VERSION" =~ ^3\.1 ]]; then
         run patch -p1 -ti /system/resources/ruby_31_malloctrim.patch
-    else
+    elif [[ "$PACKAGE_VERSION" =~ ^3\.2 ]]; then
         EXTRA_CONFIGURE_ARGS+=(--enable-yjit)
         run patch -p1 -ti /system/resources/ruby_32_malloctrim.patch
+    else
+        EXTRA_CONFIGURE_ARGS+=(--enable-yjit)
+        # Ruby >= 3.3 supports malloc_trim by default.
     fi
 else
     EXTRA_CONFIGURE_ARGS=()
