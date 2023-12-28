@@ -11,13 +11,13 @@ LATEST_RELEASE_CONFIG_PATH = ARGV[1]
 
 def load_current_config
   File.open(CURRENT_CONFIG_PATH, 'r:utf-8') do |f|
-    YAML.safe_load(f.read, [], [], false, CURRENT_CONFIG_PATH)
+    YAML.safe_load(f.read, filename: CURRENT_CONFIG_PATH)
   end
 end
 
 def load_latest_release_config
   File.open(LATEST_RELEASE_CONFIG_PATH, 'r:utf-8') do |f|
-    YAML.safe_load(f.read, [], [], false, LATEST_RELEASE_CONFIG_PATH)
+    YAML.safe_load(f.read, filename: LATEST_RELEASE_CONFIG_PATH)
   end
 end
 

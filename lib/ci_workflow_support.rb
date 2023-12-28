@@ -17,7 +17,8 @@ module CiWorkflowSupport
   end
 
   def load_config
-    @@config = YAML.safe_load(File.read(config_file_path, encoding: 'utf-8'))
+    @@config = YAML.safe_load(File.read(config_file_path, encoding: 'utf-8'),
+      filename: config_file_path)
     @@config = recursively_symbolize_keys(@@config)
   end
 
