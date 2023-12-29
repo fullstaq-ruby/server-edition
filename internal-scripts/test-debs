@@ -231,7 +231,8 @@ else
         exit 1
     fi
 
-    if [[ "$VARIANT" = malloctrim ]]; then
+    # Ruby >= 3.3 already uses malloc_trim by default.
+    if [[ "$VARIANT" = malloctrim && ("$RUBY_MAJOR_VERSION" -ge 4 || "$RUBY_MINOR_VERSION" -le 2) ]]; then
         echo -n "Checking whether 'ruby -v' mentions malloctrim... "
         output=$(ruby -v)
         if grep -qF '+malloctrim' <<<"$output"; then
