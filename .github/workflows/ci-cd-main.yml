@@ -418,12 +418,12 @@ jobs:
   ### Sources ###
 
 
-  download_ruby_source_3_3_0:
-    name: Download Ruby source [3.3.0]
+  download_ruby_source_3_3_1:
+    name: Download Ruby source [3.3.1]
     needs:
       - determine_necessary_jobs
     runs-on: ubuntu-22.04
-    if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Download Ruby source 3.3.0;')
+    if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Download Ruby source 3.3.1;')
     steps:
       - uses: actions/checkout@v3
       - name: Login to Google Cloud
@@ -434,12 +434,12 @@ jobs:
       - name: Download
         run: ./internal-scripts/ci-cd/download-ruby-sources/download.sh
         env:
-          RUBY_VERSION: 3.3.0
+          RUBY_VERSION: 3.3.1
 
       - name: Archive artifact
         run: ./internal-scripts/ci-cd/upload-artifact.sh
         env:
-          ARTIFACT_NAME: ruby-src-3.3.0
+          ARTIFACT_NAME: ruby-src-3.3.1
           ARTIFACT_PATH: output
   download_ruby_source_3_2_3:
     name: Download Ruby source [3.2.3]
@@ -809,7 +809,7 @@ jobs:
       - build_docker_image_ubuntu_20_04
       - build_docker_image_ubuntu_22_04
       - build_docker_image_utility
-      - download_ruby_source_3_3_0
+      - download_ruby_source_3_3_1
       - download_ruby_source_3_2_3
       - download_ruby_source_3_1_4
       - download_ruby_source_3_0_6
@@ -965,16 +965,16 @@ jobs:
           path: artifacts
 
 
-      - name: Download Ruby source artifact [3.3.0] from Google Cloud
+      - name: Download Ruby source artifact [3.3.1] from Google Cloud
         run: ./internal-scripts/ci-cd/download-artifact.sh
         env:
-          ARTIFACT_NAME: ruby-src-3.3.0
+          ARTIFACT_NAME: ruby-src-3.3.1
           ARTIFACT_PATH: artifacts
           CLEAR: true
-      - name: Archive Ruby source artifact [3.3.0] to Github
+      - name: Archive Ruby source artifact [3.3.1] to Github
         uses: actions/upload-artifact@v3
         with:
-          name: ruby-src-3.3.0
+          name: ruby-src-3.3.1
           path: artifacts
       - name: Download Ruby source artifact [3.2.3] from Google Cloud
         run: ./internal-scripts/ci-cd/download-artifact.sh
@@ -1115,9 +1115,9 @@ jobs:
         run: 'false'
         if: |
           false
-            || (needs.download_ruby_source_3_3_0.result != 'success'
-              && (needs.download_ruby_source_3_3_0.result != 'skipped'
-                || contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Download Ruby source 3.3.0;')))
+            || (needs.download_ruby_source_3_3_1.result != 'success'
+              && (needs.download_ruby_source_3_3_1.result != 'skipped'
+                || contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Download Ruby source 3.3.1;')))
             || (needs.download_ruby_source_3_2_3.result != 'success'
               && (needs.download_ruby_source_3_2_3.result != 'skipped'
                 || contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Download Ruby source 3.2.3;')))
