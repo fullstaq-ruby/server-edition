@@ -123,3 +123,4 @@ distribution_exclusions:
   - ruby_minor_version: '3.1'
     distros:
       - debian-12
+      - centos-8
