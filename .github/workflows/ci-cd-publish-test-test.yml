@@ -80,6 +80,7 @@ jobs:
     name: Publish packages
     # Ubuntu 22.04 runner has more free disk space than 20.04
     runs-on: ubuntu-22.04
+    timeout-minutes: 30
     permissions:
       packages: read
     needs:
@@ -156,6 +157,7 @@ jobs:
   test_centos_8-3_3-normal:
     name: 'Test [centos-8/3.3/normal]'
     runs-on: ubuntu-22.04
+    timeout-minutes: 30
     needs:
       - determine_necessary_jobs
       - publish
@@ -190,6 +192,7 @@ jobs:
   test_centos_8-3_3-jemalloc:
     name: 'Test [centos-8/3.3/jemalloc]'
     runs-on: ubuntu-22.04
+    timeout-minutes: 30
     needs:
       - determine_necessary_jobs
       - publish
@@ -224,6 +227,7 @@ jobs:
   test_centos_8-3_3-malloctrim:
     name: 'Test [centos-8/3.3/malloctrim]'
     runs-on: ubuntu-22.04
+    timeout-minutes: 30
     needs:
       - determine_necessary_jobs
       - publish
@@ -258,6 +262,7 @@ jobs:
   test_centos_8-3_2-normal:
     name: 'Test [centos-8/3.2/normal]'
     runs-on: ubuntu-22.04
+    timeout-minutes: 30
     needs:
       - determine_necessary_jobs
       - publish
@@ -292,6 +297,7 @@ jobs:
   test_centos_8-3_2-jemalloc:
     name: 'Test [centos-8/3.2/jemalloc]'
     runs-on: ubuntu-22.04
+    timeout-minutes: 30
     needs:
       - determine_necessary_jobs
       - publish
@@ -326,6 +332,7 @@ jobs:
   test_centos_8-3_2-malloctrim:
     name: 'Test [centos-8/3.2/malloctrim]'
     runs-on: ubuntu-22.04
+    timeout-minutes: 30
     needs:
       - determine_necessary_jobs
       - publish
@@ -360,6 +367,7 @@ jobs:
   test_centos_8-3_0-normal:
     name: 'Test [centos-8/3.0/normal]'
     runs-on: ubuntu-22.04
+    timeout-minutes: 30
     needs:
       - determine_necessary_jobs
       - publish
@@ -394,6 +402,7 @@ jobs:
   test_centos_8-3_0-jemalloc:
     name: 'Test [centos-8/3.0/jemalloc]'
     runs-on: ubuntu-22.04
+    timeout-minutes: 30
     needs:
       - determine_necessary_jobs
       - publish
@@ -428,6 +437,7 @@ jobs:
   test_centos_8-3_0-malloctrim:
     name: 'Test [centos-8/3.0/malloctrim]'
     runs-on: ubuntu-22.04
+    timeout-minutes: 30
     needs:
       - determine_necessary_jobs
       - publish
@@ -462,6 +472,7 @@ jobs:
   test_centos_8-3_3_1-normal:
     name: 'Test [centos-8/3.3.1/normal]'
     runs-on: ubuntu-22.04
+    timeout-minutes: 30
     needs:
       - determine_necessary_jobs
       - publish
@@ -496,6 +507,7 @@ jobs:
   test_centos_8-3_3_1-jemalloc:
     name: 'Test [centos-8/3.3.1/jemalloc]'
     runs-on: ubuntu-22.04
+    timeout-minutes: 30
     needs:
       - determine_necessary_jobs
       - publish
@@ -530,6 +542,7 @@ jobs:
   test_centos_8-3_3_1-malloctrim:
     name: 'Test [centos-8/3.3.1/malloctrim]'
     runs-on: ubuntu-22.04
+    timeout-minutes: 30
     needs:
       - determine_necessary_jobs
       - publish
@@ -564,6 +577,7 @@ jobs:
   test_centos_8-3_2_4-normal:
     name: 'Test [centos-8/3.2.4/normal]'
     runs-on: ubuntu-22.04
+    timeout-minutes: 30
     needs:
       - determine_necessary_jobs
       - publish
@@ -598,6 +612,7 @@ jobs:
   test_centos_8-3_2_4-jemalloc:
     name: 'Test [centos-8/3.2.4/jemalloc]'
     runs-on: ubuntu-22.04
+    timeout-minutes: 30
     needs:
       - determine_necessary_jobs
       - publish
@@ -632,6 +647,7 @@ jobs:
   test_centos_8-3_2_4-malloctrim:
     name: 'Test [centos-8/3.2.4/malloctrim]'
     runs-on: ubuntu-22.04
+    timeout-minutes: 30
     needs:
       - determine_necessary_jobs
       - publish
@@ -666,6 +682,7 @@ jobs:
   test_centos_8-3_0_7-normal:
     name: 'Test [centos-8/3.0.7/normal]'
     runs-on: ubuntu-22.04
+    timeout-minutes: 30
     needs:
       - determine_necessary_jobs
       - publish
@@ -700,6 +717,7 @@ jobs:
   test_centos_8-3_0_7-jemalloc:
     name: 'Test [centos-8/3.0.7/jemalloc]'
     runs-on: ubuntu-22.04
+    timeout-minutes: 30
     needs:
       - determine_necessary_jobs
       - publish
@@ -734,6 +752,7 @@ jobs:
   test_centos_8-3_0_7-malloctrim:
     name: 'Test [centos-8/3.0.7/malloctrim]'
     runs-on: ubuntu-22.04
+    timeout-minutes: 30
     needs:
       - determine_necessary_jobs
       - publish
@@ -769,6 +788,7 @@ jobs:
   test_debian_10-3_3-normal:
     name: 'Test [debian-10/3.3/normal]'
     runs-on: ubuntu-22.04
+    timeout-minutes: 30
     needs:
       - determine_necessary_jobs
       - publish
@@ -803,6 +823,7 @@ jobs:
   test_debian_10-3_3-jemalloc:
     name: 'Test [debian-10/3.3/jemalloc]'
     runs-on: ubuntu-22.04
+    timeout-minutes: 30
     needs:
       - determine_necessary_jobs
       - publish
@@ -837,6 +858,7 @@ jobs:
   test_debian_10-3_3-malloctrim:
     name: 'Test [debian-10/3.3/malloctrim]'
     runs-on: ubuntu-22.04
+    timeout-minutes: 30
     needs:
       - determine_necessary_jobs
       - publish
@@ -871,6 +893,7 @@ jobs:
   test_debian_10-3_2-normal:
     name: 'Test [debian-10/3.2/normal]'
     runs-on: ubuntu-22.04
+    timeout-minutes: 30
     needs:
       - determine_necessary_jobs
       - publish
@@ -905,6 +928,7 @@ jobs:
   test_debian_10-3_2-jemalloc:
     name: 'Test [debian-10/3.2/jemalloc]'
     runs-on: ubuntu-22.04
+    timeout-minutes: 30
     needs:
       - determine_necessary_jobs
       - publish
@@ -939,6 +963,7 @@ jobs:
   test_debian_10-3_2-malloctrim:
     name: 'Test [debian-10/3.2/malloctrim]'
     runs-on: ubuntu-22.04
+    timeout-minutes: 30
     needs:
       - determine_necessary_jobs
       - publish
@@ -973,6 +998,7 @@ jobs:
   test_debian_10-3_1-normal:
     name: 'Test [debian-10/3.1/normal]'
     runs-on: ubuntu-22.04
+    timeout-minutes: 30
     needs:
       - determine_necessary_jobs
       - publish
@@ -1007,6 +1033,7 @@ jobs:
   test_debian_10-3_1-jemalloc:
     name: 'Test [debian-10/3.1/jemalloc]'
     runs-on: ubuntu-22.04
+    timeout-minutes: 30
     needs:
       - determine_necessary_jobs
       - publish
@@ -1041,6 +1068,7 @@ jobs:
   test_debian_10-3_1-malloctrim:
     name: 'Test [debian-10/3.1/malloctrim]'
     runs-on: ubuntu-22.04
+    timeout-minutes: 30
     needs:
       - determine_necessary_jobs
       - publish
@@ -1075,6 +1103,7 @@ jobs:
   test_debian_10-3_0-normal:
     name: 'Test [debian-10/3.0/normal]'
     runs-on: ubuntu-22.04
+    timeout-minutes: 30
     needs:
       - determine_necessary_jobs
       - publish
@@ -1109,6 +1138,7 @@ jobs:
   test_debian_10-3_0-jemalloc:
     name: 'Test [debian-10/3.0/jemalloc]'
     runs-on: ubuntu-22.04
+    timeout-minutes: 30
     needs:
       - determine_necessary_jobs
       - publish
@@ -1143,6 +1173,7 @@ jobs:
   test_debian_10-3_0-malloctrim:
     name: 'Test [debian-10/3.0/malloctrim]'
     runs-on: ubuntu-22.04
+    timeout-minutes: 30
     needs:
       - determine_necessary_jobs
       - publish
@@ -1177,6 +1208,7 @@ jobs:
   test_debian_10-3_3_1-normal:
     name: 'Test [debian-10/3.3.1/normal]'
     runs-on: ubuntu-22.04
+    timeout-minutes: 30
     needs:
       - determine_necessary_jobs
       - publish
@@ -1211,6 +1243,7 @@ jobs:
   test_debian_10-3_3_1-jemalloc:
     name: 'Test [debian-10/3.3.1/jemalloc]'
     runs-on: ubuntu-22.04
+    timeout-minutes: 30
     needs:
       - determine_necessary_jobs
       - publish
@@ -1245,6 +1278,7 @@ jobs:
   test_debian_10-3_3_1-malloctrim:
     name: 'Test [debian-10/3.3.1/malloctrim]'
     runs-on: ubuntu-22.04
+    timeout-minutes: 30
     needs:
       - determine_necessary_jobs
       - publish
@@ -1279,6 +1313,7 @@ jobs:
   test_debian_10-3_2_4-normal:
     name: 'Test [debian-10/3.2.4/normal]'
     runs-on: ubuntu-22.04
+    timeout-minutes: 30
     needs:
       - determine_necessary_jobs
       - publish
@@ -1313,6 +1348,7 @@ jobs:
   test_debian_10-3_2_4-jemalloc:
     name: 'Test [debian-10/3.2.4/jemalloc]'
     runs-on: ubuntu-22.04
+    timeout-minutes: 30
     needs:
       - determine_necessary_jobs
       - publish
@@ -1347,6 +1383,7 @@ jobs:
   test_debian_10-3_2_4-malloctrim:
     name: 'Test [debian-10/3.2.4/malloctrim]'
     runs-on: ubuntu-22.04
+    timeout-minutes: 30
     needs:
       - determine_necessary_jobs
       - publish
@@ -1381,6 +1418,7 @@ jobs:
   test_debian_10-3_1_5-normal:
     name: 'Test [debian-10/3.1.5/normal]'
     runs-on: ubuntu-22.04
+    timeout-minutes: 30
     needs:
       - determine_necessary_jobs
       - publish
@@ -1415,6 +1453,7 @@ jobs:
   test_debian_10-3_1_5-jemalloc:
     name: 'Test [debian-10/3.1.5/jemalloc]'
     runs-on: ubuntu-22.04
+    timeout-minutes: 30
     needs:
       - determine_necessary_jobs
       - publish
@@ -1449,6 +1488,7 @@ jobs:
   test_debian_10-3_1_5-malloctrim:
     name: 'Test [debian-10/3.1.5/malloctrim]'
     runs-on: ubuntu-22.04
+    timeout-minutes: 30
     needs:
       - determine_necessary_jobs
       - publish
@@ -1483,6 +1523,7 @@ jobs:
   test_debian_10-3_0_7-normal:
     name: 'Test [debian-10/3.0.7/normal]'
     runs-on: ubuntu-22.04
+    timeout-minutes: 30
     needs:
       - determine_necessary_jobs
       - publish
@@ -1517,6 +1558,7 @@ jobs:
   test_debian_10-3_0_7-jemalloc:
     name: 'Test [debian-10/3.0.7/jemalloc]'
     runs-on: ubuntu-22.04
+    timeout-minutes: 30
     needs:
       - determine_necessary_jobs
       - publish
@@ -1551,6 +1593,7 @@ jobs:
   test_debian_10-3_0_7-malloctrim:
     name: 'Test [debian-10/3.0.7/malloctrim]'
     runs-on: ubuntu-22.04
+    timeout-minutes: 30
     needs:
       - determine_necessary_jobs
       - publish
@@ -1586,6 +1629,7 @@ jobs:
   test_debian_11-3_3-normal:
     name: 'Test [debian-11/3.3/normal]'
     runs-on: ubuntu-22.04
+    timeout-minutes: 30
     needs:
       - determine_necessary_jobs
       - publish
@@ -1620,6 +1664,7 @@ jobs:
   test_debian_11-3_3-jemalloc:
     name: 'Test [debian-11/3.3/jemalloc]'
     runs-on: ubuntu-22.04
+    timeout-minutes: 30
     needs:
       - determine_necessary_jobs
       - publish
@@ -1654,6 +1699,7 @@ jobs:
   test_debian_11-3_3-malloctrim:
     name: 'Test [debian-11/3.3/malloctrim]'
     runs-on: ubuntu-22.04
+    timeout-minutes: 30
     needs:
       - determine_necessary_jobs
       - publish
@@ -1688,6 +1734,7 @@ jobs:
   test_debian_11-3_2-normal:
     name: 'Test [debian-11/3.2/normal]'
     runs-on: ubuntu-22.04
+    timeout-minutes: 30
     needs:
       - determine_necessary_jobs
       - publish
@@ -1722,6 +1769,7 @@ jobs:
   test_debian_11-3_2-jemalloc:
     name: 'Test [debian-11/3.2/jemalloc]'
     runs-on: ubuntu-22.04
+    timeout-minutes: 30
     needs:
       - determine_necessary_jobs
       - publish
@@ -1756,6 +1804,7 @@ jobs:
   test_debian_11-3_2-malloctrim:
     name: 'Test [debian-11/3.2/malloctrim]'
     runs-on: ubuntu-22.04
+    timeout-minutes: 30
     needs:
       - determine_necessary_jobs
       - publish
@@ -1790,6 +1839,7 @@ jobs:
   test_debian_11-3_1-normal:
     name: 'Test [debian-11/3.1/normal]'
     runs-on: ubuntu-22.04
+    timeout-minutes: 30
     needs:
       - determine_necessary_jobs
       - publish
@@ -1824,6 +1874,7 @@ jobs:
   test_debian_11-3_1-jemalloc:
     name: 'Test [debian-11/3.1/jemalloc]'
     runs-on: ubuntu-22.04
+    timeout-minutes: 30
     needs:
       - determine_necessary_jobs
       - publish
@@ -1858,6 +1909,7 @@ jobs:
   test_debian_11-3_1-malloctrim:
     name: 'Test [debian-11/3.1/malloctrim]'
     runs-on: ubuntu-22.04
+    timeout-minutes: 30
     needs:
       - determine_necessary_jobs
       - publish
@@ -1892,6 +1944,7 @@ jobs:
   test_debian_11-3_0-normal:
     name: 'Test [debian-11/3.0/normal]'
     runs-on: ubuntu-22.04
+    timeout-minutes: 30
     needs:
       - determine_necessary_jobs
       - publish
@@ -1926,6 +1979,7 @@ jobs:
   test_debian_11-3_0-jemalloc:
     name: 'Test [debian-11/3.0/jemalloc]'
     runs-on: ubuntu-22.04
+    timeout-minutes: 30
     needs:
       - determine_necessary_jobs
       - publish
@@ -1960,6 +2014,7 @@ jobs:
   test_debian_11-3_0-malloctrim:
     name: 'Test [debian-11/3.0/malloctrim]'
     runs-on: ubuntu-22.04
+    timeout-minutes: 30
     needs:
       - determine_necessary_jobs
       - publish
@@ -1994,6 +2049,7 @@ jobs:
   test_debian_11-3_3_1-normal:
     name: 'Test [debian-11/3.3.1/normal]'
     runs-on: ubuntu-22.04
+    timeout-minutes: 30
     needs:
       - determine_necessary_jobs
       - publish
@@ -2028,6 +2084,7 @@ jobs:
   test_debian_11-3_3_1-jemalloc:
     name: 'Test [debian-11/3.3.1/jemalloc]'
     runs-on: ubuntu-22.04
+    timeout-minutes: 30
     needs:
       - determine_necessary_jobs
       - publish
@@ -2062,6 +2119,7 @@ jobs:
   test_debian_11-3_3_1-malloctrim:
     name: 'Test [debian-11/3.3.1/malloctrim]'
     runs-on: ubuntu-22.04
+    timeout-minutes: 30
     needs:
       - determine_necessary_jobs
       - publish
@@ -2096,6 +2154,7 @@ jobs:
   test_debian_11-3_2_4-normal:
     name: 'Test [debian-11/3.2.4/normal]'
     runs-on: ubuntu-22.04
+    timeout-minutes: 30
     needs:
       - determine_necessary_jobs
       - publish
@@ -2130,6 +2189,7 @@ jobs:
   test_debian_11-3_2_4-jemalloc:
     name: 'Test [debian-11/3.2.4/jemalloc]'
     runs-on: ubuntu-22.04
+    timeout-minutes: 30
     needs:
       - determine_necessary_jobs
       - publish
@@ -2164,6 +2224,7 @@ jobs:
   test_debian_11-3_2_4-malloctrim:
     name: 'Test [debian-11/3.2.4/malloctrim]'
     runs-on: ubuntu-22.04
+    timeout-minutes: 30
     needs:
       - determine_necessary_jobs
       - publish
@@ -2198,6 +2259,7 @@ jobs:
   test_debian_11-3_1_5-normal:
     name: 'Test [debian-11/3.1.5/normal]'
     runs-on: ubuntu-22.04
+    timeout-minutes: 30
     needs:
       - determine_necessary_jobs
       - publish
@@ -2232,6 +2294,7 @@ jobs:
   test_debian_11-3_1_5-jemalloc:
     name: 'Test [debian-11/3.1.5/jemalloc]'
     runs-on: ubuntu-22.04
+    timeout-minutes: 30
     needs:
       - determine_necessary_jobs
       - publish
@@ -2266,6 +2329,7 @@ jobs:
   test_debian_11-3_1_5-malloctrim:
     name: 'Test [debian-11/3.1.5/malloctrim]'
     runs-on: ubuntu-22.04
+    timeout-minutes: 30
     needs:
       - determine_necessary_jobs
       - publish
@@ -2300,6 +2364,7 @@ jobs:
   test_debian_11-3_0_7-normal:
     name: 'Test [debian-11/3.0.7/normal]'
     runs-on: ubuntu-22.04
+    timeout-minutes: 30
     needs:
       - determine_necessary_jobs
       - publish
@@ -2334,6 +2399,7 @@ jobs:
   test_debian_11-3_0_7-jemalloc:
     name: 'Test [debian-11/3.0.7/jemalloc]'
     runs-on: ubuntu-22.04
+    timeout-minutes: 30
     needs:
       - determine_necessary_jobs
       - publish
@@ -2368,6 +2434,7 @@ jobs:
   test_debian_11-3_0_7-malloctrim:
     name: 'Test [debian-11/3.0.7/malloctrim]'
     runs-on: ubuntu-22.04
+    timeout-minutes: 30
     needs:
       - determine_necessary_jobs
       - publish
@@ -2403,6 +2470,7 @@ jobs:
   test_debian_12-3_3-normal:
     name: 'Test [debian-12/3.3/normal]'
     runs-on: ubuntu-22.04
+    timeout-minutes: 30
     needs:
       - determine_necessary_jobs
       - publish
@@ -2437,6 +2505,7 @@ jobs:
   test_debian_12-3_3-jemalloc:
     name: 'Test [debian-12/3.3/jemalloc]'
     runs-on: ubuntu-22.04
+    timeout-minutes: 30
     needs:
       - determine_necessary_jobs
       - publish
@@ -2471,6 +2540,7 @@ jobs:
   test_debian_12-3_3-malloctrim:
     name: 'Test [debian-12/3.3/malloctrim]'
     runs-on: ubuntu-22.04
+    timeout-minutes: 30
     needs:
       - determine_necessary_jobs
       - publish
@@ -2505,6 +2575,7 @@ jobs:
   test_debian_12-3_2-normal:
     name: 'Test [debian-12/3.2/normal]'
     runs-on: ubuntu-22.04
+    timeout-minutes: 30
     needs:
       - determine_necessary_jobs
       - publish
@@ -2539,6 +2610,7 @@ jobs:
   test_debian_12-3_2-jemalloc:
     name: 'Test [debian-12/3.2/jemalloc]'
     runs-on: ubuntu-22.04
+    timeout-minutes: 30
     needs:
       - determine_necessary_jobs
       - publish
@@ -2573,6 +2645,7 @@ jobs:
   test_debian_12-3_2-malloctrim:
     name: 'Test [debian-12/3.2/malloctrim]'
     runs-on: ubuntu-22.04
+    timeout-minutes: 30
     needs:
       - determine_necessary_jobs
       - publish
@@ -2607,6 +2680,7 @@ jobs:
   test_debian_12-3_3_1-normal:
     name: 'Test [debian-12/3.3.1/normal]'
     runs-on: ubuntu-22.04
+    timeout-minutes: 30
     needs:
       - determine_necessary_jobs
       - publish
@@ -2641,6 +2715,7 @@ jobs:
   test_debian_12-3_3_1-jemalloc:
     name: 'Test [debian-12/3.3.1/jemalloc]'
     runs-on: ubuntu-22.04
+    timeout-minutes: 30
     needs:
       - determine_necessary_jobs
       - publish
@@ -2675,6 +2750,7 @@ jobs:
   test_debian_12-3_3_1-malloctrim:
     name: 'Test [debian-12/3.3.1/malloctrim]'
     runs-on: ubuntu-22.04
+    timeout-minutes: 30
     needs:
       - determine_necessary_jobs
       - publish
@@ -2709,6 +2785,7 @@ jobs:
   test_debian_12-3_2_4-normal:
     name: 'Test [debian-12/3.2.4/normal]'
     runs-on: ubuntu-22.04
+    timeout-minutes: 30
     needs:
       - determine_necessary_jobs
       - publish
@@ -2743,6 +2820,7 @@ jobs:
   test_debian_12-3_2_4-jemalloc:
     name: 'Test [debian-12/3.2.4/jemalloc]'
     runs-on: ubuntu-22.04
+    timeout-minutes: 30
     needs:
       - determine_necessary_jobs
       - publish
@@ -2777,6 +2855,7 @@ jobs:
   test_debian_12-3_2_4-malloctrim:
     name: 'Test [debian-12/3.2.4/malloctrim]'
     runs-on: ubuntu-22.04
+    timeout-minutes: 30
     needs:
       - determine_necessary_jobs
       - publish
@@ -2812,6 +2891,7 @@ jobs:
   test_el_9-3_3-normal:
     name: 'Test [el-9/3.3/normal]'
     runs-on: ubuntu-22.04
+    timeout-minutes: 30
     needs:
       - determine_necessary_jobs
       - publish
@@ -2846,6 +2926,7 @@ jobs:
   test_el_9-3_3-jemalloc:
     name: 'Test [el-9/3.3/jemalloc]'
     runs-on: ubuntu-22.04
+    timeout-minutes: 30
     needs:
       - determine_necessary_jobs
       - publish
@@ -2880,6 +2961,7 @@ jobs:
   test_el_9-3_3-malloctrim:
     name: 'Test [el-9/3.3/malloctrim]'
     runs-on: ubuntu-22.04
+    timeout-minutes: 30
     needs:
       - determine_necessary_jobs
       - publish
@@ -2914,6 +2996,7 @@ jobs:
   test_el_9-3_2-normal:
     name: 'Test [el-9/3.2/normal]'
     runs-on: ubuntu-22.04
+    timeout-minutes: 30
     needs:
       - determine_necessary_jobs
       - publish
@@ -2948,6 +3031,7 @@ jobs:
   test_el_9-3_2-jemalloc:
     name: 'Test [el-9/3.2/jemalloc]'
     runs-on: ubuntu-22.04
+    timeout-minutes: 30
     needs:
       - determine_necessary_jobs
       - publish
@@ -2982,6 +3066,7 @@ jobs:
   test_el_9-3_2-malloctrim:
     name: 'Test [el-9/3.2/malloctrim]'
     runs-on: ubuntu-22.04
+    timeout-minutes: 30
     needs:
       - determine_necessary_jobs
       - publish
@@ -3016,6 +3101,7 @@ jobs:
   test_el_9-3_1-normal:
     name: 'Test [el-9/3.1/normal]'
     runs-on: ubuntu-22.04
+    timeout-minutes: 30
     needs:
       - determine_necessary_jobs
       - publish
@@ -3050,6 +3136,7 @@ jobs:
   test_el_9-3_1-jemalloc:
     name: 'Test [el-9/3.1/jemalloc]'
     runs-on: ubuntu-22.04
+    timeout-minutes: 30
     needs:
       - determine_necessary_jobs
       - publish
@@ -3084,6 +3171,7 @@ jobs:
   test_el_9-3_1-malloctrim:
     name: 'Test [el-9/3.1/malloctrim]'
     runs-on: ubuntu-22.04
+    timeout-minutes: 30
     needs:
       - determine_necessary_jobs
       - publish
@@ -3118,6 +3206,7 @@ jobs:
   test_el_9-3_3_1-normal:
     name: 'Test [el-9/3.3.1/normal]'
     runs-on: ubuntu-22.04
+    timeout-minutes: 30
     needs:
       - determine_necessary_jobs
       - publish
@@ -3152,6 +3241,7 @@ jobs:
   test_el_9-3_3_1-jemalloc:
     name: 'Test [el-9/3.3.1/jemalloc]'
     runs-on: ubuntu-22.04
+    timeout-minutes: 30
     needs:
       - determine_necessary_jobs
       - publish
@@ -3186,6 +3276,7 @@ jobs:
   test_el_9-3_3_1-malloctrim:
     name: 'Test [el-9/3.3.1/malloctrim]'
     runs-on: ubuntu-22.04
+    timeout-minutes: 30
     needs:
       - determine_necessary_jobs
       - publish
@@ -3220,6 +3311,7 @@ jobs:
   test_el_9-3_2_4-normal:
     name: 'Test [el-9/3.2.4/normal]'
     runs-on: ubuntu-22.04
+    timeout-minutes: 30
     needs:
       - determine_necessary_jobs
       - publish
@@ -3254,6 +3346,7 @@ jobs:
   test_el_9-3_2_4-jemalloc:
     name: 'Test [el-9/3.2.4/jemalloc]'
     runs-on: ubuntu-22.04
+    timeout-minutes: 30
     needs:
       - determine_necessary_jobs
       - publish
@@ -3288,6 +3381,7 @@ jobs:
   test_el_9-3_2_4-malloctrim:
     name: 'Test [el-9/3.2.4/malloctrim]'
     runs-on: ubuntu-22.04
+    timeout-minutes: 30
     needs:
       - determine_necessary_jobs
       - publish
@@ -3322,6 +3416,7 @@ jobs:
   test_el_9-3_1_5-normal:
     name: 'Test [el-9/3.1.5/normal]'
     runs-on: ubuntu-22.04
+    timeout-minutes: 30
     needs:
       - determine_necessary_jobs
       - publish
@@ -3356,6 +3451,7 @@ jobs:
   test_el_9-3_1_5-jemalloc:
     name: 'Test [el-9/3.1.5/jemalloc]'
     runs-on: ubuntu-22.04
+    timeout-minutes: 30
     needs:
       - determine_necessary_jobs
       - publish
@@ -3390,6 +3486,7 @@ jobs:
   test_el_9-3_1_5-malloctrim:
     name: 'Test [el-9/3.1.5/malloctrim]'
     runs-on: ubuntu-22.04
+    timeout-minutes: 30
     needs:
       - determine_necessary_jobs
       - publish
@@ -3425,6 +3522,7 @@ jobs:
   test_ubuntu_20_04-3_3-normal:
     name: 'Test [ubuntu-20.04/3.3/normal]'
     runs-on: ubuntu-22.04
+    timeout-minutes: 30
     needs:
       - determine_necessary_jobs
       - publish
@@ -3459,6 +3557,7 @@ jobs:
   test_ubuntu_20_04-3_3-jemalloc:
     name: 'Test [ubuntu-20.04/3.3/jemalloc]'
     runs-on: ubuntu-22.04
+    timeout-minutes: 30
     needs:
       - determine_necessary_jobs
       - publish
@@ -3493,6 +3592,7 @@ jobs:
   test_ubuntu_20_04-3_3-malloctrim:
     name: 'Test [ubuntu-20.04/3.3/malloctrim]'
     runs-on: ubuntu-22.04
+    timeout-minutes: 30
     needs:
       - determine_necessary_jobs
       - publish
@@ -3527,6 +3627,7 @@ jobs:
   test_ubuntu_20_04-3_2-normal:
     name: 'Test [ubuntu-20.04/3.2/normal]'
     runs-on: ubuntu-22.04
+    timeout-minutes: 30
     needs:
       - determine_necessary_jobs
       - publish
@@ -3561,6 +3662,7 @@ jobs:
   test_ubuntu_20_04-3_2-jemalloc:
     name: 'Test [ubuntu-20.04/3.2/jemalloc]'
     runs-on: ubuntu-22.04
+    timeout-minutes: 30
     needs:
       - determine_necessary_jobs
       - publish
@@ -3595,6 +3697,7 @@ jobs:
   test_ubuntu_20_04-3_2-malloctrim:
     name: 'Test [ubuntu-20.04/3.2/malloctrim]'
     runs-on: ubuntu-22.04
+    timeout-minutes: 30
     needs:
       - determine_necessary_jobs
       - publish
@@ -3629,6 +3732,7 @@ jobs:
   test_ubuntu_20_04-3_1-normal:
     name: 'Test [ubuntu-20.04/3.1/normal]'
     runs-on: ubuntu-22.04
+    timeout-minutes: 30
     needs:
       - determine_necessary_jobs
       - publish
@@ -3663,6 +3767,7 @@ jobs:
   test_ubuntu_20_04-3_1-jemalloc:
     name: 'Test [ubuntu-20.04/3.1/jemalloc]'
     runs-on: ubuntu-22.04
+    timeout-minutes: 30
     needs:
       - determine_necessary_jobs
       - publish
@@ -3697,6 +3802,7 @@ jobs:
   test_ubuntu_20_04-3_1-malloctrim:
     name: 'Test [ubuntu-20.04/3.1/malloctrim]'
     runs-on: ubuntu-22.04
+    timeout-minutes: 30
     needs:
       - determine_necessary_jobs
       - publish
@@ -3731,6 +3837,7 @@ jobs:
   test_ubuntu_20_04-3_0-normal:
     name: 'Test [ubuntu-20.04/3.0/normal]'
     runs-on: ubuntu-22.04
+    timeout-minutes: 30
     needs:
       - determine_necessary_jobs
       - publish
@@ -3765,6 +3872,7 @@ jobs:
   test_ubuntu_20_04-3_0-jemalloc:
     name: 'Test [ubuntu-20.04/3.0/jemalloc]'
     runs-on: ubuntu-22.04
+    timeout-minutes: 30
     needs:
       - determine_necessary_jobs
       - publish
@@ -3799,6 +3907,7 @@ jobs:
   test_ubuntu_20_04-3_0-malloctrim:
     name: 'Test [ubuntu-20.04/3.0/malloctrim]'
     runs-on: ubuntu-22.04
+    timeout-minutes: 30
     needs:
       - determine_necessary_jobs
       - publish
@@ -3833,6 +3942,7 @@ jobs:
   test_ubuntu_20_04-3_3_1-normal:
     name: 'Test [ubuntu-20.04/3.3.1/normal]'
     runs-on: ubuntu-22.04
+    timeout-minutes: 30
     needs:
       - determine_necessary_jobs
       - publish
@@ -3867,6 +3977,7 @@ jobs:
   test_ubuntu_20_04-3_3_1-jemalloc:
     name: 'Test [ubuntu-20.04/3.3.1/jemalloc]'
     runs-on: ubuntu-22.04
+    timeout-minutes: 30
     needs:
       - determine_necessary_jobs
       - publish
@@ -3901,6 +4012,7 @@ jobs:
   test_ubuntu_20_04-3_3_1-malloctrim:
     name: 'Test [ubuntu-20.04/3.3.1/malloctrim]'
     runs-on: ubuntu-22.04
+    timeout-minutes: 30
     needs:
       - determine_necessary_jobs
       - publish
@@ -3935,6 +4047,7 @@ jobs:
   test_ubuntu_20_04-3_2_4-normal:
     name: 'Test [ubuntu-20.04/3.2.4/normal]'
     runs-on: ubuntu-22.04
+    timeout-minutes: 30
     needs:
       - determine_necessary_jobs
       - publish
@@ -3969,6 +4082,7 @@ jobs:
   test_ubuntu_20_04-3_2_4-jemalloc:
     name: 'Test [ubuntu-20.04/3.2.4/jemalloc]'
     runs-on: ubuntu-22.04
+    timeout-minutes: 30
     needs:
       - determine_necessary_jobs
       - publish
@@ -4003,6 +4117,7 @@ jobs:
   test_ubuntu_20_04-3_2_4-malloctrim:
     name: 'Test [ubuntu-20.04/3.2.4/malloctrim]'
     runs-on: ubuntu-22.04
+    timeout-minutes: 30
     needs:
       - determine_necessary_jobs
       - publish
@@ -4037,6 +4152,7 @@ jobs:
   test_ubuntu_20_04-3_1_5-normal:
     name: 'Test [ubuntu-20.04/3.1.5/normal]'
     runs-on: ubuntu-22.04
+    timeout-minutes: 30
     needs:
       - determine_necessary_jobs
       - publish
@@ -4071,6 +4187,7 @@ jobs:
   test_ubuntu_20_04-3_1_5-jemalloc:
     name: 'Test [ubuntu-20.04/3.1.5/jemalloc]'
     runs-on: ubuntu-22.04
+    timeout-minutes: 30
     needs:
       - determine_necessary_jobs
       - publish
@@ -4105,6 +4222,7 @@ jobs:
   test_ubuntu_20_04-3_1_5-malloctrim:
     name: 'Test [ubuntu-20.04/3.1.5/malloctrim]'
     runs-on: ubuntu-22.04
+    timeout-minutes: 30
     needs:
       - determine_necessary_jobs
       - publish
@@ -4139,6 +4257,7 @@ jobs:
   test_ubuntu_20_04-3_0_7-normal:
     name: 'Test [ubuntu-20.04/3.0.7/normal]'
     runs-on: ubuntu-22.04
+    timeout-minutes: 30
     needs:
       - determine_necessary_jobs
       - publish
@@ -4173,6 +4292,7 @@ jobs:
   test_ubuntu_20_04-3_0_7-jemalloc:
     name: 'Test [ubuntu-20.04/3.0.7/jemalloc]'
     runs-on: ubuntu-22.04
+    timeout-minutes: 30
     needs:
       - determine_necessary_jobs
       - publish
@@ -4207,6 +4327,7 @@ jobs:
   test_ubuntu_20_04-3_0_7-malloctrim:
     name: 'Test [ubuntu-20.04/3.0.7/malloctrim]'
     runs-on: ubuntu-22.04
+    timeout-minutes: 30
     needs:
       - determine_necessary_jobs
       - publish
@@ -4242,6 +4363,7 @@ jobs:
   test_ubuntu_22_04-3_3-normal:
     name: 'Test [ubuntu-22.04/3.3/normal]'
     runs-on: ubuntu-22.04
+    timeout-minutes: 30
     needs:
       - determine_necessary_jobs
       - publish
@@ -4276,6 +4398,7 @@ jobs:
   test_ubuntu_22_04-3_3-jemalloc:
     name: 'Test [ubuntu-22.04/3.3/jemalloc]'
     runs-on: ubuntu-22.04
+    timeout-minutes: 30
     needs:
       - determine_necessary_jobs
       - publish
@@ -4310,6 +4433,7 @@ jobs:
   test_ubuntu_22_04-3_3-malloctrim:
     name: 'Test [ubuntu-22.04/3.3/malloctrim]'
     runs-on: ubuntu-22.04
+    timeout-minutes: 30
     needs:
       - determine_necessary_jobs
       - publish
@@ -4344,6 +4468,7 @@ jobs:
   test_ubuntu_22_04-3_2-normal:
     name: 'Test [ubuntu-22.04/3.2/normal]'
     runs-on: ubuntu-22.04
+    timeout-minutes: 30
     needs:
       - determine_necessary_jobs
       - publish
@@ -4378,6 +4503,7 @@ jobs:
   test_ubuntu_22_04-3_2-jemalloc:
     name: 'Test [ubuntu-22.04/3.2/jemalloc]'
     runs-on: ubuntu-22.04
+    timeout-minutes: 30
     needs:
       - determine_necessary_jobs
       - publish
@@ -4412,6 +4538,7 @@ jobs:
   test_ubuntu_22_04-3_2-malloctrim:
     name: 'Test [ubuntu-22.04/3.2/malloctrim]'
     runs-on: ubuntu-22.04
+    timeout-minutes: 30
     needs:
       - determine_necessary_jobs
       - publish
@@ -4446,6 +4573,7 @@ jobs:
   test_ubuntu_22_04-3_1-normal:
     name: 'Test [ubuntu-22.04/3.1/normal]'
     runs-on: ubuntu-22.04
+    timeout-minutes: 30
     needs:
       - determine_necessary_jobs
       - publish
@@ -4480,6 +4608,7 @@ jobs:
   test_ubuntu_22_04-3_1-jemalloc:
     name: 'Test [ubuntu-22.04/3.1/jemalloc]'
     runs-on: ubuntu-22.04
+    timeout-minutes: 30
     needs:
       - determine_necessary_jobs
       - publish
@@ -4514,6 +4643,7 @@ jobs:
   test_ubuntu_22_04-3_1-malloctrim:
     name: 'Test [ubuntu-22.04/3.1/malloctrim]'
     runs-on: ubuntu-22.04
+    timeout-minutes: 30
     needs:
       - determine_necessary_jobs
       - publish
@@ -4548,6 +4678,7 @@ jobs:
   test_ubuntu_22_04-3_3_1-normal:
     name: 'Test [ubuntu-22.04/3.3.1/normal]'
     runs-on: ubuntu-22.04
+    timeout-minutes: 30
     needs:
       - determine_necessary_jobs
       - publish
@@ -4582,6 +4713,7 @@ jobs:
   test_ubuntu_22_04-3_3_1-jemalloc:
     name: 'Test [ubuntu-22.04/3.3.1/jemalloc]'
     runs-on: ubuntu-22.04
+    timeout-minutes: 30
     needs:
       - determine_necessary_jobs
       - publish
@@ -4616,6 +4748,7 @@ jobs:
   test_ubuntu_22_04-3_3_1-malloctrim:
     name: 'Test [ubuntu-22.04/3.3.1/malloctrim]'
     runs-on: ubuntu-22.04
+    timeout-minutes: 30
     needs:
       - determine_necessary_jobs
       - publish
@@ -4650,6 +4783,7 @@ jobs:
   test_ubuntu_22_04-3_2_4-normal:
     name: 'Test [ubuntu-22.04/3.2.4/normal]'
     runs-on: ubuntu-22.04
+    timeout-minutes: 30
     needs:
       - determine_necessary_jobs
       - publish
@@ -4684,6 +4818,7 @@ jobs:
   test_ubuntu_22_04-3_2_4-jemalloc:
     name: 'Test [ubuntu-22.04/3.2.4/jemalloc]'
     runs-on: ubuntu-22.04
+    timeout-minutes: 30
     needs:
       - determine_necessary_jobs
       - publish
@@ -4718,6 +4853,7 @@ jobs:
   test_ubuntu_22_04-3_2_4-malloctrim:
     name: 'Test [ubuntu-22.04/3.2.4/malloctrim]'
     runs-on: ubuntu-22.04
+    timeout-minutes: 30
     needs:
       - determine_necessary_jobs
       - publish
@@ -4752,6 +4888,7 @@ jobs:
   test_ubuntu_22_04-3_1_5-normal:
     name: 'Test [ubuntu-22.04/3.1.5/normal]'
     runs-on: ubuntu-22.04
+    timeout-minutes: 30
     needs:
       - determine_necessary_jobs
       - publish
@@ -4786,6 +4923,7 @@ jobs:
   test_ubuntu_22_04-3_1_5-jemalloc:
     name: 'Test [ubuntu-22.04/3.1.5/jemalloc]'
     runs-on: ubuntu-22.04
+    timeout-minutes: 30
     needs:
       - determine_necessary_jobs
       - publish
@@ -4820,6 +4958,7 @@ jobs:
   test_ubuntu_22_04-3_1_5-malloctrim:
     name: 'Test [ubuntu-22.04/3.1.5/malloctrim]'
     runs-on: ubuntu-22.04
+    timeout-minutes: 30
     needs:
       - determine_necessary_jobs
       - publish

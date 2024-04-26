@@ -70,6 +70,7 @@ jobs:
     name: Publish packages
     # Ubuntu 22.04 runner has more free disk space than 20.04
     runs-on: ubuntu-22.04
+    timeout-minutes: 30
     permissions:
       packages: read
     needs:
@@ -148,6 +149,7 @@ jobs:
     test_<%= slug(distribution[:name]) %>-<%= slug(ruby_package_version[:id]) %>-<%= slug(variant[:name]) %>:
       name: 'Test [<%= distribution[:name] %>/<%= ruby_package_version[:id] %>/<%= variant[:name] %>]'
       runs-on: ubuntu-22.04
+      timeout-minutes: 30
       needs:
         - determine_necessary_jobs
         - publish

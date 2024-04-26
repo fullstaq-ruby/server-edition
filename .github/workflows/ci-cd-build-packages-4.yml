@@ -149,6 +149,7 @@ jobs:
   build_ruby_debian_12-3_3-normal:
     name: 'Build Ruby [debian-12/3.3/normal]'
     runs-on: ubuntu-22.04
+    timeout-minutes: 30
     permissions:
       packages: read
     needs:
@@ -234,6 +235,7 @@ jobs:
   build_ruby_debian_12-3_3-jemalloc:
     name: 'Build Ruby [debian-12/3.3/jemalloc]'
     runs-on: ubuntu-22.04
+    timeout-minutes: 30
     permissions:
       packages: read
     needs:
@@ -330,6 +332,7 @@ jobs:
   build_ruby_debian_12-3_3-malloctrim:
     name: 'Build Ruby [debian-12/3.3/malloctrim]'
     runs-on: ubuntu-22.04
+    timeout-minutes: 30
     permissions:
       packages: read
     needs:
@@ -415,6 +418,7 @@ jobs:
   build_ruby_debian_12-3_2-normal:
     name: 'Build Ruby [debian-12/3.2/normal]'
     runs-on: ubuntu-22.04
+    timeout-minutes: 30
     permissions:
       packages: read
     needs:
@@ -500,6 +504,7 @@ jobs:
   build_ruby_debian_12-3_2-jemalloc:
     name: 'Build Ruby [debian-12/3.2/jemalloc]'
     runs-on: ubuntu-22.04
+    timeout-minutes: 30
     permissions:
       packages: read
     needs:
@@ -596,6 +601,7 @@ jobs:
   build_ruby_debian_12-3_2-malloctrim:
     name: 'Build Ruby [debian-12/3.2/malloctrim]'
     runs-on: ubuntu-22.04
+    timeout-minutes: 30
     permissions:
       packages: read
     needs:
@@ -681,6 +687,7 @@ jobs:
   build_ruby_debian_12-3_3_1-normal:
     name: 'Build Ruby [debian-12/3.3.1/normal]'
     runs-on: ubuntu-22.04
+    timeout-minutes: 30
     permissions:
       packages: read
     needs:
@@ -766,6 +773,7 @@ jobs:
   build_ruby_debian_12-3_3_1-jemalloc:
     name: 'Build Ruby [debian-12/3.3.1/jemalloc]'
     runs-on: ubuntu-22.04
+    timeout-minutes: 30
     permissions:
       packages: read
     needs:
@@ -862,6 +870,7 @@ jobs:
   build_ruby_debian_12-3_3_1-malloctrim:
     name: 'Build Ruby [debian-12/3.3.1/malloctrim]'
     runs-on: ubuntu-22.04
+    timeout-minutes: 30
     permissions:
       packages: read
     needs:
@@ -947,6 +956,7 @@ jobs:
   build_ruby_debian_12-3_2_4-normal:
     name: 'Build Ruby [debian-12/3.2.4/normal]'
     runs-on: ubuntu-22.04
+    timeout-minutes: 30
     permissions:
       packages: read
     needs:
@@ -1032,6 +1042,7 @@ jobs:
   build_ruby_debian_12-3_2_4-jemalloc:
     name: 'Build Ruby [debian-12/3.2.4/jemalloc]'
     runs-on: ubuntu-22.04
+    timeout-minutes: 30
     permissions:
       packages: read
     needs:
@@ -1128,6 +1139,7 @@ jobs:
   build_ruby_debian_12-3_2_4-malloctrim:
     name: 'Build Ruby [debian-12/3.2.4/malloctrim]'
     runs-on: ubuntu-22.04
+    timeout-minutes: 30
     permissions:
       packages: read
     needs:
@@ -1239,6 +1251,7 @@ jobs:
       - build_ruby_debian_12-3_2_4-jemalloc
       - build_ruby_debian_12-3_2_4-malloctrim
     runs-on: ubuntu-22.04
+    timeout-minutes: 30
     if: 'always()'
     steps:
       - uses: actions/checkout@v3
