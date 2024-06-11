@@ -110,6 +110,7 @@ distributions: all
 #   - debian-12
 #   - ubuntu-20.04
 #   - ubuntu-22.04
+#   - ubuntu-24.04
 
 ## (Optional)
 ## Excludes certain Ruby minor versions from certain distributions.
@@ -119,6 +120,7 @@ distribution_exclusions:
     distros:
       - debian-12
       - ubuntu-22.04
+      - ubuntu-24.04
       - el-9
   - ruby_minor_version: '3.1'
     distros:
