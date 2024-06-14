@@ -457,7 +457,7 @@ sudo yum install fullstaq-ruby-3.1.1
 ### Debian/Ubuntu
 
  * Supported Debian versions: 11 *(bullseye)*, 10 *(buster)*, 9 *(stretch)*
- * Supported Ubuntu versions: 22.04, 20.04, 18.04
+ * Supported Ubuntu versions: 24.04, 22.04, 20.04
  * Supported architectures: x86-64
 
 First, make sure your package manager supports HTTPS and that the necessary crypto tools are installed:
@@ -469,6 +469,9 @@ sudo apt install gnupg apt-transport-https ca-certificates curl
 Next, add the Fullstaq Ruby repository by creating `/etc/apt/sources.list.d/fullstaq-ruby.list`. Paste **one** of the lines below depending your distro:
 
 ~~~bash
+# Ubuntu 24.04
+deb https://apt.fullstaqruby.org ubuntu-24.04 main
+
 # Ubuntu 22.04
 deb https://apt.fullstaqruby.org ubuntu-22.04 main
 
