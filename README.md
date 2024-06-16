@@ -456,7 +456,7 @@ sudo yum install fullstaq-ruby-3.1.1
 
 ### Debian/Ubuntu
 
- * Supported Debian versions: 11 *(bullseye)*, 10 *(buster)*, 9 *(stretch)*
+ * Supported Debian versions: 12 *(bookworm)*, 11 *(bullseye)*, 10 *(buster)*
  * Supported Ubuntu versions: 24.04, 22.04, 20.04
  * Supported architectures: x86-64
 
