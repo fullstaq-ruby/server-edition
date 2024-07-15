@@ -78,17 +78,23 @@ jobs:
 
   publish:
     name: Publish packages
-    # Ubuntu 22.04 runner has more free disk space than 20.04
-    runs-on: ubuntu-22.04
+    # Ubuntu 24.04 runner has more free disk space than 22.04
+    runs-on: ubuntu-24.04
     timeout-minutes: 30
     permissions:
       packages: read
     needs:
       - determine_necessary_jobs
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           fetch-depth: 0
+      - name: Clean disk space
+        run: ./internal-scripts/ci-cd/publish/clean-disk-space.sh
+      - name: 'Set up Cloud SDK'
+        uses: 'google-github-actions/setup-gcloud@v2'
+        with:
+          version: '>= 363.0.0'
       - name: Login to Google Cloud
         uses: ./.github/actions/gcloud-login
         with:
@@ -128,9 +134,6 @@ jobs:
       - name: Determine latest release tag
         # Sets environment variable $LATEST_RELEASE_TAG
         run: ./internal-scripts/ci-cd/check-version-numbers-need-changing/determine-latest-release-tag.sh
-
-      - name: Free up disk space
-        run: sudo rm -rf /usr/share/dotnet "$AGENT_TOOLSDIRECTORY"
 
       - name: Upload DEBs to repo
         run: ./internal-scripts/ci-cd/publish/publish-debs.rb pkgs/*/*.deb
