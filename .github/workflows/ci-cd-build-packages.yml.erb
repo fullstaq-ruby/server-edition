@@ -3,95 +3,42 @@
 name: 'CI/CD: build packages [<%= part_number %>]'
 
 on:
-  workflow_dispatch:
+  workflow_call:
     inputs:
       ci_artifacts_run_number:
-        required: false
-      check_id:
-        required: false
-  push:
-    branches:
-      - fix/cicd-new-workflows
+        required: true
+        type: string
+      necessary_jobs:
+        required: true
+        type: string
 
 env:
-  CI_ARTIFACTS_BUCKET: fullstaq-ruby-server-edition-ci-artifacts
-  CI_ARTIFACTS_RUN_NUMBER: ${{ github.event.inputs.ci_artifacts_run_number || github.run_number }}
+  CI_ARTIFACTS_RUN_NUMBER: ${{ inputs.ci_artifacts_run_number }}
   CACHE_CONTAINER: server-edition-ci-cache
 
 jobs:
-  # Determines which jobs should be run, or (in case this is a re-run)
-  # which jobs can be skipped this time because the last run succeeded.
-  # We determine this by checking whether the artifacts produced by jobs
-  # exist in this run.
-  determine_necessary_jobs:
-    name: Determine necessary jobs
-    runs-on: ubuntu-22.04
-    permissions:
-      checks: write
-      packages: read
-    outputs:
-      necessary_jobs: ${{ steps.check.outputs.necessary_jobs }}
-    steps:
-      - name: Workaround for detecting new workflows in branches
-        run: |
-          echo 'New workflow detected. Please delete the fix/cicd-new-workflows branch now.'
-          exit 1
-        if: github.event_name == 'push'
-
-      - name: Dump inputs
-        run: echo "$INPUTS"
-        env:
-          INPUTS: ${{ toJSON(github.event.inputs) }}
-
-      - name: Mark check as 'in progress'
-        uses: LouisBrunner/checks-action@3d24d4813a797720cc4e2080a50bdafb3373aef1
-        if: github.event.inputs.check_id
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          check_id: ${{ github.event.inputs.check_id }}
-          status: in_progress
-          details_url: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
-          output: |
-            {
-              "summary": "Packages are built in another workflow.\n[**➜ See workflow run #${{ github.run_id }} for logs**](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})"
-            }
-
-      - uses: actions/checkout@v3
-      - name: Login to Google Cloud
-        uses: ./.github/actions/gcloud-login
-        with:
-          private_key: ${{ secrets.GCLOUD_KEY }}
-
-      - name: List artifacts built in previous try of same CI run
-        run: ./internal-scripts/ci-cd/determine-necessary-jobs/list-artifacts.sh
-
-      - name: Determine necessary jobs
-        id: check
-        run: ./internal-scripts/ci-cd/determine-necessary-jobs/determine-necessary-jobs.rb
-        env:
-          GITHUB_ACTOR: ${{ github.actor }}
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-
   ### Jemalloc ###
 
   <%- distributions.each do |distribution| %>
   <%- unindent(2) do -%>
     build_jemalloc_<%= slug(distribution[:name]) %>:
-      name: 'Build Jemalloc [<%= distribution[:name] %>]'
-      runs-on: ubuntu-22.04
+      name: 'Jemalloc [<%= distribution[:name] %>]'
+      if: contains(inputs.necessary_jobs, ';Build Jemalloc [<%= distribution[:name] %>];')
+      runs-on: ubuntu-24.04
+      environment: test
       permissions:
+        id-token: write
         packages: read
-      needs:
-        - determine_necessary_jobs
-      if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Jemalloc [<%= distribution[:name] %>];')
       steps:
-        - uses: actions/checkout@v3
-        - name: Login to Google Cloud
-          uses: ./.github/actions/gcloud-login
+        - uses: actions/checkout@v4
+        - uses: google-github-actions/auth@v2
           with:
-            private_key: ${{ secrets.GCLOUD_KEY }}
-            write_keyfile_to: gcloud-credentials.json
+            project_id: ${{ vars.GCLOUD_PROJECT_ID }}
+            workload_identity_provider: projects/${{ vars.GCLOUD_PROJECT_NUM }}/locations/global/workloadIdentityPools/github-ci-test/providers/github-ci-test
+        - name: Set up Cloud SDK
+          uses: google-github-actions/setup-gcloud@v2
+          with:
+            version: '>= 363.0.0'
         - name: Login to Github Container Registry
           run: docker login ghcr.io -u ${{ github.actor }} --password-stdin <<<"$GITHUB_TOKEN"
           env:
@@ -99,17 +46,18 @@ jobs:
         - name: Dump Azure connection string
           run: echo -n "$CONNECTION_STRING" > azure-connection-string.txt
           env:
-            CONNECTION_STRING: ${{ secrets.AZURE_CI1_STORAGE_CONNECTION_STRING }}
+            CONNECTION_STRING: ${{ secrets.AZURE_CI2_STORAGE_CONNECTION_STRING }}
 
         - name: Download Docker image necessary for building
           run: ./internal-scripts/ci-cd/download-artifact.sh
-          if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Use locally-built Docker image <%= distribution[:name] %>;')
+          if: contains(inputs.necessary_jobs, ';Use locally-built Docker image <%= distribution[:name] %>;')
           env:
             ARTIFACT_NAME: '<%= docker_image_artifact_name(distribution[:name]) %>'
             ARTIFACT_PATH: .
+            CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
         - name: Load Docker image necessary for building
           run: ./internal-scripts/ci-cd/load-docker-image.sh
-          if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Use locally-built Docker image <%= distribution[:name] %>;')
+          if: contains(inputs.necessary_jobs, ';Use locally-built Docker image <%= distribution[:name] %>;')
           env:
             TARBALL: image.tar.zst
 
@@ -131,6 +79,7 @@ jobs:
           env:
             ARTIFACT_NAME: 'jemalloc-bin-<%= distribution[:name] %>'
             ARTIFACT_PATH: output
+            CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
   <%- end -%>
   <%- end %>
 
@@ -142,21 +91,21 @@ jobs:
   <%- variants.each do |variant| -%>
   <%- unindent(2) do %>
     build_ruby_<%= slug(distribution[:name]) %>-<%= slug(ruby_package_version[:id]) %>-<%= slug(variant[:name]) %>:
-      name: 'Build Ruby [<%= distribution[:name] %>/<%= ruby_package_version[:id] %>/<%= variant[:name] %>]'
-      runs-on: ubuntu-22.04
+      name: 'Ruby [<%= distribution[:name] %>/<%= ruby_package_version[:id] %>/<%= variant[:name] %>]'
+      <%- if variant[:name] == 'jemalloc' %>
+      <%- unindent(2) do -%>
+        needs: build_jemalloc_<%= slug(distribution[:name]) %>
+      <%- end -%>
+      <%- end %>
+      runs-on: ubuntu-24.04
+      environment: test
       timeout-minutes: 30
       permissions:
+        id-token: write
         packages: read
-      needs:
-        - determine_necessary_jobs
-        <% if variant[:name] == 'jemalloc' %>
-        <%- unindent(2) do -%>
-          - build_jemalloc_<%= slug(distribution[:name]) %>
-        <%- end -%>
-        <% end %>
       # Run even if a dependent job has been skipped
       if: |
-        contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Ruby [<%= distribution[:name] %>/<%= ruby_package_version[:id] %>/<%= variant[:name] %>];')
+        contains(inputs.necessary_jobs, ';Build Ruby [<%= distribution[:name] %>/<%= ruby_package_version[:id] %>/<%= variant[:name] %>];')
         && !failure() && !cancelled()
       steps:
         <% if variant[:name] == 'jemalloc' %>
@@ -165,16 +114,19 @@ jobs:
             run: 'false'
             if: |
               needs.build_jemalloc_<%= slug(distribution[:name]) %>.result == 'skipped'
-              && contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Jemalloc [<%= distribution[:name] %>];')
+              && contains(inputs.necessary_jobs, ';Build Jemalloc [<%= distribution[:name] %>];')
         <%- end -%>
         <% end %>
 
-        - uses: actions/checkout@v3
-        - name: Login to Google Cloud
-          uses: ./.github/actions/gcloud-login
+        - uses: actions/checkout@v4
+        - uses: google-github-actions/auth@v2
           with:
-            private_key: ${{ secrets.GCLOUD_KEY }}
-            write_keyfile_to: gcloud-credentials.json
+            project_id: ${{ vars.GCLOUD_PROJECT_ID }}
+            workload_identity_provider: projects/${{ vars.GCLOUD_PROJECT_NUM }}/locations/global/workloadIdentityPools/github-ci-test/providers/github-ci-test
+        - name: Set up Cloud SDK
+          uses: google-github-actions/setup-gcloud@v2
+          with:
+            version: '>= 363.0.0'
         - name: Login to Github Container Registry
           run: docker login ghcr.io -u ${{ github.actor }} --password-stdin <<<"$GITHUB_TOKEN"
           env:
@@ -182,34 +134,37 @@ jobs:
         - name: Dump Azure connection string
           run: echo -n "$CONNECTION_STRING" > azure-connection-string.txt
           env:
-            CONNECTION_STRING: ${{ secrets.AZURE_CI1_STORAGE_CONNECTION_STRING }}
+            CONNECTION_STRING: ${{ secrets.AZURE_CI2_STORAGE_CONNECTION_STRING }}
         - name: Fetch Ruby source
           run: ./internal-scripts/ci-cd/download-artifact.sh
           env:
             ARTIFACT_NAME: <%= ruby_source_artifact_name(ruby_package_version[:full_version]) %>
             ARTIFACT_PATH: .
+            CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
 
         - name: Download Docker image necessary for building
           run: ./internal-scripts/ci-cd/download-artifact.sh
-          if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Use locally-built Docker image <%= distribution[:name] %>;')
+          if: contains(inputs.necessary_jobs, ';Use locally-built Docker image <%= distribution[:name] %>;')
           env:
             ARTIFACT_NAME: '<%= docker_image_artifact_name(distribution[:name]) %>'
             ARTIFACT_PATH: .
+            CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
         - name: Load Docker image necessary for building
           run: ./internal-scripts/ci-cd/load-docker-image.sh
-          if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Use locally-built Docker image <%= distribution[:name] %>;')
+          if: contains(inputs.necessary_jobs, ';Use locally-built Docker image <%= distribution[:name] %>;')
           env:
             TARBALL: image.tar.zst
 
         - name: Download Docker image necessary for packaging
           run: ./internal-scripts/ci-cd/download-artifact.sh
-          if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Use locally-built Docker image utility;')
+          if: contains(inputs.necessary_jobs, ';Use locally-built Docker image utility;')
           env:
             ARTIFACT_NAME: <%= docker_image_artifact_name('utility') %>
             ARTIFACT_PATH: .
+            CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
         - name: Load Docker image necessary for packaging
           run: ./internal-scripts/ci-cd/load-docker-image.sh
-          if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Use locally-built Docker image utility;')
+          if: contains(inputs.necessary_jobs, ';Use locally-built Docker image utility;')
           env:
             TARBALL: image.tar.zst
 
@@ -220,6 +175,7 @@ jobs:
             env:
               ARTIFACT_NAME: jemalloc-bin-<%= distribution[:name] %>
               ARTIFACT_PATH: .
+              CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
         <%- end -%>
         <% end %>
 
@@ -246,6 +202,7 @@ jobs:
           env:
             ARTIFACT_NAME: "<%= ruby_package_artifact_name(ruby_package_version, distribution, variant) %>"
             ARTIFACT_PATH: output-<%= variant[:name] %>
+            CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
   <%- end %>
   <%- end -%>
   <%- end -%>
@@ -256,10 +213,7 @@ jobs:
 
   finalize:
     name: Finalize
-    permissions:
-      checks: write
     needs:
-      - determine_necessary_jobs
       <%- distributions.each do |distribution| -%>
       <%- unindent(2) do %>
         - build_jemalloc_<%= slug(distribution[:name]) %>
@@ -270,15 +224,22 @@ jobs:
         <%- end %>
       <%- end %>
       <%- end -%>
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
+    environment: test
     timeout-minutes: 30
     if: 'always()'
+    permissions:
+      id-token: write
     steps:
-      - uses: actions/checkout@v3
-      - name: Login to Google Cloud
-        uses: ./.github/actions/gcloud-login
+      - uses: actions/checkout@v4
+      - uses: google-github-actions/auth@v2
         with:
-          private_key: ${{ secrets.GCLOUD_KEY }}
+          project_id: ${{ vars.GCLOUD_PROJECT_ID }}
+          workload_identity_provider: projects/${{ vars.GCLOUD_PROJECT_NUM }}/locations/global/workloadIdentityPools/github-ci-test/providers/github-ci-test
+      - name: Set up Cloud SDK
+        uses: google-github-actions/setup-gcloud@v2
+        with:
+          version: '>= 363.0.0'
 
 
       ### Publish all artifacts in Google Cloud as Github Actions artifacts ###
@@ -295,12 +256,14 @@ jobs:
             <%- end -%>
           ARTIFACT_PATH: artifacts
           CLEAR: true
+          CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
       <%- distributions.each do |distribution| -%>
       - name: Archive Jemalloc binary artifact [<%= distribution[:name] %>] to Github
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: 'jemalloc-bin-<%= distribution[:name] %>'
           path: 'artifacts/jemalloc-bin-<%= distribution[:name] %>'
+          compression-level: 0
       <%- end -%>
 
       - name: Download Ruby package artifacts from Google Cloud
@@ -309,32 +272,30 @@ jobs:
           ARTIFACT_NAMES: '<%= ruby_package_artifact_names.join(' ') %>'
           ARTIFACT_PATH: artifacts
           CLEAR: true
+          CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
       <%- ruby_package_artifact_names.each do |artifact_name| -%>
       - name: Archive Ruby package artifact [<%= artifact_name %>] to Github
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: <%= artifact_name %>
           path: artifacts/<%= artifact_name %>
+          compression-level: 0
       <%- end -%>
 
 
       ### Check whether dependent jobs failed ###
-      # Only trigger next workflow if there are no failures.
 
-      - name: Check whether 'Determine necessary jobs' succeeded
-        run: 'false'
-        if: needs.determine_necessary_jobs.result != 'success'
-      - name: Check whether 'Build Jemalloc' did not fail
+      - name: Check whether 'Jemalloc' job did not fail
         run: 'false'
         if: |
           false
           <%- distributions.each do |distribution| -%>
             || (needs.build_jemalloc_<%= slug(distribution[:name]) %>.result != 'success'
               && (needs.build_jemalloc_<%= slug(distribution[:name]) %>.result != 'skipped'
-                || contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Jemalloc [<%= distribution[:name] %>];')))
+                || contains(inputs.necessary_jobs, ';Build Jemalloc [<%= distribution[:name] %>];')))
           <%- end -%>
       <%- distributions.each do |distribution| -%>
-      - name: Check whether 'Build Ruby [<%= distribution[:name] %>]' did not fail
+      - name: Check whether 'Ruby [<%= distribution[:name] %>]' job did not fail
         run: 'false'
         if: |
           false
@@ -342,88 +303,7 @@ jobs:
           <%- variants.each do |variant| -%>
             || (needs.build_ruby_<%= slug(distribution[:name]) %>-<%= slug(ruby_package_version[:id]) %>-<%= slug(variant[:name]) %>.result != 'success'
               && (needs.build_ruby_<%= slug(distribution[:name]) %>-<%= slug(ruby_package_version[:id]) %>-<%= slug(variant[:name]) %>.result != 'skipped'
-                || contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Ruby [<%= distribution[:name] %>/<%= ruby_package_version[:id] %>/<%= variant[:name] %>];')))
+                || contains(inputs.necessary_jobs, ';Build Ruby [<%= distribution[:name] %>/<%= ruby_package_version[:id] %>/<%= variant[:name] %>];')))
           <%- end -%>
           <%- end -%>
       <%- end -%>
-
-
-      ### Trigger next workflow ###
-
-      - name: Download gem bundle artifact
-        run: ./internal-scripts/ci-cd/download-artifact.sh
-        env:
-          ARTIFACT_NAME: gem-bundle
-          ARTIFACT_PATH: vendor/bundle
-
-      - uses: ruby/setup-ruby@v1
-        with:
-          ruby-version: 3.2
-
-      - run: bundle install --local
-        env:
-          BUNDLE_FROZEN: true
-          BUNDLE_PATH: vendor/bundle
-          BUNDLE_JOBS: 4
-
-      - name: Increment build counter
-        id: increment_counter
-        run: |
-          base64 -d <<< "$GCLOUD_KEY_DATA" > gcloud-key.json
-          bundle exec ./internal-scripts/ci-cd/update-counter.rb
-        env:
-          BUNDLE_PATH: vendor/bundle
-          BUCKET_NAME: ${{ env.CI_ARTIFACTS_BUCKET }}
-          LOCK_PATH: ${{ env.CI_ARTIFACTS_RUN_NUMBER }}/build-lock
-          COUNTER_PATH: ${{ env.CI_ARTIFACTS_RUN_NUMBER }}/build-count
-          OPERATION: increment
-          GCLOUD_KEY_DATA: ${{ secrets.GCLOUD_KEY }}
-          GCLOUD_KEY: gcloud-key.json
-
-      - name: Create check for 'Publish & test against test repos'
-        uses: LouisBrunner/checks-action@3d24d4813a797720cc4e2080a50bdafb3373aef1
-        id: create_check
-        if: steps.increment_counter.outputs.value >= <%= total_distribution_buckets_num %>
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          name: Publish & test against test repos
-          status: queued
-
-      - name: Trigger workflow for 'Publish & test against test repos'
-        uses: benc-uk/workflow-dispatch@4c044c1613fabbe5250deadc65452d54c4ad4fc7
-        if: steps.increment_counter.outputs.value >= <%= total_distribution_buckets_num %>
-        with:
-          workflow: 'CI/CD: publish & test against test repos'
-          token: ${{ secrets.WORKFLOW_DISPATCH_TOKEN }}
-          inputs: |
-            {
-              "ci_artifacts_run_number": "${{ env.CI_ARTIFACTS_RUN_NUMBER }}",
-              "check_id": "${{ steps.create_check.outputs.check_id }}"
-            }
-
-
-      ### Update own check status ###
-
-      - name: Mark check as 'success'
-        uses: LouisBrunner/checks-action@3d24d4813a797720cc4e2080a50bdafb3373aef1
-        if: 'github.event.inputs.check_id && success()'
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          check_id: ${{ github.event.inputs.check_id }}
-          conclusion: success
-
-      - name: Mark check as 'failure'
-        uses: LouisBrunner/checks-action@3d24d4813a797720cc4e2080a50bdafb3373aef1
-        if: 'github.event.inputs.check_id && failure()'
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          check_id: ${{ github.event.inputs.check_id }}
-          conclusion: failure
-
-      - name: Mark check as 'cancelled'
-        uses: LouisBrunner/checks-action@3d24d4813a797720cc4e2080a50bdafb3373aef1
-        if: 'github.event.inputs.check_id && cancelled()'
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          check_id: ${{ github.event.inputs.check_id }}
-          conclusion: cancelled

@@ -2,9 +2,6 @@
 
 module PublishingSupport
 private
-  RELOAD_WEB_SERVER_API_URL = 'https://apiserver-f7awo4fcoa-uk.a.run.app/actions/reload_web_server'
-
-
   def pull_utility_image_if_not_exists
     # We need the utility image in order to invoke createrepo.
     # We pull it now so that a 'docker run' invocation later doesn't
@@ -39,8 +36,11 @@ private
 
   def fetch_signing_key
     key, _, _ = run_command_capture_output(
-      'gcloud', 'secrets', 'versions', 'access', 'latest',
-      '--secret', 'gpg-private-key',
+      'az', 'keyvault', 'secret', 'show',
+      '-o', 'tsv',
+      '--query', 'value',
+      '--vault-name', 'fsruby2infraowners',
+      '--name', 'server-edition-gpg-private-key',
       log_invocation: true,
       check_error: true
     )
@@ -105,43 +105,6 @@ private
       'no-store'
     else
       'public'
-    end
-  end
-
-
-  def gcloud_identity_token
-    stdout_output, _, _ = run_command_capture_output(
-      'gcloud', 'auth', 'print-identity-token',
-      log_invocation: false,
-      check_error: true
-    )
-    stdout_output.strip
-  end
-
-  def restart_web_servers
-    log_notice 'Restarting web servers'
-
-    success = false
-
-    log_info "POSTing to #{RELOAD_WEB_SERVER_API_URL}"
-    run_command_stream_output(
-      'curl', '-fsSLN',
-      '-D', '-',
-      '-X', 'POST',
-      '-H', "Authorization: Bearer #{gcloud_identity_token}",
-      RELOAD_WEB_SERVER_API_URL,
-      log_invocation: false,
-      check_error: true
-    ) do |output|
-      while !output.eof?
-        line = output.readline.chomp
-        log_info(line)
-        success = true if line == "event: success"
-      end
-    end
-
-    if !success
-      abort('ERROR: failed to restart web server')
     end
   end
 end

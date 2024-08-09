@@ -24,6 +24,7 @@ class CiCdYamlGenerationApp
     remove_yaml_files('ci-cd-build-packages*')
 
     generate_yaml_file_from_template(template_name: 'ci-cd-main')
+    generate_yaml_file_from_template(template_name: 'ci-cd-prepare')
     distribution_buckets.each_with_index do |distributions, i|
       generate_yaml_file_from_template(
         template_name: 'ci-cd-build-packages',

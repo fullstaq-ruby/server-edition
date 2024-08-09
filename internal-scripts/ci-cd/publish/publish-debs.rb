@@ -78,7 +78,6 @@ class PublishDebs
 
         print_header 'Activating changes'
         declare_latest_version(version + 1)
-        restart_web_servers if !testing?
       end
     end
 

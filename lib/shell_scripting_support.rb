@@ -96,17 +96,6 @@ private
     [stdout_output, stderr_output, status]
   end
 
-  def run_command_stream_output(*command, log_invocation:, check_error:)
-    log_info "Running: #{Shellwords.shelljoin(command)}" if log_invocation
-    Open3.popen2e(*command) do |stdin, output, wait_thr|
-      stdin.close
-      yield output
-      status = wait_thr.value
-      abort('ERROR: command failed') if check_error && !status.success?
-      status
-    end
-  end
-
 
   class HardLinkError < StandardError
     attr_reader :source_path, :target_path, :cause

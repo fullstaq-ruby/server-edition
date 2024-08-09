@@ -1,0 +1,774 @@
+<%= editing_warning_comment('ci-cd-prepare') %>
+
+name: 'CI/CD: prepare'
+
+on:
+  workflow_call:
+    inputs:
+      ci_artifacts_run_number:
+        type: string
+        required: false
+      necessary_jobs:
+        required: true
+        type: string
+
+env:
+  CI_ARTIFACTS_RUN_NUMBER: ${{ inputs.ci_artifacts_run_number }}
+
+jobs:
+  check_version_numbers_need_bumping:
+    name: Check whether any version numbers need to be changed
+    needs:
+      - download_rbenv_source
+    # Run even if a dependent job has been skipped
+    if: '!failure() && !cancelled()'
+    runs-on: ubuntu-24.04
+    environment: test
+    permissions:
+      id-token: write
+    steps:
+      - name: Check whether dependent jobs did not fail
+        run: 'false'
+        if: |
+          needs.download_rbenv_source.result == 'skipped'
+          && contains(inputs.necessary_jobs, ';Download Rbenv source;')
+
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: google-github-actions/auth@v2
+        with:
+          project_id: ${{ vars.GCLOUD_PROJECT_ID }}
+          workload_identity_provider: projects/${{ vars.GCLOUD_PROJECT_NUM }}/locations/global/workloadIdentityPools/github-ci-test/providers/github-ci-test
+      - name: Set up Cloud SDK
+        uses: google-github-actions/setup-gcloud@v2
+        with:
+          version: '>= 363.0.0'
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '3.3'
+      - name: Fetch Rbenv source
+        run: ./internal-scripts/ci-cd/download-artifact.sh
+        env:
+          ARTIFACT_NAME: <%= rbenv_source_artifact_name %>
+          ARTIFACT_PATH: .
+          CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
+
+      - name: Extract Rbenv source
+        run: ./internal-scripts/ci-cd/check-version-numbers-need-changing/extract-rbenv-source.sh
+      - name: Determine latest release tag
+        # Sets environment variable $LATEST_RELEASE_TAG
+        run: ./internal-scripts/ci-cd/check-version-numbers-need-changing/determine-latest-release-tag.sh
+
+      - name: Check whether the Rbenv version in config.yml is correct
+        run: ./internal-scripts/ci-cd/check-version-numbers-need-changing/check-rbenv-version.sh
+        if: '!cancelled()'
+      - name: Check whether the Rbenv package revision needs to be changed
+        run: ./internal-scripts/ci-cd/check-version-numbers-need-changing/check-rbenv-package-revision.sh
+        if: '!cancelled()'
+
+      - name: Check whether the fullstaq-ruby-common Debian package version or revision needs to be changed
+        run: ./internal-scripts/ci-cd/check-version-numbers-need-changing/check-common-deb-version-revision.sh
+        if: '!cancelled()'
+      - name: Check whether the fullstaq-ruby-common RPM package version or revision needs to be changed
+        run: ./internal-scripts/ci-cd/check-version-numbers-need-changing/check-common-rpm-version-revision.sh
+        if: '!cancelled()'
+
+      - name: Check whether any Ruby package revisions need to be changed
+        run: ./internal-scripts/ci-cd/check-version-numbers-need-changing/check-ruby-package-revisions.sh
+        if: '!cancelled()'
+
+      - name: Check whether any minor Ruby package revisions need to be changed
+        run: ./internal-scripts/ci-cd/check-version-numbers-need-changing/check-minor-ruby-package-revisions.sh
+        if: '!cancelled()'
+
+
+  bundle_install:
+    name: Install gem bundle
+    runs-on: ubuntu-24.04
+    permissions:
+      id-token: write
+    environment: test
+    if: contains(inputs.necessary_jobs, ';Install gem bundle;')
+    steps:
+      - uses: actions/checkout@v4
+      - uses: google-github-actions/auth@v2
+        with:
+          project_id: ${{ vars.GCLOUD_PROJECT_ID }}
+          workload_identity_provider: projects/${{ vars.GCLOUD_PROJECT_NUM }}/locations/global/workloadIdentityPools/github-ci-test/providers/github-ci-test
+      - name: Set up Cloud SDK
+        uses: google-github-actions/setup-gcloud@v2
+        with:
+          version: '>= 363.0.0'
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '3.3'
+          bundler-cache: true
+        env:
+          BUNDLE_CLEAN: true
+          BUNDLE_JOBS: 4
+
+      - name: Archive artifact
+        run: ./internal-scripts/ci-cd/upload-artifact.sh
+        env:
+          ARTIFACT_NAME: gem-bundle
+          ARTIFACT_PATH: vendor/bundle
+          CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
+
+
+  ### Docker images ###
+
+  <%- docker_images.each do |image| %>
+  <%- unindent(2) do -%>
+    build_docker_image_<%= slug(image[:id]) %>:
+      name: 'Build Docker image [<%= image[:id] %>]'
+      runs-on: ubuntu-24.04
+      permissions:
+        id-token: write
+      environment: test
+      if: contains(inputs.necessary_jobs, ';Build Docker image <%= image[:id] %>;')
+      steps:
+        - uses: actions/checkout@v4
+        - uses: azure/login@v2
+          with:
+            tenant-id: ${{ vars.AZURE_TENANT_ID }}
+            client-id: ${{ vars.AZURE_CLIENT_ID }}
+            subscription-id: ${{ vars.AZURE_SUBSCRIPTION_ID }}
+        - uses: google-github-actions/auth@v2
+          with:
+            project_id: ${{ vars.GCLOUD_PROJECT_ID }}
+            workload_identity_provider: projects/${{ vars.GCLOUD_PROJECT_NUM }}/locations/global/workloadIdentityPools/github-ci-test/providers/github-ci-test
+        - name: Set up Cloud SDK
+          uses: google-github-actions/setup-gcloud@v2
+          with:
+            version: '>= 363.0.0'
+
+        - name: Build
+          run: ./internal-scripts/ci-cd/build-docker-images/build.sh
+          env:
+            IMAGE_NAME: '<%= image[:name] %>'
+            IMAGE_TAG: '<%= image[:tag] %>'
+            SOURCE_DIR: 'environments/<%= image[:id] %>'
+
+        - name: Dump image
+          run: ./internal-scripts/ci-cd/build-docker-images/dump-image.sh
+          env:
+            IMAGE_NAME: '<%= image[:name] %>'
+            IMAGE_TAG: '<%= image[:tag] %>'
+        - name: Archive artifact
+          run: ./internal-scripts/ci-cd/upload-artifact.sh
+          env:
+            ARTIFACT_NAME: '<%= docker_image_artifact_name(image[:id]) %>'
+            ARTIFACT_PATH: output
+            CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
+  <%- end %>
+  <%- end %>
+
+
+  ### Sources ###
+
+  <%- ruby_source_versions.each do |ruby_version| %>
+  <%- unindent(2) do -%>
+    download_ruby_source_<%= slug(ruby_version) %>:
+      name: Download Ruby source [<%= ruby_version %>]
+      runs-on: ubuntu-24.04
+      permissions:
+        id-token: write
+      environment: test
+      if: contains(inputs.necessary_jobs, ';Download Ruby source <%= ruby_version %>;')
+      steps:
+        - uses: actions/checkout@v4
+        - uses: azure/login@v2
+          with:
+            tenant-id: ${{ vars.AZURE_TENANT_ID }}
+            client-id: ${{ vars.AZURE_CLIENT_ID }}
+            subscription-id: ${{ vars.AZURE_SUBSCRIPTION_ID }}
+        - uses: google-github-actions/auth@v2
+          with:
+            project_id: ${{ vars.GCLOUD_PROJECT_ID }}
+            workload_identity_provider: projects/${{ vars.GCLOUD_PROJECT_NUM }}/locations/global/workloadIdentityPools/github-ci-test/providers/github-ci-test
+        - name: Set up Cloud SDK
+          uses: google-github-actions/setup-gcloud@v2
+          with:
+            version: '>= 363.0.0'
+
+        - name: Download
+          run: ./internal-scripts/ci-cd/download-ruby-sources/download.sh
+          env:
+            RUBY_VERSION: <%= ruby_version %>
+
+        - name: Archive artifact
+          run: ./internal-scripts/ci-cd/upload-artifact.sh
+          env:
+            ARTIFACT_NAME: <%= ruby_source_artifact_name(ruby_version) %>
+            ARTIFACT_PATH: output
+            CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
+  <%- end -%>
+  <%- end %>
+
+
+  download_rbenv_source:
+    name: Download Rbenv source
+    runs-on: ubuntu-24.04
+    permissions:
+      id-token: write
+    environment: test
+    if: contains(inputs.necessary_jobs, ';Download Rbenv source;')
+    steps:
+      - uses: actions/checkout@v4
+      - uses: azure/login@v2
+        with:
+          tenant-id: ${{ vars.AZURE_TENANT_ID }}
+          client-id: ${{ vars.AZURE_CLIENT_ID }}
+          subscription-id: ${{ vars.AZURE_SUBSCRIPTION_ID }}
+      - uses: google-github-actions/auth@v2
+        with:
+          project_id: ${{ vars.GCLOUD_PROJECT_ID }}
+          workload_identity_provider: projects/${{ vars.GCLOUD_PROJECT_NUM }}/locations/global/workloadIdentityPools/github-ci-test/providers/github-ci-test
+      - name: Set up Cloud SDK
+        uses: google-github-actions/setup-gcloud@v2
+        with:
+          version: '>= 363.0.0'
+      - name: Prepare
+        id: prepare
+        run: ./internal-scripts/ci-cd/download-rbenv-source/prepare.sh
+
+      - name: Download
+        run: ./internal-scripts/ci-cd/download-rbenv-source/download.sh
+        env:
+          RBENV_REPO_URL: ${{ steps.prepare.outputs.repo_url }}
+          RBENV_REPO_REF: ${{ steps.prepare.outputs.ref }}
+
+      - name: Archive artifact
+        run: ./internal-scripts/ci-cd/upload-artifact.sh
+        env:
+          ARTIFACT_NAME: <%= rbenv_source_artifact_name %>
+          ARTIFACT_PATH: output
+          CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
+
+
+  ### fullstaq-ruby-common ###
+
+  build_common_deb:
+    name: Build common DEB
+    runs-on: ubuntu-24.04
+    permissions:
+      id-token: write
+      packages: read
+    needs:
+      - build_docker_image_utility
+    environment: test
+    # Run even if a dependent job has been skipped
+    if: |
+      contains(inputs.necessary_jobs, ';Build common DEB;')
+      && !failure() && !cancelled()
+    steps:
+      - name: Check whether dependent jobs did not fail
+        run: 'false'
+        if: |
+          needs.build_docker_image_utility.result == 'skipped'
+          && contains(inputs.necessary_jobs.outputs.necessary_jobs, ';Build Docker image utility;')
+
+      - uses: actions/checkout@v4
+      - uses: azure/login@v2
+        with:
+          tenant-id: ${{ vars.AZURE_TENANT_ID }}
+          client-id: ${{ vars.AZURE_CLIENT_ID }}
+          subscription-id: ${{ vars.AZURE_SUBSCRIPTION_ID }}
+      - uses: google-github-actions/auth@v2
+        with:
+          project_id: ${{ vars.GCLOUD_PROJECT_ID }}
+          workload_identity_provider: projects/${{ vars.GCLOUD_PROJECT_NUM }}/locations/global/workloadIdentityPools/github-ci-test/providers/github-ci-test
+      - name: Set up Cloud SDK
+        uses: google-github-actions/setup-gcloud@v2
+        with:
+          version: '>= 363.0.0'
+      - name: Login to Github Container Registry
+        run: docker login ghcr.io -u ${{ github.actor }} --password-stdin <<<"$GITHUB_TOKEN"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Download utility Docker image
+        run: ./internal-scripts/ci-cd/download-artifact.sh
+        if: contains(inputs.necessary_jobs, ';Use locally-built Docker image utility;')
+        env:
+          ARTIFACT_NAME: <%= docker_image_artifact_name('utility') %>
+          ARTIFACT_PATH: .
+          CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
+      - name: Load utility Docker image
+        run: ./internal-scripts/ci-cd/load-docker-image.sh
+        if: contains(inputs.necessary_jobs, ';Use locally-built Docker image utility;')
+        env:
+          TARBALL: image.tar.zst
+
+      - name: Build package
+        run: ./internal-scripts/ci-cd/build-common-deb/build-package.sh
+        env:
+          PACKAGE_BASENAME: "<%= common_package_basename(:DEB) %>"
+          VERSION: "<%= common_deb_version %>"
+          REVISION: "<%= common_deb_package_revision %>"
+
+      - name: Archive artifact
+        run: ./internal-scripts/ci-cd/upload-artifact.sh
+        env:
+          ARTIFACT_NAME: <%= common_deb_artifact_name %>
+          ARTIFACT_PATH: output
+          CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
+
+
+  build_common_rpm:
+    name: Build common RPM
+    runs-on: ubuntu-24.04
+    permissions:
+      id-token: write
+      packages: read
+    needs:
+      - build_docker_image_utility
+    environment: test
+    # Run even if a dependent job has been skipped
+    if: |
+      contains(inputs.necessary_jobs, ';Build common RPM;')
+      && !failure() && !cancelled()
+    steps:
+      - name: Check whether dependent jobs did not fail
+        run: 'false'
+        if: |
+          needs.build_docker_image_utility.result == 'skipped'
+          && contains(inputs.necessary_jobs, ';Build Docker image utility;')
+
+      - uses: actions/checkout@v4
+      - uses: azure/login@v2
+        with:
+          tenant-id: ${{ vars.AZURE_TENANT_ID }}
+          client-id: ${{ vars.AZURE_CLIENT_ID }}
+          subscription-id: ${{ vars.AZURE_SUBSCRIPTION_ID }}
+      - uses: google-github-actions/auth@v2
+        with:
+          project_id: ${{ vars.GCLOUD_PROJECT_ID }}
+          workload_identity_provider: projects/${{ vars.GCLOUD_PROJECT_NUM }}/locations/global/workloadIdentityPools/github-ci-test/providers/github-ci-test
+      - name: Set up Cloud SDK
+        uses: google-github-actions/setup-gcloud@v2
+        with:
+          version: '>= 363.0.0'
+      - name: Login to Github Container Registry
+        run: docker login ghcr.io -u ${{ github.actor }} --password-stdin <<<"$GITHUB_TOKEN"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Download utility Docker image
+        run: ./internal-scripts/ci-cd/download-artifact.sh
+        if: contains(inputs.necessary_jobs, ';Use locally-built Docker image utility;')
+        env:
+          ARTIFACT_NAME: <%= docker_image_artifact_name('utility') %>
+          ARTIFACT_PATH: .
+          CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
+      - name: Load utility Docker image
+        run: ./internal-scripts/ci-cd/load-docker-image.sh
+        if: contains(inputs.necessary_jobs, ';Use locally-built Docker image utility;')
+        env:
+          TARBALL: image.tar.zst
+
+      - name: Build package
+        run: ./internal-scripts/ci-cd/build-common-rpm/build-package.sh
+        env:
+          PACKAGE_BASENAME: "<%= common_package_basename(:RPM) %>"
+          VERSION: "<%= common_rpm_version %>"
+          REVISION: "<%= common_rpm_package_revision %>"
+
+      - name: Archive artifact
+        run: ./internal-scripts/ci-cd/upload-artifact.sh
+        env:
+          ARTIFACT_NAME: <%= common_rpm_artifact_name %>
+          ARTIFACT_PATH: output
+          CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
+
+
+  ### Rbenv ###
+
+  build_rbenv_deb:
+    name: Build Rbenv DEB
+    runs-on: ubuntu-24.04
+    permissions:
+      id-token: write
+      packages: read
+    needs:
+      - download_rbenv_source
+      - build_docker_image_utility
+    environment: test
+    # Run even if a dependent job has been skipped
+    if: |
+      contains(inputs.necessary_jobs, ';Build Rbenv DEB;')
+      && !failure() && !cancelled()
+    steps:
+      - name: Check whether dependent jobs did not fail
+        run: 'false'
+        if: |
+          (
+            needs.download_rbenv_source.result == 'skipped'
+            && contains(inputs.necessary_jobs, ';Download Rbenv source;')
+          ) || (
+            needs.build_docker_image_utility.result == 'skipped'
+            && contains(inputs.necessary_jobs, ';Build Docker image utility;')
+          )
+
+      - uses: actions/checkout@v4
+      - uses: azure/login@v2
+        with:
+          tenant-id: ${{ vars.AZURE_TENANT_ID }}
+          client-id: ${{ vars.AZURE_CLIENT_ID }}
+          subscription-id: ${{ vars.AZURE_SUBSCRIPTION_ID }}
+      - uses: google-github-actions/auth@v2
+        with:
+          project_id: ${{ vars.GCLOUD_PROJECT_ID }}
+          workload_identity_provider: projects/${{ vars.GCLOUD_PROJECT_NUM }}/locations/global/workloadIdentityPools/github-ci-test/providers/github-ci-test
+      - name: Set up Cloud SDK
+        uses: google-github-actions/setup-gcloud@v2
+        with:
+          version: '>= 363.0.0'
+      - name: Login to Github Container Registry
+        run: docker login ghcr.io -u ${{ github.actor }} --password-stdin <<<"$GITHUB_TOKEN"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Fetch Rbenv source
+        run: ./internal-scripts/ci-cd/download-artifact.sh
+        env:
+          ARTIFACT_NAME: <%= rbenv_source_artifact_name %>
+          ARTIFACT_PATH: .
+          CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
+
+      - name: Download utility Docker image
+        run: ./internal-scripts/ci-cd/download-artifact.sh
+        if: contains(inputs.necessary_jobs, ';Use locally-built Docker image utility;')
+        env:
+          ARTIFACT_NAME: <%= docker_image_artifact_name('utility') %>
+          ARTIFACT_PATH: .
+          CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
+      - name: Load utility Docker image
+        run: ./internal-scripts/ci-cd/load-docker-image.sh
+        if: contains(inputs.necessary_jobs, ';Use locally-built Docker image utility;')
+        env:
+          TARBALL: image.tar.zst
+
+      - name: Build package
+        run: ./internal-scripts/ci-cd/build-rbenv-deb/build-package.sh
+        env:
+          PACKAGE_BASENAME: "<%= rbenv_package_basename(:DEB) %>"
+          VERSION: "<%= rbenv_version %>"
+          REVISION: "<%= rbenv_package_revision %>"
+
+      - name: Archive artifact
+        run: ./internal-scripts/ci-cd/upload-artifact.sh
+        env:
+          ARTIFACT_NAME: <%= rbenv_deb_artifact_name %>
+          ARTIFACT_PATH: output
+          CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
+
+
+  build_rbenv_rpm:
+    name: Build Rbenv RPM
+    runs-on: ubuntu-24.04
+    permissions:
+      id-token: write
+      packages: read
+    needs:
+      - download_rbenv_source
+      - build_docker_image_utility
+    environment: test
+    # Run even if a dependent job has been skipped
+    if: |
+      contains(inputs.necessary_jobs, ';Build Rbenv RPM;')
+      && !failure() && !cancelled()
+    steps:
+      - name: Check whether dependent jobs did not fail
+        run: 'false'
+        if: |
+          (
+            needs.download_rbenv_source.result == 'skipped'
+            && contains(inputs.necessary_jobs, ';Download Rbenv source;')
+          ) || (
+            needs.build_docker_image_utility.result == 'skipped'
+            && contains(inputs.necessary_jobs, ';Build Docker image utility;')
+          )
+
+      - uses: actions/checkout@v4
+      - uses: azure/login@v2
+        with:
+          tenant-id: ${{ vars.AZURE_TENANT_ID }}
+          client-id: ${{ vars.AZURE_CLIENT_ID }}
+          subscription-id: ${{ vars.AZURE_SUBSCRIPTION_ID }}
+      - uses: google-github-actions/auth@v2
+        with:
+          project_id: ${{ vars.GCLOUD_PROJECT_ID }}
+          workload_identity_provider: projects/${{ vars.GCLOUD_PROJECT_NUM }}/locations/global/workloadIdentityPools/github-ci-test/providers/github-ci-test
+      - name: Set up Cloud SDK
+        uses: google-github-actions/setup-gcloud@v2
+        with:
+          version: '>= 363.0.0'
+      - name: Login to Github Container Registry
+        run: docker login ghcr.io -u ${{ github.actor }} --password-stdin <<<"$GITHUB_TOKEN"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Fetch Rbenv source
+        run: ./internal-scripts/ci-cd/download-artifact.sh
+        env:
+          ARTIFACT_NAME: <%= rbenv_source_artifact_name %>
+          ARTIFACT_PATH: .
+          CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
+
+      - name: Download utility Docker image
+        run: ./internal-scripts/ci-cd/download-artifact.sh
+        if: contains(inputs.necessary_jobs, ';Use locally-built Docker image utility;')
+        env:
+          ARTIFACT_NAME: <%= docker_image_artifact_name('utility') %>
+          ARTIFACT_PATH: .
+          CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
+      - name: Load utility Docker image
+        run: ./internal-scripts/ci-cd/load-docker-image.sh
+        if: contains(inputs.necessary_jobs, ';Use locally-built Docker image utility;')
+        env:
+          TARBALL: image.tar.zst
+
+      - name: Build package
+        run: ./internal-scripts/ci-cd/build-rbenv-rpm/build-package.sh
+        env:
+          PACKAGE_BASENAME: "<%= rbenv_package_basename(:RPM) %>"
+          VERSION: "<%= rbenv_version %>"
+          REVISION: "<%= rbenv_package_revision %>"
+
+      - name: Archive artifact
+        run: ./internal-scripts/ci-cd/upload-artifact.sh
+        env:
+          ARTIFACT_NAME: <%= rbenv_rpm_artifact_name %>
+          ARTIFACT_PATH: output
+          CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
+
+
+  ### Finalize ###
+
+  finalize:
+    name: Finalize
+    permissions:
+      id-token: write
+    needs:
+      - check_version_numbers_need_bumping
+      - bundle_install
+      - download_rbenv_source
+      <%- docker_images.each do |image| -%>
+      - build_docker_image_<%= slug(image[:id]) %>
+      <%- end -%>
+      <%- ruby_source_versions.each do |ruby_version| -%>
+      - download_ruby_source_<%= slug(ruby_version) %>
+      <%- end -%>
+      - build_common_deb
+      - build_common_rpm
+      - build_rbenv_deb
+      - build_rbenv_rpm
+    runs-on: ubuntu-24.04
+    environment: test
+    if: 'always()'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: azure/login@v2
+        with:
+          tenant-id: ${{ vars.AZURE_TENANT_ID }}
+          client-id: ${{ vars.AZURE_CLIENT_ID }}
+          subscription-id: ${{ vars.AZURE_SUBSCRIPTION_ID }}
+      - uses: google-github-actions/auth@v2
+        with:
+          project_id: ${{ vars.GCLOUD_PROJECT_ID }}
+          workload_identity_provider: projects/${{ vars.GCLOUD_PROJECT_NUM }}/locations/global/workloadIdentityPools/github-ci-test/providers/github-ci-test
+      - name: Set up Cloud SDK
+        uses: google-github-actions/setup-gcloud@v2
+        with:
+          version: '>= 363.0.0'
+
+
+      ### Publish all artifacts in Google Cloud as Github Actions artifacts ###
+      # We publish these artifacts in a dedicated job instead
+      # of in each job individually, because the individual jobs
+      # could be skipped during a re-run.
+
+      - name: Download gem bundle artifact from Google Cloud
+        run: ./internal-scripts/ci-cd/download-artifact.sh
+        env:
+          ARTIFACT_NAME: gem-bundle
+          ARTIFACT_PATH: vendor/bundle
+          CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
+      - name: Tar up gem bundle artifact
+        # Because actions/upload-archive is very slow when operating on directories
+        # with many files
+        run: tar -C vendor -cf vendor/bundle.tar bundle
+      - name: Archive gem bundle artifact to Github
+        uses: actions/upload-artifact@v4
+        with:
+          name: gem-bundle
+          path: vendor/bundle.tar
+
+      - name: Download Rbenv source artifact from Google Cloud
+        run: ./internal-scripts/ci-cd/download-artifact.sh
+        env:
+          ARTIFACT_NAME: <%= rbenv_source_artifact_name %>
+          ARTIFACT_PATH: artifacts
+          CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
+      - name: Archive Rbenv source artifact to Github
+        uses: actions/upload-artifact@v4
+        with:
+          name: <%= rbenv_source_artifact_name %>
+          path: artifacts
+          compression-level: 0
+
+      <%- docker_images.each do |image| %>
+      <%- unindent(2) do -%>
+        - name: Download Docker image artifact [<%= image[:id] %>] from Google Cloud
+          run: ./internal-scripts/ci-cd/download-artifact.sh
+          if: contains(inputs.necessary_jobs, ';Build Docker image <%= image[:id] %>;')
+          env:
+            ARTIFACT_NAME: '<%= docker_image_artifact_name(image[:id]) %>'
+            ARTIFACT_PATH: artifacts
+            CLEAR: true
+            CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
+        - name: Archive Docker image artifact [<%= image[:id] %>] to Github
+          uses: actions/upload-artifact@v4
+          if: contains(inputs.necessary_jobs, ';Build Docker image <%= image[:id] %>;')
+          with:
+            name: '<%= docker_image_artifact_name(image[:id]) %>'
+            path: artifacts
+      <%- end -%>
+      <%- end %>
+
+      <%- ruby_source_versions.each do |ruby_version| %>
+      <%- unindent(2) do -%>
+        - name: Download Ruby source artifact [<%= ruby_version %>] from Google Cloud
+          run: ./internal-scripts/ci-cd/download-artifact.sh
+          env:
+            ARTIFACT_NAME: <%= ruby_source_artifact_name(ruby_version) %>
+            ARTIFACT_PATH: artifacts
+            CLEAR: true
+            CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
+        - name: Archive Ruby source artifact [<%= ruby_version %>] to Github
+          uses: actions/upload-artifact@v4
+          with:
+            name: <%= ruby_source_artifact_name(ruby_version) %>
+            path: artifacts
+            compression-level: 0
+      <%- end -%>
+      <%- end %>
+
+      - name: Download common DEB artifact from Google Cloud
+        run: ./internal-scripts/ci-cd/download-artifact.sh
+        env:
+          ARTIFACT_NAME: <%= common_deb_artifact_name %>
+          ARTIFACT_PATH: artifacts
+          CLEAR: true
+          CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
+      - name: Archive common DEB artifact to Github
+        uses: actions/upload-artifact@v4
+        with:
+          name: <%= common_deb_artifact_name %>
+          path: artifacts
+          compression-level: 0
+
+      - name: Download common RPM artifact from Google Cloud
+        run: ./internal-scripts/ci-cd/download-artifact.sh
+        env:
+          ARTIFACT_NAME: <%= common_rpm_artifact_name %>
+          ARTIFACT_PATH: artifacts
+          CLEAR: true
+          CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
+      - name: Archive common RPM artifact to Github
+        uses: actions/upload-artifact@v4
+        with:
+          name: <%= common_rpm_artifact_name %>
+          path: artifacts
+          compression-level: 0
+
+      - name: Download Rbenv DEB artifact from Google Cloud
+        run: ./internal-scripts/ci-cd/download-artifact.sh
+        env:
+          ARTIFACT_NAME: <%= rbenv_deb_artifact_name %>
+          ARTIFACT_PATH: artifacts
+          CLEAR: true
+          CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
+      - name: Archive Rbenv DEB artifact to Github
+        uses: actions/upload-artifact@v4
+        with:
+          name: <%= rbenv_deb_artifact_name %>
+          path: artifacts
+          compression-level: 0
+
+      - name: Download Rbenv RPM artifact from Google Cloud
+        run: ./internal-scripts/ci-cd/download-artifact.sh
+        env:
+          ARTIFACT_NAME: <%= rbenv_rpm_artifact_name %>
+          ARTIFACT_PATH: artifacts
+          CLEAR: true
+          CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
+      - name: Archive Rbenv RPM artifact to Github
+        uses: actions/upload-artifact@v4
+        with:
+          name: <%= rbenv_rpm_artifact_name %>
+          path: artifacts
+          compression-level: 0
+
+
+      ### Check whether dependent jobs failed ###
+
+      - name: Check whether 'Check whether any version numbers need to be changed' succeeded
+        run: 'false'
+        if: needs.check_version_numbers_need_bumping.result != 'success'
+      - name: Check whether 'Install gem bundle' did not fail
+        run: 'false'
+        if: |
+          needs.bundle_install.result != 'success'
+          && (needs.bundle_install.result != 'skipped'
+            || contains(inputs.necessary_jobs, ';Install gem bundle;'))
+      - name: Check whether 'Download Rbenv source' did not fail
+        run: 'false'
+        if: |
+          needs.download_rbenv_source.result != 'success'
+          && (needs.download_rbenv_source.result != 'skipped'
+            || contains(inputs.necessary_jobs, ';Download Rbenv source;'))
+      - name: Check whether 'Build Docker image' did not fail
+        run: 'false'
+        if: |
+          false
+          <%- docker_images.each do |image| -%>
+            || (needs.build_docker_image_<%= slug(image[:id]) %>.result != 'success'
+              && (needs.build_docker_image_<%= slug(image[:id]) %>.result != 'skipped'
+                || contains(inputs.necessary_jobs, ';Build Docker image <%= image[:id] %>;')))
+          <%- end -%>
+      - name: Check whether 'Download Ruby source' did not fail
+        run: 'false'
+        if: |
+          false
+          <%- ruby_source_versions.each do |ruby_version| -%>
+            || (needs.download_ruby_source_<%= slug(ruby_version) %>.result != 'success'
+              && (needs.download_ruby_source_<%= slug(ruby_version) %>.result != 'skipped'
+                || contains(inputs.necessary_jobs, ';Download Ruby source <%= ruby_version %>;')))
+          <%- end -%>
+      - name: Check whether 'Build common DEB' did not fail
+        run: 'false'
+        if: |
+          needs.build_common_deb.result != 'success'
+          && (needs.build_common_deb.result != 'skipped'
+            || contains(inputs.necessary_jobs, ';Build common DEB;'))
+      - name: Check whether 'Build common RPM' did not fail
+        run: 'false'
+        if: |
+          needs.build_common_rpm.result != 'success'
+          && (needs.build_common_rpm.result != 'skipped'
+            || contains(inputs.necessary_jobs, ';Build common RPM;'))
+      - name: Check whether 'Build Rbenv DEB' did not fail
+        run: 'false'
+        if: |
+          needs.build_rbenv_deb.result != 'success'
+          && (needs.build_rbenv_deb.result != 'skipped'
+            || contains(inputs.necessary_jobs, ';Build Rbenv DEB;'))
+      - name: Check whether 'Build Rbenv RPM' did not fail
+        run: 'false'
+        if: |
+          needs.build_rbenv_rpm.result != 'success'
+          && (needs.build_rbenv_rpm.result != 'skipped'
+            || contains(inputs.necessary_jobs, ';Build Rbenv RPM;'))

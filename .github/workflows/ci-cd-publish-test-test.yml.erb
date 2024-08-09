@@ -3,94 +3,48 @@
 name: 'CI/CD: publish & test against test repos'
 
 on:
-  workflow_dispatch:
+  workflow_call:
     inputs:
       ci_artifacts_run_number:
-        required: false
-      check_id:
-        required: false
+        required: true
+        type: string
+      necessary_jobs:
+        required: true
+        type: string
 
 env:
-  GCLOUD_PROJECT: fullstaq-ruby
-  CI_ARTIFACTS_BUCKET: fullstaq-ruby-server-edition-ci-artifacts
-  CI_ARTIFACTS_RUN_NUMBER: ${{ github.event.inputs.ci_artifacts_run_number || github.run_number }}
+  CI_ARTIFACTS_RUN_NUMBER: ${{ inputs.ci_artifacts_run_number || github.run_number }}
 
 jobs:
-  # Determines which jobs should be run, or (in case this is a re-run)
-  # which jobs can be skipped this time because the last run succeeded.
-  # We determine this by checking whether the artifacts produced by jobs
-  # exist in this run.
-  determine_necessary_jobs:
-    name: Determine necessary jobs
-    runs-on: ubuntu-22.04
-    permissions:
-      checks: write
-      packages: read
-    outputs:
-      necessary_jobs: ${{ steps.check.outputs.necessary_jobs }}
-    steps:
-      - name: Dump inputs
-        run: echo "$INPUTS"
-        env:
-          INPUTS: ${{ toJSON(github.event.inputs) }}
-
-      - name: Mark check as 'in progress'
-        uses: LouisBrunner/checks-action@3d24d4813a797720cc4e2080a50bdafb3373aef1
-        if: github.event.inputs.check_id
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          check_id: ${{ github.event.inputs.check_id }}
-          status: in_progress
-          details_url: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
-          output: |
-            {
-              "summary": "Packages are tested in another workflow.\n[**➜ See workflow run #${{ github.run_id }} for logs**](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})"
-            }
-
-      - uses: actions/checkout@v3
-      - name: Login to Google Cloud
-        uses: ./.github/actions/gcloud-login
-        with:
-          private_key: ${{ secrets.GCLOUD_KEY }}
-
-      - name: List artifacts built in previous try of same CI run
-        run: ./internal-scripts/ci-cd/determine-necessary-jobs/list-artifacts.sh
-
-      - name: Determine necessary jobs
-        id: check
-        run: ./internal-scripts/ci-cd/determine-necessary-jobs/determine-necessary-jobs.rb
-        env:
-          GITHUB_ACTOR: ${{ github.actor }}
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-
   ### Publish ###
 
   publish:
     name: Publish packages
-    # Ubuntu 24.04 runner has more free disk space than 22.04
     runs-on: ubuntu-24.04
+    environment: test
     timeout-minutes: 30
     permissions:
+      id-token: write
       packages: read
-    needs:
-      - determine_necessary_jobs
     steps:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
       - name: Clean disk space
         run: ./internal-scripts/ci-cd/publish/clean-disk-space.sh
-      - name: 'Set up Cloud SDK'
-        uses: 'google-github-actions/setup-gcloud@v2'
+      - uses: azure/login@v2
+        with:
+          tenant-id: ${{ vars.AZURE_TENANT_ID }}
+          client-id: ${{ vars.AZURE_CLIENT_ID }}
+          subscription-id: ${{ vars.AZURE_SUBSCRIPTION_ID }}
+      - uses: google-github-actions/auth@v2
+        with:
+          project_id: ${{ vars.GCLOUD_PROJECT_ID }}
+          workload_identity_provider: projects/${{ vars.GCLOUD_PROJECT_NUM }}/locations/global/workloadIdentityPools/github-ci-test/providers/github-ci-test
+      - name: Set up Cloud SDK
+        uses: google-github-actions/setup-gcloud@v2
         with:
           version: '>= 363.0.0'
-      - name: Login to Google Cloud
-        uses: ./.github/actions/gcloud-login
-        with:
-          private_key: ${{ secrets.GCLOUD_KEY }}
-      - name: Set Google Cloud project
-        run: gcloud config set core/project ${{ env.GCLOUD_PROJECT }}
       - name: Login to Github Container Registry
         run: docker login ghcr.io -u ${{ github.actor }} --password-stdin <<<"$GITHUB_TOKEN"
         env:
@@ -106,16 +60,18 @@ jobs:
             <%= rbenv_rpm_artifact_name %>
             <%= ruby_package_artifact_names.join(' ') %>
           ARTIFACT_PATH: pkgs
+          CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
 
       - name: Download Docker image necessary for publishing
         run: ./internal-scripts/ci-cd/download-artifact.sh
-        if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Use locally-built Docker image utility;')
+        if: contains(inputs.necessary_jobs, ';Use locally-built Docker image utility;')
         env:
           ARTIFACT_NAME: <%= docker_image_artifact_name('utility') %>
           ARTIFACT_PATH: .
+          CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
       - name: Load Docker image necessary for publishing
         run: ./internal-scripts/ci-cd/load-docker-image.sh
-        if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Use locally-built Docker image utility;')
+        if: contains(inputs.necessary_jobs, ';Use locally-built Docker image utility;')
         env:
           TARBALL: image.tar.zst
       - name: Install Aptly
@@ -128,8 +84,8 @@ jobs:
       - name: Upload DEBs to repo
         run: ./internal-scripts/ci-cd/publish/publish-debs.rb pkgs/*/*.deb
         env:
-          PRODUCTION_REPO_BUCKET_NAME: fullstaq-ruby-server-edition-apt-repo
-          CI_ARTIFACTS_BUCKET_NAME: ${{ env.CI_ARTIFACTS_BUCKET }}
+          PRODUCTION_REPO_BUCKET_NAME: fsruby-server-edition-apt-repo
+          CI_ARTIFACTS_BUCKET_NAME: ${{ vars.CI_ARTIFACTS_BUCKET }}
           TESTING: true
           OVERWRITE_EXISTING: false
           CLEANUP: true
@@ -137,8 +93,8 @@ jobs:
       - name: Upload RPMs to repo
         run: ./internal-scripts/ci-cd/publish/publish-rpms.rb pkgs/*/*.rpm
         env:
-          PRODUCTION_REPO_BUCKET_NAME: fullstaq-ruby-server-edition-yum-repo
-          CI_ARTIFACTS_BUCKET_NAME: ${{ env.CI_ARTIFACTS_BUCKET }}
+          PRODUCTION_REPO_BUCKET_NAME: fsruby-server-edition-yum-repo
+          CI_ARTIFACTS_BUCKET_NAME: ${{ vars.CI_ARTIFACTS_BUCKET }}
           TESTING: true
           OVERWRITE_EXISTING: false
 
@@ -151,18 +107,24 @@ jobs:
   <%- unindent(2) do %>
     test_<%= slug(distribution[:name]) %>-<%= slug(ruby_package_version[:id]) %>-<%= slug(variant[:name]) %>:
       name: 'Test [<%= distribution[:name] %>/<%= ruby_package_version[:id] %>/<%= variant[:name] %>]'
-      runs-on: ubuntu-22.04
-      timeout-minutes: 30
       needs:
-        - determine_necessary_jobs
         - publish
-      if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against test repo [<%= distribution[:name] %>/<%= ruby_package_version[:id] %>/<%= variant[:name] %>];')
+      runs-on: ubuntu-24.04
+      environment: test
+      timeout-minutes: 30
+      if: contains(inputs.necessary_jobs, ';Test against test repo [<%= distribution[:name] %>/<%= ruby_package_version[:id] %>/<%= variant[:name] %>];')
+      permissions:
+        id-token: write
       steps:
-        - uses: actions/checkout@v3
-        - name: Login to Google Cloud
-          uses: ./.github/actions/gcloud-login
+        - uses: actions/checkout@v4
+        - uses: google-github-actions/auth@v2
           with:
-            private_key: ${{ secrets.GCLOUD_KEY }}
+            project_id: ${{ vars.GCLOUD_PROJECT_ID }}
+            workload_identity_provider: projects/${{ vars.GCLOUD_PROJECT_NUM }}/locations/global/workloadIdentityPools/github-ci-test/providers/github-ci-test
+        - name: Set up Cloud SDK
+          uses: google-github-actions/setup-gcloud@v2
+          with:
+            version: '>= 363.0.0'
 
         - name: Run tests
           run: ./internal-scripts/ci-cd/test-packages/run-tests.sh
@@ -173,8 +135,8 @@ jobs:
             VARIANT_NAME: "<%= variant[:name] %>"
             VARIANT_PACKAGE_SUFFIX: "<%= variant[:package_suffix] %>"
             TEST_IMAGE_NAME: "<%= distribution[:test_image] %>"
-            APT_REPO_URL: https://storage.googleapis.com/${{ env.CI_ARTIFACTS_BUCKET }}/${{ env.CI_ARTIFACTS_RUN_NUMBER }}/apt-repo/versions/singleton/public
-            YUM_REPO_URL: https://storage.googleapis.com/${{ env.CI_ARTIFACTS_BUCKET }}/${{ env.CI_ARTIFACTS_RUN_NUMBER }}/yum-repo/versions/singleton/public
+            APT_REPO_URL: https://storage.googleapis.com/${{ vars.CI_ARTIFACTS_BUCKET }}/${{ env.CI_ARTIFACTS_RUN_NUMBER }}/apt-repo/versions/singleton/public
+            YUM_REPO_URL: https://storage.googleapis.com/${{ vars.CI_ARTIFACTS_BUCKET }}/${{ env.CI_ARTIFACTS_RUN_NUMBER }}/yum-repo/versions/singleton/public
 
         - name: Create mark file
           run: mkdir mark-<%= variant[:name] %> && touch mark-<%= variant[:name] %>/done.txt
@@ -183,6 +145,7 @@ jobs:
           env:
             ARTIFACT_NAME: tested-against-test-<%= distribution[:name] %>_<%= ruby_package_version[:id] %>_<%= variant[:name] %>
             ARTIFACT_PATH: mark-<%= variant[:name] %>
+            CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
   <%- end %>
   <%- end -%>
   <%- end -%>
@@ -193,10 +156,10 @@ jobs:
 
   finalize:
     name: Finalize
+    environment: test
     permissions:
-      checks: write
+      id-token: write
     needs:
-      - determine_necessary_jobs
       - publish
       <%- distributions.each do |distribution| -%>
       <%- ruby_package_versions_for_distro(distribution).each do |ruby_package_version| -%>
@@ -205,18 +168,13 @@ jobs:
       <%- end -%>
       <%- end -%>
       <%- end -%>
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     if: 'always()'
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
 
       ### Check whether dependent jobs failed ###
-      # Only trigger next workflow if there are no failures.
-
-      - name: Check whether 'Determine necessary jobs' succeeded
-        run: 'false'
-        if: needs.determine_necessary_jobs.result != 'success'
 
       - name: Check whether 'Publish packages' succeeded
         run: 'false'
@@ -230,56 +188,7 @@ jobs:
         if: |
           needs.test_<%= slug(distribution[:name]) %>-<%= slug(ruby_package_version[:id]) %>-<%= slug(variant[:name]) %>.result != 'success'
           && (needs.test_<%= slug(distribution[:name]) %>-<%= slug(ruby_package_version[:id]) %>-<%= slug(variant[:name]) %>.result != 'skipped'
-            || contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Test against test repo [<%= distribution[:name] %>/<%= ruby_package_version[:id] %>/<%= variant[:name] %>];'))
+            || contains(inputs.necessary_jobs, ';Test against test repo [<%= distribution[:name] %>/<%= ruby_package_version[:id] %>/<%= variant[:name] %>];'))
       <%- end -%>
       <%- end -%>
       <%- end -%>
-
-
-      ### Trigger next workflow ###
-
-      - name: Create check for 'Publish & test against production repos'
-        uses: LouisBrunner/checks-action@3d24d4813a797720cc4e2080a50bdafb3373aef1
-        id: create_check
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          name: Publish & test against production repos
-          status: queued
-
-      - name: Trigger workflow for 'Publish & test against production repos'
-        uses: benc-uk/workflow-dispatch@4c044c1613fabbe5250deadc65452d54c4ad4fc7
-        with:
-          workflow: 'CI/CD: publish & test against production repos'
-          token: ${{ secrets.WORKFLOW_DISPATCH_TOKEN }}
-          inputs: |
-            {
-              "ci_artifacts_run_number": "${{ env.CI_ARTIFACTS_RUN_NUMBER }}",
-              "check_id": "${{ steps.create_check.outputs.check_id }}"
-            }
-
-
-      ### Update own check status ###
-
-      - name: Mark check as 'success'
-        uses: LouisBrunner/checks-action@3d24d4813a797720cc4e2080a50bdafb3373aef1
-        if: 'github.event.inputs.check_id && success()'
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          check_id: ${{ github.event.inputs.check_id }}
-          conclusion: success
-
-      - name: Mark check as 'failure'
-        uses: LouisBrunner/checks-action@3d24d4813a797720cc4e2080a50bdafb3373aef1
-        if: 'github.event.inputs.check_id && failure()'
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          check_id: ${{ github.event.inputs.check_id }}
-          conclusion: failure
-
-      - name: Mark check as 'cancelled'
-        uses: LouisBrunner/checks-action@3d24d4813a797720cc4e2080a50bdafb3373aef1
-        if: 'github.event.inputs.check_id && cancelled()'
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          check_id: ${{ github.event.inputs.check_id }}
-          conclusion: cancelled

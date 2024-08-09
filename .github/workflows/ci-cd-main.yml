@@ -17,13 +17,13 @@ on:
     inputs:
       ci_artifacts_run_number:
         required: false
+        description: Run number for CI artifacts
   push:
     paths-ignore:
       - '**.md'
       - 'dev-handbook/**'
 
 env:
-  CI_ARTIFACTS_BUCKET: fullstaq-ruby-server-edition-ci-artifacts
   ## Set the following variable to a specific number to make the
   ## Google Cloud artifact upload/download actions treat as
   ## if we're running the given CI run number. Useful for
@@ -38,11 +38,14 @@ jobs:
   # exist in this run.
   determine_necessary_jobs:
     name: Determine necessary jobs
-    runs-on: ubuntu-22.04
-    outputs:
-      necessary_jobs: ${{ steps.check.outputs.necessary_jobs }}
+    runs-on: ubuntu-24.04
+    environment: test
     permissions:
+      id-token: write
       packages: read
+    outputs:
+      ci_artifacts_run_number: ${{ steps.get_ci_artifacts_run_number.outputs.number }}
+      necessary_jobs: ${{ steps.check.outputs.necessary_jobs }}
     steps:
       - name: Workaround for detecting new workflows in branches
         run: |
@@ -50,14 +53,24 @@ jobs:
           exit 1
         if: github.event_name == 'push' && github.ref == 'refs/heads/fix/cicd-new-workflows'
 
-      - uses: actions/checkout@v3
-      - name: Login to Google Cloud
-        uses: ./.github/actions/gcloud-login
+      - uses: actions/checkout@v4
+      - uses: google-github-actions/auth@v2
         with:
-          private_key: ${{ secrets.GCLOUD_KEY }}
+          project_id: ${{ vars.GCLOUD_PROJECT_ID }}
+          workload_identity_provider: projects/${{ vars.GCLOUD_PROJECT_NUM }}/locations/global/workloadIdentityPools/github-ci-test/providers/github-ci-test
+      - name: Set up Cloud SDK
+        uses: google-github-actions/setup-gcloud@v2
+        with:
+          version: '>= 363.0.0'
+
+      - name: Take note of CI artifacts run number
+        id: get_ci_artifacts_run_number
+        run: echo "number=$CI_ARTIFACTS_RUN_NUMBER" >> "$GITHUB_OUTPUT"
 
       - name: List artifacts built in previous try of same CI run
         run: ./internal-scripts/ci-cd/determine-necessary-jobs/list-artifacts.sh
+        env:
+          CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
 
       - name: Determine necessary jobs
         id: check
@@ -69,1234 +82,139 @@ jobs:
 
   check_workflow_uptodate:
     name: Check whether workflow is up-to-date
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Check
         run: ./internal-scripts/ci-cd/check-workflow-uptodate/check.sh
 
 
-  check_version_numbers_need_bumping:
-    name: Check whether any version numbers need to be changed
-    needs:
-      - determine_necessary_jobs
-      - download_rbenv_source
-    runs-on: ubuntu-22.04
-    # Run even if a dependent job has been skipped
-    if: '!failure() && !cancelled()'
-    steps:
-      - name: Check whether dependent jobs did not fail
-        run: 'false'
-        if: |
-          needs.download_rbenv_source.result == 'skipped'
-          && contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Download Rbenv source;')
-
-      - uses: actions/checkout@v3
-        with:
-          fetch-depth: 0
-      - uses: ruby/setup-ruby@v1
-        with:
-          ruby-version: '3.2'
-      - name: Login to Google Cloud
-        uses: ./.github/actions/gcloud-login
-        with:
-          private_key: ${{ secrets.GCLOUD_KEY }}
-      - name: Fetch Rbenv source
-        run: ./internal-scripts/ci-cd/download-artifact.sh
-        env:
-          ARTIFACT_NAME: rbenv-src
-          ARTIFACT_PATH: .
-
-      - name: Extract Rbenv source
-        run: ./internal-scripts/ci-cd/check-version-numbers-need-changing/extract-rbenv-source.sh
-      - name: Determine latest release tag
-        # Sets environment variable $LATEST_RELEASE_TAG
-        run: ./internal-scripts/ci-cd/check-version-numbers-need-changing/determine-latest-release-tag.sh
-
-      - name: Check whether the Rbenv version in config.yml is correct
-        run: ./internal-scripts/ci-cd/check-version-numbers-need-changing/check-rbenv-version.sh
-        if: '!cancelled()'
-      - name: Check whether the Rbenv package revision needs to be changed
-        run: ./internal-scripts/ci-cd/check-version-numbers-need-changing/check-rbenv-package-revision.sh
-        if: '!cancelled()'
-
-      - name: Check whether the fullstaq-ruby-common Debian package version or revision needs to be changed
-        run: ./internal-scripts/ci-cd/check-version-numbers-need-changing/check-common-deb-version-revision.sh
-        if: '!cancelled()'
-      - name: Check whether the fullstaq-ruby-common RPM package version or revision needs to be changed
-        run: ./internal-scripts/ci-cd/check-version-numbers-need-changing/check-common-rpm-version-revision.sh
-        if: '!cancelled()'
-
-      - name: Check whether any Ruby package revisions need to be changed
-        run: ./internal-scripts/ci-cd/check-version-numbers-need-changing/check-ruby-package-revisions.sh
-        if: '!cancelled()'
-
-      - name: Check whether any minor Ruby package revisions need to be changed
-        run: ./internal-scripts/ci-cd/check-version-numbers-need-changing/check-minor-ruby-package-revisions.sh
-        if: '!cancelled()'
-
-
-  bundle_install:
-    name: Install gem bundle
-    needs: determine_necessary_jobs
-    runs-on: ubuntu-22.04
-    if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Install gem bundle;')
-    steps:
-      - uses: actions/checkout@v3
-      - name: Login to Google Cloud
-        uses: ./.github/actions/gcloud-login
-        with:
-          private_key: ${{ secrets.GCLOUD_KEY }}
-      - uses: ruby/setup-ruby@v1
-        with:
-          ruby-version: 3.2
-          bundler-cache: true
-        env:
-          BUNDLE_CLEAN: true
-          BUNDLE_JOBS: 4
-
-      - name: Archive artifact
-        run: ./internal-scripts/ci-cd/upload-artifact.sh
-        env:
-          ARTIFACT_NAME: gem-bundle
-          ARTIFACT_PATH: vendor/bundle
-
-
-  ### Docker images ###
-
-
-  build_docker_image_centos_8:
-    name: 'Build Docker image [centos-8]'
-    runs-on: ubuntu-22.04
-    needs:
-      - determine_necessary_jobs
-    if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Docker image centos-8;')
-    steps:
-      - uses: actions/checkout@v3
-      - name: Login to Google Cloud
-        uses: ./.github/actions/gcloud-login
-        with:
-          private_key: ${{ secrets.GCLOUD_KEY }}
-
-      - name: Build
-        run: ./internal-scripts/ci-cd/build-docker-images/build.sh
-        env:
-          IMAGE_NAME: 'ghcr.io/fullstaq-ruby/server-edition-ci-images'
-          IMAGE_TAG: 'centos-8-v3'
-          SOURCE_DIR: 'environments/centos-8'
-
-      - name: Dump image
-        run: ./internal-scripts/ci-cd/build-docker-images/dump-image.sh
-        env:
-          IMAGE_NAME: 'ghcr.io/fullstaq-ruby/server-edition-ci-images'
-          IMAGE_TAG: 'centos-8-v3'
-      - name: Archive artifact
-        run: ./internal-scripts/ci-cd/upload-artifact.sh
-        env:
-          ARTIFACT_NAME: 'docker-image-centos-8'
-          ARTIFACT_PATH: output
-
-  build_docker_image_debian_10:
-    name: 'Build Docker image [debian-10]'
-    runs-on: ubuntu-22.04
-    needs:
-      - determine_necessary_jobs
-    if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Docker image debian-10;')
-    steps:
-      - uses: actions/checkout@v3
-      - name: Login to Google Cloud
-        uses: ./.github/actions/gcloud-login
-        with:
-          private_key: ${{ secrets.GCLOUD_KEY }}
-
-      - name: Build
-        run: ./internal-scripts/ci-cd/build-docker-images/build.sh
-        env:
-          IMAGE_NAME: 'ghcr.io/fullstaq-ruby/server-edition-ci-images'
-          IMAGE_TAG: 'debian-10-v3'
-          SOURCE_DIR: 'environments/debian-10'
-
-      - name: Dump image
-        run: ./internal-scripts/ci-cd/build-docker-images/dump-image.sh
-        env:
-          IMAGE_NAME: 'ghcr.io/fullstaq-ruby/server-edition-ci-images'
-          IMAGE_TAG: 'debian-10-v3'
-      - name: Archive artifact
-        run: ./internal-scripts/ci-cd/upload-artifact.sh
-        env:
-          ARTIFACT_NAME: 'docker-image-debian-10'
-          ARTIFACT_PATH: output
-
-  build_docker_image_debian_11:
-    name: 'Build Docker image [debian-11]'
-    runs-on: ubuntu-22.04
-    needs:
-      - determine_necessary_jobs
-    if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Docker image debian-11;')
-    steps:
-      - uses: actions/checkout@v3
-      - name: Login to Google Cloud
-        uses: ./.github/actions/gcloud-login
-        with:
-          private_key: ${{ secrets.GCLOUD_KEY }}
-
-      - name: Build
-        run: ./internal-scripts/ci-cd/build-docker-images/build.sh
-        env:
-          IMAGE_NAME: 'ghcr.io/fullstaq-ruby/server-edition-ci-images'
-          IMAGE_TAG: 'debian-11-v3'
-          SOURCE_DIR: 'environments/debian-11'
-
-      - name: Dump image
-        run: ./internal-scripts/ci-cd/build-docker-images/dump-image.sh
-        env:
-          IMAGE_NAME: 'ghcr.io/fullstaq-ruby/server-edition-ci-images'
-          IMAGE_TAG: 'debian-11-v3'
-      - name: Archive artifact
-        run: ./internal-scripts/ci-cd/upload-artifact.sh
-        env:
-          ARTIFACT_NAME: 'docker-image-debian-11'
-          ARTIFACT_PATH: output
-
-  build_docker_image_debian_12:
-    name: 'Build Docker image [debian-12]'
-    runs-on: ubuntu-22.04
-    needs:
-      - determine_necessary_jobs
-    if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Docker image debian-12;')
-    steps:
-      - uses: actions/checkout@v3
-      - name: Login to Google Cloud
-        uses: ./.github/actions/gcloud-login
-        with:
-          private_key: ${{ secrets.GCLOUD_KEY }}
-
-      - name: Build
-        run: ./internal-scripts/ci-cd/build-docker-images/build.sh
-        env:
-          IMAGE_NAME: 'ghcr.io/fullstaq-ruby/server-edition-ci-images'
-          IMAGE_TAG: 'debian-12-v2'
-          SOURCE_DIR: 'environments/debian-12'
-
-      - name: Dump image
-        run: ./internal-scripts/ci-cd/build-docker-images/dump-image.sh
-        env:
-          IMAGE_NAME: 'ghcr.io/fullstaq-ruby/server-edition-ci-images'
-          IMAGE_TAG: 'debian-12-v2'
-      - name: Archive artifact
-        run: ./internal-scripts/ci-cd/upload-artifact.sh
-        env:
-          ARTIFACT_NAME: 'docker-image-debian-12'
-          ARTIFACT_PATH: output
-
-  build_docker_image_el_9:
-    name: 'Build Docker image [el-9]'
-    runs-on: ubuntu-22.04
-    needs:
-      - determine_necessary_jobs
-    if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Docker image el-9;')
-    steps:
-      - uses: actions/checkout@v3
-      - name: Login to Google Cloud
-        uses: ./.github/actions/gcloud-login
-        with:
-          private_key: ${{ secrets.GCLOUD_KEY }}
-
-      - name: Build
-        run: ./internal-scripts/ci-cd/build-docker-images/build.sh
-        env:
-          IMAGE_NAME: 'ghcr.io/fullstaq-ruby/server-edition-ci-images'
-          IMAGE_TAG: 'el-9-v2'
-          SOURCE_DIR: 'environments/el-9'
-
-      - name: Dump image
-        run: ./internal-scripts/ci-cd/build-docker-images/dump-image.sh
-        env:
-          IMAGE_NAME: 'ghcr.io/fullstaq-ruby/server-edition-ci-images'
-          IMAGE_TAG: 'el-9-v2'
-      - name: Archive artifact
-        run: ./internal-scripts/ci-cd/upload-artifact.sh
-        env:
-          ARTIFACT_NAME: 'docker-image-el-9'
-          ARTIFACT_PATH: output
-
-  build_docker_image_ubuntu_20_04:
-    name: 'Build Docker image [ubuntu-20.04]'
-    runs-on: ubuntu-22.04
-    needs:
-      - determine_necessary_jobs
-    if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Docker image ubuntu-20.04;')
-    steps:
-      - uses: actions/checkout@v3
-      - name: Login to Google Cloud
-        uses: ./.github/actions/gcloud-login
-        with:
-          private_key: ${{ secrets.GCLOUD_KEY }}
-
-      - name: Build
-        run: ./internal-scripts/ci-cd/build-docker-images/build.sh
-        env:
-          IMAGE_NAME: 'ghcr.io/fullstaq-ruby/server-edition-ci-images'
-          IMAGE_TAG: 'ubuntu-20.04-v2'
-          SOURCE_DIR: 'environments/ubuntu-20.04'
-
-      - name: Dump image
-        run: ./internal-scripts/ci-cd/build-docker-images/dump-image.sh
-        env:
-          IMAGE_NAME: 'ghcr.io/fullstaq-ruby/server-edition-ci-images'
-          IMAGE_TAG: 'ubuntu-20.04-v2'
-      - name: Archive artifact
-        run: ./internal-scripts/ci-cd/upload-artifact.sh
-        env:
-          ARTIFACT_NAME: 'docker-image-ubuntu-20.04'
-          ARTIFACT_PATH: output
-
-  build_docker_image_ubuntu_22_04:
-    name: 'Build Docker image [ubuntu-22.04]'
-    runs-on: ubuntu-22.04
-    needs:
-      - determine_necessary_jobs
-    if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Docker image ubuntu-22.04;')
-    steps:
-      - uses: actions/checkout@v3
-      - name: Login to Google Cloud
-        uses: ./.github/actions/gcloud-login
-        with:
-          private_key: ${{ secrets.GCLOUD_KEY }}
-
-      - name: Build
-        run: ./internal-scripts/ci-cd/build-docker-images/build.sh
-        env:
-          IMAGE_NAME: 'ghcr.io/fullstaq-ruby/server-edition-ci-images'
-          IMAGE_TAG: 'ubuntu-22.04-v3'
-          SOURCE_DIR: 'environments/ubuntu-22.04'
-
-      - name: Dump image
-        run: ./internal-scripts/ci-cd/build-docker-images/dump-image.sh
-        env:
-          IMAGE_NAME: 'ghcr.io/fullstaq-ruby/server-edition-ci-images'
-          IMAGE_TAG: 'ubuntu-22.04-v3'
-      - name: Archive artifact
-        run: ./internal-scripts/ci-cd/upload-artifact.sh
-        env:
-          ARTIFACT_NAME: 'docker-image-ubuntu-22.04'
-          ARTIFACT_PATH: output
-
-  build_docker_image_ubuntu_24_04:
-    name: 'Build Docker image [ubuntu-24.04]'
-    runs-on: ubuntu-22.04
-    needs:
-      - determine_necessary_jobs
-    if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Docker image ubuntu-24.04;')
-    steps:
-      - uses: actions/checkout@v3
-      - name: Login to Google Cloud
-        uses: ./.github/actions/gcloud-login
-        with:
-          private_key: ${{ secrets.GCLOUD_KEY }}
-
-      - name: Build
-        run: ./internal-scripts/ci-cd/build-docker-images/build.sh
-        env:
-          IMAGE_NAME: 'ghcr.io/fullstaq-ruby/server-edition-ci-images'
-          IMAGE_TAG: 'ubuntu-24.04-v1'
-          SOURCE_DIR: 'environments/ubuntu-24.04'
-
-      - name: Dump image
-        run: ./internal-scripts/ci-cd/build-docker-images/dump-image.sh
-        env:
-          IMAGE_NAME: 'ghcr.io/fullstaq-ruby/server-edition-ci-images'
-          IMAGE_TAG: 'ubuntu-24.04-v1'
-      - name: Archive artifact
-        run: ./internal-scripts/ci-cd/upload-artifact.sh
-        env:
-          ARTIFACT_NAME: 'docker-image-ubuntu-24.04'
-          ARTIFACT_PATH: output
-
-  build_docker_image_utility:
-    name: 'Build Docker image [utility]'
-    runs-on: ubuntu-22.04
-    needs:
-      - determine_necessary_jobs
-    if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Docker image utility;')
-    steps:
-      - uses: actions/checkout@v3
-      - name: Login to Google Cloud
-        uses: ./.github/actions/gcloud-login
-        with:
-          private_key: ${{ secrets.GCLOUD_KEY }}
-
-      - name: Build
-        run: ./internal-scripts/ci-cd/build-docker-images/build.sh
-        env:
-          IMAGE_NAME: 'ghcr.io/fullstaq-ruby/server-edition-ci-images'
-          IMAGE_TAG: 'utility-v2'
-          SOURCE_DIR: 'environments/utility'
-
-      - name: Dump image
-        run: ./internal-scripts/ci-cd/build-docker-images/dump-image.sh
-        env:
-          IMAGE_NAME: 'ghcr.io/fullstaq-ruby/server-edition-ci-images'
-          IMAGE_TAG: 'utility-v2'
-      - name: Archive artifact
-        run: ./internal-scripts/ci-cd/upload-artifact.sh
-        env:
-          ARTIFACT_NAME: 'docker-image-utility'
-          ARTIFACT_PATH: output
-
-
-
-  ### Sources ###
-
-
-  download_ruby_source_3_3_4:
-    name: Download Ruby source [3.3.4]
-    needs:
-      - determine_necessary_jobs
-    runs-on: ubuntu-22.04
-    if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Download Ruby source 3.3.4;')
-    steps:
-      - uses: actions/checkout@v3
-      - name: Login to Google Cloud
-        uses: ./.github/actions/gcloud-login
-        with:
-          private_key: ${{ secrets.GCLOUD_KEY }}
-
-      - name: Download
-        run: ./internal-scripts/ci-cd/download-ruby-sources/download.sh
-        env:
-          RUBY_VERSION: 3.3.4
-
-      - name: Archive artifact
-        run: ./internal-scripts/ci-cd/upload-artifact.sh
-        env:
-          ARTIFACT_NAME: ruby-src-3.3.4
-          ARTIFACT_PATH: output
-  download_ruby_source_3_2_4:
-    name: Download Ruby source [3.2.4]
-    needs:
-      - determine_necessary_jobs
-    runs-on: ubuntu-22.04
-    if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Download Ruby source 3.2.4;')
-    steps:
-      - uses: actions/checkout@v3
-      - name: Login to Google Cloud
-        uses: ./.github/actions/gcloud-login
-        with:
-          private_key: ${{ secrets.GCLOUD_KEY }}
-
-      - name: Download
-        run: ./internal-scripts/ci-cd/download-ruby-sources/download.sh
-        env:
-          RUBY_VERSION: 3.2.4
-
-      - name: Archive artifact
-        run: ./internal-scripts/ci-cd/upload-artifact.sh
-        env:
-          ARTIFACT_NAME: ruby-src-3.2.4
-          ARTIFACT_PATH: output
-  download_ruby_source_3_1_6:
-    name: Download Ruby source [3.1.6]
-    needs:
-      - determine_necessary_jobs
-    runs-on: ubuntu-22.04
-    if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Download Ruby source 3.1.6;')
-    steps:
-      - uses: actions/checkout@v3
-      - name: Login to Google Cloud
-        uses: ./.github/actions/gcloud-login
-        with:
-          private_key: ${{ secrets.GCLOUD_KEY }}
-
-      - name: Download
-        run: ./internal-scripts/ci-cd/download-ruby-sources/download.sh
-        env:
-          RUBY_VERSION: 3.1.6
-
-      - name: Archive artifact
-        run: ./internal-scripts/ci-cd/upload-artifact.sh
-        env:
-          ARTIFACT_NAME: ruby-src-3.1.6
-          ARTIFACT_PATH: output
-  download_ruby_source_3_0_7:
-    name: Download Ruby source [3.0.7]
-    needs:
-      - determine_necessary_jobs
-    runs-on: ubuntu-22.04
-    if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Download Ruby source 3.0.7;')
-    steps:
-      - uses: actions/checkout@v3
-      - name: Login to Google Cloud
-        uses: ./.github/actions/gcloud-login
-        with:
-          private_key: ${{ secrets.GCLOUD_KEY }}
-
-      - name: Download
-        run: ./internal-scripts/ci-cd/download-ruby-sources/download.sh
-        env:
-          RUBY_VERSION: 3.0.7
-
-      - name: Archive artifact
-        run: ./internal-scripts/ci-cd/upload-artifact.sh
-        env:
-          ARTIFACT_NAME: ruby-src-3.0.7
-          ARTIFACT_PATH: output
-
-
-  download_rbenv_source:
-    name: Download Rbenv source
-    needs:
-      - determine_necessary_jobs
-    runs-on: ubuntu-22.04
-    if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Download Rbenv source;')
-    steps:
-      - uses: actions/checkout@v3
-      - name: Login to Google Cloud
-        uses: ./.github/actions/gcloud-login
-        with:
-          private_key: ${{ secrets.GCLOUD_KEY }}
-      - name: Prepare
-        id: prepare
-        run: ./internal-scripts/ci-cd/download-rbenv-source/prepare.sh
-
-      - name: Download
-        run: ./internal-scripts/ci-cd/download-rbenv-source/download.sh
-        env:
-          RBENV_REPO_URL: ${{ steps.prepare.outputs.repo_url }}
-          RBENV_REPO_REF: ${{ steps.prepare.outputs.ref }}
-
-      - name: Archive artifact
-        run: ./internal-scripts/ci-cd/upload-artifact.sh
-        env:
-          ARTIFACT_NAME: rbenv-src
-          ARTIFACT_PATH: output
-
-
-  ### fullstaq-ruby-common ###
-
-  build_common_deb:
-    name: Build common DEB
-    runs-on: ubuntu-22.04
-    permissions:
-      packages: read
-    needs:
-      - determine_necessary_jobs
-      - build_docker_image_utility
-    # Run even if a dependent job has been skipped
-    if: |
-      contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build common DEB;')
-      && !failure() && !cancelled()
-    steps:
-      - name: Check whether dependent jobs did not fail
-        run: 'false'
-        if: |
-          needs.build_docker_image_utility.result == 'skipped'
-          && contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Docker image utility;')
-
-      - uses: actions/checkout@v3
-      - name: Login to Google Cloud
-        uses: ./.github/actions/gcloud-login
-        with:
-          private_key: ${{ secrets.GCLOUD_KEY }}
-      - name: Login to Github Container Registry
-        run: docker login ghcr.io -u ${{ github.actor }} --password-stdin <<<"$GITHUB_TOKEN"
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Download utility Docker image
-        run: ./internal-scripts/ci-cd/download-artifact.sh
-        if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Use locally-built Docker image utility;')
-        env:
-          ARTIFACT_NAME: docker-image-utility
-          ARTIFACT_PATH: .
-      - name: Load utility Docker image
-        run: ./internal-scripts/ci-cd/load-docker-image.sh
-        if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Use locally-built Docker image utility;')
-        env:
-          TARBALL: image.tar.zst
-
-      - name: Build package
-        run: ./internal-scripts/ci-cd/build-common-deb/build-package.sh
-        env:
-          PACKAGE_BASENAME: "fullstaq-ruby-common_1.0-1_all.deb"
-          VERSION: "1.0"
-          REVISION: "1"
-
-      - name: Archive artifact
-        run: ./internal-scripts/ci-cd/upload-artifact.sh
-        env:
-          ARTIFACT_NAME: common-deb
-          ARTIFACT_PATH: output
-
-
-  build_common_rpm:
-    name: Build common RPM
-    runs-on: ubuntu-22.04
-    permissions:
-      packages: read
-    needs:
-      - determine_necessary_jobs
-      - build_docker_image_utility
-    # Run even if a dependent job has been skipped
-    if: |
-      contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build common RPM;')
-      && !failure() && !cancelled()
-    steps:
-      - name: Check whether dependent jobs did not fail
-        run: 'false'
-        if: |
-          needs.build_docker_image_utility.result == 'skipped'
-          && contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Docker image utility;')
-
-      - uses: actions/checkout@v3
-      - name: Login to Google Cloud
-        uses: ./.github/actions/gcloud-login
-        with:
-          private_key: ${{ secrets.GCLOUD_KEY }}
-      - name: Login to Github Container Registry
-        run: docker login ghcr.io -u ${{ github.actor }} --password-stdin <<<"$GITHUB_TOKEN"
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Download utility Docker image
-        run: ./internal-scripts/ci-cd/download-artifact.sh
-        if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Use locally-built Docker image utility;')
-        env:
-          ARTIFACT_NAME: docker-image-utility
-          ARTIFACT_PATH: .
-      - name: Load utility Docker image
-        run: ./internal-scripts/ci-cd/load-docker-image.sh
-        if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Use locally-built Docker image utility;')
-        env:
-          TARBALL: image.tar.zst
-
-      - name: Build package
-        run: ./internal-scripts/ci-cd/build-common-rpm/build-package.sh
-        env:
-          PACKAGE_BASENAME: "fullstaq-ruby-common-1.0-1.noarch.rpm"
-          VERSION: "1.0"
-          REVISION: "1"
-
-      - name: Archive artifact
-        run: ./internal-scripts/ci-cd/upload-artifact.sh
-        env:
-          ARTIFACT_NAME: common-rpm
-          ARTIFACT_PATH: output
-
-
-  ### Rbenv ###
-
-  build_rbenv_deb:
-    name: Build Rbenv DEB
-    runs-on: ubuntu-22.04
-    permissions:
-      packages: read
-    needs:
-      - determine_necessary_jobs
-      - download_rbenv_source
-      - build_docker_image_utility
-    # Run even if a dependent job has been skipped
-    if: |
-      contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Rbenv DEB;')
-      && !failure() && !cancelled()
-    steps:
-      - name: Check whether dependent jobs did not fail
-        run: 'false'
-        if: |
-          (
-            needs.download_rbenv_source.result == 'skipped'
-            && contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Download Rbenv source;')
-          ) || (
-            needs.build_docker_image_utility.result == 'skipped'
-            && contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Docker image utility;')
-          )
-
-      - uses: actions/checkout@v3
-      - name: Login to Google Cloud
-        uses: ./.github/actions/gcloud-login
-        with:
-          private_key: ${{ secrets.GCLOUD_KEY }}
-      - name: Login to Github Container Registry
-        run: docker login ghcr.io -u ${{ github.actor }} --password-stdin <<<"$GITHUB_TOKEN"
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Fetch Rbenv source
-        run: ./internal-scripts/ci-cd/download-artifact.sh
-        env:
-          ARTIFACT_NAME: rbenv-src
-          ARTIFACT_PATH: .
-
-      - name: Download utility Docker image
-        run: ./internal-scripts/ci-cd/download-artifact.sh
-        if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Use locally-built Docker image utility;')
-        env:
-          ARTIFACT_NAME: docker-image-utility
-          ARTIFACT_PATH: .
-      - name: Load utility Docker image
-        run: ./internal-scripts/ci-cd/load-docker-image.sh
-        if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Use locally-built Docker image utility;')
-        env:
-          TARBALL: image.tar.zst
-
-      - name: Build package
-        run: ./internal-scripts/ci-cd/build-rbenv-deb/build-package.sh
-        env:
-          PACKAGE_BASENAME: "fullstaq-rbenv_1.1.2-16-1_all.deb"
-          VERSION: "1.1.2-16"
-          REVISION: "1"
-
-      - name: Archive artifact
-        run: ./internal-scripts/ci-cd/upload-artifact.sh
-        env:
-          ARTIFACT_NAME: rbenv-deb
-          ARTIFACT_PATH: output
-
-
-  build_rbenv_rpm:
-    name: Build Rbenv RPM
-    runs-on: ubuntu-22.04
-    permissions:
-      packages: read
-    needs:
-      - determine_necessary_jobs
-      - download_rbenv_source
-      - build_docker_image_utility
-    # Run even if a dependent job has been skipped
-    if: |
-      contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Rbenv RPM;')
-      && !failure() && !cancelled()
-    steps:
-      - name: Check whether dependent jobs did not fail
-        run: 'false'
-        if: |
-          (
-            needs.download_rbenv_source.result == 'skipped'
-            && contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Download Rbenv source;')
-          ) || (
-            needs.build_docker_image_utility.result == 'skipped'
-            && contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Docker image utility;')
-          )
-
-      - uses: actions/checkout@v3
-      - name: Login to Google Cloud
-        uses: ./.github/actions/gcloud-login
-        with:
-          private_key: ${{ secrets.GCLOUD_KEY }}
-      - name: Login to Github Container Registry
-        run: docker login ghcr.io -u ${{ github.actor }} --password-stdin <<<"$GITHUB_TOKEN"
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Fetch Rbenv source
-        run: ./internal-scripts/ci-cd/download-artifact.sh
-        env:
-          ARTIFACT_NAME: rbenv-src
-          ARTIFACT_PATH: .
-
-      - name: Download utility Docker image
-        run: ./internal-scripts/ci-cd/download-artifact.sh
-        if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Use locally-built Docker image utility;')
-        env:
-          ARTIFACT_NAME: docker-image-utility
-          ARTIFACT_PATH: .
-      - name: Load utility Docker image
-        run: ./internal-scripts/ci-cd/load-docker-image.sh
-        if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Use locally-built Docker image utility;')
-        env:
-          TARBALL: image.tar.zst
-
-      - name: Build package
-        run: ./internal-scripts/ci-cd/build-rbenv-rpm/build-package.sh
-        env:
-          PACKAGE_BASENAME: "fullstaq-rbenv-1.1.2_16-1.noarch.rpm"
-          VERSION: "1.1.2-16"
-          REVISION: "1"
-
-      - name: Archive artifact
-        run: ./internal-scripts/ci-cd/upload-artifact.sh
-        env:
-          ARTIFACT_NAME: rbenv-rpm
-          ARTIFACT_PATH: output
-
-
-  ### Finalize ###
-
-  finalize:
-    name: Finalize
-    permissions:
-      checks: write
+  prepare:
+    name: Prepare
     needs:
       - determine_necessary_jobs
       - check_workflow_uptodate
-      - check_version_numbers_need_bumping
-      - bundle_install
-      - download_rbenv_source
-      - build_docker_image_centos_8
-      - build_docker_image_debian_10
-      - build_docker_image_debian_11
-      - build_docker_image_debian_12
-      - build_docker_image_el_9
-      - build_docker_image_ubuntu_20_04
-      - build_docker_image_ubuntu_22_04
-      - build_docker_image_ubuntu_24_04
-      - build_docker_image_utility
-      - download_ruby_source_3_3_4
-      - download_ruby_source_3_2_4
-      - download_ruby_source_3_1_6
-      - download_ruby_source_3_0_7
-      - build_common_deb
-      - build_common_rpm
-      - build_rbenv_deb
-      - build_rbenv_rpm
-    runs-on: ubuntu-22.04
-    if: 'always()'
-    steps:
-      - uses: actions/checkout@v3
-      - name: Login to Google Cloud
-        uses: ./.github/actions/gcloud-login
-        with:
-          private_key: ${{ secrets.GCLOUD_KEY }}
+    permissions:
+      id-token: write
+      packages: read
+    secrets: inherit
+    uses: ./.github/workflows/ci-cd-prepare.yml
+    with:
+        ci_artifacts_run_number: ${{ needs.determine_necessary_jobs.outputs.ci_artifacts_run_number }}
+        necessary_jobs: ${{ needs.determine_necessary_jobs.outputs.necessary_jobs }}
 
 
-      ### Publish all artifacts in Google Cloud as Github Actions artifacts ###
-      # We publish these artifacts in a dedicated job instead
-      # of in each job individually, because the individual jobs
-      # could be skipped during a re-run.
-
-      - name: Download gem bundle artifact from Google Cloud
-        run: ./internal-scripts/ci-cd/download-artifact.sh
-        env:
-          ARTIFACT_NAME: gem-bundle
-          ARTIFACT_PATH: vendor/bundle
-      - name: Tar up gem bundle artifact
-        # Because actions/upload-archive is very slow when operating on directories
-        # with many files
-        run: tar -C vendor -cf vendor/bundle.tar bundle
-      - name: Archive gem bundle artifact to Github
-        uses: actions/upload-artifact@v3
-        with:
-          name: gem-bundle
-          path: vendor/bundle.tar
-
-      - name: Download Rbenv source artifact from Google Cloud
-        run: ./internal-scripts/ci-cd/download-artifact.sh
-        env:
-          ARTIFACT_NAME: rbenv-src
-          ARTIFACT_PATH: artifacts
-      - name: Archive Rbenv source artifact to Github
-        uses: actions/upload-artifact@v3
-        with:
-          name: rbenv-src
-          path: artifacts
 
 
-      - name: Download Docker image artifact [centos-8] from Google Cloud
-        run: ./internal-scripts/ci-cd/download-artifact.sh
-        if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Docker image centos-8;')
-        env:
-          ARTIFACT_NAME: 'docker-image-centos-8'
-          ARTIFACT_PATH: artifacts
-          CLEAR: true
-      - name: Archive Docker image artifact [centos-8] to Github
-        uses: actions/upload-artifact@v3
-        if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Docker image centos-8;')
-        with:
-          name: 'docker-image-centos-8'
-          path: artifacts
-      - name: Download Docker image artifact [debian-10] from Google Cloud
-        run: ./internal-scripts/ci-cd/download-artifact.sh
-        if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Docker image debian-10;')
-        env:
-          ARTIFACT_NAME: 'docker-image-debian-10'
-          ARTIFACT_PATH: artifacts
-          CLEAR: true
-      - name: Archive Docker image artifact [debian-10] to Github
-        uses: actions/upload-artifact@v3
-        if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Docker image debian-10;')
-        with:
-          name: 'docker-image-debian-10'
-          path: artifacts
-      - name: Download Docker image artifact [debian-11] from Google Cloud
-        run: ./internal-scripts/ci-cd/download-artifact.sh
-        if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Docker image debian-11;')
-        env:
-          ARTIFACT_NAME: 'docker-image-debian-11'
-          ARTIFACT_PATH: artifacts
-          CLEAR: true
-      - name: Archive Docker image artifact [debian-11] to Github
-        uses: actions/upload-artifact@v3
-        if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Docker image debian-11;')
-        with:
-          name: 'docker-image-debian-11'
-          path: artifacts
-      - name: Download Docker image artifact [debian-12] from Google Cloud
-        run: ./internal-scripts/ci-cd/download-artifact.sh
-        if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Docker image debian-12;')
-        env:
-          ARTIFACT_NAME: 'docker-image-debian-12'
-          ARTIFACT_PATH: artifacts
-          CLEAR: true
-      - name: Archive Docker image artifact [debian-12] to Github
-        uses: actions/upload-artifact@v3
-        if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Docker image debian-12;')
-        with:
-          name: 'docker-image-debian-12'
-          path: artifacts
-      - name: Download Docker image artifact [el-9] from Google Cloud
-        run: ./internal-scripts/ci-cd/download-artifact.sh
-        if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Docker image el-9;')
-        env:
-          ARTIFACT_NAME: 'docker-image-el-9'
-          ARTIFACT_PATH: artifacts
-          CLEAR: true
-      - name: Archive Docker image artifact [el-9] to Github
-        uses: actions/upload-artifact@v3
-        if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Docker image el-9;')
-        with:
-          name: 'docker-image-el-9'
-          path: artifacts
-      - name: Download Docker image artifact [ubuntu-20.04] from Google Cloud
-        run: ./internal-scripts/ci-cd/download-artifact.sh
-        if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Docker image ubuntu-20.04;')
-        env:
-          ARTIFACT_NAME: 'docker-image-ubuntu-20.04'
-          ARTIFACT_PATH: artifacts
-          CLEAR: true
-      - name: Archive Docker image artifact [ubuntu-20.04] to Github
-        uses: actions/upload-artifact@v3
-        if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Docker image ubuntu-20.04;')
-        with:
-          name: 'docker-image-ubuntu-20.04'
-          path: artifacts
-      - name: Download Docker image artifact [ubuntu-22.04] from Google Cloud
-        run: ./internal-scripts/ci-cd/download-artifact.sh
-        if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Docker image ubuntu-22.04;')
-        env:
-          ARTIFACT_NAME: 'docker-image-ubuntu-22.04'
-          ARTIFACT_PATH: artifacts
-          CLEAR: true
-      - name: Archive Docker image artifact [ubuntu-22.04] to Github
-        uses: actions/upload-artifact@v3
-        if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Docker image ubuntu-22.04;')
-        with:
-          name: 'docker-image-ubuntu-22.04'
-          path: artifacts
-      - name: Download Docker image artifact [ubuntu-24.04] from Google Cloud
-        run: ./internal-scripts/ci-cd/download-artifact.sh
-        if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Docker image ubuntu-24.04;')
-        env:
-          ARTIFACT_NAME: 'docker-image-ubuntu-24.04'
-          ARTIFACT_PATH: artifacts
-          CLEAR: true
-      - name: Archive Docker image artifact [ubuntu-24.04] to Github
-        uses: actions/upload-artifact@v3
-        if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Docker image ubuntu-24.04;')
-        with:
-          name: 'docker-image-ubuntu-24.04'
-          path: artifacts
-      - name: Download Docker image artifact [utility] from Google Cloud
-        run: ./internal-scripts/ci-cd/download-artifact.sh
-        if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Docker image utility;')
-        env:
-          ARTIFACT_NAME: 'docker-image-utility'
-          ARTIFACT_PATH: artifacts
-          CLEAR: true
-      - name: Archive Docker image artifact [utility] to Github
-        uses: actions/upload-artifact@v3
-        if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Docker image utility;')
-        with:
-          name: 'docker-image-utility'
-          path: artifacts
+  build_packages_1:
+    name: Build [1]
+    needs:
+      - determine_necessary_jobs
+      - prepare
+    permissions:
+      id-token: write
+      packages: read
+    secrets: inherit
+    uses: ./.github/workflows/ci-cd-build-packages-1.yml
+    with:
+      ci_artifacts_run_number: ${{ needs.determine_necessary_jobs.outputs.ci_artifacts_run_number }}
+      necessary_jobs: ${{ needs.determine_necessary_jobs.outputs.necessary_jobs }}
+    # # Run even if a transitively dependent job has been skipped
+    # if: |
+    #   needs.prepare.result == 'success'
+    #   && !failure() && !cancelled()
+
+  build_packages_2:
+    name: Build [2]
+    needs:
+      - determine_necessary_jobs
+      - prepare
+    permissions:
+      id-token: write
+      packages: read
+    secrets: inherit
+    uses: ./.github/workflows/ci-cd-build-packages-2.yml
+    with:
+      ci_artifacts_run_number: ${{ needs.determine_necessary_jobs.outputs.ci_artifacts_run_number }}
+      necessary_jobs: ${{ needs.determine_necessary_jobs.outputs.necessary_jobs }}
+    # # Run even if a transitively dependent job has been skipped
+    # if: |
+    #   needs.prepare.result == 'success'
+    #   && !failure() && !cancelled()
+
+  build_packages_3:
+    name: Build [3]
+    needs:
+      - determine_necessary_jobs
+      - prepare
+    permissions:
+      id-token: write
+      packages: read
+    secrets: inherit
+    uses: ./.github/workflows/ci-cd-build-packages-3.yml
+    with:
+      ci_artifacts_run_number: ${{ needs.determine_necessary_jobs.outputs.ci_artifacts_run_number }}
+      necessary_jobs: ${{ needs.determine_necessary_jobs.outputs.necessary_jobs }}
+    # # Run even if a transitively dependent job has been skipped
+    # if: |
+    #   needs.prepare.result == 'success'
+    #   && !failure() && !cancelled()
+
+  build_packages_4:
+    name: Build [4]
+    needs:
+      - determine_necessary_jobs
+      - prepare
+    permissions:
+      id-token: write
+      packages: read
+    secrets: inherit
+    uses: ./.github/workflows/ci-cd-build-packages-4.yml
+    with:
+      ci_artifacts_run_number: ${{ needs.determine_necessary_jobs.outputs.ci_artifacts_run_number }}
+      necessary_jobs: ${{ needs.determine_necessary_jobs.outputs.necessary_jobs }}
+    # # Run even if a transitively dependent job has been skipped
+    # if: |
+    #   needs.prepare.result == 'success'
+    #   && !failure() && !cancelled()
 
 
-      - name: Download Ruby source artifact [3.3.4] from Google Cloud
-        run: ./internal-scripts/ci-cd/download-artifact.sh
-        env:
-          ARTIFACT_NAME: ruby-src-3.3.4
-          ARTIFACT_PATH: artifacts
-          CLEAR: true
-      - name: Archive Ruby source artifact [3.3.4] to Github
-        uses: actions/upload-artifact@v3
-        with:
-          name: ruby-src-3.3.4
-          path: artifacts
-      - name: Download Ruby source artifact [3.2.4] from Google Cloud
-        run: ./internal-scripts/ci-cd/download-artifact.sh
-        env:
-          ARTIFACT_NAME: ruby-src-3.2.4
-          ARTIFACT_PATH: artifacts
-          CLEAR: true
-      - name: Archive Ruby source artifact [3.2.4] to Github
-        uses: actions/upload-artifact@v3
-        with:
-          name: ruby-src-3.2.4
-          path: artifacts
-      - name: Download Ruby source artifact [3.1.6] from Google Cloud
-        run: ./internal-scripts/ci-cd/download-artifact.sh
-        env:
-          ARTIFACT_NAME: ruby-src-3.1.6
-          ARTIFACT_PATH: artifacts
-          CLEAR: true
-      - name: Archive Ruby source artifact [3.1.6] to Github
-        uses: actions/upload-artifact@v3
-        with:
-          name: ruby-src-3.1.6
-          path: artifacts
-      - name: Download Ruby source artifact [3.0.7] from Google Cloud
-        run: ./internal-scripts/ci-cd/download-artifact.sh
-        env:
-          ARTIFACT_NAME: ruby-src-3.0.7
-          ARTIFACT_PATH: artifacts
-          CLEAR: true
-      - name: Archive Ruby source artifact [3.0.7] to Github
-        uses: actions/upload-artifact@v3
-        with:
-          name: ruby-src-3.0.7
-          path: artifacts
+  publish_test:
+    name: Publish & test against test repos
+    needs:
+      - determine_necessary_jobs
+      - prepare
 
-      - name: Download common DEB artifact from Google Cloud
-        run: ./internal-scripts/ci-cd/download-artifact.sh
-        env:
-          ARTIFACT_NAME: common-deb
-          ARTIFACT_PATH: artifacts
-          CLEAR: true
-      - name: Archive common DEB artifact to Github
-        uses: actions/upload-artifact@v3
-        with:
-          name: common-deb
-          path: artifacts
+      - build_packages_1
 
-      - name: Download common RPM artifact from Google Cloud
-        run: ./internal-scripts/ci-cd/download-artifact.sh
-        env:
-          ARTIFACT_NAME: common-rpm
-          ARTIFACT_PATH: artifacts
-          CLEAR: true
-      - name: Archive common RPM artifact to Github
-        uses: actions/upload-artifact@v3
-        with:
-          name: common-rpm
-          path: artifacts
+      - build_packages_2
 
-      - name: Download Rbenv DEB artifact from Google Cloud
-        run: ./internal-scripts/ci-cd/download-artifact.sh
-        env:
-          ARTIFACT_NAME: rbenv-deb
-          ARTIFACT_PATH: artifacts
-          CLEAR: true
-      - name: Archive Rbenv DEB artifact to Github
-        uses: actions/upload-artifact@v3
-        with:
-          name: rbenv-deb
-          path: artifacts
+      - build_packages_3
 
-      - name: Download Rbenv RPM artifact from Google Cloud
-        run: ./internal-scripts/ci-cd/download-artifact.sh
-        env:
-          ARTIFACT_NAME: rbenv-rpm
-          ARTIFACT_PATH: artifacts
-          CLEAR: true
-      - name: Archive Rbenv RPM artifact to Github
-        uses: actions/upload-artifact@v3
-        with:
-          name: rbenv-rpm
-          path: artifacts
+      - build_packages_4
+
+    permissions:
+      id-token: write
+      packages: read
+    secrets: inherit
+    uses: ./.github/workflows/ci-cd-publish-test-test.yml
+    with:
+        ci_artifacts_run_number: ${{ needs.determine_necessary_jobs.outputs.ci_artifacts_run_number }}
+        necessary_jobs: ${{ needs.determine_necessary_jobs.outputs.necessary_jobs }}
 
 
-      ### Check whether dependent jobs failed ###
-      # Only trigger next workflow if there are no failures.
-
-      - name: Check whether 'Determine necessary jobs' succeeded
-        run: 'false'
-        if: needs.determine_necessary_jobs.result != 'success'
-      - name: Check whether 'Check whether workflow is up-to-date' succeeded
-        run: 'false'
-        if: needs.check_workflow_uptodate.result != 'success'
-      - name: Check whether 'Check whether any version numbers need to be changed' succeeded
-        run: 'false'
-        if: needs.check_version_numbers_need_bumping.result != 'success'
-      - name: Check whether 'Install gem bundle' did not fail
-        run: 'false'
-        if: |
-          needs.bundle_install.result != 'success'
-          && (needs.bundle_install.result != 'skipped'
-            || contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Install gem bundle;'))
-      - name: Check whether 'Download Rbenv source' did not fail
-        run: 'false'
-        if: |
-          needs.download_rbenv_source.result != 'success'
-          && (needs.download_rbenv_source.result != 'skipped'
-            || contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Download Rbenv source;'))
-      - name: Check whether 'Build Docker image' did not fail
-        run: 'false'
-        if: |
-          false
-            || (needs.build_docker_image_centos_8.result != 'success'
-              && (needs.build_docker_image_centos_8.result != 'skipped'
-                || contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Docker image centos-8;')))
-            || (needs.build_docker_image_debian_10.result != 'success'
-              && (needs.build_docker_image_debian_10.result != 'skipped'
-                || contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Docker image debian-10;')))
-            || (needs.build_docker_image_debian_11.result != 'success'
-              && (needs.build_docker_image_debian_11.result != 'skipped'
-                || contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Docker image debian-11;')))
-            || (needs.build_docker_image_debian_12.result != 'success'
-              && (needs.build_docker_image_debian_12.result != 'skipped'
-                || contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Docker image debian-12;')))
-            || (needs.build_docker_image_el_9.result != 'success'
-              && (needs.build_docker_image_el_9.result != 'skipped'
-                || contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Docker image el-9;')))
-            || (needs.build_docker_image_ubuntu_20_04.result != 'success'
-              && (needs.build_docker_image_ubuntu_20_04.result != 'skipped'
-                || contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Docker image ubuntu-20.04;')))
-            || (needs.build_docker_image_ubuntu_22_04.result != 'success'
-              && (needs.build_docker_image_ubuntu_22_04.result != 'skipped'
-                || contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Docker image ubuntu-22.04;')))
-            || (needs.build_docker_image_ubuntu_24_04.result != 'success'
-              && (needs.build_docker_image_ubuntu_24_04.result != 'skipped'
-                || contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Docker image ubuntu-24.04;')))
-            || (needs.build_docker_image_utility.result != 'success'
-              && (needs.build_docker_image_utility.result != 'skipped'
-                || contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Docker image utility;')))
-      - name: Check whether 'Download Ruby source' did not fail
-        run: 'false'
-        if: |
-          false
-            || (needs.download_ruby_source_3_3_4.result != 'success'
-              && (needs.download_ruby_source_3_3_4.result != 'skipped'
-                || contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Download Ruby source 3.3.4;')))
-            || (needs.download_ruby_source_3_2_4.result != 'success'
-              && (needs.download_ruby_source_3_2_4.result != 'skipped'
-                || contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Download Ruby source 3.2.4;')))
-            || (needs.download_ruby_source_3_1_6.result != 'success'
-              && (needs.download_ruby_source_3_1_6.result != 'skipped'
-                || contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Download Ruby source 3.1.6;')))
-            || (needs.download_ruby_source_3_0_7.result != 'success'
-              && (needs.download_ruby_source_3_0_7.result != 'skipped'
-                || contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Download Ruby source 3.0.7;')))
-      - name: Check whether 'Build common DEB' did not fail
-        run: 'false'
-        if: |
-          needs.build_common_deb.result != 'success'
-          && (needs.build_common_deb.result != 'skipped'
-            || contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build common DEB;'))
-      - name: Check whether 'Build common RPM' did not fail
-        run: 'false'
-        if: |
-          needs.build_common_rpm.result != 'success'
-          && (needs.build_common_rpm.result != 'skipped'
-            || contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build common RPM;'))
-      - name: Check whether 'Build Rbenv DEB' did not fail
-        run: 'false'
-        if: |
-          needs.build_rbenv_deb.result != 'success'
-          && (needs.build_rbenv_deb.result != 'skipped'
-            || contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Rbenv DEB;'))
-      - name: Check whether 'Build Rbenv RPM' did not fail
-        run: 'false'
-        if: |
-          needs.build_rbenv_rpm.result != 'success'
-          && (needs.build_rbenv_rpm.result != 'skipped'
-            || contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Build Rbenv RPM;'))
-
-
-      ### Trigger next workflows ###
-
-      - uses: ruby/setup-ruby@v1
-        with:
-          ruby-version: 3.2
-
-      - run: bundle install --local
-        env:
-          BUNDLE_FROZEN: true
-          BUNDLE_PATH: vendor/bundle
-          BUNDLE_JOBS: 4
-
-      - name: Reset build counter
-        run: |
-          base64 -d <<< "$GCLOUD_KEY_DATA" > gcloud-key.json
-          bundle exec ./internal-scripts/ci-cd/update-counter.rb
-        env:
-          BUNDLE_PATH: vendor/bundle
-          BUCKET_NAME: ${{ env.CI_ARTIFACTS_BUCKET }}
-          LOCK_PATH: ${{ env.CI_ARTIFACTS_RUN_NUMBER }}/build-lock
-          COUNTER_PATH: ${{ env.CI_ARTIFACTS_RUN_NUMBER }}/build-count
-          COUNTER_VALUE: 0
-          OPERATION: set
-          GCLOUD_KEY_DATA: ${{ secrets.GCLOUD_KEY }}
-          GCLOUD_KEY: gcloud-key.json
-
-
-      - name: Create check for 'Build packages [1]'
-        uses: LouisBrunner/checks-action@3d24d4813a797720cc4e2080a50bdafb3373aef1
-        id: create_check_1
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          name: 'Build packages [1]'
-          status: queued
-
-      - name: Trigger workflow for 'Build packages [1]'
-        uses: FooBarWidget/workflow-dispatch@418454c41d7244fe3debe7c4ae7bd6950d178849
-        with:
-          workflow: .github/workflows/ci-cd-build-packages-1.yml
-          token: ${{ secrets.WORKFLOW_DISPATCH_TOKEN }}
-          inputs: |
-            {
-              "ci_artifacts_run_number": "${{ env.CI_ARTIFACTS_RUN_NUMBER }}",
-              "check_id": "${{ steps.create_check_1.outputs.check_id }}"
-            }
-      - name: Create check for 'Build packages [2]'
-        uses: LouisBrunner/checks-action@3d24d4813a797720cc4e2080a50bdafb3373aef1
-        id: create_check_2
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          name: 'Build packages [2]'
-          status: queued
-
-      - name: Trigger workflow for 'Build packages [2]'
-        uses: FooBarWidget/workflow-dispatch@418454c41d7244fe3debe7c4ae7bd6950d178849
-        with:
-          workflow: .github/workflows/ci-cd-build-packages-2.yml
-          token: ${{ secrets.WORKFLOW_DISPATCH_TOKEN }}
-          inputs: |
-            {
-              "ci_artifacts_run_number": "${{ env.CI_ARTIFACTS_RUN_NUMBER }}",
-              "check_id": "${{ steps.create_check_2.outputs.check_id }}"
-            }
-      - name: Create check for 'Build packages [3]'
-        uses: LouisBrunner/checks-action@3d24d4813a797720cc4e2080a50bdafb3373aef1
-        id: create_check_3
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          name: 'Build packages [3]'
-          status: queued
-
-      - name: Trigger workflow for 'Build packages [3]'
-        uses: FooBarWidget/workflow-dispatch@418454c41d7244fe3debe7c4ae7bd6950d178849
-        with:
-          workflow: .github/workflows/ci-cd-build-packages-3.yml
-          token: ${{ secrets.WORKFLOW_DISPATCH_TOKEN }}
-          inputs: |
-            {
-              "ci_artifacts_run_number": "${{ env.CI_ARTIFACTS_RUN_NUMBER }}",
-              "check_id": "${{ steps.create_check_3.outputs.check_id }}"
-            }
-      - name: Create check for 'Build packages [4]'
-        uses: LouisBrunner/checks-action@3d24d4813a797720cc4e2080a50bdafb3373aef1
-        id: create_check_4
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          name: 'Build packages [4]'
-          status: queued
-
-      - name: Trigger workflow for 'Build packages [4]'
-        uses: FooBarWidget/workflow-dispatch@418454c41d7244fe3debe7c4ae7bd6950d178849
-        with:
-          workflow: .github/workflows/ci-cd-build-packages-4.yml
-          token: ${{ secrets.WORKFLOW_DISPATCH_TOKEN }}
-          inputs: |
-            {
-              "ci_artifacts_run_number": "${{ env.CI_ARTIFACTS_RUN_NUMBER }}",
-              "check_id": "${{ steps.create_check_4.outputs.check_id }}"
-            }
+  publish_production:
+    name: Publish & test against production repos
+    needs:
+      - determine_necessary_jobs
+      - prepare
+      - publish_test
+    permissions:
+      id-token: write
+      packages: read
+      contents: write
+    secrets: inherit
+    uses: ./.github/workflows/ci-cd-publish-test-production.yml
+    with:
+        ci_artifacts_run_number: ${{ needs.determine_necessary_jobs.outputs.ci_artifacts_run_number }}
+        necessary_jobs: ${{ needs.determine_necessary_jobs.outputs.necessary_jobs }}
