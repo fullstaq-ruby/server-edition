@@ -154,6 +154,297 @@ jobs:
 
 
 
+  build_ruby_centos_8-3_4-normal:
+    name: 'Ruby [centos-8/3.4/normal]'
+
+    runs-on: ubuntu-24.04
+    environment: test
+    timeout-minutes: 30
+    permissions:
+      id-token: write
+      packages: read
+    # Run even if a dependent job has been skipped
+    if: |
+      contains(inputs.necessary_jobs, ';Build Ruby [centos-8/3.4/normal];')
+      && !failure() && !cancelled()
+    steps:
+      
+
+      - uses: actions/checkout@v4
+      - uses: google-github-actions/auth@v2
+        with:
+          project_id: ${{ vars.GCLOUD_PROJECT_ID }}
+          workload_identity_provider: projects/${{ vars.GCLOUD_PROJECT_NUM }}/locations/global/workloadIdentityPools/github-ci-test/providers/github-ci-test
+      - name: Set up Cloud SDK
+        uses: google-github-actions/setup-gcloud@v2
+        with:
+          version: '>= 363.0.0'
+      - name: Login to Github Container Registry
+        run: docker login ghcr.io -u ${{ github.actor }} --password-stdin <<<"$GITHUB_TOKEN"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Dump Azure connection string
+        run: echo -n "$CONNECTION_STRING" > azure-connection-string.txt
+        env:
+          CONNECTION_STRING: ${{ secrets.AZURE_CI2_STORAGE_CONNECTION_STRING }}
+      - name: Fetch Ruby source
+        run: ./internal-scripts/ci-cd/download-artifact.sh
+        env:
+          ARTIFACT_NAME: ruby-src-3.4.1
+          ARTIFACT_PATH: .
+          CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
+
+      - name: Download Docker image necessary for building
+        run: ./internal-scripts/ci-cd/download-artifact.sh
+        if: contains(inputs.necessary_jobs, ';Use locally-built Docker image centos-8;')
+        env:
+          ARTIFACT_NAME: 'docker-image-centos-8'
+          ARTIFACT_PATH: .
+          CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
+      - name: Load Docker image necessary for building
+        run: ./internal-scripts/ci-cd/load-docker-image.sh
+        if: contains(inputs.necessary_jobs, ';Use locally-built Docker image centos-8;')
+        env:
+          TARBALL: image.tar.zst
+
+      - name: Download Docker image necessary for packaging
+        run: ./internal-scripts/ci-cd/download-artifact.sh
+        if: contains(inputs.necessary_jobs, ';Use locally-built Docker image utility;')
+        env:
+          ARTIFACT_NAME: docker-image-utility
+          ARTIFACT_PATH: .
+          CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
+      - name: Load Docker image necessary for packaging
+        run: ./internal-scripts/ci-cd/load-docker-image.sh
+        if: contains(inputs.necessary_jobs, ';Use locally-built Docker image utility;')
+        env:
+          TARBALL: image.tar.zst
+
+      
+
+      - name: Build binaries
+        run: ./internal-scripts/ci-cd/build-ruby-packages/build-binaries.sh
+        env:
+          ENVIRONMENT_NAME: "centos-8"
+          VARIANT_NAME: "normal"
+          RUBY_PACKAGE_VERSION_ID: "3.4"
+          CACHE_KEY_PREFIX: "sccache/centos-8"
+
+      - name: Build package
+        run: ./internal-scripts/ci-cd/build-ruby-packages/build-package.sh
+        env:
+          DISTRIBUTION_NAME: "centos-8"
+          VARIANT_NAME: "normal"
+          VARIANT_PACKAGE_SUFFIX: ""
+          PACKAGE_FORMAT: "RPM"
+          RUBY_PACKAGE_VERSION_ID: "3.4"
+          RUBY_PACKAGE_REVISION: "0"
+
+      - name: Archive package artifact to Google Cloud
+        run: ./internal-scripts/ci-cd/upload-artifact.sh
+        env:
+          ARTIFACT_NAME: "ruby-pkg_3.4_centos-8_normal"
+          ARTIFACT_PATH: output-normal
+          CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
+
+  build_ruby_centos_8-3_4-jemalloc:
+    name: 'Ruby [centos-8/3.4/jemalloc]'
+
+    needs: build_jemalloc_centos_8
+    runs-on: ubuntu-24.04
+    environment: test
+    timeout-minutes: 30
+    permissions:
+      id-token: write
+      packages: read
+    # Run even if a dependent job has been skipped
+    if: |
+      contains(inputs.necessary_jobs, ';Build Ruby [centos-8/3.4/jemalloc];')
+      && !failure() && !cancelled()
+    steps:
+      
+      - name: Check whether 'Build Jemalloc [centos-8]' did not fail
+        run: 'false'
+        if: |
+          needs.build_jemalloc_centos_8.result == 'skipped'
+          && contains(inputs.necessary_jobs, ';Build Jemalloc [centos-8];')        
+
+      - uses: actions/checkout@v4
+      - uses: google-github-actions/auth@v2
+        with:
+          project_id: ${{ vars.GCLOUD_PROJECT_ID }}
+          workload_identity_provider: projects/${{ vars.GCLOUD_PROJECT_NUM }}/locations/global/workloadIdentityPools/github-ci-test/providers/github-ci-test
+      - name: Set up Cloud SDK
+        uses: google-github-actions/setup-gcloud@v2
+        with:
+          version: '>= 363.0.0'
+      - name: Login to Github Container Registry
+        run: docker login ghcr.io -u ${{ github.actor }} --password-stdin <<<"$GITHUB_TOKEN"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Dump Azure connection string
+        run: echo -n "$CONNECTION_STRING" > azure-connection-string.txt
+        env:
+          CONNECTION_STRING: ${{ secrets.AZURE_CI2_STORAGE_CONNECTION_STRING }}
+      - name: Fetch Ruby source
+        run: ./internal-scripts/ci-cd/download-artifact.sh
+        env:
+          ARTIFACT_NAME: ruby-src-3.4.1
+          ARTIFACT_PATH: .
+          CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
+
+      - name: Download Docker image necessary for building
+        run: ./internal-scripts/ci-cd/download-artifact.sh
+        if: contains(inputs.necessary_jobs, ';Use locally-built Docker image centos-8;')
+        env:
+          ARTIFACT_NAME: 'docker-image-centos-8'
+          ARTIFACT_PATH: .
+          CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
+      - name: Load Docker image necessary for building
+        run: ./internal-scripts/ci-cd/load-docker-image.sh
+        if: contains(inputs.necessary_jobs, ';Use locally-built Docker image centos-8;')
+        env:
+          TARBALL: image.tar.zst
+
+      - name: Download Docker image necessary for packaging
+        run: ./internal-scripts/ci-cd/download-artifact.sh
+        if: contains(inputs.necessary_jobs, ';Use locally-built Docker image utility;')
+        env:
+          ARTIFACT_NAME: docker-image-utility
+          ARTIFACT_PATH: .
+          CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
+      - name: Load Docker image necessary for packaging
+        run: ./internal-scripts/ci-cd/load-docker-image.sh
+        if: contains(inputs.necessary_jobs, ';Use locally-built Docker image utility;')
+        env:
+          TARBALL: image.tar.zst
+
+      
+      - name: Fetch Jemalloc binary
+        run: ./internal-scripts/ci-cd/download-artifact.sh
+        env:
+          ARTIFACT_NAME: jemalloc-bin-centos-8
+          ARTIFACT_PATH: .
+          CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}        
+
+      - name: Build binaries
+        run: ./internal-scripts/ci-cd/build-ruby-packages/build-binaries.sh
+        env:
+          ENVIRONMENT_NAME: "centos-8"
+          VARIANT_NAME: "jemalloc"
+          RUBY_PACKAGE_VERSION_ID: "3.4"
+          CACHE_KEY_PREFIX: "sccache/centos-8"
+
+      - name: Build package
+        run: ./internal-scripts/ci-cd/build-ruby-packages/build-package.sh
+        env:
+          DISTRIBUTION_NAME: "centos-8"
+          VARIANT_NAME: "jemalloc"
+          VARIANT_PACKAGE_SUFFIX: "-jemalloc"
+          PACKAGE_FORMAT: "RPM"
+          RUBY_PACKAGE_VERSION_ID: "3.4"
+          RUBY_PACKAGE_REVISION: "0"
+
+      - name: Archive package artifact to Google Cloud
+        run: ./internal-scripts/ci-cd/upload-artifact.sh
+        env:
+          ARTIFACT_NAME: "ruby-pkg_3.4_centos-8_jemalloc"
+          ARTIFACT_PATH: output-jemalloc
+          CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
+
+  build_ruby_centos_8-3_4-malloctrim:
+    name: 'Ruby [centos-8/3.4/malloctrim]'
+
+    runs-on: ubuntu-24.04
+    environment: test
+    timeout-minutes: 30
+    permissions:
+      id-token: write
+      packages: read
+    # Run even if a dependent job has been skipped
+    if: |
+      contains(inputs.necessary_jobs, ';Build Ruby [centos-8/3.4/malloctrim];')
+      && !failure() && !cancelled()
+    steps:
+      
+
+      - uses: actions/checkout@v4
+      - uses: google-github-actions/auth@v2
+        with:
+          project_id: ${{ vars.GCLOUD_PROJECT_ID }}
+          workload_identity_provider: projects/${{ vars.GCLOUD_PROJECT_NUM }}/locations/global/workloadIdentityPools/github-ci-test/providers/github-ci-test
+      - name: Set up Cloud SDK
+        uses: google-github-actions/setup-gcloud@v2
+        with:
+          version: '>= 363.0.0'
+      - name: Login to Github Container Registry
+        run: docker login ghcr.io -u ${{ github.actor }} --password-stdin <<<"$GITHUB_TOKEN"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Dump Azure connection string
+        run: echo -n "$CONNECTION_STRING" > azure-connection-string.txt
+        env:
+          CONNECTION_STRING: ${{ secrets.AZURE_CI2_STORAGE_CONNECTION_STRING }}
+      - name: Fetch Ruby source
+        run: ./internal-scripts/ci-cd/download-artifact.sh
+        env:
+          ARTIFACT_NAME: ruby-src-3.4.1
+          ARTIFACT_PATH: .
+          CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
+
+      - name: Download Docker image necessary for building
+        run: ./internal-scripts/ci-cd/download-artifact.sh
+        if: contains(inputs.necessary_jobs, ';Use locally-built Docker image centos-8;')
+        env:
+          ARTIFACT_NAME: 'docker-image-centos-8'
+          ARTIFACT_PATH: .
+          CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
+      - name: Load Docker image necessary for building
+        run: ./internal-scripts/ci-cd/load-docker-image.sh
+        if: contains(inputs.necessary_jobs, ';Use locally-built Docker image centos-8;')
+        env:
+          TARBALL: image.tar.zst
+
+      - name: Download Docker image necessary for packaging
+        run: ./internal-scripts/ci-cd/download-artifact.sh
+        if: contains(inputs.necessary_jobs, ';Use locally-built Docker image utility;')
+        env:
+          ARTIFACT_NAME: docker-image-utility
+          ARTIFACT_PATH: .
+          CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
+      - name: Load Docker image necessary for packaging
+        run: ./internal-scripts/ci-cd/load-docker-image.sh
+        if: contains(inputs.necessary_jobs, ';Use locally-built Docker image utility;')
+        env:
+          TARBALL: image.tar.zst
+
+      
+
+      - name: Build binaries
+        run: ./internal-scripts/ci-cd/build-ruby-packages/build-binaries.sh
+        env:
+          ENVIRONMENT_NAME: "centos-8"
+          VARIANT_NAME: "malloctrim"
+          RUBY_PACKAGE_VERSION_ID: "3.4"
+          CACHE_KEY_PREFIX: "sccache/centos-8"
+
+      - name: Build package
+        run: ./internal-scripts/ci-cd/build-ruby-packages/build-package.sh
+        env:
+          DISTRIBUTION_NAME: "centos-8"
+          VARIANT_NAME: "malloctrim"
+          VARIANT_PACKAGE_SUFFIX: "-malloctrim"
+          PACKAGE_FORMAT: "RPM"
+          RUBY_PACKAGE_VERSION_ID: "3.4"
+          RUBY_PACKAGE_REVISION: "0"
+
+      - name: Archive package artifact to Google Cloud
+        run: ./internal-scripts/ci-cd/upload-artifact.sh
+        env:
+          ARTIFACT_NAME: "ruby-pkg_3.4_centos-8_malloctrim"
+          ARTIFACT_PATH: output-malloctrim
+          CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
+
   build_ruby_centos_8-3_3-normal:
     name: 'Ruby [centos-8/3.3/normal]'
 
@@ -736,8 +1027,8 @@ jobs:
           ARTIFACT_PATH: output-malloctrim
           CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
 
-  build_ruby_centos_8-3_0-normal:
-    name: 'Ruby [centos-8/3.0/normal]'
+  build_ruby_centos_8-3_4_1-normal:
+    name: 'Ruby [centos-8/3.4.1/normal]'
 
     runs-on: ubuntu-24.04
     environment: test
@@ -747,7 +1038,7 @@ jobs:
       packages: read
     # Run even if a dependent job has been skipped
     if: |
-      contains(inputs.necessary_jobs, ';Build Ruby [centos-8/3.0/normal];')
+      contains(inputs.necessary_jobs, ';Build Ruby [centos-8/3.4.1/normal];')
       && !failure() && !cancelled()
     steps:
       
@@ -772,7 +1063,7 @@ jobs:
       - name: Fetch Ruby source
         run: ./internal-scripts/ci-cd/download-artifact.sh
         env:
-          ARTIFACT_NAME: ruby-src-3.0.7
+          ARTIFACT_NAME: ruby-src-3.4.1
           ARTIFACT_PATH: .
           CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
 
@@ -809,7 +1100,7 @@ jobs:
         env:
           ENVIRONMENT_NAME: "centos-8"
           VARIANT_NAME: "normal"
-          RUBY_PACKAGE_VERSION_ID: "3.0"
+          RUBY_PACKAGE_VERSION_ID: "3.4.1"
           CACHE_KEY_PREFIX: "sccache/centos-8"
 
       - name: Build package
@@ -819,18 +1110,18 @@ jobs:
           VARIANT_NAME: "normal"
           VARIANT_PACKAGE_SUFFIX: ""
           PACKAGE_FORMAT: "RPM"
-          RUBY_PACKAGE_VERSION_ID: "3.0"
-          RUBY_PACKAGE_REVISION: "13"
+          RUBY_PACKAGE_VERSION_ID: "3.4.1"
+          RUBY_PACKAGE_REVISION: "0"
 
       - name: Archive package artifact to Google Cloud
         run: ./internal-scripts/ci-cd/upload-artifact.sh
         env:
-          ARTIFACT_NAME: "ruby-pkg_3.0_centos-8_normal"
+          ARTIFACT_NAME: "ruby-pkg_3.4.1_centos-8_normal"
           ARTIFACT_PATH: output-normal
           CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
 
-  build_ruby_centos_8-3_0-jemalloc:
-    name: 'Ruby [centos-8/3.0/jemalloc]'
+  build_ruby_centos_8-3_4_1-jemalloc:
+    name: 'Ruby [centos-8/3.4.1/jemalloc]'
 
     needs: build_jemalloc_centos_8
     runs-on: ubuntu-24.04
@@ -841,7 +1132,7 @@ jobs:
       packages: read
     # Run even if a dependent job has been skipped
     if: |
-      contains(inputs.necessary_jobs, ';Build Ruby [centos-8/3.0/jemalloc];')
+      contains(inputs.necessary_jobs, ';Build Ruby [centos-8/3.4.1/jemalloc];')
       && !failure() && !cancelled()
     steps:
       
@@ -871,7 +1162,7 @@ jobs:
       - name: Fetch Ruby source
         run: ./internal-scripts/ci-cd/download-artifact.sh
         env:
-          ARTIFACT_NAME: ruby-src-3.0.7
+          ARTIFACT_NAME: ruby-src-3.4.1
           ARTIFACT_PATH: .
           CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
 
@@ -914,7 +1205,7 @@ jobs:
         env:
           ENVIRONMENT_NAME: "centos-8"
           VARIANT_NAME: "jemalloc"
-          RUBY_PACKAGE_VERSION_ID: "3.0"
+          RUBY_PACKAGE_VERSION_ID: "3.4.1"
           CACHE_KEY_PREFIX: "sccache/centos-8"
 
       - name: Build package
@@ -924,18 +1215,18 @@ jobs:
           VARIANT_NAME: "jemalloc"
           VARIANT_PACKAGE_SUFFIX: "-jemalloc"
           PACKAGE_FORMAT: "RPM"
-          RUBY_PACKAGE_VERSION_ID: "3.0"
-          RUBY_PACKAGE_REVISION: "13"
+          RUBY_PACKAGE_VERSION_ID: "3.4.1"
+          RUBY_PACKAGE_REVISION: "0"
 
       - name: Archive package artifact to Google Cloud
         run: ./internal-scripts/ci-cd/upload-artifact.sh
         env:
-          ARTIFACT_NAME: "ruby-pkg_3.0_centos-8_jemalloc"
+          ARTIFACT_NAME: "ruby-pkg_3.4.1_centos-8_jemalloc"
           ARTIFACT_PATH: output-jemalloc
           CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
 
-  build_ruby_centos_8-3_0-malloctrim:
-    name: 'Ruby [centos-8/3.0/malloctrim]'
+  build_ruby_centos_8-3_4_1-malloctrim:
+    name: 'Ruby [centos-8/3.4.1/malloctrim]'
 
     runs-on: ubuntu-24.04
     environment: test
@@ -945,7 +1236,7 @@ jobs:
       packages: read
     # Run even if a dependent job has been skipped
     if: |
-      contains(inputs.necessary_jobs, ';Build Ruby [centos-8/3.0/malloctrim];')
+      contains(inputs.necessary_jobs, ';Build Ruby [centos-8/3.4.1/malloctrim];')
       && !failure() && !cancelled()
     steps:
       
@@ -970,7 +1261,7 @@ jobs:
       - name: Fetch Ruby source
         run: ./internal-scripts/ci-cd/download-artifact.sh
         env:
-          ARTIFACT_NAME: ruby-src-3.0.7
+          ARTIFACT_NAME: ruby-src-3.4.1
           ARTIFACT_PATH: .
           CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
 
@@ -1007,7 +1298,7 @@ jobs:
         env:
           ENVIRONMENT_NAME: "centos-8"
           VARIANT_NAME: "malloctrim"
-          RUBY_PACKAGE_VERSION_ID: "3.0"
+          RUBY_PACKAGE_VERSION_ID: "3.4.1"
           CACHE_KEY_PREFIX: "sccache/centos-8"
 
       - name: Build package
@@ -1017,13 +1308,13 @@ jobs:
           VARIANT_NAME: "malloctrim"
           VARIANT_PACKAGE_SUFFIX: "-malloctrim"
           PACKAGE_FORMAT: "RPM"
-          RUBY_PACKAGE_VERSION_ID: "3.0"
-          RUBY_PACKAGE_REVISION: "13"
+          RUBY_PACKAGE_VERSION_ID: "3.4.1"
+          RUBY_PACKAGE_REVISION: "0"
 
       - name: Archive package artifact to Google Cloud
         run: ./internal-scripts/ci-cd/upload-artifact.sh
         env:
-          ARTIFACT_NAME: "ruby-pkg_3.0_centos-8_malloctrim"
+          ARTIFACT_NAME: "ruby-pkg_3.4.1_centos-8_malloctrim"
           ARTIFACT_PATH: output-malloctrim
           CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
 
@@ -1609,8 +1900,9 @@ jobs:
           ARTIFACT_PATH: output-malloctrim
           CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
 
-  build_ruby_centos_8-3_0_7-normal:
-    name: 'Ruby [centos-8/3.0.7/normal]'
+
+  build_ruby_el_9-3_4-normal:
+    name: 'Ruby [el-9/3.4/normal]'
 
     runs-on: ubuntu-24.04
     environment: test
@@ -1620,7 +1912,7 @@ jobs:
       packages: read
     # Run even if a dependent job has been skipped
     if: |
-      contains(inputs.necessary_jobs, ';Build Ruby [centos-8/3.0.7/normal];')
+      contains(inputs.necessary_jobs, ';Build Ruby [el-9/3.4/normal];')
       && !failure() && !cancelled()
     steps:
       
@@ -1645,20 +1937,20 @@ jobs:
       - name: Fetch Ruby source
         run: ./internal-scripts/ci-cd/download-artifact.sh
         env:
-          ARTIFACT_NAME: ruby-src-3.0.7
+          ARTIFACT_NAME: ruby-src-3.4.1
           ARTIFACT_PATH: .
           CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
 
       - name: Download Docker image necessary for building
         run: ./internal-scripts/ci-cd/download-artifact.sh
-        if: contains(inputs.necessary_jobs, ';Use locally-built Docker image centos-8;')
+        if: contains(inputs.necessary_jobs, ';Use locally-built Docker image el-9;')
         env:
-          ARTIFACT_NAME: 'docker-image-centos-8'
+          ARTIFACT_NAME: 'docker-image-el-9'
           ARTIFACT_PATH: .
           CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
       - name: Load Docker image necessary for building
         run: ./internal-scripts/ci-cd/load-docker-image.sh
-        if: contains(inputs.necessary_jobs, ';Use locally-built Docker image centos-8;')
+        if: contains(inputs.necessary_jobs, ';Use locally-built Docker image el-9;')
         env:
           TARBALL: image.tar.zst
 
@@ -1680,32 +1972,32 @@ jobs:
       - name: Build binaries
         run: ./internal-scripts/ci-cd/build-ruby-packages/build-binaries.sh
         env:
-          ENVIRONMENT_NAME: "centos-8"
+          ENVIRONMENT_NAME: "el-9"
           VARIANT_NAME: "normal"
-          RUBY_PACKAGE_VERSION_ID: "3.0.7"
-          CACHE_KEY_PREFIX: "sccache/centos-8"
+          RUBY_PACKAGE_VERSION_ID: "3.4"
+          CACHE_KEY_PREFIX: "sccache/el-9"
 
       - name: Build package
         run: ./internal-scripts/ci-cd/build-ruby-packages/build-package.sh
         env:
-          DISTRIBUTION_NAME: "centos-8"
+          DISTRIBUTION_NAME: "el-9"
           VARIANT_NAME: "normal"
           VARIANT_PACKAGE_SUFFIX: ""
           PACKAGE_FORMAT: "RPM"
-          RUBY_PACKAGE_VERSION_ID: "3.0.7"
+          RUBY_PACKAGE_VERSION_ID: "3.4"
           RUBY_PACKAGE_REVISION: "0"
 
       - name: Archive package artifact to Google Cloud
         run: ./internal-scripts/ci-cd/upload-artifact.sh
         env:
-          ARTIFACT_NAME: "ruby-pkg_3.0.7_centos-8_normal"
+          ARTIFACT_NAME: "ruby-pkg_3.4_el-9_normal"
           ARTIFACT_PATH: output-normal
           CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
 
-  build_ruby_centos_8-3_0_7-jemalloc:
-    name: 'Ruby [centos-8/3.0.7/jemalloc]'
+  build_ruby_el_9-3_4-jemalloc:
+    name: 'Ruby [el-9/3.4/jemalloc]'
 
-    needs: build_jemalloc_centos_8
+    needs: build_jemalloc_el_9
     runs-on: ubuntu-24.04
     environment: test
     timeout-minutes: 30
@@ -1714,15 +2006,15 @@ jobs:
       packages: read
     # Run even if a dependent job has been skipped
     if: |
-      contains(inputs.necessary_jobs, ';Build Ruby [centos-8/3.0.7/jemalloc];')
+      contains(inputs.necessary_jobs, ';Build Ruby [el-9/3.4/jemalloc];')
       && !failure() && !cancelled()
     steps:
       
-      - name: Check whether 'Build Jemalloc [centos-8]' did not fail
+      - name: Check whether 'Build Jemalloc [el-9]' did not fail
         run: 'false'
         if: |
-          needs.build_jemalloc_centos_8.result == 'skipped'
-          && contains(inputs.necessary_jobs, ';Build Jemalloc [centos-8];')        
+          needs.build_jemalloc_el_9.result == 'skipped'
+          && contains(inputs.necessary_jobs, ';Build Jemalloc [el-9];')        
 
       - uses: actions/checkout@v4
       - uses: google-github-actions/auth@v2
@@ -1744,20 +2036,20 @@ jobs:
       - name: Fetch Ruby source
         run: ./internal-scripts/ci-cd/download-artifact.sh
         env:
-          ARTIFACT_NAME: ruby-src-3.0.7
+          ARTIFACT_NAME: ruby-src-3.4.1
           ARTIFACT_PATH: .
           CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
 
       - name: Download Docker image necessary for building
         run: ./internal-scripts/ci-cd/download-artifact.sh
-        if: contains(inputs.necessary_jobs, ';Use locally-built Docker image centos-8;')
+        if: contains(inputs.necessary_jobs, ';Use locally-built Docker image el-9;')
         env:
-          ARTIFACT_NAME: 'docker-image-centos-8'
+          ARTIFACT_NAME: 'docker-image-el-9'
           ARTIFACT_PATH: .
           CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
       - name: Load Docker image necessary for building
         run: ./internal-scripts/ci-cd/load-docker-image.sh
-        if: contains(inputs.necessary_jobs, ';Use locally-built Docker image centos-8;')
+        if: contains(inputs.necessary_jobs, ';Use locally-built Docker image el-9;')
         env:
           TARBALL: image.tar.zst
 
@@ -1778,37 +2070,37 @@ jobs:
       - name: Fetch Jemalloc binary
         run: ./internal-scripts/ci-cd/download-artifact.sh
         env:
-          ARTIFACT_NAME: jemalloc-bin-centos-8
+          ARTIFACT_NAME: jemalloc-bin-el-9
           ARTIFACT_PATH: .
           CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}        
 
       - name: Build binaries
         run: ./internal-scripts/ci-cd/build-ruby-packages/build-binaries.sh
         env:
-          ENVIRONMENT_NAME: "centos-8"
+          ENVIRONMENT_NAME: "el-9"
           VARIANT_NAME: "jemalloc"
-          RUBY_PACKAGE_VERSION_ID: "3.0.7"
-          CACHE_KEY_PREFIX: "sccache/centos-8"
+          RUBY_PACKAGE_VERSION_ID: "3.4"
+          CACHE_KEY_PREFIX: "sccache/el-9"
 
       - name: Build package
         run: ./internal-scripts/ci-cd/build-ruby-packages/build-package.sh
         env:
-          DISTRIBUTION_NAME: "centos-8"
+          DISTRIBUTION_NAME: "el-9"
           VARIANT_NAME: "jemalloc"
           VARIANT_PACKAGE_SUFFIX: "-jemalloc"
           PACKAGE_FORMAT: "RPM"
-          RUBY_PACKAGE_VERSION_ID: "3.0.7"
+          RUBY_PACKAGE_VERSION_ID: "3.4"
           RUBY_PACKAGE_REVISION: "0"
 
       - name: Archive package artifact to Google Cloud
         run: ./internal-scripts/ci-cd/upload-artifact.sh
         env:
-          ARTIFACT_NAME: "ruby-pkg_3.0.7_centos-8_jemalloc"
+          ARTIFACT_NAME: "ruby-pkg_3.4_el-9_jemalloc"
           ARTIFACT_PATH: output-jemalloc
           CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
 
-  build_ruby_centos_8-3_0_7-malloctrim:
-    name: 'Ruby [centos-8/3.0.7/malloctrim]'
+  build_ruby_el_9-3_4-malloctrim:
+    name: 'Ruby [el-9/3.4/malloctrim]'
 
     runs-on: ubuntu-24.04
     environment: test
@@ -1818,7 +2110,7 @@ jobs:
       packages: read
     # Run even if a dependent job has been skipped
     if: |
-      contains(inputs.necessary_jobs, ';Build Ruby [centos-8/3.0.7/malloctrim];')
+      contains(inputs.necessary_jobs, ';Build Ruby [el-9/3.4/malloctrim];')
       && !failure() && !cancelled()
     steps:
       
@@ -1843,20 +2135,20 @@ jobs:
       - name: Fetch Ruby source
         run: ./internal-scripts/ci-cd/download-artifact.sh
         env:
-          ARTIFACT_NAME: ruby-src-3.0.7
+          ARTIFACT_NAME: ruby-src-3.4.1
           ARTIFACT_PATH: .
           CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
 
       - name: Download Docker image necessary for building
         run: ./internal-scripts/ci-cd/download-artifact.sh
-        if: contains(inputs.necessary_jobs, ';Use locally-built Docker image centos-8;')
+        if: contains(inputs.necessary_jobs, ';Use locally-built Docker image el-9;')
         env:
-          ARTIFACT_NAME: 'docker-image-centos-8'
+          ARTIFACT_NAME: 'docker-image-el-9'
           ARTIFACT_PATH: .
           CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
       - name: Load Docker image necessary for building
         run: ./internal-scripts/ci-cd/load-docker-image.sh
-        if: contains(inputs.necessary_jobs, ';Use locally-built Docker image centos-8;')
+        if: contains(inputs.necessary_jobs, ';Use locally-built Docker image el-9;')
         env:
           TARBALL: image.tar.zst
 
@@ -1878,28 +2170,27 @@ jobs:
       - name: Build binaries
         run: ./internal-scripts/ci-cd/build-ruby-packages/build-binaries.sh
         env:
-          ENVIRONMENT_NAME: "centos-8"
+          ENVIRONMENT_NAME: "el-9"
           VARIANT_NAME: "malloctrim"
-          RUBY_PACKAGE_VERSION_ID: "3.0.7"
-          CACHE_KEY_PREFIX: "sccache/centos-8"
+          RUBY_PACKAGE_VERSION_ID: "3.4"
+          CACHE_KEY_PREFIX: "sccache/el-9"
 
       - name: Build package
         run: ./internal-scripts/ci-cd/build-ruby-packages/build-package.sh
         env:
-          DISTRIBUTION_NAME: "centos-8"
+          DISTRIBUTION_NAME: "el-9"
           VARIANT_NAME: "malloctrim"
           VARIANT_PACKAGE_SUFFIX: "-malloctrim"
           PACKAGE_FORMAT: "RPM"
-          RUBY_PACKAGE_VERSION_ID: "3.0.7"
+          RUBY_PACKAGE_VERSION_ID: "3.4"
           RUBY_PACKAGE_REVISION: "0"
 
       - name: Archive package artifact to Google Cloud
         run: ./internal-scripts/ci-cd/upload-artifact.sh
         env:
-          ARTIFACT_NAME: "ruby-pkg_3.0.7_centos-8_malloctrim"
+          ARTIFACT_NAME: "ruby-pkg_3.4_el-9_malloctrim"
           ARTIFACT_PATH: output-malloctrim
           CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
-
 
   build_ruby_el_9-3_3-normal:
     name: 'Ruby [el-9/3.3/normal]'
@@ -2771,6 +3062,297 @@ jobs:
         run: ./internal-scripts/ci-cd/upload-artifact.sh
         env:
           ARTIFACT_NAME: "ruby-pkg_3.1_el-9_malloctrim"
+          ARTIFACT_PATH: output-malloctrim
+          CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
+
+  build_ruby_el_9-3_4_1-normal:
+    name: 'Ruby [el-9/3.4.1/normal]'
+
+    runs-on: ubuntu-24.04
+    environment: test
+    timeout-minutes: 30
+    permissions:
+      id-token: write
+      packages: read
+    # Run even if a dependent job has been skipped
+    if: |
+      contains(inputs.necessary_jobs, ';Build Ruby [el-9/3.4.1/normal];')
+      && !failure() && !cancelled()
+    steps:
+      
+
+      - uses: actions/checkout@v4
+      - uses: google-github-actions/auth@v2
+        with:
+          project_id: ${{ vars.GCLOUD_PROJECT_ID }}
+          workload_identity_provider: projects/${{ vars.GCLOUD_PROJECT_NUM }}/locations/global/workloadIdentityPools/github-ci-test/providers/github-ci-test
+      - name: Set up Cloud SDK
+        uses: google-github-actions/setup-gcloud@v2
+        with:
+          version: '>= 363.0.0'
+      - name: Login to Github Container Registry
+        run: docker login ghcr.io -u ${{ github.actor }} --password-stdin <<<"$GITHUB_TOKEN"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Dump Azure connection string
+        run: echo -n "$CONNECTION_STRING" > azure-connection-string.txt
+        env:
+          CONNECTION_STRING: ${{ secrets.AZURE_CI2_STORAGE_CONNECTION_STRING }}
+      - name: Fetch Ruby source
+        run: ./internal-scripts/ci-cd/download-artifact.sh
+        env:
+          ARTIFACT_NAME: ruby-src-3.4.1
+          ARTIFACT_PATH: .
+          CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
+
+      - name: Download Docker image necessary for building
+        run: ./internal-scripts/ci-cd/download-artifact.sh
+        if: contains(inputs.necessary_jobs, ';Use locally-built Docker image el-9;')
+        env:
+          ARTIFACT_NAME: 'docker-image-el-9'
+          ARTIFACT_PATH: .
+          CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
+      - name: Load Docker image necessary for building
+        run: ./internal-scripts/ci-cd/load-docker-image.sh
+        if: contains(inputs.necessary_jobs, ';Use locally-built Docker image el-9;')
+        env:
+          TARBALL: image.tar.zst
+
+      - name: Download Docker image necessary for packaging
+        run: ./internal-scripts/ci-cd/download-artifact.sh
+        if: contains(inputs.necessary_jobs, ';Use locally-built Docker image utility;')
+        env:
+          ARTIFACT_NAME: docker-image-utility
+          ARTIFACT_PATH: .
+          CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
+      - name: Load Docker image necessary for packaging
+        run: ./internal-scripts/ci-cd/load-docker-image.sh
+        if: contains(inputs.necessary_jobs, ';Use locally-built Docker image utility;')
+        env:
+          TARBALL: image.tar.zst
+
+      
+
+      - name: Build binaries
+        run: ./internal-scripts/ci-cd/build-ruby-packages/build-binaries.sh
+        env:
+          ENVIRONMENT_NAME: "el-9"
+          VARIANT_NAME: "normal"
+          RUBY_PACKAGE_VERSION_ID: "3.4.1"
+          CACHE_KEY_PREFIX: "sccache/el-9"
+
+      - name: Build package
+        run: ./internal-scripts/ci-cd/build-ruby-packages/build-package.sh
+        env:
+          DISTRIBUTION_NAME: "el-9"
+          VARIANT_NAME: "normal"
+          VARIANT_PACKAGE_SUFFIX: ""
+          PACKAGE_FORMAT: "RPM"
+          RUBY_PACKAGE_VERSION_ID: "3.4.1"
+          RUBY_PACKAGE_REVISION: "0"
+
+      - name: Archive package artifact to Google Cloud
+        run: ./internal-scripts/ci-cd/upload-artifact.sh
+        env:
+          ARTIFACT_NAME: "ruby-pkg_3.4.1_el-9_normal"
+          ARTIFACT_PATH: output-normal
+          CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
+
+  build_ruby_el_9-3_4_1-jemalloc:
+    name: 'Ruby [el-9/3.4.1/jemalloc]'
+
+    needs: build_jemalloc_el_9
+    runs-on: ubuntu-24.04
+    environment: test
+    timeout-minutes: 30
+    permissions:
+      id-token: write
+      packages: read
+    # Run even if a dependent job has been skipped
+    if: |
+      contains(inputs.necessary_jobs, ';Build Ruby [el-9/3.4.1/jemalloc];')
+      && !failure() && !cancelled()
+    steps:
+      
+      - name: Check whether 'Build Jemalloc [el-9]' did not fail
+        run: 'false'
+        if: |
+          needs.build_jemalloc_el_9.result == 'skipped'
+          && contains(inputs.necessary_jobs, ';Build Jemalloc [el-9];')        
+
+      - uses: actions/checkout@v4
+      - uses: google-github-actions/auth@v2
+        with:
+          project_id: ${{ vars.GCLOUD_PROJECT_ID }}
+          workload_identity_provider: projects/${{ vars.GCLOUD_PROJECT_NUM }}/locations/global/workloadIdentityPools/github-ci-test/providers/github-ci-test
+      - name: Set up Cloud SDK
+        uses: google-github-actions/setup-gcloud@v2
+        with:
+          version: '>= 363.0.0'
+      - name: Login to Github Container Registry
+        run: docker login ghcr.io -u ${{ github.actor }} --password-stdin <<<"$GITHUB_TOKEN"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Dump Azure connection string
+        run: echo -n "$CONNECTION_STRING" > azure-connection-string.txt
+        env:
+          CONNECTION_STRING: ${{ secrets.AZURE_CI2_STORAGE_CONNECTION_STRING }}
+      - name: Fetch Ruby source
+        run: ./internal-scripts/ci-cd/download-artifact.sh
+        env:
+          ARTIFACT_NAME: ruby-src-3.4.1
+          ARTIFACT_PATH: .
+          CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
+
+      - name: Download Docker image necessary for building
+        run: ./internal-scripts/ci-cd/download-artifact.sh
+        if: contains(inputs.necessary_jobs, ';Use locally-built Docker image el-9;')
+        env:
+          ARTIFACT_NAME: 'docker-image-el-9'
+          ARTIFACT_PATH: .
+          CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
+      - name: Load Docker image necessary for building
+        run: ./internal-scripts/ci-cd/load-docker-image.sh
+        if: contains(inputs.necessary_jobs, ';Use locally-built Docker image el-9;')
+        env:
+          TARBALL: image.tar.zst
+
+      - name: Download Docker image necessary for packaging
+        run: ./internal-scripts/ci-cd/download-artifact.sh
+        if: contains(inputs.necessary_jobs, ';Use locally-built Docker image utility;')
+        env:
+          ARTIFACT_NAME: docker-image-utility
+          ARTIFACT_PATH: .
+          CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
+      - name: Load Docker image necessary for packaging
+        run: ./internal-scripts/ci-cd/load-docker-image.sh
+        if: contains(inputs.necessary_jobs, ';Use locally-built Docker image utility;')
+        env:
+          TARBALL: image.tar.zst
+
+      
+      - name: Fetch Jemalloc binary
+        run: ./internal-scripts/ci-cd/download-artifact.sh
+        env:
+          ARTIFACT_NAME: jemalloc-bin-el-9
+          ARTIFACT_PATH: .
+          CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}        
+
+      - name: Build binaries
+        run: ./internal-scripts/ci-cd/build-ruby-packages/build-binaries.sh
+        env:
+          ENVIRONMENT_NAME: "el-9"
+          VARIANT_NAME: "jemalloc"
+          RUBY_PACKAGE_VERSION_ID: "3.4.1"
+          CACHE_KEY_PREFIX: "sccache/el-9"
+
+      - name: Build package
+        run: ./internal-scripts/ci-cd/build-ruby-packages/build-package.sh
+        env:
+          DISTRIBUTION_NAME: "el-9"
+          VARIANT_NAME: "jemalloc"
+          VARIANT_PACKAGE_SUFFIX: "-jemalloc"
+          PACKAGE_FORMAT: "RPM"
+          RUBY_PACKAGE_VERSION_ID: "3.4.1"
+          RUBY_PACKAGE_REVISION: "0"
+
+      - name: Archive package artifact to Google Cloud
+        run: ./internal-scripts/ci-cd/upload-artifact.sh
+        env:
+          ARTIFACT_NAME: "ruby-pkg_3.4.1_el-9_jemalloc"
+          ARTIFACT_PATH: output-jemalloc
+          CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
+
+  build_ruby_el_9-3_4_1-malloctrim:
+    name: 'Ruby [el-9/3.4.1/malloctrim]'
+
+    runs-on: ubuntu-24.04
+    environment: test
+    timeout-minutes: 30
+    permissions:
+      id-token: write
+      packages: read
+    # Run even if a dependent job has been skipped
+    if: |
+      contains(inputs.necessary_jobs, ';Build Ruby [el-9/3.4.1/malloctrim];')
+      && !failure() && !cancelled()
+    steps:
+      
+
+      - uses: actions/checkout@v4
+      - uses: google-github-actions/auth@v2
+        with:
+          project_id: ${{ vars.GCLOUD_PROJECT_ID }}
+          workload_identity_provider: projects/${{ vars.GCLOUD_PROJECT_NUM }}/locations/global/workloadIdentityPools/github-ci-test/providers/github-ci-test
+      - name: Set up Cloud SDK
+        uses: google-github-actions/setup-gcloud@v2
+        with:
+          version: '>= 363.0.0'
+      - name: Login to Github Container Registry
+        run: docker login ghcr.io -u ${{ github.actor }} --password-stdin <<<"$GITHUB_TOKEN"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Dump Azure connection string
+        run: echo -n "$CONNECTION_STRING" > azure-connection-string.txt
+        env:
+          CONNECTION_STRING: ${{ secrets.AZURE_CI2_STORAGE_CONNECTION_STRING }}
+      - name: Fetch Ruby source
+        run: ./internal-scripts/ci-cd/download-artifact.sh
+        env:
+          ARTIFACT_NAME: ruby-src-3.4.1
+          ARTIFACT_PATH: .
+          CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
+
+      - name: Download Docker image necessary for building
+        run: ./internal-scripts/ci-cd/download-artifact.sh
+        if: contains(inputs.necessary_jobs, ';Use locally-built Docker image el-9;')
+        env:
+          ARTIFACT_NAME: 'docker-image-el-9'
+          ARTIFACT_PATH: .
+          CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
+      - name: Load Docker image necessary for building
+        run: ./internal-scripts/ci-cd/load-docker-image.sh
+        if: contains(inputs.necessary_jobs, ';Use locally-built Docker image el-9;')
+        env:
+          TARBALL: image.tar.zst
+
+      - name: Download Docker image necessary for packaging
+        run: ./internal-scripts/ci-cd/download-artifact.sh
+        if: contains(inputs.necessary_jobs, ';Use locally-built Docker image utility;')
+        env:
+          ARTIFACT_NAME: docker-image-utility
+          ARTIFACT_PATH: .
+          CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
+      - name: Load Docker image necessary for packaging
+        run: ./internal-scripts/ci-cd/load-docker-image.sh
+        if: contains(inputs.necessary_jobs, ';Use locally-built Docker image utility;')
+        env:
+          TARBALL: image.tar.zst
+
+      
+
+      - name: Build binaries
+        run: ./internal-scripts/ci-cd/build-ruby-packages/build-binaries.sh
+        env:
+          ENVIRONMENT_NAME: "el-9"
+          VARIANT_NAME: "malloctrim"
+          RUBY_PACKAGE_VERSION_ID: "3.4.1"
+          CACHE_KEY_PREFIX: "sccache/el-9"
+
+      - name: Build package
+        run: ./internal-scripts/ci-cd/build-ruby-packages/build-package.sh
+        env:
+          DISTRIBUTION_NAME: "el-9"
+          VARIANT_NAME: "malloctrim"
+          VARIANT_PACKAGE_SUFFIX: "-malloctrim"
+          PACKAGE_FORMAT: "RPM"
+          RUBY_PACKAGE_VERSION_ID: "3.4.1"
+          RUBY_PACKAGE_REVISION: "0"
+
+      - name: Archive package artifact to Google Cloud
+        run: ./internal-scripts/ci-cd/upload-artifact.sh
+        env:
+          ARTIFACT_NAME: "ruby-pkg_3.4.1_el-9_malloctrim"
           ARTIFACT_PATH: output-malloctrim
           CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
 
@@ -3657,6 +4239,10 @@ jobs:
 
       - build_jemalloc_centos_8
 
+      - build_ruby_centos_8-3_4-normal
+      - build_ruby_centos_8-3_4-jemalloc
+      - build_ruby_centos_8-3_4-malloctrim
+
       - build_ruby_centos_8-3_3-normal
       - build_ruby_centos_8-3_3-jemalloc
       - build_ruby_centos_8-3_3-malloctrim
@@ -3665,9 +4251,9 @@ jobs:
       - build_ruby_centos_8-3_2-jemalloc
       - build_ruby_centos_8-3_2-malloctrim
 
-      - build_ruby_centos_8-3_0-normal
-      - build_ruby_centos_8-3_0-jemalloc
-      - build_ruby_centos_8-3_0-malloctrim
+      - build_ruby_centos_8-3_4_1-normal
+      - build_ruby_centos_8-3_4_1-jemalloc
+      - build_ruby_centos_8-3_4_1-malloctrim
 
       - build_ruby_centos_8-3_3_6-normal
       - build_ruby_centos_8-3_3_6-jemalloc
@@ -3677,11 +4263,11 @@ jobs:
       - build_ruby_centos_8-3_2_6-jemalloc
       - build_ruby_centos_8-3_2_6-malloctrim
 
-      - build_ruby_centos_8-3_0_7-normal
-      - build_ruby_centos_8-3_0_7-jemalloc
-      - build_ruby_centos_8-3_0_7-malloctrim
-
       - build_jemalloc_el_9
+
+      - build_ruby_el_9-3_4-normal
+      - build_ruby_el_9-3_4-jemalloc
+      - build_ruby_el_9-3_4-malloctrim
 
       - build_ruby_el_9-3_3-normal
       - build_ruby_el_9-3_3-jemalloc
@@ -3694,6 +4280,10 @@ jobs:
       - build_ruby_el_9-3_1-normal
       - build_ruby_el_9-3_1-jemalloc
       - build_ruby_el_9-3_1-malloctrim
+
+      - build_ruby_el_9-3_4_1-normal
+      - build_ruby_el_9-3_4_1-jemalloc
+      - build_ruby_el_9-3_4_1-malloctrim
 
       - build_ruby_el_9-3_3_6-normal
       - build_ruby_el_9-3_3_6-jemalloc
@@ -3754,10 +4344,28 @@ jobs:
       - name: Download Ruby package artifacts from Google Cloud
         run: ./internal-scripts/ci-cd/download-artifacts.sh
         env:
-          ARTIFACT_NAMES: 'ruby-pkg_3.3_centos-8_normal ruby-pkg_3.3_centos-8_jemalloc ruby-pkg_3.3_centos-8_malloctrim ruby-pkg_3.2_centos-8_normal ruby-pkg_3.2_centos-8_jemalloc ruby-pkg_3.2_centos-8_malloctrim ruby-pkg_3.0_centos-8_normal ruby-pkg_3.0_centos-8_jemalloc ruby-pkg_3.0_centos-8_malloctrim ruby-pkg_3.3.6_centos-8_normal ruby-pkg_3.3.6_centos-8_jemalloc ruby-pkg_3.3.6_centos-8_malloctrim ruby-pkg_3.2.6_centos-8_normal ruby-pkg_3.2.6_centos-8_jemalloc ruby-pkg_3.2.6_centos-8_malloctrim ruby-pkg_3.0.7_centos-8_normal ruby-pkg_3.0.7_centos-8_jemalloc ruby-pkg_3.0.7_centos-8_malloctrim ruby-pkg_3.3_el-9_normal ruby-pkg_3.3_el-9_jemalloc ruby-pkg_3.3_el-9_malloctrim ruby-pkg_3.2_el-9_normal ruby-pkg_3.2_el-9_jemalloc ruby-pkg_3.2_el-9_malloctrim ruby-pkg_3.1_el-9_normal ruby-pkg_3.1_el-9_jemalloc ruby-pkg_3.1_el-9_malloctrim ruby-pkg_3.3.6_el-9_normal ruby-pkg_3.3.6_el-9_jemalloc ruby-pkg_3.3.6_el-9_malloctrim ruby-pkg_3.2.6_el-9_normal ruby-pkg_3.2.6_el-9_jemalloc ruby-pkg_3.2.6_el-9_malloctrim ruby-pkg_3.1.6_el-9_normal ruby-pkg_3.1.6_el-9_jemalloc ruby-pkg_3.1.6_el-9_malloctrim'
+          ARTIFACT_NAMES: 'ruby-pkg_3.4_centos-8_normal ruby-pkg_3.4_centos-8_jemalloc ruby-pkg_3.4_centos-8_malloctrim ruby-pkg_3.3_centos-8_normal ruby-pkg_3.3_centos-8_jemalloc ruby-pkg_3.3_centos-8_malloctrim ruby-pkg_3.2_centos-8_normal ruby-pkg_3.2_centos-8_jemalloc ruby-pkg_3.2_centos-8_malloctrim ruby-pkg_3.4.1_centos-8_normal ruby-pkg_3.4.1_centos-8_jemalloc ruby-pkg_3.4.1_centos-8_malloctrim ruby-pkg_3.3.6_centos-8_normal ruby-pkg_3.3.6_centos-8_jemalloc ruby-pkg_3.3.6_centos-8_malloctrim ruby-pkg_3.2.6_centos-8_normal ruby-pkg_3.2.6_centos-8_jemalloc ruby-pkg_3.2.6_centos-8_malloctrim ruby-pkg_3.4_el-9_normal ruby-pkg_3.4_el-9_jemalloc ruby-pkg_3.4_el-9_malloctrim ruby-pkg_3.3_el-9_normal ruby-pkg_3.3_el-9_jemalloc ruby-pkg_3.3_el-9_malloctrim ruby-pkg_3.2_el-9_normal ruby-pkg_3.2_el-9_jemalloc ruby-pkg_3.2_el-9_malloctrim ruby-pkg_3.1_el-9_normal ruby-pkg_3.1_el-9_jemalloc ruby-pkg_3.1_el-9_malloctrim ruby-pkg_3.4.1_el-9_normal ruby-pkg_3.4.1_el-9_jemalloc ruby-pkg_3.4.1_el-9_malloctrim ruby-pkg_3.3.6_el-9_normal ruby-pkg_3.3.6_el-9_jemalloc ruby-pkg_3.3.6_el-9_malloctrim ruby-pkg_3.2.6_el-9_normal ruby-pkg_3.2.6_el-9_jemalloc ruby-pkg_3.2.6_el-9_malloctrim ruby-pkg_3.1.6_el-9_normal ruby-pkg_3.1.6_el-9_jemalloc ruby-pkg_3.1.6_el-9_malloctrim'
           ARTIFACT_PATH: artifacts
           CLEAR: true
           CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
+      - name: Archive Ruby package artifact [ruby-pkg_3.4_centos-8_normal] to Github
+        uses: actions/upload-artifact@v4
+        with:
+          name: ruby-pkg_3.4_centos-8_normal
+          path: artifacts/ruby-pkg_3.4_centos-8_normal
+          compression-level: 0
+      - name: Archive Ruby package artifact [ruby-pkg_3.4_centos-8_jemalloc] to Github
+        uses: actions/upload-artifact@v4
+        with:
+          name: ruby-pkg_3.4_centos-8_jemalloc
+          path: artifacts/ruby-pkg_3.4_centos-8_jemalloc
+          compression-level: 0
+      - name: Archive Ruby package artifact [ruby-pkg_3.4_centos-8_malloctrim] to Github
+        uses: actions/upload-artifact@v4
+        with:
+          name: ruby-pkg_3.4_centos-8_malloctrim
+          path: artifacts/ruby-pkg_3.4_centos-8_malloctrim
+          compression-level: 0
       - name: Archive Ruby package artifact [ruby-pkg_3.3_centos-8_normal] to Github
         uses: actions/upload-artifact@v4
         with:
@@ -3794,23 +4402,23 @@ jobs:
           name: ruby-pkg_3.2_centos-8_malloctrim
           path: artifacts/ruby-pkg_3.2_centos-8_malloctrim
           compression-level: 0
-      - name: Archive Ruby package artifact [ruby-pkg_3.0_centos-8_normal] to Github
+      - name: Archive Ruby package artifact [ruby-pkg_3.4.1_centos-8_normal] to Github
         uses: actions/upload-artifact@v4
         with:
-          name: ruby-pkg_3.0_centos-8_normal
-          path: artifacts/ruby-pkg_3.0_centos-8_normal
+          name: ruby-pkg_3.4.1_centos-8_normal
+          path: artifacts/ruby-pkg_3.4.1_centos-8_normal
           compression-level: 0
-      - name: Archive Ruby package artifact [ruby-pkg_3.0_centos-8_jemalloc] to Github
+      - name: Archive Ruby package artifact [ruby-pkg_3.4.1_centos-8_jemalloc] to Github
         uses: actions/upload-artifact@v4
         with:
-          name: ruby-pkg_3.0_centos-8_jemalloc
-          path: artifacts/ruby-pkg_3.0_centos-8_jemalloc
+          name: ruby-pkg_3.4.1_centos-8_jemalloc
+          path: artifacts/ruby-pkg_3.4.1_centos-8_jemalloc
           compression-level: 0
-      - name: Archive Ruby package artifact [ruby-pkg_3.0_centos-8_malloctrim] to Github
+      - name: Archive Ruby package artifact [ruby-pkg_3.4.1_centos-8_malloctrim] to Github
         uses: actions/upload-artifact@v4
         with:
-          name: ruby-pkg_3.0_centos-8_malloctrim
-          path: artifacts/ruby-pkg_3.0_centos-8_malloctrim
+          name: ruby-pkg_3.4.1_centos-8_malloctrim
+          path: artifacts/ruby-pkg_3.4.1_centos-8_malloctrim
           compression-level: 0
       - name: Archive Ruby package artifact [ruby-pkg_3.3.6_centos-8_normal] to Github
         uses: actions/upload-artifact@v4
@@ -3848,23 +4456,23 @@ jobs:
           name: ruby-pkg_3.2.6_centos-8_malloctrim
           path: artifacts/ruby-pkg_3.2.6_centos-8_malloctrim
           compression-level: 0
-      - name: Archive Ruby package artifact [ruby-pkg_3.0.7_centos-8_normal] to Github
+      - name: Archive Ruby package artifact [ruby-pkg_3.4_el-9_normal] to Github
         uses: actions/upload-artifact@v4
         with:
-          name: ruby-pkg_3.0.7_centos-8_normal
-          path: artifacts/ruby-pkg_3.0.7_centos-8_normal
+          name: ruby-pkg_3.4_el-9_normal
+          path: artifacts/ruby-pkg_3.4_el-9_normal
           compression-level: 0
-      - name: Archive Ruby package artifact [ruby-pkg_3.0.7_centos-8_jemalloc] to Github
+      - name: Archive Ruby package artifact [ruby-pkg_3.4_el-9_jemalloc] to Github
         uses: actions/upload-artifact@v4
         with:
-          name: ruby-pkg_3.0.7_centos-8_jemalloc
-          path: artifacts/ruby-pkg_3.0.7_centos-8_jemalloc
+          name: ruby-pkg_3.4_el-9_jemalloc
+          path: artifacts/ruby-pkg_3.4_el-9_jemalloc
           compression-level: 0
-      - name: Archive Ruby package artifact [ruby-pkg_3.0.7_centos-8_malloctrim] to Github
+      - name: Archive Ruby package artifact [ruby-pkg_3.4_el-9_malloctrim] to Github
         uses: actions/upload-artifact@v4
         with:
-          name: ruby-pkg_3.0.7_centos-8_malloctrim
-          path: artifacts/ruby-pkg_3.0.7_centos-8_malloctrim
+          name: ruby-pkg_3.4_el-9_malloctrim
+          path: artifacts/ruby-pkg_3.4_el-9_malloctrim
           compression-level: 0
       - name: Archive Ruby package artifact [ruby-pkg_3.3_el-9_normal] to Github
         uses: actions/upload-artifact@v4
@@ -3919,6 +4527,24 @@ jobs:
         with:
           name: ruby-pkg_3.1_el-9_malloctrim
           path: artifacts/ruby-pkg_3.1_el-9_malloctrim
+          compression-level: 0
+      - name: Archive Ruby package artifact [ruby-pkg_3.4.1_el-9_normal] to Github
+        uses: actions/upload-artifact@v4
+        with:
+          name: ruby-pkg_3.4.1_el-9_normal
+          path: artifacts/ruby-pkg_3.4.1_el-9_normal
+          compression-level: 0
+      - name: Archive Ruby package artifact [ruby-pkg_3.4.1_el-9_jemalloc] to Github
+        uses: actions/upload-artifact@v4
+        with:
+          name: ruby-pkg_3.4.1_el-9_jemalloc
+          path: artifacts/ruby-pkg_3.4.1_el-9_jemalloc
+          compression-level: 0
+      - name: Archive Ruby package artifact [ruby-pkg_3.4.1_el-9_malloctrim] to Github
+        uses: actions/upload-artifact@v4
+        with:
+          name: ruby-pkg_3.4.1_el-9_malloctrim
+          path: artifacts/ruby-pkg_3.4.1_el-9_malloctrim
           compression-level: 0
       - name: Archive Ruby package artifact [ruby-pkg_3.3.6_el-9_normal] to Github
         uses: actions/upload-artifact@v4
@@ -3992,6 +4618,15 @@ jobs:
         run: 'false'
         if: |
           false
+            || (needs.build_ruby_centos_8-3_4-normal.result != 'success'
+              && (needs.build_ruby_centos_8-3_4-normal.result != 'skipped'
+                || contains(inputs.necessary_jobs, ';Build Ruby [centos-8/3.4/normal];')))
+            || (needs.build_ruby_centos_8-3_4-jemalloc.result != 'success'
+              && (needs.build_ruby_centos_8-3_4-jemalloc.result != 'skipped'
+                || contains(inputs.necessary_jobs, ';Build Ruby [centos-8/3.4/jemalloc];')))
+            || (needs.build_ruby_centos_8-3_4-malloctrim.result != 'success'
+              && (needs.build_ruby_centos_8-3_4-malloctrim.result != 'skipped'
+                || contains(inputs.necessary_jobs, ';Build Ruby [centos-8/3.4/malloctrim];')))
             || (needs.build_ruby_centos_8-3_3-normal.result != 'success'
               && (needs.build_ruby_centos_8-3_3-normal.result != 'skipped'
                 || contains(inputs.necessary_jobs, ';Build Ruby [centos-8/3.3/normal];')))
@@ -4010,15 +4645,15 @@ jobs:
             || (needs.build_ruby_centos_8-3_2-malloctrim.result != 'success'
               && (needs.build_ruby_centos_8-3_2-malloctrim.result != 'skipped'
                 || contains(inputs.necessary_jobs, ';Build Ruby [centos-8/3.2/malloctrim];')))
-            || (needs.build_ruby_centos_8-3_0-normal.result != 'success'
-              && (needs.build_ruby_centos_8-3_0-normal.result != 'skipped'
-                || contains(inputs.necessary_jobs, ';Build Ruby [centos-8/3.0/normal];')))
-            || (needs.build_ruby_centos_8-3_0-jemalloc.result != 'success'
-              && (needs.build_ruby_centos_8-3_0-jemalloc.result != 'skipped'
-                || contains(inputs.necessary_jobs, ';Build Ruby [centos-8/3.0/jemalloc];')))
-            || (needs.build_ruby_centos_8-3_0-malloctrim.result != 'success'
-              && (needs.build_ruby_centos_8-3_0-malloctrim.result != 'skipped'
-                || contains(inputs.necessary_jobs, ';Build Ruby [centos-8/3.0/malloctrim];')))
+            || (needs.build_ruby_centos_8-3_4_1-normal.result != 'success'
+              && (needs.build_ruby_centos_8-3_4_1-normal.result != 'skipped'
+                || contains(inputs.necessary_jobs, ';Build Ruby [centos-8/3.4.1/normal];')))
+            || (needs.build_ruby_centos_8-3_4_1-jemalloc.result != 'success'
+              && (needs.build_ruby_centos_8-3_4_1-jemalloc.result != 'skipped'
+                || contains(inputs.necessary_jobs, ';Build Ruby [centos-8/3.4.1/jemalloc];')))
+            || (needs.build_ruby_centos_8-3_4_1-malloctrim.result != 'success'
+              && (needs.build_ruby_centos_8-3_4_1-malloctrim.result != 'skipped'
+                || contains(inputs.necessary_jobs, ';Build Ruby [centos-8/3.4.1/malloctrim];')))
             || (needs.build_ruby_centos_8-3_3_6-normal.result != 'success'
               && (needs.build_ruby_centos_8-3_3_6-normal.result != 'skipped'
                 || contains(inputs.necessary_jobs, ';Build Ruby [centos-8/3.3.6/normal];')))
@@ -4037,19 +4672,19 @@ jobs:
             || (needs.build_ruby_centos_8-3_2_6-malloctrim.result != 'success'
               && (needs.build_ruby_centos_8-3_2_6-malloctrim.result != 'skipped'
                 || contains(inputs.necessary_jobs, ';Build Ruby [centos-8/3.2.6/malloctrim];')))
-            || (needs.build_ruby_centos_8-3_0_7-normal.result != 'success'
-              && (needs.build_ruby_centos_8-3_0_7-normal.result != 'skipped'
-                || contains(inputs.necessary_jobs, ';Build Ruby [centos-8/3.0.7/normal];')))
-            || (needs.build_ruby_centos_8-3_0_7-jemalloc.result != 'success'
-              && (needs.build_ruby_centos_8-3_0_7-jemalloc.result != 'skipped'
-                || contains(inputs.necessary_jobs, ';Build Ruby [centos-8/3.0.7/jemalloc];')))
-            || (needs.build_ruby_centos_8-3_0_7-malloctrim.result != 'success'
-              && (needs.build_ruby_centos_8-3_0_7-malloctrim.result != 'skipped'
-                || contains(inputs.necessary_jobs, ';Build Ruby [centos-8/3.0.7/malloctrim];')))
       - name: Check whether 'Ruby [el-9]' job did not fail
         run: 'false'
         if: |
           false
+            || (needs.build_ruby_el_9-3_4-normal.result != 'success'
+              && (needs.build_ruby_el_9-3_4-normal.result != 'skipped'
+                || contains(inputs.necessary_jobs, ';Build Ruby [el-9/3.4/normal];')))
+            || (needs.build_ruby_el_9-3_4-jemalloc.result != 'success'
+              && (needs.build_ruby_el_9-3_4-jemalloc.result != 'skipped'
+                || contains(inputs.necessary_jobs, ';Build Ruby [el-9/3.4/jemalloc];')))
+            || (needs.build_ruby_el_9-3_4-malloctrim.result != 'success'
+              && (needs.build_ruby_el_9-3_4-malloctrim.result != 'skipped'
+                || contains(inputs.necessary_jobs, ';Build Ruby [el-9/3.4/malloctrim];')))
             || (needs.build_ruby_el_9-3_3-normal.result != 'success'
               && (needs.build_ruby_el_9-3_3-normal.result != 'skipped'
                 || contains(inputs.necessary_jobs, ';Build Ruby [el-9/3.3/normal];')))
@@ -4077,6 +4712,15 @@ jobs:
             || (needs.build_ruby_el_9-3_1-malloctrim.result != 'success'
               && (needs.build_ruby_el_9-3_1-malloctrim.result != 'skipped'
                 || contains(inputs.necessary_jobs, ';Build Ruby [el-9/3.1/malloctrim];')))
+            || (needs.build_ruby_el_9-3_4_1-normal.result != 'success'
+              && (needs.build_ruby_el_9-3_4_1-normal.result != 'skipped'
+                || contains(inputs.necessary_jobs, ';Build Ruby [el-9/3.4.1/normal];')))
+            || (needs.build_ruby_el_9-3_4_1-jemalloc.result != 'success'
+              && (needs.build_ruby_el_9-3_4_1-jemalloc.result != 'skipped'
+                || contains(inputs.necessary_jobs, ';Build Ruby [el-9/3.4.1/jemalloc];')))
+            || (needs.build_ruby_el_9-3_4_1-malloctrim.result != 'success'
+              && (needs.build_ruby_el_9-3_4_1-malloctrim.result != 'skipped'
+                || contains(inputs.necessary_jobs, ';Build Ruby [el-9/3.4.1/malloctrim];')))
             || (needs.build_ruby_el_9-3_3_6-normal.result != 'success'
               && (needs.build_ruby_el_9-3_3_6-normal.result != 'skipped'
                 || contains(inputs.necessary_jobs, ';Build Ruby [el-9/3.3.6/normal];')))

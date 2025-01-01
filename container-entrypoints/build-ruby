@@ -84,9 +84,7 @@ echo
 header "Configuring and compiling Ruby..."
 if [[ "$VARIANT" = jemalloc ]]; then
     EXTRA_CONFIGURE_ARGS=(--with-jemalloc)
-    if [[ "$PACKAGE_VERSION" =~ ^2\. || "$PACKAGE_VERSION" =~ ^3\.0 ]]; then
-        run patch -p1 -ti /system/resources/ruby_26_jemalloc.patch
-    elif [[ "$PACKAGE_VERSION" =~ ^3\.1 ]]; then
+    if [[ "$PACKAGE_VERSION" =~ ^3\.1 ]]; then
         run patch -p1 -ti /system/resources/ruby_31_jemalloc.patch
     elif [[ "$PACKAGE_VERSION" =~ ^3\.2 ]]; then
         EXTRA_CONFIGURE_ARGS+=(--enable-yjit)
@@ -97,9 +95,7 @@ if [[ "$VARIANT" = jemalloc ]]; then
     fi
 elif [[ "$VARIANT" = malloctrim ]]; then
     EXTRA_CONFIGURE_ARGS=()
-    if [[ "$PACKAGE_VERSION" =~ ^2\. || "$PACKAGE_VERSION" =~ ^3\.0 ]]; then
-        run patch -p1 -ti /system/resources/ruby_26_malloctrim.patch
-    elif [[ "$PACKAGE_VERSION" =~ ^3\.1 ]]; then
+    if [[ "$PACKAGE_VERSION" =~ ^3\.1 ]]; then
         run patch -p1 -ti /system/resources/ruby_31_malloctrim.patch
     elif [[ "$PACKAGE_VERSION" =~ ^3\.2 ]]; then
         EXTRA_CONFIGURE_ARGS+=(--enable-yjit)

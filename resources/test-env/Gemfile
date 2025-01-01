@@ -3,7 +3,7 @@
 source 'https://rubygems.org'
 
 # Must allow for the minimum Ruby version that we support in config.yml.
-ruby '>= 2.7'
+ruby '>= 3.1'
 
 # Test engine to use
 gem 'rspec'

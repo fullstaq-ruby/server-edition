@@ -11,6 +11,9 @@ ruby:
   ## NOTE: if you change an existing `full_version` value,
   ## then be sure to bump the corresponding `package_revision`!
   minor_version_packages:
+    - minor_version: '3.4'
+      full_version: '3.4.1'
+      package_revision: '0'
     - minor_version: '3.3'
       full_version: '3.3.6'
       package_revision: '6'
@@ -20,20 +23,17 @@ ruby:
     - minor_version: '3.1'
       full_version: '3.1.6'
       package_revision: '15'
-    - minor_version: '3.0'
-      full_version: '3.0.7'
-      package_revision: '13'
 
   ## (Optional)
   ## Which tiny Ruby version packages to build.
   tiny_version_packages:
+    - full_version: '3.4.1'
+      package_revision: '0'
     - full_version: '3.3.6'
       package_revision: '0'
     - full_version: '3.2.6'
       package_revision: '0'
     - full_version: '3.1.6'
-      package_revision: '0'
-    - full_version: '3.0.7'
       package_revision: '0'
 
 ## (Required)
@@ -116,12 +116,6 @@ distributions: all
 ## Excludes certain Ruby minor versions from certain distributions.
 ## Useful if certain older Ruby versions don't compile on newer distributions or viceversa.
 distribution_exclusions:
-  - ruby_minor_version: '3.0'
-    distros:
-      - debian-12
-      - ubuntu-22.04
-      - ubuntu-24.04
-      - el-9
   - ruby_minor_version: '3.1'
     distros:
       - debian-12
