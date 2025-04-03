@@ -168,7 +168,7 @@ jobs:
       contains(inputs.necessary_jobs, ';Build Ruby [debian-11/3.4/normal];')
       && !failure() && !cancelled()
     steps:
-
+      
 
       - uses: actions/checkout@v4
       - uses: google-github-actions/auth@v2
@@ -220,7 +220,7 @@ jobs:
         env:
           TARBALL: image.tar.zst
 
-
+      
 
       - name: Build binaries
         run: ./internal-scripts/ci-cd/build-ruby-packages/build-binaries.sh
@@ -262,12 +262,12 @@ jobs:
       contains(inputs.necessary_jobs, ';Build Ruby [debian-11/3.4/jemalloc];')
       && !failure() && !cancelled()
     steps:
-
+      
       - name: Check whether 'Build Jemalloc [debian-11]' did not fail
         run: 'false'
         if: |
           needs.build_jemalloc_debian_11.result == 'skipped'
-          && contains(inputs.necessary_jobs, ';Build Jemalloc [debian-11];')
+          && contains(inputs.necessary_jobs, ';Build Jemalloc [debian-11];')        
 
       - uses: actions/checkout@v4
       - uses: google-github-actions/auth@v2
@@ -319,13 +319,13 @@ jobs:
         env:
           TARBALL: image.tar.zst
 
-
+      
       - name: Fetch Jemalloc binary
         run: ./internal-scripts/ci-cd/download-artifact.sh
         env:
           ARTIFACT_NAME: jemalloc-bin-debian-11
           ARTIFACT_PATH: .
-          CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
+          CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}        
 
       - name: Build binaries
         run: ./internal-scripts/ci-cd/build-ruby-packages/build-binaries.sh
@@ -366,7 +366,7 @@ jobs:
       contains(inputs.necessary_jobs, ';Build Ruby [debian-11/3.4/malloctrim];')
       && !failure() && !cancelled()
     steps:
-
+      
 
       - uses: actions/checkout@v4
       - uses: google-github-actions/auth@v2
@@ -418,7 +418,7 @@ jobs:
         env:
           TARBALL: image.tar.zst
 
-
+      
 
       - name: Build binaries
         run: ./internal-scripts/ci-cd/build-ruby-packages/build-binaries.sh
@@ -459,7 +459,7 @@ jobs:
       contains(inputs.necessary_jobs, ';Build Ruby [debian-11/3.3/normal];')
       && !failure() && !cancelled()
     steps:
-
+      
 
       - uses: actions/checkout@v4
       - uses: google-github-actions/auth@v2
@@ -511,7 +511,7 @@ jobs:
         env:
           TARBALL: image.tar.zst
 
-
+      
 
       - name: Build binaries
         run: ./internal-scripts/ci-cd/build-ruby-packages/build-binaries.sh
@@ -553,12 +553,12 @@ jobs:
       contains(inputs.necessary_jobs, ';Build Ruby [debian-11/3.3/jemalloc];')
       && !failure() && !cancelled()
     steps:
-
+      
       - name: Check whether 'Build Jemalloc [debian-11]' did not fail
         run: 'false'
         if: |
           needs.build_jemalloc_debian_11.result == 'skipped'
-          && contains(inputs.necessary_jobs, ';Build Jemalloc [debian-11];')
+          && contains(inputs.necessary_jobs, ';Build Jemalloc [debian-11];')        
 
       - uses: actions/checkout@v4
       - uses: google-github-actions/auth@v2
@@ -610,13 +610,13 @@ jobs:
         env:
           TARBALL: image.tar.zst
 
-
+      
       - name: Fetch Jemalloc binary
         run: ./internal-scripts/ci-cd/download-artifact.sh
         env:
           ARTIFACT_NAME: jemalloc-bin-debian-11
           ARTIFACT_PATH: .
-          CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
+          CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}        
 
       - name: Build binaries
         run: ./internal-scripts/ci-cd/build-ruby-packages/build-binaries.sh
@@ -657,7 +657,7 @@ jobs:
       contains(inputs.necessary_jobs, ';Build Ruby [debian-11/3.3/malloctrim];')
       && !failure() && !cancelled()
     steps:
-
+      
 
       - uses: actions/checkout@v4
       - uses: google-github-actions/auth@v2
@@ -709,7 +709,7 @@ jobs:
         env:
           TARBALL: image.tar.zst
 
-
+      
 
       - name: Build binaries
         run: ./internal-scripts/ci-cd/build-ruby-packages/build-binaries.sh
@@ -750,7 +750,7 @@ jobs:
       contains(inputs.necessary_jobs, ';Build Ruby [debian-11/3.2/normal];')
       && !failure() && !cancelled()
     steps:
-
+      
 
       - uses: actions/checkout@v4
       - uses: google-github-actions/auth@v2
@@ -802,7 +802,7 @@ jobs:
         env:
           TARBALL: image.tar.zst
 
-
+      
 
       - name: Build binaries
         run: ./internal-scripts/ci-cd/build-ruby-packages/build-binaries.sh
@@ -820,7 +820,7 @@ jobs:
           VARIANT_PACKAGE_SUFFIX: ""
           PACKAGE_FORMAT: "DEB"
           RUBY_PACKAGE_VERSION_ID: "3.2"
-          RUBY_PACKAGE_REVISION: "9"
+          RUBY_PACKAGE_REVISION: "10"
 
       - name: Archive package artifact to Google Cloud
         run: ./internal-scripts/ci-cd/upload-artifact.sh
@@ -844,12 +844,12 @@ jobs:
       contains(inputs.necessary_jobs, ';Build Ruby [debian-11/3.2/jemalloc];')
       && !failure() && !cancelled()
     steps:
-
+      
       - name: Check whether 'Build Jemalloc [debian-11]' did not fail
         run: 'false'
         if: |
           needs.build_jemalloc_debian_11.result == 'skipped'
-          && contains(inputs.necessary_jobs, ';Build Jemalloc [debian-11];')
+          && contains(inputs.necessary_jobs, ';Build Jemalloc [debian-11];')        
 
       - uses: actions/checkout@v4
       - uses: google-github-actions/auth@v2
@@ -901,13 +901,13 @@ jobs:
         env:
           TARBALL: image.tar.zst
 
-
+      
       - name: Fetch Jemalloc binary
         run: ./internal-scripts/ci-cd/download-artifact.sh
         env:
           ARTIFACT_NAME: jemalloc-bin-debian-11
           ARTIFACT_PATH: .
-          CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
+          CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}        
 
       - name: Build binaries
         run: ./internal-scripts/ci-cd/build-ruby-packages/build-binaries.sh
@@ -925,7 +925,7 @@ jobs:
           VARIANT_PACKAGE_SUFFIX: "-jemalloc"
           PACKAGE_FORMAT: "DEB"
           RUBY_PACKAGE_VERSION_ID: "3.2"
-          RUBY_PACKAGE_REVISION: "9"
+          RUBY_PACKAGE_REVISION: "10"
 
       - name: Archive package artifact to Google Cloud
         run: ./internal-scripts/ci-cd/upload-artifact.sh
@@ -948,7 +948,7 @@ jobs:
       contains(inputs.necessary_jobs, ';Build Ruby [debian-11/3.2/malloctrim];')
       && !failure() && !cancelled()
     steps:
-
+      
 
       - uses: actions/checkout@v4
       - uses: google-github-actions/auth@v2
@@ -1000,7 +1000,7 @@ jobs:
         env:
           TARBALL: image.tar.zst
 
-
+      
 
       - name: Build binaries
         run: ./internal-scripts/ci-cd/build-ruby-packages/build-binaries.sh
@@ -1018,7 +1018,7 @@ jobs:
           VARIANT_PACKAGE_SUFFIX: "-malloctrim"
           PACKAGE_FORMAT: "DEB"
           RUBY_PACKAGE_VERSION_ID: "3.2"
-          RUBY_PACKAGE_REVISION: "9"
+          RUBY_PACKAGE_REVISION: "10"
 
       - name: Archive package artifact to Google Cloud
         run: ./internal-scripts/ci-cd/upload-artifact.sh
@@ -1041,7 +1041,7 @@ jobs:
       contains(inputs.necessary_jobs, ';Build Ruby [debian-11/3.1/normal];')
       && !failure() && !cancelled()
     steps:
-
+      
 
       - uses: actions/checkout@v4
       - uses: google-github-actions/auth@v2
@@ -1093,7 +1093,7 @@ jobs:
         env:
           TARBALL: image.tar.zst
 
-
+      
 
       - name: Build binaries
         run: ./internal-scripts/ci-cd/build-ruby-packages/build-binaries.sh
@@ -1135,12 +1135,12 @@ jobs:
       contains(inputs.necessary_jobs, ';Build Ruby [debian-11/3.1/jemalloc];')
       && !failure() && !cancelled()
     steps:
-
+      
       - name: Check whether 'Build Jemalloc [debian-11]' did not fail
         run: 'false'
         if: |
           needs.build_jemalloc_debian_11.result == 'skipped'
-          && contains(inputs.necessary_jobs, ';Build Jemalloc [debian-11];')
+          && contains(inputs.necessary_jobs, ';Build Jemalloc [debian-11];')        
 
       - uses: actions/checkout@v4
       - uses: google-github-actions/auth@v2
@@ -1192,13 +1192,13 @@ jobs:
         env:
           TARBALL: image.tar.zst
 
-
+      
       - name: Fetch Jemalloc binary
         run: ./internal-scripts/ci-cd/download-artifact.sh
         env:
           ARTIFACT_NAME: jemalloc-bin-debian-11
           ARTIFACT_PATH: .
-          CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
+          CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}        
 
       - name: Build binaries
         run: ./internal-scripts/ci-cd/build-ruby-packages/build-binaries.sh
@@ -1239,7 +1239,7 @@ jobs:
       contains(inputs.necessary_jobs, ';Build Ruby [debian-11/3.1/malloctrim];')
       && !failure() && !cancelled()
     steps:
-
+      
 
       - uses: actions/checkout@v4
       - uses: google-github-actions/auth@v2
@@ -1291,7 +1291,7 @@ jobs:
         env:
           TARBALL: image.tar.zst
 
-
+      
 
       - name: Build binaries
         run: ./internal-scripts/ci-cd/build-ruby-packages/build-binaries.sh
@@ -1332,7 +1332,7 @@ jobs:
       contains(inputs.necessary_jobs, ';Build Ruby [debian-11/3.4.2/normal];')
       && !failure() && !cancelled()
     steps:
-
+      
 
       - uses: actions/checkout@v4
       - uses: google-github-actions/auth@v2
@@ -1384,7 +1384,7 @@ jobs:
         env:
           TARBALL: image.tar.zst
 
-
+      
 
       - name: Build binaries
         run: ./internal-scripts/ci-cd/build-ruby-packages/build-binaries.sh
@@ -1426,12 +1426,12 @@ jobs:
       contains(inputs.necessary_jobs, ';Build Ruby [debian-11/3.4.2/jemalloc];')
       && !failure() && !cancelled()
     steps:
-
+      
       - name: Check whether 'Build Jemalloc [debian-11]' did not fail
         run: 'false'
         if: |
           needs.build_jemalloc_debian_11.result == 'skipped'
-          && contains(inputs.necessary_jobs, ';Build Jemalloc [debian-11];')
+          && contains(inputs.necessary_jobs, ';Build Jemalloc [debian-11];')        
 
       - uses: actions/checkout@v4
       - uses: google-github-actions/auth@v2
@@ -1483,13 +1483,13 @@ jobs:
         env:
           TARBALL: image.tar.zst
 
-
+      
       - name: Fetch Jemalloc binary
         run: ./internal-scripts/ci-cd/download-artifact.sh
         env:
           ARTIFACT_NAME: jemalloc-bin-debian-11
           ARTIFACT_PATH: .
-          CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
+          CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}        
 
       - name: Build binaries
         run: ./internal-scripts/ci-cd/build-ruby-packages/build-binaries.sh
@@ -1530,7 +1530,7 @@ jobs:
       contains(inputs.necessary_jobs, ';Build Ruby [debian-11/3.4.2/malloctrim];')
       && !failure() && !cancelled()
     steps:
-
+      
 
       - uses: actions/checkout@v4
       - uses: google-github-actions/auth@v2
@@ -1582,7 +1582,7 @@ jobs:
         env:
           TARBALL: image.tar.zst
 
-
+      
 
       - name: Build binaries
         run: ./internal-scripts/ci-cd/build-ruby-packages/build-binaries.sh
@@ -1623,7 +1623,7 @@ jobs:
       contains(inputs.necessary_jobs, ';Build Ruby [debian-11/3.3.7/normal];')
       && !failure() && !cancelled()
     steps:
-
+      
 
       - uses: actions/checkout@v4
       - uses: google-github-actions/auth@v2
@@ -1675,7 +1675,7 @@ jobs:
         env:
           TARBALL: image.tar.zst
 
-
+      
 
       - name: Build binaries
         run: ./internal-scripts/ci-cd/build-ruby-packages/build-binaries.sh
@@ -1717,12 +1717,12 @@ jobs:
       contains(inputs.necessary_jobs, ';Build Ruby [debian-11/3.3.7/jemalloc];')
       && !failure() && !cancelled()
     steps:
-
+      
       - name: Check whether 'Build Jemalloc [debian-11]' did not fail
         run: 'false'
         if: |
           needs.build_jemalloc_debian_11.result == 'skipped'
-          && contains(inputs.necessary_jobs, ';Build Jemalloc [debian-11];')
+          && contains(inputs.necessary_jobs, ';Build Jemalloc [debian-11];')        
 
       - uses: actions/checkout@v4
       - uses: google-github-actions/auth@v2
@@ -1774,13 +1774,13 @@ jobs:
         env:
           TARBALL: image.tar.zst
 
-
+      
       - name: Fetch Jemalloc binary
         run: ./internal-scripts/ci-cd/download-artifact.sh
         env:
           ARTIFACT_NAME: jemalloc-bin-debian-11
           ARTIFACT_PATH: .
-          CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
+          CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}        
 
       - name: Build binaries
         run: ./internal-scripts/ci-cd/build-ruby-packages/build-binaries.sh
@@ -1821,7 +1821,7 @@ jobs:
       contains(inputs.necessary_jobs, ';Build Ruby [debian-11/3.3.7/malloctrim];')
       && !failure() && !cancelled()
     steps:
-
+      
 
       - uses: actions/checkout@v4
       - uses: google-github-actions/auth@v2
@@ -1873,7 +1873,7 @@ jobs:
         env:
           TARBALL: image.tar.zst
 
-
+      
 
       - name: Build binaries
         run: ./internal-scripts/ci-cd/build-ruby-packages/build-binaries.sh
@@ -1900,7 +1900,7 @@ jobs:
           ARTIFACT_PATH: output-malloctrim
           CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
 
-  build_ruby_debian_11-3_2_6-normal:
+  build_ruby_debian_11-3_2_7-normal:
     name: 'Ruby [debian-11/3.2.7/normal]'
 
     runs-on: ubuntu-24.04
@@ -1914,7 +1914,7 @@ jobs:
       contains(inputs.necessary_jobs, ';Build Ruby [debian-11/3.2.7/normal];')
       && !failure() && !cancelled()
     steps:
-
+      
 
       - uses: actions/checkout@v4
       - uses: google-github-actions/auth@v2
@@ -1966,7 +1966,7 @@ jobs:
         env:
           TARBALL: image.tar.zst
 
-
+      
 
       - name: Build binaries
         run: ./internal-scripts/ci-cd/build-ruby-packages/build-binaries.sh
@@ -1993,7 +1993,7 @@ jobs:
           ARTIFACT_PATH: output-normal
           CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
 
-  build_ruby_debian_11-3_2_6-jemalloc:
+  build_ruby_debian_11-3_2_7-jemalloc:
     name: 'Ruby [debian-11/3.2.7/jemalloc]'
 
     needs: build_jemalloc_debian_11
@@ -2008,12 +2008,12 @@ jobs:
       contains(inputs.necessary_jobs, ';Build Ruby [debian-11/3.2.7/jemalloc];')
       && !failure() && !cancelled()
     steps:
-
+      
       - name: Check whether 'Build Jemalloc [debian-11]' did not fail
         run: 'false'
         if: |
           needs.build_jemalloc_debian_11.result == 'skipped'
-          && contains(inputs.necessary_jobs, ';Build Jemalloc [debian-11];')
+          && contains(inputs.necessary_jobs, ';Build Jemalloc [debian-11];')        
 
       - uses: actions/checkout@v4
       - uses: google-github-actions/auth@v2
@@ -2065,13 +2065,13 @@ jobs:
         env:
           TARBALL: image.tar.zst
 
-
+      
       - name: Fetch Jemalloc binary
         run: ./internal-scripts/ci-cd/download-artifact.sh
         env:
           ARTIFACT_NAME: jemalloc-bin-debian-11
           ARTIFACT_PATH: .
-          CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
+          CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}        
 
       - name: Build binaries
         run: ./internal-scripts/ci-cd/build-ruby-packages/build-binaries.sh
@@ -2098,7 +2098,7 @@ jobs:
           ARTIFACT_PATH: output-jemalloc
           CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
 
-  build_ruby_debian_11-3_2_6-malloctrim:
+  build_ruby_debian_11-3_2_7-malloctrim:
     name: 'Ruby [debian-11/3.2.7/malloctrim]'
 
     runs-on: ubuntu-24.04
@@ -2112,7 +2112,7 @@ jobs:
       contains(inputs.necessary_jobs, ';Build Ruby [debian-11/3.2.7/malloctrim];')
       && !failure() && !cancelled()
     steps:
-
+      
 
       - uses: actions/checkout@v4
       - uses: google-github-actions/auth@v2
@@ -2164,7 +2164,7 @@ jobs:
         env:
           TARBALL: image.tar.zst
 
-
+      
 
       - name: Build binaries
         run: ./internal-scripts/ci-cd/build-ruby-packages/build-binaries.sh
@@ -2205,7 +2205,7 @@ jobs:
       contains(inputs.necessary_jobs, ';Build Ruby [debian-11/3.1.6/normal];')
       && !failure() && !cancelled()
     steps:
-
+      
 
       - uses: actions/checkout@v4
       - uses: google-github-actions/auth@v2
@@ -2257,7 +2257,7 @@ jobs:
         env:
           TARBALL: image.tar.zst
 
-
+      
 
       - name: Build binaries
         run: ./internal-scripts/ci-cd/build-ruby-packages/build-binaries.sh
@@ -2299,12 +2299,12 @@ jobs:
       contains(inputs.necessary_jobs, ';Build Ruby [debian-11/3.1.6/jemalloc];')
       && !failure() && !cancelled()
     steps:
-
+      
       - name: Check whether 'Build Jemalloc [debian-11]' did not fail
         run: 'false'
         if: |
           needs.build_jemalloc_debian_11.result == 'skipped'
-          && contains(inputs.necessary_jobs, ';Build Jemalloc [debian-11];')
+          && contains(inputs.necessary_jobs, ';Build Jemalloc [debian-11];')        
 
       - uses: actions/checkout@v4
       - uses: google-github-actions/auth@v2
@@ -2356,13 +2356,13 @@ jobs:
         env:
           TARBALL: image.tar.zst
 
-
+      
       - name: Fetch Jemalloc binary
         run: ./internal-scripts/ci-cd/download-artifact.sh
         env:
           ARTIFACT_NAME: jemalloc-bin-debian-11
           ARTIFACT_PATH: .
-          CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
+          CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}        
 
       - name: Build binaries
         run: ./internal-scripts/ci-cd/build-ruby-packages/build-binaries.sh
@@ -2403,7 +2403,7 @@ jobs:
       contains(inputs.necessary_jobs, ';Build Ruby [debian-11/3.1.6/malloctrim];')
       && !failure() && !cancelled()
     steps:
-
+      
 
       - uses: actions/checkout@v4
       - uses: google-github-actions/auth@v2
@@ -2455,7 +2455,7 @@ jobs:
         env:
           TARBALL: image.tar.zst
 
-
+      
 
       - name: Build binaries
         run: ./internal-scripts/ci-cd/build-ruby-packages/build-binaries.sh
@@ -2497,7 +2497,7 @@ jobs:
       contains(inputs.necessary_jobs, ';Build Ruby [ubuntu-22.04/3.4/normal];')
       && !failure() && !cancelled()
     steps:
-
+      
 
       - uses: actions/checkout@v4
       - uses: google-github-actions/auth@v2
@@ -2549,7 +2549,7 @@ jobs:
         env:
           TARBALL: image.tar.zst
 
-
+      
 
       - name: Build binaries
         run: ./internal-scripts/ci-cd/build-ruby-packages/build-binaries.sh
@@ -2591,12 +2591,12 @@ jobs:
       contains(inputs.necessary_jobs, ';Build Ruby [ubuntu-22.04/3.4/jemalloc];')
       && !failure() && !cancelled()
     steps:
-
+      
       - name: Check whether 'Build Jemalloc [ubuntu-22.04]' did not fail
         run: 'false'
         if: |
           needs.build_jemalloc_ubuntu_22_04.result == 'skipped'
-          && contains(inputs.necessary_jobs, ';Build Jemalloc [ubuntu-22.04];')
+          && contains(inputs.necessary_jobs, ';Build Jemalloc [ubuntu-22.04];')        
 
       - uses: actions/checkout@v4
       - uses: google-github-actions/auth@v2
@@ -2648,13 +2648,13 @@ jobs:
         env:
           TARBALL: image.tar.zst
 
-
+      
       - name: Fetch Jemalloc binary
         run: ./internal-scripts/ci-cd/download-artifact.sh
         env:
           ARTIFACT_NAME: jemalloc-bin-ubuntu-22.04
           ARTIFACT_PATH: .
-          CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
+          CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}        
 
       - name: Build binaries
         run: ./internal-scripts/ci-cd/build-ruby-packages/build-binaries.sh
@@ -2695,7 +2695,7 @@ jobs:
       contains(inputs.necessary_jobs, ';Build Ruby [ubuntu-22.04/3.4/malloctrim];')
       && !failure() && !cancelled()
     steps:
-
+      
 
       - uses: actions/checkout@v4
       - uses: google-github-actions/auth@v2
@@ -2747,7 +2747,7 @@ jobs:
         env:
           TARBALL: image.tar.zst
 
-
+      
 
       - name: Build binaries
         run: ./internal-scripts/ci-cd/build-ruby-packages/build-binaries.sh
@@ -2788,7 +2788,7 @@ jobs:
       contains(inputs.necessary_jobs, ';Build Ruby [ubuntu-22.04/3.3/normal];')
       && !failure() && !cancelled()
     steps:
-
+      
 
       - uses: actions/checkout@v4
       - uses: google-github-actions/auth@v2
@@ -2840,7 +2840,7 @@ jobs:
         env:
           TARBALL: image.tar.zst
 
-
+      
 
       - name: Build binaries
         run: ./internal-scripts/ci-cd/build-ruby-packages/build-binaries.sh
@@ -2882,12 +2882,12 @@ jobs:
       contains(inputs.necessary_jobs, ';Build Ruby [ubuntu-22.04/3.3/jemalloc];')
       && !failure() && !cancelled()
     steps:
-
+      
       - name: Check whether 'Build Jemalloc [ubuntu-22.04]' did not fail
         run: 'false'
         if: |
           needs.build_jemalloc_ubuntu_22_04.result == 'skipped'
-          && contains(inputs.necessary_jobs, ';Build Jemalloc [ubuntu-22.04];')
+          && contains(inputs.necessary_jobs, ';Build Jemalloc [ubuntu-22.04];')        
 
       - uses: actions/checkout@v4
       - uses: google-github-actions/auth@v2
@@ -2939,13 +2939,13 @@ jobs:
         env:
           TARBALL: image.tar.zst
 
-
+      
       - name: Fetch Jemalloc binary
         run: ./internal-scripts/ci-cd/download-artifact.sh
         env:
           ARTIFACT_NAME: jemalloc-bin-ubuntu-22.04
           ARTIFACT_PATH: .
-          CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
+          CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}        
 
       - name: Build binaries
         run: ./internal-scripts/ci-cd/build-ruby-packages/build-binaries.sh
@@ -2986,7 +2986,7 @@ jobs:
       contains(inputs.necessary_jobs, ';Build Ruby [ubuntu-22.04/3.3/malloctrim];')
       && !failure() && !cancelled()
     steps:
-
+      
 
       - uses: actions/checkout@v4
       - uses: google-github-actions/auth@v2
@@ -3038,7 +3038,7 @@ jobs:
         env:
           TARBALL: image.tar.zst
 
-
+      
 
       - name: Build binaries
         run: ./internal-scripts/ci-cd/build-ruby-packages/build-binaries.sh
@@ -3079,7 +3079,7 @@ jobs:
       contains(inputs.necessary_jobs, ';Build Ruby [ubuntu-22.04/3.2/normal];')
       && !failure() && !cancelled()
     steps:
-
+      
 
       - uses: actions/checkout@v4
       - uses: google-github-actions/auth@v2
@@ -3131,7 +3131,7 @@ jobs:
         env:
           TARBALL: image.tar.zst
 
-
+      
 
       - name: Build binaries
         run: ./internal-scripts/ci-cd/build-ruby-packages/build-binaries.sh
@@ -3149,7 +3149,7 @@ jobs:
           VARIANT_PACKAGE_SUFFIX: ""
           PACKAGE_FORMAT: "DEB"
           RUBY_PACKAGE_VERSION_ID: "3.2"
-          RUBY_PACKAGE_REVISION: "9"
+          RUBY_PACKAGE_REVISION: "10"
 
       - name: Archive package artifact to Google Cloud
         run: ./internal-scripts/ci-cd/upload-artifact.sh
@@ -3173,12 +3173,12 @@ jobs:
       contains(inputs.necessary_jobs, ';Build Ruby [ubuntu-22.04/3.2/jemalloc];')
       && !failure() && !cancelled()
     steps:
-
+      
       - name: Check whether 'Build Jemalloc [ubuntu-22.04]' did not fail
         run: 'false'
         if: |
           needs.build_jemalloc_ubuntu_22_04.result == 'skipped'
-          && contains(inputs.necessary_jobs, ';Build Jemalloc [ubuntu-22.04];')
+          && contains(inputs.necessary_jobs, ';Build Jemalloc [ubuntu-22.04];')        
 
       - uses: actions/checkout@v4
       - uses: google-github-actions/auth@v2
@@ -3230,13 +3230,13 @@ jobs:
         env:
           TARBALL: image.tar.zst
 
-
+      
       - name: Fetch Jemalloc binary
         run: ./internal-scripts/ci-cd/download-artifact.sh
         env:
           ARTIFACT_NAME: jemalloc-bin-ubuntu-22.04
           ARTIFACT_PATH: .
-          CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
+          CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}        
 
       - name: Build binaries
         run: ./internal-scripts/ci-cd/build-ruby-packages/build-binaries.sh
@@ -3254,7 +3254,7 @@ jobs:
           VARIANT_PACKAGE_SUFFIX: "-jemalloc"
           PACKAGE_FORMAT: "DEB"
           RUBY_PACKAGE_VERSION_ID: "3.2"
-          RUBY_PACKAGE_REVISION: "9"
+          RUBY_PACKAGE_REVISION: "10"
 
       - name: Archive package artifact to Google Cloud
         run: ./internal-scripts/ci-cd/upload-artifact.sh
@@ -3277,7 +3277,7 @@ jobs:
       contains(inputs.necessary_jobs, ';Build Ruby [ubuntu-22.04/3.2/malloctrim];')
       && !failure() && !cancelled()
     steps:
-
+      
 
       - uses: actions/checkout@v4
       - uses: google-github-actions/auth@v2
@@ -3329,7 +3329,7 @@ jobs:
         env:
           TARBALL: image.tar.zst
 
-
+      
 
       - name: Build binaries
         run: ./internal-scripts/ci-cd/build-ruby-packages/build-binaries.sh
@@ -3347,7 +3347,7 @@ jobs:
           VARIANT_PACKAGE_SUFFIX: "-malloctrim"
           PACKAGE_FORMAT: "DEB"
           RUBY_PACKAGE_VERSION_ID: "3.2"
-          RUBY_PACKAGE_REVISION: "9"
+          RUBY_PACKAGE_REVISION: "10"
 
       - name: Archive package artifact to Google Cloud
         run: ./internal-scripts/ci-cd/upload-artifact.sh
@@ -3370,7 +3370,7 @@ jobs:
       contains(inputs.necessary_jobs, ';Build Ruby [ubuntu-22.04/3.1/normal];')
       && !failure() && !cancelled()
     steps:
-
+      
 
       - uses: actions/checkout@v4
       - uses: google-github-actions/auth@v2
@@ -3422,7 +3422,7 @@ jobs:
         env:
           TARBALL: image.tar.zst
 
-
+      
 
       - name: Build binaries
         run: ./internal-scripts/ci-cd/build-ruby-packages/build-binaries.sh
@@ -3464,12 +3464,12 @@ jobs:
       contains(inputs.necessary_jobs, ';Build Ruby [ubuntu-22.04/3.1/jemalloc];')
       && !failure() && !cancelled()
     steps:
-
+      
       - name: Check whether 'Build Jemalloc [ubuntu-22.04]' did not fail
         run: 'false'
         if: |
           needs.build_jemalloc_ubuntu_22_04.result == 'skipped'
-          && contains(inputs.necessary_jobs, ';Build Jemalloc [ubuntu-22.04];')
+          && contains(inputs.necessary_jobs, ';Build Jemalloc [ubuntu-22.04];')        
 
       - uses: actions/checkout@v4
       - uses: google-github-actions/auth@v2
@@ -3521,13 +3521,13 @@ jobs:
         env:
           TARBALL: image.tar.zst
 
-
+      
       - name: Fetch Jemalloc binary
         run: ./internal-scripts/ci-cd/download-artifact.sh
         env:
           ARTIFACT_NAME: jemalloc-bin-ubuntu-22.04
           ARTIFACT_PATH: .
-          CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
+          CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}        
 
       - name: Build binaries
         run: ./internal-scripts/ci-cd/build-ruby-packages/build-binaries.sh
@@ -3568,7 +3568,7 @@ jobs:
       contains(inputs.necessary_jobs, ';Build Ruby [ubuntu-22.04/3.1/malloctrim];')
       && !failure() && !cancelled()
     steps:
-
+      
 
       - uses: actions/checkout@v4
       - uses: google-github-actions/auth@v2
@@ -3620,7 +3620,7 @@ jobs:
         env:
           TARBALL: image.tar.zst
 
-
+      
 
       - name: Build binaries
         run: ./internal-scripts/ci-cd/build-ruby-packages/build-binaries.sh
@@ -3661,7 +3661,7 @@ jobs:
       contains(inputs.necessary_jobs, ';Build Ruby [ubuntu-22.04/3.4.2/normal];')
       && !failure() && !cancelled()
     steps:
-
+      
 
       - uses: actions/checkout@v4
       - uses: google-github-actions/auth@v2
@@ -3713,7 +3713,7 @@ jobs:
         env:
           TARBALL: image.tar.zst
 
-
+      
 
       - name: Build binaries
         run: ./internal-scripts/ci-cd/build-ruby-packages/build-binaries.sh
@@ -3755,12 +3755,12 @@ jobs:
       contains(inputs.necessary_jobs, ';Build Ruby [ubuntu-22.04/3.4.2/jemalloc];')
       && !failure() && !cancelled()
     steps:
-
+      
       - name: Check whether 'Build Jemalloc [ubuntu-22.04]' did not fail
         run: 'false'
         if: |
           needs.build_jemalloc_ubuntu_22_04.result == 'skipped'
-          && contains(inputs.necessary_jobs, ';Build Jemalloc [ubuntu-22.04];')
+          && contains(inputs.necessary_jobs, ';Build Jemalloc [ubuntu-22.04];')        
 
       - uses: actions/checkout@v4
       - uses: google-github-actions/auth@v2
@@ -3812,13 +3812,13 @@ jobs:
         env:
           TARBALL: image.tar.zst
 
-
+      
       - name: Fetch Jemalloc binary
         run: ./internal-scripts/ci-cd/download-artifact.sh
         env:
           ARTIFACT_NAME: jemalloc-bin-ubuntu-22.04
           ARTIFACT_PATH: .
-          CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
+          CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}        
 
       - name: Build binaries
         run: ./internal-scripts/ci-cd/build-ruby-packages/build-binaries.sh
@@ -3859,7 +3859,7 @@ jobs:
       contains(inputs.necessary_jobs, ';Build Ruby [ubuntu-22.04/3.4.2/malloctrim];')
       && !failure() && !cancelled()
     steps:
-
+      
 
       - uses: actions/checkout@v4
       - uses: google-github-actions/auth@v2
@@ -3911,7 +3911,7 @@ jobs:
         env:
           TARBALL: image.tar.zst
 
-
+      
 
       - name: Build binaries
         run: ./internal-scripts/ci-cd/build-ruby-packages/build-binaries.sh
@@ -3952,7 +3952,7 @@ jobs:
       contains(inputs.necessary_jobs, ';Build Ruby [ubuntu-22.04/3.3.7/normal];')
       && !failure() && !cancelled()
     steps:
-
+      
 
       - uses: actions/checkout@v4
       - uses: google-github-actions/auth@v2
@@ -4004,7 +4004,7 @@ jobs:
         env:
           TARBALL: image.tar.zst
 
-
+      
 
       - name: Build binaries
         run: ./internal-scripts/ci-cd/build-ruby-packages/build-binaries.sh
@@ -4046,12 +4046,12 @@ jobs:
       contains(inputs.necessary_jobs, ';Build Ruby [ubuntu-22.04/3.3.7/jemalloc];')
       && !failure() && !cancelled()
     steps:
-
+      
       - name: Check whether 'Build Jemalloc [ubuntu-22.04]' did not fail
         run: 'false'
         if: |
           needs.build_jemalloc_ubuntu_22_04.result == 'skipped'
-          && contains(inputs.necessary_jobs, ';Build Jemalloc [ubuntu-22.04];')
+          && contains(inputs.necessary_jobs, ';Build Jemalloc [ubuntu-22.04];')        
 
       - uses: actions/checkout@v4
       - uses: google-github-actions/auth@v2
@@ -4103,13 +4103,13 @@ jobs:
         env:
           TARBALL: image.tar.zst
 
-
+      
       - name: Fetch Jemalloc binary
         run: ./internal-scripts/ci-cd/download-artifact.sh
         env:
           ARTIFACT_NAME: jemalloc-bin-ubuntu-22.04
           ARTIFACT_PATH: .
-          CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
+          CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}        
 
       - name: Build binaries
         run: ./internal-scripts/ci-cd/build-ruby-packages/build-binaries.sh
@@ -4150,7 +4150,7 @@ jobs:
       contains(inputs.necessary_jobs, ';Build Ruby [ubuntu-22.04/3.3.7/malloctrim];')
       && !failure() && !cancelled()
     steps:
-
+      
 
       - uses: actions/checkout@v4
       - uses: google-github-actions/auth@v2
@@ -4202,7 +4202,7 @@ jobs:
         env:
           TARBALL: image.tar.zst
 
-
+      
 
       - name: Build binaries
         run: ./internal-scripts/ci-cd/build-ruby-packages/build-binaries.sh
@@ -4229,7 +4229,7 @@ jobs:
           ARTIFACT_PATH: output-malloctrim
           CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
 
-  build_ruby_ubuntu_22_04-3_2_6-normal:
+  build_ruby_ubuntu_22_04-3_2_7-normal:
     name: 'Ruby [ubuntu-22.04/3.2.7/normal]'
 
     runs-on: ubuntu-24.04
@@ -4243,7 +4243,7 @@ jobs:
       contains(inputs.necessary_jobs, ';Build Ruby [ubuntu-22.04/3.2.7/normal];')
       && !failure() && !cancelled()
     steps:
-
+      
 
       - uses: actions/checkout@v4
       - uses: google-github-actions/auth@v2
@@ -4295,7 +4295,7 @@ jobs:
         env:
           TARBALL: image.tar.zst
 
-
+      
 
       - name: Build binaries
         run: ./internal-scripts/ci-cd/build-ruby-packages/build-binaries.sh
@@ -4322,7 +4322,7 @@ jobs:
           ARTIFACT_PATH: output-normal
           CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
 
-  build_ruby_ubuntu_22_04-3_2_6-jemalloc:
+  build_ruby_ubuntu_22_04-3_2_7-jemalloc:
     name: 'Ruby [ubuntu-22.04/3.2.7/jemalloc]'
 
     needs: build_jemalloc_ubuntu_22_04
@@ -4337,12 +4337,12 @@ jobs:
       contains(inputs.necessary_jobs, ';Build Ruby [ubuntu-22.04/3.2.7/jemalloc];')
       && !failure() && !cancelled()
     steps:
-
+      
       - name: Check whether 'Build Jemalloc [ubuntu-22.04]' did not fail
         run: 'false'
         if: |
           needs.build_jemalloc_ubuntu_22_04.result == 'skipped'
-          && contains(inputs.necessary_jobs, ';Build Jemalloc [ubuntu-22.04];')
+          && contains(inputs.necessary_jobs, ';Build Jemalloc [ubuntu-22.04];')        
 
       - uses: actions/checkout@v4
       - uses: google-github-actions/auth@v2
@@ -4394,13 +4394,13 @@ jobs:
         env:
           TARBALL: image.tar.zst
 
-
+      
       - name: Fetch Jemalloc binary
         run: ./internal-scripts/ci-cd/download-artifact.sh
         env:
           ARTIFACT_NAME: jemalloc-bin-ubuntu-22.04
           ARTIFACT_PATH: .
-          CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
+          CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}        
 
       - name: Build binaries
         run: ./internal-scripts/ci-cd/build-ruby-packages/build-binaries.sh
@@ -4427,7 +4427,7 @@ jobs:
           ARTIFACT_PATH: output-jemalloc
           CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
 
-  build_ruby_ubuntu_22_04-3_2_6-malloctrim:
+  build_ruby_ubuntu_22_04-3_2_7-malloctrim:
     name: 'Ruby [ubuntu-22.04/3.2.7/malloctrim]'
 
     runs-on: ubuntu-24.04
@@ -4441,7 +4441,7 @@ jobs:
       contains(inputs.necessary_jobs, ';Build Ruby [ubuntu-22.04/3.2.7/malloctrim];')
       && !failure() && !cancelled()
     steps:
-
+      
 
       - uses: actions/checkout@v4
       - uses: google-github-actions/auth@v2
@@ -4493,7 +4493,7 @@ jobs:
         env:
           TARBALL: image.tar.zst
 
-
+      
 
       - name: Build binaries
         run: ./internal-scripts/ci-cd/build-ruby-packages/build-binaries.sh
@@ -4534,7 +4534,7 @@ jobs:
       contains(inputs.necessary_jobs, ';Build Ruby [ubuntu-22.04/3.1.6/normal];')
       && !failure() && !cancelled()
     steps:
-
+      
 
       - uses: actions/checkout@v4
       - uses: google-github-actions/auth@v2
@@ -4586,7 +4586,7 @@ jobs:
         env:
           TARBALL: image.tar.zst
 
-
+      
 
       - name: Build binaries
         run: ./internal-scripts/ci-cd/build-ruby-packages/build-binaries.sh
@@ -4628,12 +4628,12 @@ jobs:
       contains(inputs.necessary_jobs, ';Build Ruby [ubuntu-22.04/3.1.6/jemalloc];')
       && !failure() && !cancelled()
     steps:
-
+      
       - name: Check whether 'Build Jemalloc [ubuntu-22.04]' did not fail
         run: 'false'
         if: |
           needs.build_jemalloc_ubuntu_22_04.result == 'skipped'
-          && contains(inputs.necessary_jobs, ';Build Jemalloc [ubuntu-22.04];')
+          && contains(inputs.necessary_jobs, ';Build Jemalloc [ubuntu-22.04];')        
 
       - uses: actions/checkout@v4
       - uses: google-github-actions/auth@v2
@@ -4685,13 +4685,13 @@ jobs:
         env:
           TARBALL: image.tar.zst
 
-
+      
       - name: Fetch Jemalloc binary
         run: ./internal-scripts/ci-cd/download-artifact.sh
         env:
           ARTIFACT_NAME: jemalloc-bin-ubuntu-22.04
           ARTIFACT_PATH: .
-          CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
+          CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}        
 
       - name: Build binaries
         run: ./internal-scripts/ci-cd/build-ruby-packages/build-binaries.sh
@@ -4732,7 +4732,7 @@ jobs:
       contains(inputs.necessary_jobs, ';Build Ruby [ubuntu-22.04/3.1.6/malloctrim];')
       && !failure() && !cancelled()
     steps:
-
+      
 
       - uses: actions/checkout@v4
       - uses: google-github-actions/auth@v2
@@ -4784,7 +4784,7 @@ jobs:
         env:
           TARBALL: image.tar.zst
 
-
+      
 
       - name: Build binaries
         run: ./internal-scripts/ci-cd/build-ruby-packages/build-binaries.sh
@@ -4845,9 +4845,9 @@ jobs:
       - build_ruby_debian_11-3_3_7-jemalloc
       - build_ruby_debian_11-3_3_7-malloctrim
 
-      - build_ruby_debian_11-3_2_6-normal
-      - build_ruby_debian_11-3_2_6-jemalloc
-      - build_ruby_debian_11-3_2_6-malloctrim
+      - build_ruby_debian_11-3_2_7-normal
+      - build_ruby_debian_11-3_2_7-jemalloc
+      - build_ruby_debian_11-3_2_7-malloctrim
 
       - build_ruby_debian_11-3_1_6-normal
       - build_ruby_debian_11-3_1_6-jemalloc
@@ -4879,9 +4879,9 @@ jobs:
       - build_ruby_ubuntu_22_04-3_3_7-jemalloc
       - build_ruby_ubuntu_22_04-3_3_7-malloctrim
 
-      - build_ruby_ubuntu_22_04-3_2_6-normal
-      - build_ruby_ubuntu_22_04-3_2_6-jemalloc
-      - build_ruby_ubuntu_22_04-3_2_6-malloctrim
+      - build_ruby_ubuntu_22_04-3_2_7-normal
+      - build_ruby_ubuntu_22_04-3_2_7-jemalloc
+      - build_ruby_ubuntu_22_04-3_2_7-malloctrim
 
       - build_ruby_ubuntu_22_04-3_1_6-normal
       - build_ruby_ubuntu_22_04-3_1_6-jemalloc
@@ -5298,14 +5298,14 @@ jobs:
             || (needs.build_ruby_debian_11-3_3_7-malloctrim.result != 'success'
               && (needs.build_ruby_debian_11-3_3_7-malloctrim.result != 'skipped'
                 || contains(inputs.necessary_jobs, ';Build Ruby [debian-11/3.3.7/malloctrim];')))
-            || (needs.build_ruby_debian_11-3_2_6-normal.result != 'success'
-              && (needs.build_ruby_debian_11-3_2_6-normal.result != 'skipped'
+            || (needs.build_ruby_debian_11-3_2_7-normal.result != 'success'
+              && (needs.build_ruby_debian_11-3_2_7-normal.result != 'skipped'
                 || contains(inputs.necessary_jobs, ';Build Ruby [debian-11/3.2.7/normal];')))
-            || (needs.build_ruby_debian_11-3_2_6-jemalloc.result != 'success'
-              && (needs.build_ruby_debian_11-3_2_6-jemalloc.result != 'skipped'
+            || (needs.build_ruby_debian_11-3_2_7-jemalloc.result != 'success'
+              && (needs.build_ruby_debian_11-3_2_7-jemalloc.result != 'skipped'
                 || contains(inputs.necessary_jobs, ';Build Ruby [debian-11/3.2.7/jemalloc];')))
-            || (needs.build_ruby_debian_11-3_2_6-malloctrim.result != 'success'
-              && (needs.build_ruby_debian_11-3_2_6-malloctrim.result != 'skipped'
+            || (needs.build_ruby_debian_11-3_2_7-malloctrim.result != 'success'
+              && (needs.build_ruby_debian_11-3_2_7-malloctrim.result != 'skipped'
                 || contains(inputs.necessary_jobs, ';Build Ruby [debian-11/3.2.7/malloctrim];')))
             || (needs.build_ruby_debian_11-3_1_6-normal.result != 'success'
               && (needs.build_ruby_debian_11-3_1_6-normal.result != 'skipped'
@@ -5374,14 +5374,14 @@ jobs:
             || (needs.build_ruby_ubuntu_22_04-3_3_7-malloctrim.result != 'success'
               && (needs.build_ruby_ubuntu_22_04-3_3_7-malloctrim.result != 'skipped'
                 || contains(inputs.necessary_jobs, ';Build Ruby [ubuntu-22.04/3.3.7/malloctrim];')))
-            || (needs.build_ruby_ubuntu_22_04-3_2_6-normal.result != 'success'
-              && (needs.build_ruby_ubuntu_22_04-3_2_6-normal.result != 'skipped'
+            || (needs.build_ruby_ubuntu_22_04-3_2_7-normal.result != 'success'
+              && (needs.build_ruby_ubuntu_22_04-3_2_7-normal.result != 'skipped'
                 || contains(inputs.necessary_jobs, ';Build Ruby [ubuntu-22.04/3.2.7/normal];')))
-            || (needs.build_ruby_ubuntu_22_04-3_2_6-jemalloc.result != 'success'
-              && (needs.build_ruby_ubuntu_22_04-3_2_6-jemalloc.result != 'skipped'
+            || (needs.build_ruby_ubuntu_22_04-3_2_7-jemalloc.result != 'success'
+              && (needs.build_ruby_ubuntu_22_04-3_2_7-jemalloc.result != 'skipped'
                 || contains(inputs.necessary_jobs, ';Build Ruby [ubuntu-22.04/3.2.7/jemalloc];')))
-            || (needs.build_ruby_ubuntu_22_04-3_2_6-malloctrim.result != 'success'
-              && (needs.build_ruby_ubuntu_22_04-3_2_6-malloctrim.result != 'skipped'
+            || (needs.build_ruby_ubuntu_22_04-3_2_7-malloctrim.result != 'success'
+              && (needs.build_ruby_ubuntu_22_04-3_2_7-malloctrim.result != 'skipped'
                 || contains(inputs.necessary_jobs, ';Build Ruby [ubuntu-22.04/3.2.7/malloctrim];')))
             || (needs.build_ruby_ubuntu_22_04-3_1_6-normal.result != 'success'
               && (needs.build_ruby_ubuntu_22_04-3_1_6-normal.result != 'skipped'

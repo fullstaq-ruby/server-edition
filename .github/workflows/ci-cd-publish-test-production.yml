@@ -779,7 +779,7 @@ jobs:
           ARTIFACT_NAME: tested-against-production-centos-8_3.3.7_malloctrim
           ARTIFACT_PATH: mark-malloctrim
           CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
-  test_centos_8-3_2_6-normal:
+  test_centos_8-3_2_7-normal:
     name: 'Test [centos-8/3.2.7/normal]'
     needs:
       - publish
@@ -822,7 +822,7 @@ jobs:
           ARTIFACT_NAME: tested-against-production-centos-8_3.2.7_normal
           ARTIFACT_PATH: mark-normal
           CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
-  test_centos_8-3_2_6-jemalloc:
+  test_centos_8-3_2_7-jemalloc:
     name: 'Test [centos-8/3.2.7/jemalloc]'
     needs:
       - publish
@@ -865,7 +865,7 @@ jobs:
           ARTIFACT_NAME: tested-against-production-centos-8_3.2.7_jemalloc
           ARTIFACT_PATH: mark-jemalloc
           CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
-  test_centos_8-3_2_6-malloctrim:
+  test_centos_8-3_2_7-malloctrim:
     name: 'Test [centos-8/3.2.7/malloctrim]'
     needs:
       - publish
@@ -1683,7 +1683,7 @@ jobs:
           ARTIFACT_NAME: tested-against-production-debian-10_3.3.7_malloctrim
           ARTIFACT_PATH: mark-malloctrim
           CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
-  test_debian_10-3_2_6-normal:
+  test_debian_10-3_2_7-normal:
     name: 'Test [debian-10/3.2.7/normal]'
     needs:
       - publish
@@ -1726,7 +1726,7 @@ jobs:
           ARTIFACT_NAME: tested-against-production-debian-10_3.2.7_normal
           ARTIFACT_PATH: mark-normal
           CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
-  test_debian_10-3_2_6-jemalloc:
+  test_debian_10-3_2_7-jemalloc:
     name: 'Test [debian-10/3.2.7/jemalloc]'
     needs:
       - publish
@@ -1769,7 +1769,7 @@ jobs:
           ARTIFACT_NAME: tested-against-production-debian-10_3.2.7_jemalloc
           ARTIFACT_PATH: mark-jemalloc
           CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
-  test_debian_10-3_2_6-malloctrim:
+  test_debian_10-3_2_7-malloctrim:
     name: 'Test [debian-10/3.2.7/malloctrim]'
     needs:
       - publish
@@ -2716,7 +2716,7 @@ jobs:
           ARTIFACT_NAME: tested-against-production-debian-11_3.3.7_malloctrim
           ARTIFACT_PATH: mark-malloctrim
           CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
-  test_debian_11-3_2_6-normal:
+  test_debian_11-3_2_7-normal:
     name: 'Test [debian-11/3.2.7/normal]'
     needs:
       - publish
@@ -2759,7 +2759,7 @@ jobs:
           ARTIFACT_NAME: tested-against-production-debian-11_3.2.7_normal
           ARTIFACT_PATH: mark-normal
           CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
-  test_debian_11-3_2_6-jemalloc:
+  test_debian_11-3_2_7-jemalloc:
     name: 'Test [debian-11/3.2.7/jemalloc]'
     needs:
       - publish
@@ -2802,7 +2802,7 @@ jobs:
           ARTIFACT_NAME: tested-against-production-debian-11_3.2.7_jemalloc
           ARTIFACT_PATH: mark-jemalloc
           CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
-  test_debian_11-3_2_6-malloctrim:
+  test_debian_11-3_2_7-malloctrim:
     name: 'Test [debian-11/3.2.7/malloctrim]'
     needs:
       - publish
@@ -3620,7 +3620,7 @@ jobs:
           ARTIFACT_NAME: tested-against-production-debian-12_3.3.7_malloctrim
           ARTIFACT_PATH: mark-malloctrim
           CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
-  test_debian_12-3_2_6-normal:
+  test_debian_12-3_2_7-normal:
     name: 'Test [debian-12/3.2.7/normal]'
     needs:
       - publish
@@ -3663,7 +3663,7 @@ jobs:
           ARTIFACT_NAME: tested-against-production-debian-12_3.2.7_normal
           ARTIFACT_PATH: mark-normal
           CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
-  test_debian_12-3_2_6-jemalloc:
+  test_debian_12-3_2_7-jemalloc:
     name: 'Test [debian-12/3.2.7/jemalloc]'
     needs:
       - publish
@@ -3706,7 +3706,7 @@ jobs:
           ARTIFACT_NAME: tested-against-production-debian-12_3.2.7_jemalloc
           ARTIFACT_PATH: mark-jemalloc
           CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
-  test_debian_12-3_2_6-malloctrim:
+  test_debian_12-3_2_7-malloctrim:
     name: 'Test [debian-12/3.2.7/malloctrim]'
     needs:
       - publish
@@ -4524,7 +4524,7 @@ jobs:
           ARTIFACT_NAME: tested-against-production-el-9_3.3.7_malloctrim
           ARTIFACT_PATH: mark-malloctrim
           CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
-  test_el_9-3_2_6-normal:
+  test_el_9-3_2_7-normal:
     name: 'Test [el-9/3.2.7/normal]'
     needs:
       - publish
@@ -4567,7 +4567,7 @@ jobs:
           ARTIFACT_NAME: tested-against-production-el-9_3.2.7_normal
           ARTIFACT_PATH: mark-normal
           CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
-  test_el_9-3_2_6-jemalloc:
+  test_el_9-3_2_7-jemalloc:
     name: 'Test [el-9/3.2.7/jemalloc]'
     needs:
       - publish
@@ -4610,7 +4610,7 @@ jobs:
           ARTIFACT_NAME: tested-against-production-el-9_3.2.7_jemalloc
           ARTIFACT_PATH: mark-jemalloc
           CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
-  test_el_9-3_2_6-malloctrim:
+  test_el_9-3_2_7-malloctrim:
     name: 'Test [el-9/3.2.7/malloctrim]'
     needs:
       - publish
@@ -5557,7 +5557,7 @@ jobs:
           ARTIFACT_NAME: tested-against-production-ubuntu-20.04_3.3.7_malloctrim
           ARTIFACT_PATH: mark-malloctrim
           CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
-  test_ubuntu_20_04-3_2_6-normal:
+  test_ubuntu_20_04-3_2_7-normal:
     name: 'Test [ubuntu-20.04/3.2.7/normal]'
     needs:
       - publish
@@ -5600,7 +5600,7 @@ jobs:
           ARTIFACT_NAME: tested-against-production-ubuntu-20.04_3.2.7_normal
           ARTIFACT_PATH: mark-normal
           CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
-  test_ubuntu_20_04-3_2_6-jemalloc:
+  test_ubuntu_20_04-3_2_7-jemalloc:
     name: 'Test [ubuntu-20.04/3.2.7/jemalloc]'
     needs:
       - publish
@@ -5643,7 +5643,7 @@ jobs:
           ARTIFACT_NAME: tested-against-production-ubuntu-20.04_3.2.7_jemalloc
           ARTIFACT_PATH: mark-jemalloc
           CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
-  test_ubuntu_20_04-3_2_6-malloctrim:
+  test_ubuntu_20_04-3_2_7-malloctrim:
     name: 'Test [ubuntu-20.04/3.2.7/malloctrim]'
     needs:
       - publish
@@ -6590,7 +6590,7 @@ jobs:
           ARTIFACT_NAME: tested-against-production-ubuntu-22.04_3.3.7_malloctrim
           ARTIFACT_PATH: mark-malloctrim
           CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
-  test_ubuntu_22_04-3_2_6-normal:
+  test_ubuntu_22_04-3_2_7-normal:
     name: 'Test [ubuntu-22.04/3.2.7/normal]'
     needs:
       - publish
@@ -6633,7 +6633,7 @@ jobs:
           ARTIFACT_NAME: tested-against-production-ubuntu-22.04_3.2.7_normal
           ARTIFACT_PATH: mark-normal
           CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
-  test_ubuntu_22_04-3_2_6-jemalloc:
+  test_ubuntu_22_04-3_2_7-jemalloc:
     name: 'Test [ubuntu-22.04/3.2.7/jemalloc]'
     needs:
       - publish
@@ -6676,7 +6676,7 @@ jobs:
           ARTIFACT_NAME: tested-against-production-ubuntu-22.04_3.2.7_jemalloc
           ARTIFACT_PATH: mark-jemalloc
           CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
-  test_ubuntu_22_04-3_2_6-malloctrim:
+  test_ubuntu_22_04-3_2_7-malloctrim:
     name: 'Test [ubuntu-22.04/3.2.7/malloctrim]'
     needs:
       - publish
@@ -7623,7 +7623,7 @@ jobs:
           ARTIFACT_NAME: tested-against-production-ubuntu-24.04_3.3.7_malloctrim
           ARTIFACT_PATH: mark-malloctrim
           CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
-  test_ubuntu_24_04-3_2_6-normal:
+  test_ubuntu_24_04-3_2_7-normal:
     name: 'Test [ubuntu-24.04/3.2.7/normal]'
     needs:
       - publish
@@ -7666,7 +7666,7 @@ jobs:
           ARTIFACT_NAME: tested-against-production-ubuntu-24.04_3.2.7_normal
           ARTIFACT_PATH: mark-normal
           CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
-  test_ubuntu_24_04-3_2_6-jemalloc:
+  test_ubuntu_24_04-3_2_7-jemalloc:
     name: 'Test [ubuntu-24.04/3.2.7/jemalloc]'
     needs:
       - publish
@@ -7709,7 +7709,7 @@ jobs:
           ARTIFACT_NAME: tested-against-production-ubuntu-24.04_3.2.7_jemalloc
           ARTIFACT_PATH: mark-jemalloc
           CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
-  test_ubuntu_24_04-3_2_6-malloctrim:
+  test_ubuntu_24_04-3_2_7-malloctrim:
     name: 'Test [ubuntu-24.04/3.2.7/malloctrim]'
     needs:
       - publish
@@ -7908,9 +7908,9 @@ jobs:
       - test_centos_8-3_3_7-normal
       - test_centos_8-3_3_7-jemalloc
       - test_centos_8-3_3_7-malloctrim
-      - test_centos_8-3_2_6-normal
-      - test_centos_8-3_2_6-jemalloc
-      - test_centos_8-3_2_6-malloctrim
+      - test_centos_8-3_2_7-normal
+      - test_centos_8-3_2_7-jemalloc
+      - test_centos_8-3_2_7-malloctrim
       - test_debian_10-3_4-normal
       - test_debian_10-3_4-jemalloc
       - test_debian_10-3_4-malloctrim
@@ -7929,9 +7929,9 @@ jobs:
       - test_debian_10-3_3_7-normal
       - test_debian_10-3_3_7-jemalloc
       - test_debian_10-3_3_7-malloctrim
-      - test_debian_10-3_2_6-normal
-      - test_debian_10-3_2_6-jemalloc
-      - test_debian_10-3_2_6-malloctrim
+      - test_debian_10-3_2_7-normal
+      - test_debian_10-3_2_7-jemalloc
+      - test_debian_10-3_2_7-malloctrim
       - test_debian_10-3_1_6-normal
       - test_debian_10-3_1_6-jemalloc
       - test_debian_10-3_1_6-malloctrim
@@ -7953,9 +7953,9 @@ jobs:
       - test_debian_11-3_3_7-normal
       - test_debian_11-3_3_7-jemalloc
       - test_debian_11-3_3_7-malloctrim
-      - test_debian_11-3_2_6-normal
-      - test_debian_11-3_2_6-jemalloc
-      - test_debian_11-3_2_6-malloctrim
+      - test_debian_11-3_2_7-normal
+      - test_debian_11-3_2_7-jemalloc
+      - test_debian_11-3_2_7-malloctrim
       - test_debian_11-3_1_6-normal
       - test_debian_11-3_1_6-jemalloc
       - test_debian_11-3_1_6-malloctrim
@@ -7974,9 +7974,9 @@ jobs:
       - test_debian_12-3_3_7-normal
       - test_debian_12-3_3_7-jemalloc
       - test_debian_12-3_3_7-malloctrim
-      - test_debian_12-3_2_6-normal
-      - test_debian_12-3_2_6-jemalloc
-      - test_debian_12-3_2_6-malloctrim
+      - test_debian_12-3_2_7-normal
+      - test_debian_12-3_2_7-jemalloc
+      - test_debian_12-3_2_7-malloctrim
       - test_el_9-3_4-normal
       - test_el_9-3_4-jemalloc
       - test_el_9-3_4-malloctrim
@@ -7995,9 +7995,9 @@ jobs:
       - test_el_9-3_3_7-normal
       - test_el_9-3_3_7-jemalloc
       - test_el_9-3_3_7-malloctrim
-      - test_el_9-3_2_6-normal
-      - test_el_9-3_2_6-jemalloc
-      - test_el_9-3_2_6-malloctrim
+      - test_el_9-3_2_7-normal
+      - test_el_9-3_2_7-jemalloc
+      - test_el_9-3_2_7-malloctrim
       - test_el_9-3_1_6-normal
       - test_el_9-3_1_6-jemalloc
       - test_el_9-3_1_6-malloctrim
@@ -8019,9 +8019,9 @@ jobs:
       - test_ubuntu_20_04-3_3_7-normal
       - test_ubuntu_20_04-3_3_7-jemalloc
       - test_ubuntu_20_04-3_3_7-malloctrim
-      - test_ubuntu_20_04-3_2_6-normal
-      - test_ubuntu_20_04-3_2_6-jemalloc
-      - test_ubuntu_20_04-3_2_6-malloctrim
+      - test_ubuntu_20_04-3_2_7-normal
+      - test_ubuntu_20_04-3_2_7-jemalloc
+      - test_ubuntu_20_04-3_2_7-malloctrim
       - test_ubuntu_20_04-3_1_6-normal
       - test_ubuntu_20_04-3_1_6-jemalloc
       - test_ubuntu_20_04-3_1_6-malloctrim
@@ -8043,9 +8043,9 @@ jobs:
       - test_ubuntu_22_04-3_3_7-normal
       - test_ubuntu_22_04-3_3_7-jemalloc
       - test_ubuntu_22_04-3_3_7-malloctrim
-      - test_ubuntu_22_04-3_2_6-normal
-      - test_ubuntu_22_04-3_2_6-jemalloc
-      - test_ubuntu_22_04-3_2_6-malloctrim
+      - test_ubuntu_22_04-3_2_7-normal
+      - test_ubuntu_22_04-3_2_7-jemalloc
+      - test_ubuntu_22_04-3_2_7-malloctrim
       - test_ubuntu_22_04-3_1_6-normal
       - test_ubuntu_22_04-3_1_6-jemalloc
       - test_ubuntu_22_04-3_1_6-malloctrim
@@ -8067,9 +8067,9 @@ jobs:
       - test_ubuntu_24_04-3_3_7-normal
       - test_ubuntu_24_04-3_3_7-jemalloc
       - test_ubuntu_24_04-3_3_7-malloctrim
-      - test_ubuntu_24_04-3_2_6-normal
-      - test_ubuntu_24_04-3_2_6-jemalloc
-      - test_ubuntu_24_04-3_2_6-malloctrim
+      - test_ubuntu_24_04-3_2_7-normal
+      - test_ubuntu_24_04-3_2_7-jemalloc
+      - test_ubuntu_24_04-3_2_7-malloctrim
       - test_ubuntu_24_04-3_1_6-normal
       - test_ubuntu_24_04-3_1_6-jemalloc
       - test_ubuntu_24_04-3_1_6-malloctrim
@@ -8196,22 +8196,22 @@ jobs:
         run: 'false'
         if: |
           github.ref == 'refs/heads/main'
-          && needs.test_centos_8-3_2_6-normal.result != 'success'
-          && (needs.test_centos_8-3_2_6-normal.result != 'skipped'
+          && needs.test_centos_8-3_2_7-normal.result != 'success'
+          && (needs.test_centos_8-3_2_7-normal.result != 'skipped'
             || contains(inputs.necessary_jobs, ';Test against production repo [centos-8/3.2.7/normal];'))
       - name: Check whether 'Test [centos-8/3.2.7/jemalloc]' did not fail
         run: 'false'
         if: |
           github.ref == 'refs/heads/main'
-          && needs.test_centos_8-3_2_6-jemalloc.result != 'success'
-          && (needs.test_centos_8-3_2_6-jemalloc.result != 'skipped'
+          && needs.test_centos_8-3_2_7-jemalloc.result != 'success'
+          && (needs.test_centos_8-3_2_7-jemalloc.result != 'skipped'
             || contains(inputs.necessary_jobs, ';Test against production repo [centos-8/3.2.7/jemalloc];'))
       - name: Check whether 'Test [centos-8/3.2.7/malloctrim]' did not fail
         run: 'false'
         if: |
           github.ref == 'refs/heads/main'
-          && needs.test_centos_8-3_2_6-malloctrim.result != 'success'
-          && (needs.test_centos_8-3_2_6-malloctrim.result != 'skipped'
+          && needs.test_centos_8-3_2_7-malloctrim.result != 'success'
+          && (needs.test_centos_8-3_2_7-malloctrim.result != 'skipped'
             || contains(inputs.necessary_jobs, ';Test against production repo [centos-8/3.2.7/malloctrim];'))
       - name: Check whether 'Test [debian-10/3.4/normal]' did not fail
         run: 'false'
@@ -8343,22 +8343,22 @@ jobs:
         run: 'false'
         if: |
           github.ref == 'refs/heads/main'
-          && needs.test_debian_10-3_2_6-normal.result != 'success'
-          && (needs.test_debian_10-3_2_6-normal.result != 'skipped'
+          && needs.test_debian_10-3_2_7-normal.result != 'success'
+          && (needs.test_debian_10-3_2_7-normal.result != 'skipped'
             || contains(inputs.necessary_jobs, ';Test against production repo [debian-10/3.2.7/normal];'))
       - name: Check whether 'Test [debian-10/3.2.7/jemalloc]' did not fail
         run: 'false'
         if: |
           github.ref == 'refs/heads/main'
-          && needs.test_debian_10-3_2_6-jemalloc.result != 'success'
-          && (needs.test_debian_10-3_2_6-jemalloc.result != 'skipped'
+          && needs.test_debian_10-3_2_7-jemalloc.result != 'success'
+          && (needs.test_debian_10-3_2_7-jemalloc.result != 'skipped'
             || contains(inputs.necessary_jobs, ';Test against production repo [debian-10/3.2.7/jemalloc];'))
       - name: Check whether 'Test [debian-10/3.2.7/malloctrim]' did not fail
         run: 'false'
         if: |
           github.ref == 'refs/heads/main'
-          && needs.test_debian_10-3_2_6-malloctrim.result != 'success'
-          && (needs.test_debian_10-3_2_6-malloctrim.result != 'skipped'
+          && needs.test_debian_10-3_2_7-malloctrim.result != 'success'
+          && (needs.test_debian_10-3_2_7-malloctrim.result != 'skipped'
             || contains(inputs.necessary_jobs, ';Test against production repo [debian-10/3.2.7/malloctrim];'))
       - name: Check whether 'Test [debian-10/3.1.6/normal]' did not fail
         run: 'false'
@@ -8511,22 +8511,22 @@ jobs:
         run: 'false'
         if: |
           github.ref == 'refs/heads/main'
-          && needs.test_debian_11-3_2_6-normal.result != 'success'
-          && (needs.test_debian_11-3_2_6-normal.result != 'skipped'
+          && needs.test_debian_11-3_2_7-normal.result != 'success'
+          && (needs.test_debian_11-3_2_7-normal.result != 'skipped'
             || contains(inputs.necessary_jobs, ';Test against production repo [debian-11/3.2.7/normal];'))
       - name: Check whether 'Test [debian-11/3.2.7/jemalloc]' did not fail
         run: 'false'
         if: |
           github.ref == 'refs/heads/main'
-          && needs.test_debian_11-3_2_6-jemalloc.result != 'success'
-          && (needs.test_debian_11-3_2_6-jemalloc.result != 'skipped'
+          && needs.test_debian_11-3_2_7-jemalloc.result != 'success'
+          && (needs.test_debian_11-3_2_7-jemalloc.result != 'skipped'
             || contains(inputs.necessary_jobs, ';Test against production repo [debian-11/3.2.7/jemalloc];'))
       - name: Check whether 'Test [debian-11/3.2.7/malloctrim]' did not fail
         run: 'false'
         if: |
           github.ref == 'refs/heads/main'
-          && needs.test_debian_11-3_2_6-malloctrim.result != 'success'
-          && (needs.test_debian_11-3_2_6-malloctrim.result != 'skipped'
+          && needs.test_debian_11-3_2_7-malloctrim.result != 'success'
+          && (needs.test_debian_11-3_2_7-malloctrim.result != 'skipped'
             || contains(inputs.necessary_jobs, ';Test against production repo [debian-11/3.2.7/malloctrim];'))
       - name: Check whether 'Test [debian-11/3.1.6/normal]' did not fail
         run: 'false'
@@ -8658,22 +8658,22 @@ jobs:
         run: 'false'
         if: |
           github.ref == 'refs/heads/main'
-          && needs.test_debian_12-3_2_6-normal.result != 'success'
-          && (needs.test_debian_12-3_2_6-normal.result != 'skipped'
+          && needs.test_debian_12-3_2_7-normal.result != 'success'
+          && (needs.test_debian_12-3_2_7-normal.result != 'skipped'
             || contains(inputs.necessary_jobs, ';Test against production repo [debian-12/3.2.7/normal];'))
       - name: Check whether 'Test [debian-12/3.2.7/jemalloc]' did not fail
         run: 'false'
         if: |
           github.ref == 'refs/heads/main'
-          && needs.test_debian_12-3_2_6-jemalloc.result != 'success'
-          && (needs.test_debian_12-3_2_6-jemalloc.result != 'skipped'
+          && needs.test_debian_12-3_2_7-jemalloc.result != 'success'
+          && (needs.test_debian_12-3_2_7-jemalloc.result != 'skipped'
             || contains(inputs.necessary_jobs, ';Test against production repo [debian-12/3.2.7/jemalloc];'))
       - name: Check whether 'Test [debian-12/3.2.7/malloctrim]' did not fail
         run: 'false'
         if: |
           github.ref == 'refs/heads/main'
-          && needs.test_debian_12-3_2_6-malloctrim.result != 'success'
-          && (needs.test_debian_12-3_2_6-malloctrim.result != 'skipped'
+          && needs.test_debian_12-3_2_7-malloctrim.result != 'success'
+          && (needs.test_debian_12-3_2_7-malloctrim.result != 'skipped'
             || contains(inputs.necessary_jobs, ';Test against production repo [debian-12/3.2.7/malloctrim];'))
       - name: Check whether 'Test [el-9/3.4/normal]' did not fail
         run: 'false'
@@ -8805,22 +8805,22 @@ jobs:
         run: 'false'
         if: |
           github.ref == 'refs/heads/main'
-          && needs.test_el_9-3_2_6-normal.result != 'success'
-          && (needs.test_el_9-3_2_6-normal.result != 'skipped'
+          && needs.test_el_9-3_2_7-normal.result != 'success'
+          && (needs.test_el_9-3_2_7-normal.result != 'skipped'
             || contains(inputs.necessary_jobs, ';Test against production repo [el-9/3.2.7/normal];'))
       - name: Check whether 'Test [el-9/3.2.7/jemalloc]' did not fail
         run: 'false'
         if: |
           github.ref == 'refs/heads/main'
-          && needs.test_el_9-3_2_6-jemalloc.result != 'success'
-          && (needs.test_el_9-3_2_6-jemalloc.result != 'skipped'
+          && needs.test_el_9-3_2_7-jemalloc.result != 'success'
+          && (needs.test_el_9-3_2_7-jemalloc.result != 'skipped'
             || contains(inputs.necessary_jobs, ';Test against production repo [el-9/3.2.7/jemalloc];'))
       - name: Check whether 'Test [el-9/3.2.7/malloctrim]' did not fail
         run: 'false'
         if: |
           github.ref == 'refs/heads/main'
-          && needs.test_el_9-3_2_6-malloctrim.result != 'success'
-          && (needs.test_el_9-3_2_6-malloctrim.result != 'skipped'
+          && needs.test_el_9-3_2_7-malloctrim.result != 'success'
+          && (needs.test_el_9-3_2_7-malloctrim.result != 'skipped'
             || contains(inputs.necessary_jobs, ';Test against production repo [el-9/3.2.7/malloctrim];'))
       - name: Check whether 'Test [el-9/3.1.6/normal]' did not fail
         run: 'false'
@@ -8973,22 +8973,22 @@ jobs:
         run: 'false'
         if: |
           github.ref == 'refs/heads/main'
-          && needs.test_ubuntu_20_04-3_2_6-normal.result != 'success'
-          && (needs.test_ubuntu_20_04-3_2_6-normal.result != 'skipped'
+          && needs.test_ubuntu_20_04-3_2_7-normal.result != 'success'
+          && (needs.test_ubuntu_20_04-3_2_7-normal.result != 'skipped'
             || contains(inputs.necessary_jobs, ';Test against production repo [ubuntu-20.04/3.2.7/normal];'))
       - name: Check whether 'Test [ubuntu-20.04/3.2.7/jemalloc]' did not fail
         run: 'false'
         if: |
           github.ref == 'refs/heads/main'
-          && needs.test_ubuntu_20_04-3_2_6-jemalloc.result != 'success'
-          && (needs.test_ubuntu_20_04-3_2_6-jemalloc.result != 'skipped'
+          && needs.test_ubuntu_20_04-3_2_7-jemalloc.result != 'success'
+          && (needs.test_ubuntu_20_04-3_2_7-jemalloc.result != 'skipped'
             || contains(inputs.necessary_jobs, ';Test against production repo [ubuntu-20.04/3.2.7/jemalloc];'))
       - name: Check whether 'Test [ubuntu-20.04/3.2.7/malloctrim]' did not fail
         run: 'false'
         if: |
           github.ref == 'refs/heads/main'
-          && needs.test_ubuntu_20_04-3_2_6-malloctrim.result != 'success'
-          && (needs.test_ubuntu_20_04-3_2_6-malloctrim.result != 'skipped'
+          && needs.test_ubuntu_20_04-3_2_7-malloctrim.result != 'success'
+          && (needs.test_ubuntu_20_04-3_2_7-malloctrim.result != 'skipped'
             || contains(inputs.necessary_jobs, ';Test against production repo [ubuntu-20.04/3.2.7/malloctrim];'))
       - name: Check whether 'Test [ubuntu-20.04/3.1.6/normal]' did not fail
         run: 'false'
@@ -9141,22 +9141,22 @@ jobs:
         run: 'false'
         if: |
           github.ref == 'refs/heads/main'
-          && needs.test_ubuntu_22_04-3_2_6-normal.result != 'success'
-          && (needs.test_ubuntu_22_04-3_2_6-normal.result != 'skipped'
+          && needs.test_ubuntu_22_04-3_2_7-normal.result != 'success'
+          && (needs.test_ubuntu_22_04-3_2_7-normal.result != 'skipped'
             || contains(inputs.necessary_jobs, ';Test against production repo [ubuntu-22.04/3.2.7/normal];'))
       - name: Check whether 'Test [ubuntu-22.04/3.2.7/jemalloc]' did not fail
         run: 'false'
         if: |
           github.ref == 'refs/heads/main'
-          && needs.test_ubuntu_22_04-3_2_6-jemalloc.result != 'success'
-          && (needs.test_ubuntu_22_04-3_2_6-jemalloc.result != 'skipped'
+          && needs.test_ubuntu_22_04-3_2_7-jemalloc.result != 'success'
+          && (needs.test_ubuntu_22_04-3_2_7-jemalloc.result != 'skipped'
             || contains(inputs.necessary_jobs, ';Test against production repo [ubuntu-22.04/3.2.7/jemalloc];'))
       - name: Check whether 'Test [ubuntu-22.04/3.2.7/malloctrim]' did not fail
         run: 'false'
         if: |
           github.ref == 'refs/heads/main'
-          && needs.test_ubuntu_22_04-3_2_6-malloctrim.result != 'success'
-          && (needs.test_ubuntu_22_04-3_2_6-malloctrim.result != 'skipped'
+          && needs.test_ubuntu_22_04-3_2_7-malloctrim.result != 'success'
+          && (needs.test_ubuntu_22_04-3_2_7-malloctrim.result != 'skipped'
             || contains(inputs.necessary_jobs, ';Test against production repo [ubuntu-22.04/3.2.7/malloctrim];'))
       - name: Check whether 'Test [ubuntu-22.04/3.1.6/normal]' did not fail
         run: 'false'
@@ -9309,22 +9309,22 @@ jobs:
         run: 'false'
         if: |
           github.ref == 'refs/heads/main'
-          && needs.test_ubuntu_24_04-3_2_6-normal.result != 'success'
-          && (needs.test_ubuntu_24_04-3_2_6-normal.result != 'skipped'
+          && needs.test_ubuntu_24_04-3_2_7-normal.result != 'success'
+          && (needs.test_ubuntu_24_04-3_2_7-normal.result != 'skipped'
             || contains(inputs.necessary_jobs, ';Test against production repo [ubuntu-24.04/3.2.7/normal];'))
       - name: Check whether 'Test [ubuntu-24.04/3.2.7/jemalloc]' did not fail
         run: 'false'
         if: |
           github.ref == 'refs/heads/main'
-          && needs.test_ubuntu_24_04-3_2_6-jemalloc.result != 'success'
-          && (needs.test_ubuntu_24_04-3_2_6-jemalloc.result != 'skipped'
+          && needs.test_ubuntu_24_04-3_2_7-jemalloc.result != 'success'
+          && (needs.test_ubuntu_24_04-3_2_7-jemalloc.result != 'skipped'
             || contains(inputs.necessary_jobs, ';Test against production repo [ubuntu-24.04/3.2.7/jemalloc];'))
       - name: Check whether 'Test [ubuntu-24.04/3.2.7/malloctrim]' did not fail
         run: 'false'
         if: |
           github.ref == 'refs/heads/main'
-          && needs.test_ubuntu_24_04-3_2_6-malloctrim.result != 'success'
-          && (needs.test_ubuntu_24_04-3_2_6-malloctrim.result != 'skipped'
+          && needs.test_ubuntu_24_04-3_2_7-malloctrim.result != 'success'
+          && (needs.test_ubuntu_24_04-3_2_7-malloctrim.result != 'skipped'
             || contains(inputs.necessary_jobs, ';Test against production repo [ubuntu-24.04/3.2.7/malloctrim];'))
       - name: Check whether 'Test [ubuntu-24.04/3.1.6/normal]' did not fail
         run: 'false'

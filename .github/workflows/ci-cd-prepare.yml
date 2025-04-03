@@ -580,7 +580,7 @@ jobs:
           ARTIFACT_NAME: ruby-src-3.3.7
           ARTIFACT_PATH: output
           CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
-  download_ruby_source_3_2_6:
+  download_ruby_source_3_2_7:
     name: Download Ruby source [3.2.7]
     runs-on: ubuntu-24.04
     permissions:
@@ -1009,7 +1009,7 @@ jobs:
       - build_docker_image_utility
       - download_ruby_source_3_4_2
       - download_ruby_source_3_3_7
-      - download_ruby_source_3_2_6
+      - download_ruby_source_3_2_7
       - download_ruby_source_3_1_6
       - build_common_deb
       - build_common_rpm
@@ -1366,8 +1366,8 @@ jobs:
             || (needs.download_ruby_source_3_3_7.result != 'success'
               && (needs.download_ruby_source_3_3_7.result != 'skipped'
                 || contains(inputs.necessary_jobs, ';Download Ruby source 3.3.7;')))
-            || (needs.download_ruby_source_3_2_6.result != 'success'
-              && (needs.download_ruby_source_3_2_6.result != 'skipped'
+            || (needs.download_ruby_source_3_2_7.result != 'success'
+              && (needs.download_ruby_source_3_2_7.result != 'skipped'
                 || contains(inputs.necessary_jobs, ';Download Ruby source 3.2.7;')))
             || (needs.download_ruby_source_3_1_6.result != 'success'
               && (needs.download_ruby_source_3_1_6.result != 'skipped'
