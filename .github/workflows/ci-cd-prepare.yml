@@ -581,12 +581,12 @@ jobs:
           ARTIFACT_PATH: output
           CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
   download_ruby_source_3_2_6:
-    name: Download Ruby source [3.2.6]
+    name: Download Ruby source [3.2.7]
     runs-on: ubuntu-24.04
     permissions:
       id-token: write
     environment: test
-    if: contains(inputs.necessary_jobs, ';Download Ruby source 3.2.6;')
+    if: contains(inputs.necessary_jobs, ';Download Ruby source 3.2.7;')
     steps:
       - uses: actions/checkout@v4
       - uses: azure/login@v2
@@ -606,12 +606,12 @@ jobs:
       - name: Download
         run: ./internal-scripts/ci-cd/download-ruby-sources/download.sh
         env:
-          RUBY_VERSION: 3.2.6
+          RUBY_VERSION: 3.2.7
 
       - name: Archive artifact
         run: ./internal-scripts/ci-cd/upload-artifact.sh
         env:
-          ARTIFACT_NAME: ruby-src-3.2.6
+          ARTIFACT_NAME: ruby-src-3.2.7
           ARTIFACT_PATH: output
           CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
   download_ruby_source_3_1_6:
@@ -1224,17 +1224,17 @@ jobs:
           name: ruby-src-3.3.7
           path: artifacts
           compression-level: 0
-      - name: Download Ruby source artifact [3.2.6] from Google Cloud
+      - name: Download Ruby source artifact [3.2.7] from Google Cloud
         run: ./internal-scripts/ci-cd/download-artifact.sh
         env:
-          ARTIFACT_NAME: ruby-src-3.2.6
+          ARTIFACT_NAME: ruby-src-3.2.7
           ARTIFACT_PATH: artifacts
           CLEAR: true
           CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
-      - name: Archive Ruby source artifact [3.2.6] to Github
+      - name: Archive Ruby source artifact [3.2.7] to Github
         uses: actions/upload-artifact@v4
         with:
-          name: ruby-src-3.2.6
+          name: ruby-src-3.2.7
           path: artifacts
           compression-level: 0
       - name: Download Ruby source artifact [3.1.6] from Google Cloud
@@ -1368,7 +1368,7 @@ jobs:
                 || contains(inputs.necessary_jobs, ';Download Ruby source 3.3.7;')))
             || (needs.download_ruby_source_3_2_6.result != 'success'
               && (needs.download_ruby_source_3_2_6.result != 'skipped'
-                || contains(inputs.necessary_jobs, ';Download Ruby source 3.2.6;')))
+                || contains(inputs.necessary_jobs, ';Download Ruby source 3.2.7;')))
             || (needs.download_ruby_source_3_1_6.result != 'success'
               && (needs.download_ruby_source_3_1_6.result != 'skipped'
                 || contains(inputs.necessary_jobs, ';Download Ruby source 3.1.6;')))
