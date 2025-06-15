@@ -457,7 +457,7 @@ sudo yum install fullstaq-ruby-3.1.1
 ### Debian/Ubuntu
 
  * Supported Debian versions: 12 *(bookworm)*, 11 *(bullseye)*, 10 *(buster)*
- * Supported Ubuntu versions: 24.04, 22.04, 20.04
+ * Supported Ubuntu versions: 24.04, 22.04
  * Supported architectures: x86-64
 
 First, make sure your package manager supports HTTPS and that the necessary crypto tools are installed:
@@ -474,9 +474,6 @@ deb https://apt.fullstaqruby.org ubuntu-24.04 main
 
 # Ubuntu 22.04
 deb https://apt.fullstaqruby.org ubuntu-22.04 main
-
-# Ubuntu 20.04
-deb https://apt.fullstaqruby.org ubuntu-20.04 main
 
 # Debian 12
 deb [Signed-By=/etc/apt/fullstaq-ruby.asc] https://apt.fullstaqruby.org debian-12 main
