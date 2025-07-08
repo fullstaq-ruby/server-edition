@@ -2,7 +2,7 @@ FROM debian:11
 
 # Used to link container image to the repo:
 # https://docs.github.com/en/free-pro-team@latest/packages/managing-container-images-with-github-container-registry/connecting-a-repository-to-a-container-image#connecting-a-repository-to-a-container-image-on-the-command-line
-LABEL org.opencontainers.image.source https://github.com/fullstaq-ruby/server-edition
+LABEL org.opencontainers.image.source=https://github.com/fullstaq-ruby/server-edition
 
 # If you make a change and you want to force users to re-pull the image
 # (e.g. when your change adds a feature that our scripts rely on, or is
@@ -47,5 +47,5 @@ RUN curl -fsSLo sccache.tar.gz https://github.com/mozilla/sccache/releases/downl
     rm -rf /tmp/* /var/tmp/*
 
 USER builder
-ENV PATH /home/builder/.cargo/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+ENV PATH=/home/builder/.cargo/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
 ENTRYPOINT ["/sbin/matchhostfsowner"]
