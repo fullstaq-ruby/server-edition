@@ -470,13 +470,13 @@ jobs:
   ### Sources ###
 
 
-  download_ruby_source_3_4_4:
-    name: Download Ruby source [3.4.4]
+  download_ruby_source_3_4_5:
+    name: Download Ruby source [3.4.5]
     runs-on: ubuntu-24.04
     permissions:
       id-token: write
     environment: test
-    if: contains(inputs.necessary_jobs, ';Download Ruby source 3.4.4;')
+    if: contains(inputs.necessary_jobs, ';Download Ruby source 3.4.5;')
     steps:
       - uses: actions/checkout@v4
       - uses: azure/login@v2
@@ -496,12 +496,12 @@ jobs:
       - name: Download
         run: ./internal-scripts/ci-cd/download-ruby-sources/download.sh
         env:
-          RUBY_VERSION: 3.4.4
+          RUBY_VERSION: 3.4.5
 
       - name: Archive artifact
         run: ./internal-scripts/ci-cd/upload-artifact.sh
         env:
-          ARTIFACT_NAME: ruby-src-3.4.4
+          ARTIFACT_NAME: ruby-src-3.4.5
           ARTIFACT_PATH: output
           CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
   download_ruby_source_3_3_8:
@@ -964,7 +964,7 @@ jobs:
       - build_docker_image_ubuntu_22_04
       - build_docker_image_ubuntu_24_04
       - build_docker_image_utility
-      - download_ruby_source_3_4_4
+      - download_ruby_source_3_4_5
       - download_ruby_source_3_3_8
       - download_ruby_source_3_2_8
       - download_ruby_source_3_1_7
@@ -1141,17 +1141,17 @@ jobs:
           path: artifacts
 
 
-      - name: Download Ruby source artifact [3.4.4] from Google Cloud
+      - name: Download Ruby source artifact [3.4.5] from Google Cloud
         run: ./internal-scripts/ci-cd/download-artifact.sh
         env:
-          ARTIFACT_NAME: ruby-src-3.4.4
+          ARTIFACT_NAME: ruby-src-3.4.5
           ARTIFACT_PATH: artifacts
           CLEAR: true
           CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
-      - name: Archive Ruby source artifact [3.4.4] to Github
+      - name: Archive Ruby source artifact [3.4.5] to Github
         uses: actions/upload-artifact@v4
         with:
-          name: ruby-src-3.4.4
+          name: ruby-src-3.4.5
           path: artifacts
           compression-level: 0
       - name: Download Ruby source artifact [3.3.8] from Google Cloud
@@ -1300,9 +1300,9 @@ jobs:
         run: 'false'
         if: |
           false
-            || (needs.download_ruby_source_3_4_4.result != 'success'
-              && (needs.download_ruby_source_3_4_4.result != 'skipped'
-                || contains(inputs.necessary_jobs, ';Download Ruby source 3.4.4;')))
+            || (needs.download_ruby_source_3_4_5.result != 'success'
+              && (needs.download_ruby_source_3_4_5.result != 'skipped'
+                || contains(inputs.necessary_jobs, ';Download Ruby source 3.4.5;')))
             || (needs.download_ruby_source_3_3_8.result != 'success'
               && (needs.download_ruby_source_3_3_8.result != 'skipped'
                 || contains(inputs.necessary_jobs, ';Download Ruby source 3.3.8;')))
