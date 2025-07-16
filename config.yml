@@ -12,7 +12,7 @@ ruby:
   ## then be sure to bump the corresponding `package_revision`!
   minor_version_packages:
     - minor_version: '3.4'
-      full_version: '3.4.4'
+      full_version: '3.4.5'
       package_revision: '3'
     - minor_version: '3.3'
       full_version: '3.3.8'
@@ -27,7 +27,7 @@ ruby:
   ## (Optional)
   ## Which tiny Ruby version packages to build.
   tiny_version_packages:
-    - full_version: '3.4.4'
+    - full_version: '3.4.5'
       package_revision: '0'
     - full_version: '3.3.8'
       package_revision: '0'
