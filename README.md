@@ -456,7 +456,7 @@ sudo yum install fullstaq-ruby-3.1.1
 
 ### Debian/Ubuntu
 
- * Supported Debian versions: 12 *(bookworm)*, 11 *(bullseye)*, 10 *(buster)*
+ * Supported Debian versions: 12 *(bookworm)*, 11 *(bullseye)*
  * Supported Ubuntu versions: 24.04, 22.04
  * Supported architectures: x86-64
 
@@ -480,9 +480,6 @@ deb [Signed-By=/etc/apt/fullstaq-ruby.asc] https://apt.fullstaqruby.org debian-1
 
 # Debian 11
 deb https://apt.fullstaqruby.org debian-11 main
-
-# Debian 10
-deb https://apt.fullstaqruby.org debian-10 main
 ~~~
 
 Then download the Fullstaq Ruby public key and update APT:
