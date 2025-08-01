@@ -13,7 +13,7 @@ ruby:
   minor_version_packages:
     - minor_version: '3.4'
       full_version: '3.4.5'
-      package_revision: '3'
+      package_revision: '4'
     - minor_version: '3.3'
       full_version: '3.3.8'
       package_revision: '8'
