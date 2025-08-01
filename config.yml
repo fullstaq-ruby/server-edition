@@ -98,18 +98,17 @@ jemalloc_version: '3.6.0'
 ## (Required)
 ## Specify which distributions to build packages for.
 ## When set to 'all', will build for all supported distributions.
-distributions: all
+# distributions: all
 ## You can also set it to a list of distribution names.
 ## The names must match the folder names found in the environments/
 ## directory in this project.
-# distributions:
-#   - centos-8
-#   - el-9
-#   - debian-10
-#   - debian-11
-#   - debian-12
-#   - ubuntu-22.04
-#   - ubuntu-24.04
+distributions:
+  - centos-8
+  - el-9
+  - debian-11
+  - debian-12
+  - ubuntu-22.04
+  - ubuntu-24.04
 
 ## (Optional)
 ## Excludes certain Ruby minor versions from certain distributions.

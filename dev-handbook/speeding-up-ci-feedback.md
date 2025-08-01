@@ -58,7 +58,7 @@ variants:
 
 # Test a random DEB and RPM distribution
 distributions:
-  - debian-10
+  - debian-11
   - centos-8
 ~~~
 
