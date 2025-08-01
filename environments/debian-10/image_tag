@@ -1,4 +1,0 @@
-# Bump this version whenever you've made a change and you want
-# to force users to re-pull the image (e.g. when your change adds
-# a feature that our scripts rely on, or is breaking).
-3
