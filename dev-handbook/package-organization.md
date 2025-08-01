@@ -22,8 +22,8 @@ The RPM package does not specify fullstaq-ruby-common as a recommended dependenc
 
 ### Example package filenames
 
- * `fullstaq-ruby-2.7-jemalloc_0-debian-10_amd64.deb`
- * `fullstaq-ruby-2.7-jemalloc-rev2-centos8.x86_64.rpm`
+ * `fullstaq-ruby-3.4-jemalloc_0-debian-12_amd64.deb`
+ * `fullstaq-ruby-3.4-jemalloc-rev2-centos8.x86_64.rpm`
 
 ### Contents
 

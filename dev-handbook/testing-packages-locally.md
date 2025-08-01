@@ -56,9 +56,9 @@ Run the `./test-debs` script to test Debian packages. Example invocation:
 
 ~~~bash
 ./test-debs \
-  -i debian:10 \
+  -i debian:12 \
   -v jemalloc \
-  -r fullstaq-ruby-2.7-jemalloc_0-debian-10_amd64.deb \
+  -r fullstaq-ruby-3.4-jemalloc_0-debian-12_amd64.deb \
   -b fullstaq-rbenv_1.1.2-16-0_all.deb \
   -c fullstaq-ruby-common_1.0-0_all.deb
 ~~~
