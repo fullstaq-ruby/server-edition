@@ -89,9 +89,9 @@ jobs:
           ARTIFACT_NAME: 'jemalloc-bin-debian-11'
           ARTIFACT_PATH: output
           CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
-  build_jemalloc_ubuntu_24_04:
-    name: 'Jemalloc [ubuntu-24.04]'
-    if: contains(inputs.necessary_jobs, ';Build Jemalloc [ubuntu-24.04];')
+  build_jemalloc_ubuntu_22_04:
+    name: 'Jemalloc [ubuntu-22.04]'
+    if: contains(inputs.necessary_jobs, ';Build Jemalloc [ubuntu-22.04];')
     runs-on: ubuntu-24.04
     environment: test
     permissions:
@@ -118,14 +118,14 @@ jobs:
 
       - name: Download Docker image necessary for building
         run: ./internal-scripts/ci-cd/download-artifact.sh
-        if: contains(inputs.necessary_jobs, ';Use locally-built Docker image ubuntu-24.04;')
+        if: contains(inputs.necessary_jobs, ';Use locally-built Docker image ubuntu-22.04;')
         env:
-          ARTIFACT_NAME: 'docker-image-ubuntu-24.04'
+          ARTIFACT_NAME: 'docker-image-ubuntu-22.04'
           ARTIFACT_PATH: .
           CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
       - name: Load Docker image necessary for building
         run: ./internal-scripts/ci-cd/load-docker-image.sh
-        if: contains(inputs.necessary_jobs, ';Use locally-built Docker image ubuntu-24.04;')
+        if: contains(inputs.necessary_jobs, ';Use locally-built Docker image ubuntu-22.04;')
         env:
           TARBALL: image.tar.zst
 
@@ -139,13 +139,13 @@ jobs:
       - name: Build
         run: ./internal-scripts/ci-cd/build-jemalloc-binaries/build.sh
         env:
-          ENVIRONMENT_NAME: 'ubuntu-24.04'
-          CACHE_KEY_PREFIX: 'sccache/ubuntu-24.04'
+          ENVIRONMENT_NAME: 'ubuntu-22.04'
+          CACHE_KEY_PREFIX: 'sccache/ubuntu-22.04'
 
       - name: Archive artifact
         run: ./internal-scripts/ci-cd/upload-artifact.sh
         env:
-          ARTIFACT_NAME: 'jemalloc-bin-ubuntu-24.04'
+          ARTIFACT_NAME: 'jemalloc-bin-ubuntu-22.04'
           ARTIFACT_PATH: output
           CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
 
@@ -2483,8 +2483,8 @@ jobs:
           CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
 
 
-  build_ruby_ubuntu_24_04-3_4-normal:
-    name: 'Ruby [ubuntu-24.04/3.4/normal]'
+  build_ruby_ubuntu_22_04-3_4-normal:
+    name: 'Ruby [ubuntu-22.04/3.4/normal]'
 
     runs-on: ubuntu-24.04
     environment: test
@@ -2494,7 +2494,7 @@ jobs:
       packages: read
     # Run even if a dependent job has been skipped
     if: |
-      contains(inputs.necessary_jobs, ';Build Ruby [ubuntu-24.04/3.4/normal];')
+      contains(inputs.necessary_jobs, ';Build Ruby [ubuntu-22.04/3.4/normal];')
       && !failure() && !cancelled()
     steps:
       
@@ -2525,14 +2525,14 @@ jobs:
 
       - name: Download Docker image necessary for building
         run: ./internal-scripts/ci-cd/download-artifact.sh
-        if: contains(inputs.necessary_jobs, ';Use locally-built Docker image ubuntu-24.04;')
+        if: contains(inputs.necessary_jobs, ';Use locally-built Docker image ubuntu-22.04;')
         env:
-          ARTIFACT_NAME: 'docker-image-ubuntu-24.04'
+          ARTIFACT_NAME: 'docker-image-ubuntu-22.04'
           ARTIFACT_PATH: .
           CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
       - name: Load Docker image necessary for building
         run: ./internal-scripts/ci-cd/load-docker-image.sh
-        if: contains(inputs.necessary_jobs, ';Use locally-built Docker image ubuntu-24.04;')
+        if: contains(inputs.necessary_jobs, ';Use locally-built Docker image ubuntu-22.04;')
         env:
           TARBALL: image.tar.zst
 
@@ -2554,15 +2554,15 @@ jobs:
       - name: Build binaries
         run: ./internal-scripts/ci-cd/build-ruby-packages/build-binaries.sh
         env:
-          ENVIRONMENT_NAME: "ubuntu-24.04"
+          ENVIRONMENT_NAME: "ubuntu-22.04"
           VARIANT_NAME: "normal"
           RUBY_PACKAGE_VERSION_ID: "3.4"
-          CACHE_KEY_PREFIX: "sccache/ubuntu-24.04"
+          CACHE_KEY_PREFIX: "sccache/ubuntu-22.04"
 
       - name: Build package
         run: ./internal-scripts/ci-cd/build-ruby-packages/build-package.sh
         env:
-          DISTRIBUTION_NAME: "ubuntu-24.04"
+          DISTRIBUTION_NAME: "ubuntu-22.04"
           VARIANT_NAME: "normal"
           VARIANT_PACKAGE_SUFFIX: ""
           PACKAGE_FORMAT: "DEB"
@@ -2572,14 +2572,14 @@ jobs:
       - name: Archive package artifact to Google Cloud
         run: ./internal-scripts/ci-cd/upload-artifact.sh
         env:
-          ARTIFACT_NAME: "ruby-pkg_3.4_ubuntu-24.04_normal"
+          ARTIFACT_NAME: "ruby-pkg_3.4_ubuntu-22.04_normal"
           ARTIFACT_PATH: output-normal
           CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
 
-  build_ruby_ubuntu_24_04-3_4-jemalloc:
-    name: 'Ruby [ubuntu-24.04/3.4/jemalloc]'
+  build_ruby_ubuntu_22_04-3_4-jemalloc:
+    name: 'Ruby [ubuntu-22.04/3.4/jemalloc]'
 
-    needs: build_jemalloc_ubuntu_24_04
+    needs: build_jemalloc_ubuntu_22_04
     runs-on: ubuntu-24.04
     environment: test
     timeout-minutes: 30
@@ -2588,15 +2588,15 @@ jobs:
       packages: read
     # Run even if a dependent job has been skipped
     if: |
-      contains(inputs.necessary_jobs, ';Build Ruby [ubuntu-24.04/3.4/jemalloc];')
+      contains(inputs.necessary_jobs, ';Build Ruby [ubuntu-22.04/3.4/jemalloc];')
       && !failure() && !cancelled()
     steps:
       
-      - name: Check whether 'Build Jemalloc [ubuntu-24.04]' did not fail
+      - name: Check whether 'Build Jemalloc [ubuntu-22.04]' did not fail
         run: 'false'
         if: |
-          needs.build_jemalloc_ubuntu_24_04.result == 'skipped'
-          && contains(inputs.necessary_jobs, ';Build Jemalloc [ubuntu-24.04];')        
+          needs.build_jemalloc_ubuntu_22_04.result == 'skipped'
+          && contains(inputs.necessary_jobs, ';Build Jemalloc [ubuntu-22.04];')        
 
       - uses: actions/checkout@v4
       - uses: google-github-actions/auth@v2
@@ -2624,14 +2624,14 @@ jobs:
 
       - name: Download Docker image necessary for building
         run: ./internal-scripts/ci-cd/download-artifact.sh
-        if: contains(inputs.necessary_jobs, ';Use locally-built Docker image ubuntu-24.04;')
+        if: contains(inputs.necessary_jobs, ';Use locally-built Docker image ubuntu-22.04;')
         env:
-          ARTIFACT_NAME: 'docker-image-ubuntu-24.04'
+          ARTIFACT_NAME: 'docker-image-ubuntu-22.04'
           ARTIFACT_PATH: .
           CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
       - name: Load Docker image necessary for building
         run: ./internal-scripts/ci-cd/load-docker-image.sh
-        if: contains(inputs.necessary_jobs, ';Use locally-built Docker image ubuntu-24.04;')
+        if: contains(inputs.necessary_jobs, ';Use locally-built Docker image ubuntu-22.04;')
         env:
           TARBALL: image.tar.zst
 
@@ -2652,22 +2652,22 @@ jobs:
       - name: Fetch Jemalloc binary
         run: ./internal-scripts/ci-cd/download-artifact.sh
         env:
-          ARTIFACT_NAME: jemalloc-bin-ubuntu-24.04
+          ARTIFACT_NAME: jemalloc-bin-ubuntu-22.04
           ARTIFACT_PATH: .
           CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}        
 
       - name: Build binaries
         run: ./internal-scripts/ci-cd/build-ruby-packages/build-binaries.sh
         env:
-          ENVIRONMENT_NAME: "ubuntu-24.04"
+          ENVIRONMENT_NAME: "ubuntu-22.04"
           VARIANT_NAME: "jemalloc"
           RUBY_PACKAGE_VERSION_ID: "3.4"
-          CACHE_KEY_PREFIX: "sccache/ubuntu-24.04"
+          CACHE_KEY_PREFIX: "sccache/ubuntu-22.04"
 
       - name: Build package
         run: ./internal-scripts/ci-cd/build-ruby-packages/build-package.sh
         env:
-          DISTRIBUTION_NAME: "ubuntu-24.04"
+          DISTRIBUTION_NAME: "ubuntu-22.04"
           VARIANT_NAME: "jemalloc"
           VARIANT_PACKAGE_SUFFIX: "-jemalloc"
           PACKAGE_FORMAT: "DEB"
@@ -2677,12 +2677,12 @@ jobs:
       - name: Archive package artifact to Google Cloud
         run: ./internal-scripts/ci-cd/upload-artifact.sh
         env:
-          ARTIFACT_NAME: "ruby-pkg_3.4_ubuntu-24.04_jemalloc"
+          ARTIFACT_NAME: "ruby-pkg_3.4_ubuntu-22.04_jemalloc"
           ARTIFACT_PATH: output-jemalloc
           CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
 
-  build_ruby_ubuntu_24_04-3_4-malloctrim:
-    name: 'Ruby [ubuntu-24.04/3.4/malloctrim]'
+  build_ruby_ubuntu_22_04-3_4-malloctrim:
+    name: 'Ruby [ubuntu-22.04/3.4/malloctrim]'
 
     runs-on: ubuntu-24.04
     environment: test
@@ -2692,7 +2692,7 @@ jobs:
       packages: read
     # Run even if a dependent job has been skipped
     if: |
-      contains(inputs.necessary_jobs, ';Build Ruby [ubuntu-24.04/3.4/malloctrim];')
+      contains(inputs.necessary_jobs, ';Build Ruby [ubuntu-22.04/3.4/malloctrim];')
       && !failure() && !cancelled()
     steps:
       
@@ -2723,14 +2723,14 @@ jobs:
 
       - name: Download Docker image necessary for building
         run: ./internal-scripts/ci-cd/download-artifact.sh
-        if: contains(inputs.necessary_jobs, ';Use locally-built Docker image ubuntu-24.04;')
+        if: contains(inputs.necessary_jobs, ';Use locally-built Docker image ubuntu-22.04;')
         env:
-          ARTIFACT_NAME: 'docker-image-ubuntu-24.04'
+          ARTIFACT_NAME: 'docker-image-ubuntu-22.04'
           ARTIFACT_PATH: .
           CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
       - name: Load Docker image necessary for building
         run: ./internal-scripts/ci-cd/load-docker-image.sh
-        if: contains(inputs.necessary_jobs, ';Use locally-built Docker image ubuntu-24.04;')
+        if: contains(inputs.necessary_jobs, ';Use locally-built Docker image ubuntu-22.04;')
         env:
           TARBALL: image.tar.zst
 
@@ -2752,15 +2752,15 @@ jobs:
       - name: Build binaries
         run: ./internal-scripts/ci-cd/build-ruby-packages/build-binaries.sh
         env:
-          ENVIRONMENT_NAME: "ubuntu-24.04"
+          ENVIRONMENT_NAME: "ubuntu-22.04"
           VARIANT_NAME: "malloctrim"
           RUBY_PACKAGE_VERSION_ID: "3.4"
-          CACHE_KEY_PREFIX: "sccache/ubuntu-24.04"
+          CACHE_KEY_PREFIX: "sccache/ubuntu-22.04"
 
       - name: Build package
         run: ./internal-scripts/ci-cd/build-ruby-packages/build-package.sh
         env:
-          DISTRIBUTION_NAME: "ubuntu-24.04"
+          DISTRIBUTION_NAME: "ubuntu-22.04"
           VARIANT_NAME: "malloctrim"
           VARIANT_PACKAGE_SUFFIX: "-malloctrim"
           PACKAGE_FORMAT: "DEB"
@@ -2770,12 +2770,12 @@ jobs:
       - name: Archive package artifact to Google Cloud
         run: ./internal-scripts/ci-cd/upload-artifact.sh
         env:
-          ARTIFACT_NAME: "ruby-pkg_3.4_ubuntu-24.04_malloctrim"
+          ARTIFACT_NAME: "ruby-pkg_3.4_ubuntu-22.04_malloctrim"
           ARTIFACT_PATH: output-malloctrim
           CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
 
-  build_ruby_ubuntu_24_04-3_3-normal:
-    name: 'Ruby [ubuntu-24.04/3.3/normal]'
+  build_ruby_ubuntu_22_04-3_3-normal:
+    name: 'Ruby [ubuntu-22.04/3.3/normal]'
 
     runs-on: ubuntu-24.04
     environment: test
@@ -2785,7 +2785,7 @@ jobs:
       packages: read
     # Run even if a dependent job has been skipped
     if: |
-      contains(inputs.necessary_jobs, ';Build Ruby [ubuntu-24.04/3.3/normal];')
+      contains(inputs.necessary_jobs, ';Build Ruby [ubuntu-22.04/3.3/normal];')
       && !failure() && !cancelled()
     steps:
       
@@ -2816,14 +2816,14 @@ jobs:
 
       - name: Download Docker image necessary for building
         run: ./internal-scripts/ci-cd/download-artifact.sh
-        if: contains(inputs.necessary_jobs, ';Use locally-built Docker image ubuntu-24.04;')
+        if: contains(inputs.necessary_jobs, ';Use locally-built Docker image ubuntu-22.04;')
         env:
-          ARTIFACT_NAME: 'docker-image-ubuntu-24.04'
+          ARTIFACT_NAME: 'docker-image-ubuntu-22.04'
           ARTIFACT_PATH: .
           CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
       - name: Load Docker image necessary for building
         run: ./internal-scripts/ci-cd/load-docker-image.sh
-        if: contains(inputs.necessary_jobs, ';Use locally-built Docker image ubuntu-24.04;')
+        if: contains(inputs.necessary_jobs, ';Use locally-built Docker image ubuntu-22.04;')
         env:
           TARBALL: image.tar.zst
 
@@ -2845,15 +2845,15 @@ jobs:
       - name: Build binaries
         run: ./internal-scripts/ci-cd/build-ruby-packages/build-binaries.sh
         env:
-          ENVIRONMENT_NAME: "ubuntu-24.04"
+          ENVIRONMENT_NAME: "ubuntu-22.04"
           VARIANT_NAME: "normal"
           RUBY_PACKAGE_VERSION_ID: "3.3"
-          CACHE_KEY_PREFIX: "sccache/ubuntu-24.04"
+          CACHE_KEY_PREFIX: "sccache/ubuntu-22.04"
 
       - name: Build package
         run: ./internal-scripts/ci-cd/build-ruby-packages/build-package.sh
         env:
-          DISTRIBUTION_NAME: "ubuntu-24.04"
+          DISTRIBUTION_NAME: "ubuntu-22.04"
           VARIANT_NAME: "normal"
           VARIANT_PACKAGE_SUFFIX: ""
           PACKAGE_FORMAT: "DEB"
@@ -2863,14 +2863,14 @@ jobs:
       - name: Archive package artifact to Google Cloud
         run: ./internal-scripts/ci-cd/upload-artifact.sh
         env:
-          ARTIFACT_NAME: "ruby-pkg_3.3_ubuntu-24.04_normal"
+          ARTIFACT_NAME: "ruby-pkg_3.3_ubuntu-22.04_normal"
           ARTIFACT_PATH: output-normal
           CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
 
-  build_ruby_ubuntu_24_04-3_3-jemalloc:
-    name: 'Ruby [ubuntu-24.04/3.3/jemalloc]'
+  build_ruby_ubuntu_22_04-3_3-jemalloc:
+    name: 'Ruby [ubuntu-22.04/3.3/jemalloc]'
 
-    needs: build_jemalloc_ubuntu_24_04
+    needs: build_jemalloc_ubuntu_22_04
     runs-on: ubuntu-24.04
     environment: test
     timeout-minutes: 30
@@ -2879,15 +2879,15 @@ jobs:
       packages: read
     # Run even if a dependent job has been skipped
     if: |
-      contains(inputs.necessary_jobs, ';Build Ruby [ubuntu-24.04/3.3/jemalloc];')
+      contains(inputs.necessary_jobs, ';Build Ruby [ubuntu-22.04/3.3/jemalloc];')
       && !failure() && !cancelled()
     steps:
       
-      - name: Check whether 'Build Jemalloc [ubuntu-24.04]' did not fail
+      - name: Check whether 'Build Jemalloc [ubuntu-22.04]' did not fail
         run: 'false'
         if: |
-          needs.build_jemalloc_ubuntu_24_04.result == 'skipped'
-          && contains(inputs.necessary_jobs, ';Build Jemalloc [ubuntu-24.04];')        
+          needs.build_jemalloc_ubuntu_22_04.result == 'skipped'
+          && contains(inputs.necessary_jobs, ';Build Jemalloc [ubuntu-22.04];')        
 
       - uses: actions/checkout@v4
       - uses: google-github-actions/auth@v2
@@ -2915,14 +2915,14 @@ jobs:
 
       - name: Download Docker image necessary for building
         run: ./internal-scripts/ci-cd/download-artifact.sh
-        if: contains(inputs.necessary_jobs, ';Use locally-built Docker image ubuntu-24.04;')
+        if: contains(inputs.necessary_jobs, ';Use locally-built Docker image ubuntu-22.04;')
         env:
-          ARTIFACT_NAME: 'docker-image-ubuntu-24.04'
+          ARTIFACT_NAME: 'docker-image-ubuntu-22.04'
           ARTIFACT_PATH: .
           CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
       - name: Load Docker image necessary for building
         run: ./internal-scripts/ci-cd/load-docker-image.sh
-        if: contains(inputs.necessary_jobs, ';Use locally-built Docker image ubuntu-24.04;')
+        if: contains(inputs.necessary_jobs, ';Use locally-built Docker image ubuntu-22.04;')
         env:
           TARBALL: image.tar.zst
 
@@ -2943,117 +2943,24 @@ jobs:
       - name: Fetch Jemalloc binary
         run: ./internal-scripts/ci-cd/download-artifact.sh
         env:
-          ARTIFACT_NAME: jemalloc-bin-ubuntu-24.04
+          ARTIFACT_NAME: jemalloc-bin-ubuntu-22.04
           ARTIFACT_PATH: .
           CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}        
 
       - name: Build binaries
         run: ./internal-scripts/ci-cd/build-ruby-packages/build-binaries.sh
         env:
-          ENVIRONMENT_NAME: "ubuntu-24.04"
+          ENVIRONMENT_NAME: "ubuntu-22.04"
           VARIANT_NAME: "jemalloc"
           RUBY_PACKAGE_VERSION_ID: "3.3"
-          CACHE_KEY_PREFIX: "sccache/ubuntu-24.04"
+          CACHE_KEY_PREFIX: "sccache/ubuntu-22.04"
 
       - name: Build package
         run: ./internal-scripts/ci-cd/build-ruby-packages/build-package.sh
         env:
-          DISTRIBUTION_NAME: "ubuntu-24.04"
+          DISTRIBUTION_NAME: "ubuntu-22.04"
           VARIANT_NAME: "jemalloc"
           VARIANT_PACKAGE_SUFFIX: "-jemalloc"
-          PACKAGE_FORMAT: "DEB"
-          RUBY_PACKAGE_VERSION_ID: "3.3"
-          RUBY_PACKAGE_REVISION: "8"
-
-      - name: Archive package artifact to Google Cloud
-        run: ./internal-scripts/ci-cd/upload-artifact.sh
-        env:
-          ARTIFACT_NAME: "ruby-pkg_3.3_ubuntu-24.04_jemalloc"
-          ARTIFACT_PATH: output-jemalloc
-          CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
-
-  build_ruby_ubuntu_24_04-3_3-malloctrim:
-    name: 'Ruby [ubuntu-24.04/3.3/malloctrim]'
-
-    runs-on: ubuntu-24.04
-    environment: test
-    timeout-minutes: 30
-    permissions:
-      id-token: write
-      packages: read
-    # Run even if a dependent job has been skipped
-    if: |
-      contains(inputs.necessary_jobs, ';Build Ruby [ubuntu-24.04/3.3/malloctrim];')
-      && !failure() && !cancelled()
-    steps:
-      
-
-      - uses: actions/checkout@v4
-      - uses: google-github-actions/auth@v2
-        with:
-          project_id: ${{ vars.GCLOUD_PROJECT_ID }}
-          workload_identity_provider: projects/${{ vars.GCLOUD_PROJECT_NUM }}/locations/global/workloadIdentityPools/github-ci-test/providers/github-ci-test
-      - name: Set up Cloud SDK
-        uses: google-github-actions/setup-gcloud@v2
-        with:
-          version: '>= 363.0.0'
-      - name: Login to Github Container Registry
-        run: docker login ghcr.io -u ${{ github.actor }} --password-stdin <<<"$GITHUB_TOKEN"
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      - name: Dump Azure connection string
-        run: echo -n "$CONNECTION_STRING" > azure-connection-string.txt
-        env:
-          CONNECTION_STRING: ${{ secrets.AZURE_CI2_STORAGE_CONNECTION_STRING }}
-      - name: Fetch Ruby source
-        run: ./internal-scripts/ci-cd/download-artifact.sh
-        env:
-          ARTIFACT_NAME: ruby-src-3.3.8
-          ARTIFACT_PATH: .
-          CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
-
-      - name: Download Docker image necessary for building
-        run: ./internal-scripts/ci-cd/download-artifact.sh
-        if: contains(inputs.necessary_jobs, ';Use locally-built Docker image ubuntu-24.04;')
-        env:
-          ARTIFACT_NAME: 'docker-image-ubuntu-24.04'
-          ARTIFACT_PATH: .
-          CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
-      - name: Load Docker image necessary for building
-        run: ./internal-scripts/ci-cd/load-docker-image.sh
-        if: contains(inputs.necessary_jobs, ';Use locally-built Docker image ubuntu-24.04;')
-        env:
-          TARBALL: image.tar.zst
-
-      - name: Download Docker image necessary for packaging
-        run: ./internal-scripts/ci-cd/download-artifact.sh
-        if: contains(inputs.necessary_jobs, ';Use locally-built Docker image utility;')
-        env:
-          ARTIFACT_NAME: docker-image-utility
-          ARTIFACT_PATH: .
-          CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
-      - name: Load Docker image necessary for packaging
-        run: ./internal-scripts/ci-cd/load-docker-image.sh
-        if: contains(inputs.necessary_jobs, ';Use locally-built Docker image utility;')
-        env:
-          TARBALL: image.tar.zst
-
-      
-
-      - name: Build binaries
-        run: ./internal-scripts/ci-cd/build-ruby-packages/build-binaries.sh
-        env:
-          ENVIRONMENT_NAME: "ubuntu-24.04"
-          VARIANT_NAME: "malloctrim"
-          RUBY_PACKAGE_VERSION_ID: "3.3"
-          CACHE_KEY_PREFIX: "sccache/ubuntu-24.04"
-
-      - name: Build package
-        run: ./internal-scripts/ci-cd/build-ruby-packages/build-package.sh
-        env:
-          DISTRIBUTION_NAME: "ubuntu-24.04"
-          VARIANT_NAME: "malloctrim"
-          VARIANT_PACKAGE_SUFFIX: "-malloctrim"
           PACKAGE_FORMAT: "DEB"
           RUBY_PACKAGE_VERSION_ID: "3.3"
           RUBY_PACKAGE_REVISION: "8"
@@ -3061,210 +2968,12 @@ jobs:
       - name: Archive package artifact to Google Cloud
         run: ./internal-scripts/ci-cd/upload-artifact.sh
         env:
-          ARTIFACT_NAME: "ruby-pkg_3.3_ubuntu-24.04_malloctrim"
-          ARTIFACT_PATH: output-malloctrim
-          CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
-
-  build_ruby_ubuntu_24_04-3_2-normal:
-    name: 'Ruby [ubuntu-24.04/3.2/normal]'
-
-    runs-on: ubuntu-24.04
-    environment: test
-    timeout-minutes: 30
-    permissions:
-      id-token: write
-      packages: read
-    # Run even if a dependent job has been skipped
-    if: |
-      contains(inputs.necessary_jobs, ';Build Ruby [ubuntu-24.04/3.2/normal];')
-      && !failure() && !cancelled()
-    steps:
-      
-
-      - uses: actions/checkout@v4
-      - uses: google-github-actions/auth@v2
-        with:
-          project_id: ${{ vars.GCLOUD_PROJECT_ID }}
-          workload_identity_provider: projects/${{ vars.GCLOUD_PROJECT_NUM }}/locations/global/workloadIdentityPools/github-ci-test/providers/github-ci-test
-      - name: Set up Cloud SDK
-        uses: google-github-actions/setup-gcloud@v2
-        with:
-          version: '>= 363.0.0'
-      - name: Login to Github Container Registry
-        run: docker login ghcr.io -u ${{ github.actor }} --password-stdin <<<"$GITHUB_TOKEN"
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      - name: Dump Azure connection string
-        run: echo -n "$CONNECTION_STRING" > azure-connection-string.txt
-        env:
-          CONNECTION_STRING: ${{ secrets.AZURE_CI2_STORAGE_CONNECTION_STRING }}
-      - name: Fetch Ruby source
-        run: ./internal-scripts/ci-cd/download-artifact.sh
-        env:
-          ARTIFACT_NAME: ruby-src-3.2.8
-          ARTIFACT_PATH: .
-          CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
-
-      - name: Download Docker image necessary for building
-        run: ./internal-scripts/ci-cd/download-artifact.sh
-        if: contains(inputs.necessary_jobs, ';Use locally-built Docker image ubuntu-24.04;')
-        env:
-          ARTIFACT_NAME: 'docker-image-ubuntu-24.04'
-          ARTIFACT_PATH: .
-          CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
-      - name: Load Docker image necessary for building
-        run: ./internal-scripts/ci-cd/load-docker-image.sh
-        if: contains(inputs.necessary_jobs, ';Use locally-built Docker image ubuntu-24.04;')
-        env:
-          TARBALL: image.tar.zst
-
-      - name: Download Docker image necessary for packaging
-        run: ./internal-scripts/ci-cd/download-artifact.sh
-        if: contains(inputs.necessary_jobs, ';Use locally-built Docker image utility;')
-        env:
-          ARTIFACT_NAME: docker-image-utility
-          ARTIFACT_PATH: .
-          CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
-      - name: Load Docker image necessary for packaging
-        run: ./internal-scripts/ci-cd/load-docker-image.sh
-        if: contains(inputs.necessary_jobs, ';Use locally-built Docker image utility;')
-        env:
-          TARBALL: image.tar.zst
-
-      
-
-      - name: Build binaries
-        run: ./internal-scripts/ci-cd/build-ruby-packages/build-binaries.sh
-        env:
-          ENVIRONMENT_NAME: "ubuntu-24.04"
-          VARIANT_NAME: "normal"
-          RUBY_PACKAGE_VERSION_ID: "3.2"
-          CACHE_KEY_PREFIX: "sccache/ubuntu-24.04"
-
-      - name: Build package
-        run: ./internal-scripts/ci-cd/build-ruby-packages/build-package.sh
-        env:
-          DISTRIBUTION_NAME: "ubuntu-24.04"
-          VARIANT_NAME: "normal"
-          VARIANT_PACKAGE_SUFFIX: ""
-          PACKAGE_FORMAT: "DEB"
-          RUBY_PACKAGE_VERSION_ID: "3.2"
-          RUBY_PACKAGE_REVISION: "11"
-
-      - name: Archive package artifact to Google Cloud
-        run: ./internal-scripts/ci-cd/upload-artifact.sh
-        env:
-          ARTIFACT_NAME: "ruby-pkg_3.2_ubuntu-24.04_normal"
-          ARTIFACT_PATH: output-normal
-          CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
-
-  build_ruby_ubuntu_24_04-3_2-jemalloc:
-    name: 'Ruby [ubuntu-24.04/3.2/jemalloc]'
-
-    needs: build_jemalloc_ubuntu_24_04
-    runs-on: ubuntu-24.04
-    environment: test
-    timeout-minutes: 30
-    permissions:
-      id-token: write
-      packages: read
-    # Run even if a dependent job has been skipped
-    if: |
-      contains(inputs.necessary_jobs, ';Build Ruby [ubuntu-24.04/3.2/jemalloc];')
-      && !failure() && !cancelled()
-    steps:
-      
-      - name: Check whether 'Build Jemalloc [ubuntu-24.04]' did not fail
-        run: 'false'
-        if: |
-          needs.build_jemalloc_ubuntu_24_04.result == 'skipped'
-          && contains(inputs.necessary_jobs, ';Build Jemalloc [ubuntu-24.04];')        
-
-      - uses: actions/checkout@v4
-      - uses: google-github-actions/auth@v2
-        with:
-          project_id: ${{ vars.GCLOUD_PROJECT_ID }}
-          workload_identity_provider: projects/${{ vars.GCLOUD_PROJECT_NUM }}/locations/global/workloadIdentityPools/github-ci-test/providers/github-ci-test
-      - name: Set up Cloud SDK
-        uses: google-github-actions/setup-gcloud@v2
-        with:
-          version: '>= 363.0.0'
-      - name: Login to Github Container Registry
-        run: docker login ghcr.io -u ${{ github.actor }} --password-stdin <<<"$GITHUB_TOKEN"
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      - name: Dump Azure connection string
-        run: echo -n "$CONNECTION_STRING" > azure-connection-string.txt
-        env:
-          CONNECTION_STRING: ${{ secrets.AZURE_CI2_STORAGE_CONNECTION_STRING }}
-      - name: Fetch Ruby source
-        run: ./internal-scripts/ci-cd/download-artifact.sh
-        env:
-          ARTIFACT_NAME: ruby-src-3.2.8
-          ARTIFACT_PATH: .
-          CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
-
-      - name: Download Docker image necessary for building
-        run: ./internal-scripts/ci-cd/download-artifact.sh
-        if: contains(inputs.necessary_jobs, ';Use locally-built Docker image ubuntu-24.04;')
-        env:
-          ARTIFACT_NAME: 'docker-image-ubuntu-24.04'
-          ARTIFACT_PATH: .
-          CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
-      - name: Load Docker image necessary for building
-        run: ./internal-scripts/ci-cd/load-docker-image.sh
-        if: contains(inputs.necessary_jobs, ';Use locally-built Docker image ubuntu-24.04;')
-        env:
-          TARBALL: image.tar.zst
-
-      - name: Download Docker image necessary for packaging
-        run: ./internal-scripts/ci-cd/download-artifact.sh
-        if: contains(inputs.necessary_jobs, ';Use locally-built Docker image utility;')
-        env:
-          ARTIFACT_NAME: docker-image-utility
-          ARTIFACT_PATH: .
-          CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
-      - name: Load Docker image necessary for packaging
-        run: ./internal-scripts/ci-cd/load-docker-image.sh
-        if: contains(inputs.necessary_jobs, ';Use locally-built Docker image utility;')
-        env:
-          TARBALL: image.tar.zst
-
-      
-      - name: Fetch Jemalloc binary
-        run: ./internal-scripts/ci-cd/download-artifact.sh
-        env:
-          ARTIFACT_NAME: jemalloc-bin-ubuntu-24.04
-          ARTIFACT_PATH: .
-          CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}        
-
-      - name: Build binaries
-        run: ./internal-scripts/ci-cd/build-ruby-packages/build-binaries.sh
-        env:
-          ENVIRONMENT_NAME: "ubuntu-24.04"
-          VARIANT_NAME: "jemalloc"
-          RUBY_PACKAGE_VERSION_ID: "3.2"
-          CACHE_KEY_PREFIX: "sccache/ubuntu-24.04"
-
-      - name: Build package
-        run: ./internal-scripts/ci-cd/build-ruby-packages/build-package.sh
-        env:
-          DISTRIBUTION_NAME: "ubuntu-24.04"
-          VARIANT_NAME: "jemalloc"
-          VARIANT_PACKAGE_SUFFIX: "-jemalloc"
-          PACKAGE_FORMAT: "DEB"
-          RUBY_PACKAGE_VERSION_ID: "3.2"
-          RUBY_PACKAGE_REVISION: "11"
-
-      - name: Archive package artifact to Google Cloud
-        run: ./internal-scripts/ci-cd/upload-artifact.sh
-        env:
-          ARTIFACT_NAME: "ruby-pkg_3.2_ubuntu-24.04_jemalloc"
+          ARTIFACT_NAME: "ruby-pkg_3.3_ubuntu-22.04_jemalloc"
           ARTIFACT_PATH: output-jemalloc
           CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
 
-  build_ruby_ubuntu_24_04-3_2-malloctrim:
-    name: 'Ruby [ubuntu-24.04/3.2/malloctrim]'
+  build_ruby_ubuntu_22_04-3_3-malloctrim:
+    name: 'Ruby [ubuntu-22.04/3.3/malloctrim]'
 
     runs-on: ubuntu-24.04
     environment: test
@@ -3274,682 +2983,7 @@ jobs:
       packages: read
     # Run even if a dependent job has been skipped
     if: |
-      contains(inputs.necessary_jobs, ';Build Ruby [ubuntu-24.04/3.2/malloctrim];')
-      && !failure() && !cancelled()
-    steps:
-      
-
-      - uses: actions/checkout@v4
-      - uses: google-github-actions/auth@v2
-        with:
-          project_id: ${{ vars.GCLOUD_PROJECT_ID }}
-          workload_identity_provider: projects/${{ vars.GCLOUD_PROJECT_NUM }}/locations/global/workloadIdentityPools/github-ci-test/providers/github-ci-test
-      - name: Set up Cloud SDK
-        uses: google-github-actions/setup-gcloud@v2
-        with:
-          version: '>= 363.0.0'
-      - name: Login to Github Container Registry
-        run: docker login ghcr.io -u ${{ github.actor }} --password-stdin <<<"$GITHUB_TOKEN"
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      - name: Dump Azure connection string
-        run: echo -n "$CONNECTION_STRING" > azure-connection-string.txt
-        env:
-          CONNECTION_STRING: ${{ secrets.AZURE_CI2_STORAGE_CONNECTION_STRING }}
-      - name: Fetch Ruby source
-        run: ./internal-scripts/ci-cd/download-artifact.sh
-        env:
-          ARTIFACT_NAME: ruby-src-3.2.8
-          ARTIFACT_PATH: .
-          CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
-
-      - name: Download Docker image necessary for building
-        run: ./internal-scripts/ci-cd/download-artifact.sh
-        if: contains(inputs.necessary_jobs, ';Use locally-built Docker image ubuntu-24.04;')
-        env:
-          ARTIFACT_NAME: 'docker-image-ubuntu-24.04'
-          ARTIFACT_PATH: .
-          CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
-      - name: Load Docker image necessary for building
-        run: ./internal-scripts/ci-cd/load-docker-image.sh
-        if: contains(inputs.necessary_jobs, ';Use locally-built Docker image ubuntu-24.04;')
-        env:
-          TARBALL: image.tar.zst
-
-      - name: Download Docker image necessary for packaging
-        run: ./internal-scripts/ci-cd/download-artifact.sh
-        if: contains(inputs.necessary_jobs, ';Use locally-built Docker image utility;')
-        env:
-          ARTIFACT_NAME: docker-image-utility
-          ARTIFACT_PATH: .
-          CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
-      - name: Load Docker image necessary for packaging
-        run: ./internal-scripts/ci-cd/load-docker-image.sh
-        if: contains(inputs.necessary_jobs, ';Use locally-built Docker image utility;')
-        env:
-          TARBALL: image.tar.zst
-
-      
-
-      - name: Build binaries
-        run: ./internal-scripts/ci-cd/build-ruby-packages/build-binaries.sh
-        env:
-          ENVIRONMENT_NAME: "ubuntu-24.04"
-          VARIANT_NAME: "malloctrim"
-          RUBY_PACKAGE_VERSION_ID: "3.2"
-          CACHE_KEY_PREFIX: "sccache/ubuntu-24.04"
-
-      - name: Build package
-        run: ./internal-scripts/ci-cd/build-ruby-packages/build-package.sh
-        env:
-          DISTRIBUTION_NAME: "ubuntu-24.04"
-          VARIANT_NAME: "malloctrim"
-          VARIANT_PACKAGE_SUFFIX: "-malloctrim"
-          PACKAGE_FORMAT: "DEB"
-          RUBY_PACKAGE_VERSION_ID: "3.2"
-          RUBY_PACKAGE_REVISION: "11"
-
-      - name: Archive package artifact to Google Cloud
-        run: ./internal-scripts/ci-cd/upload-artifact.sh
-        env:
-          ARTIFACT_NAME: "ruby-pkg_3.2_ubuntu-24.04_malloctrim"
-          ARTIFACT_PATH: output-malloctrim
-          CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
-
-  build_ruby_ubuntu_24_04-3_1-normal:
-    name: 'Ruby [ubuntu-24.04/3.1/normal]'
-
-    runs-on: ubuntu-24.04
-    environment: test
-    timeout-minutes: 30
-    permissions:
-      id-token: write
-      packages: read
-    # Run even if a dependent job has been skipped
-    if: |
-      contains(inputs.necessary_jobs, ';Build Ruby [ubuntu-24.04/3.1/normal];')
-      && !failure() && !cancelled()
-    steps:
-      
-
-      - uses: actions/checkout@v4
-      - uses: google-github-actions/auth@v2
-        with:
-          project_id: ${{ vars.GCLOUD_PROJECT_ID }}
-          workload_identity_provider: projects/${{ vars.GCLOUD_PROJECT_NUM }}/locations/global/workloadIdentityPools/github-ci-test/providers/github-ci-test
-      - name: Set up Cloud SDK
-        uses: google-github-actions/setup-gcloud@v2
-        with:
-          version: '>= 363.0.0'
-      - name: Login to Github Container Registry
-        run: docker login ghcr.io -u ${{ github.actor }} --password-stdin <<<"$GITHUB_TOKEN"
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      - name: Dump Azure connection string
-        run: echo -n "$CONNECTION_STRING" > azure-connection-string.txt
-        env:
-          CONNECTION_STRING: ${{ secrets.AZURE_CI2_STORAGE_CONNECTION_STRING }}
-      - name: Fetch Ruby source
-        run: ./internal-scripts/ci-cd/download-artifact.sh
-        env:
-          ARTIFACT_NAME: ruby-src-3.1.7
-          ARTIFACT_PATH: .
-          CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
-
-      - name: Download Docker image necessary for building
-        run: ./internal-scripts/ci-cd/download-artifact.sh
-        if: contains(inputs.necessary_jobs, ';Use locally-built Docker image ubuntu-24.04;')
-        env:
-          ARTIFACT_NAME: 'docker-image-ubuntu-24.04'
-          ARTIFACT_PATH: .
-          CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
-      - name: Load Docker image necessary for building
-        run: ./internal-scripts/ci-cd/load-docker-image.sh
-        if: contains(inputs.necessary_jobs, ';Use locally-built Docker image ubuntu-24.04;')
-        env:
-          TARBALL: image.tar.zst
-
-      - name: Download Docker image necessary for packaging
-        run: ./internal-scripts/ci-cd/download-artifact.sh
-        if: contains(inputs.necessary_jobs, ';Use locally-built Docker image utility;')
-        env:
-          ARTIFACT_NAME: docker-image-utility
-          ARTIFACT_PATH: .
-          CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
-      - name: Load Docker image necessary for packaging
-        run: ./internal-scripts/ci-cd/load-docker-image.sh
-        if: contains(inputs.necessary_jobs, ';Use locally-built Docker image utility;')
-        env:
-          TARBALL: image.tar.zst
-
-      
-
-      - name: Build binaries
-        run: ./internal-scripts/ci-cd/build-ruby-packages/build-binaries.sh
-        env:
-          ENVIRONMENT_NAME: "ubuntu-24.04"
-          VARIANT_NAME: "normal"
-          RUBY_PACKAGE_VERSION_ID: "3.1"
-          CACHE_KEY_PREFIX: "sccache/ubuntu-24.04"
-
-      - name: Build package
-        run: ./internal-scripts/ci-cd/build-ruby-packages/build-package.sh
-        env:
-          DISTRIBUTION_NAME: "ubuntu-24.04"
-          VARIANT_NAME: "normal"
-          VARIANT_PACKAGE_SUFFIX: ""
-          PACKAGE_FORMAT: "DEB"
-          RUBY_PACKAGE_VERSION_ID: "3.1"
-          RUBY_PACKAGE_REVISION: "16"
-
-      - name: Archive package artifact to Google Cloud
-        run: ./internal-scripts/ci-cd/upload-artifact.sh
-        env:
-          ARTIFACT_NAME: "ruby-pkg_3.1_ubuntu-24.04_normal"
-          ARTIFACT_PATH: output-normal
-          CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
-
-  build_ruby_ubuntu_24_04-3_1-jemalloc:
-    name: 'Ruby [ubuntu-24.04/3.1/jemalloc]'
-
-    needs: build_jemalloc_ubuntu_24_04
-    runs-on: ubuntu-24.04
-    environment: test
-    timeout-minutes: 30
-    permissions:
-      id-token: write
-      packages: read
-    # Run even if a dependent job has been skipped
-    if: |
-      contains(inputs.necessary_jobs, ';Build Ruby [ubuntu-24.04/3.1/jemalloc];')
-      && !failure() && !cancelled()
-    steps:
-      
-      - name: Check whether 'Build Jemalloc [ubuntu-24.04]' did not fail
-        run: 'false'
-        if: |
-          needs.build_jemalloc_ubuntu_24_04.result == 'skipped'
-          && contains(inputs.necessary_jobs, ';Build Jemalloc [ubuntu-24.04];')        
-
-      - uses: actions/checkout@v4
-      - uses: google-github-actions/auth@v2
-        with:
-          project_id: ${{ vars.GCLOUD_PROJECT_ID }}
-          workload_identity_provider: projects/${{ vars.GCLOUD_PROJECT_NUM }}/locations/global/workloadIdentityPools/github-ci-test/providers/github-ci-test
-      - name: Set up Cloud SDK
-        uses: google-github-actions/setup-gcloud@v2
-        with:
-          version: '>= 363.0.0'
-      - name: Login to Github Container Registry
-        run: docker login ghcr.io -u ${{ github.actor }} --password-stdin <<<"$GITHUB_TOKEN"
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      - name: Dump Azure connection string
-        run: echo -n "$CONNECTION_STRING" > azure-connection-string.txt
-        env:
-          CONNECTION_STRING: ${{ secrets.AZURE_CI2_STORAGE_CONNECTION_STRING }}
-      - name: Fetch Ruby source
-        run: ./internal-scripts/ci-cd/download-artifact.sh
-        env:
-          ARTIFACT_NAME: ruby-src-3.1.7
-          ARTIFACT_PATH: .
-          CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
-
-      - name: Download Docker image necessary for building
-        run: ./internal-scripts/ci-cd/download-artifact.sh
-        if: contains(inputs.necessary_jobs, ';Use locally-built Docker image ubuntu-24.04;')
-        env:
-          ARTIFACT_NAME: 'docker-image-ubuntu-24.04'
-          ARTIFACT_PATH: .
-          CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
-      - name: Load Docker image necessary for building
-        run: ./internal-scripts/ci-cd/load-docker-image.sh
-        if: contains(inputs.necessary_jobs, ';Use locally-built Docker image ubuntu-24.04;')
-        env:
-          TARBALL: image.tar.zst
-
-      - name: Download Docker image necessary for packaging
-        run: ./internal-scripts/ci-cd/download-artifact.sh
-        if: contains(inputs.necessary_jobs, ';Use locally-built Docker image utility;')
-        env:
-          ARTIFACT_NAME: docker-image-utility
-          ARTIFACT_PATH: .
-          CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
-      - name: Load Docker image necessary for packaging
-        run: ./internal-scripts/ci-cd/load-docker-image.sh
-        if: contains(inputs.necessary_jobs, ';Use locally-built Docker image utility;')
-        env:
-          TARBALL: image.tar.zst
-
-      
-      - name: Fetch Jemalloc binary
-        run: ./internal-scripts/ci-cd/download-artifact.sh
-        env:
-          ARTIFACT_NAME: jemalloc-bin-ubuntu-24.04
-          ARTIFACT_PATH: .
-          CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}        
-
-      - name: Build binaries
-        run: ./internal-scripts/ci-cd/build-ruby-packages/build-binaries.sh
-        env:
-          ENVIRONMENT_NAME: "ubuntu-24.04"
-          VARIANT_NAME: "jemalloc"
-          RUBY_PACKAGE_VERSION_ID: "3.1"
-          CACHE_KEY_PREFIX: "sccache/ubuntu-24.04"
-
-      - name: Build package
-        run: ./internal-scripts/ci-cd/build-ruby-packages/build-package.sh
-        env:
-          DISTRIBUTION_NAME: "ubuntu-24.04"
-          VARIANT_NAME: "jemalloc"
-          VARIANT_PACKAGE_SUFFIX: "-jemalloc"
-          PACKAGE_FORMAT: "DEB"
-          RUBY_PACKAGE_VERSION_ID: "3.1"
-          RUBY_PACKAGE_REVISION: "16"
-
-      - name: Archive package artifact to Google Cloud
-        run: ./internal-scripts/ci-cd/upload-artifact.sh
-        env:
-          ARTIFACT_NAME: "ruby-pkg_3.1_ubuntu-24.04_jemalloc"
-          ARTIFACT_PATH: output-jemalloc
-          CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
-
-  build_ruby_ubuntu_24_04-3_1-malloctrim:
-    name: 'Ruby [ubuntu-24.04/3.1/malloctrim]'
-
-    runs-on: ubuntu-24.04
-    environment: test
-    timeout-minutes: 30
-    permissions:
-      id-token: write
-      packages: read
-    # Run even if a dependent job has been skipped
-    if: |
-      contains(inputs.necessary_jobs, ';Build Ruby [ubuntu-24.04/3.1/malloctrim];')
-      && !failure() && !cancelled()
-    steps:
-      
-
-      - uses: actions/checkout@v4
-      - uses: google-github-actions/auth@v2
-        with:
-          project_id: ${{ vars.GCLOUD_PROJECT_ID }}
-          workload_identity_provider: projects/${{ vars.GCLOUD_PROJECT_NUM }}/locations/global/workloadIdentityPools/github-ci-test/providers/github-ci-test
-      - name: Set up Cloud SDK
-        uses: google-github-actions/setup-gcloud@v2
-        with:
-          version: '>= 363.0.0'
-      - name: Login to Github Container Registry
-        run: docker login ghcr.io -u ${{ github.actor }} --password-stdin <<<"$GITHUB_TOKEN"
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      - name: Dump Azure connection string
-        run: echo -n "$CONNECTION_STRING" > azure-connection-string.txt
-        env:
-          CONNECTION_STRING: ${{ secrets.AZURE_CI2_STORAGE_CONNECTION_STRING }}
-      - name: Fetch Ruby source
-        run: ./internal-scripts/ci-cd/download-artifact.sh
-        env:
-          ARTIFACT_NAME: ruby-src-3.1.7
-          ARTIFACT_PATH: .
-          CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
-
-      - name: Download Docker image necessary for building
-        run: ./internal-scripts/ci-cd/download-artifact.sh
-        if: contains(inputs.necessary_jobs, ';Use locally-built Docker image ubuntu-24.04;')
-        env:
-          ARTIFACT_NAME: 'docker-image-ubuntu-24.04'
-          ARTIFACT_PATH: .
-          CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
-      - name: Load Docker image necessary for building
-        run: ./internal-scripts/ci-cd/load-docker-image.sh
-        if: contains(inputs.necessary_jobs, ';Use locally-built Docker image ubuntu-24.04;')
-        env:
-          TARBALL: image.tar.zst
-
-      - name: Download Docker image necessary for packaging
-        run: ./internal-scripts/ci-cd/download-artifact.sh
-        if: contains(inputs.necessary_jobs, ';Use locally-built Docker image utility;')
-        env:
-          ARTIFACT_NAME: docker-image-utility
-          ARTIFACT_PATH: .
-          CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
-      - name: Load Docker image necessary for packaging
-        run: ./internal-scripts/ci-cd/load-docker-image.sh
-        if: contains(inputs.necessary_jobs, ';Use locally-built Docker image utility;')
-        env:
-          TARBALL: image.tar.zst
-
-      
-
-      - name: Build binaries
-        run: ./internal-scripts/ci-cd/build-ruby-packages/build-binaries.sh
-        env:
-          ENVIRONMENT_NAME: "ubuntu-24.04"
-          VARIANT_NAME: "malloctrim"
-          RUBY_PACKAGE_VERSION_ID: "3.1"
-          CACHE_KEY_PREFIX: "sccache/ubuntu-24.04"
-
-      - name: Build package
-        run: ./internal-scripts/ci-cd/build-ruby-packages/build-package.sh
-        env:
-          DISTRIBUTION_NAME: "ubuntu-24.04"
-          VARIANT_NAME: "malloctrim"
-          VARIANT_PACKAGE_SUFFIX: "-malloctrim"
-          PACKAGE_FORMAT: "DEB"
-          RUBY_PACKAGE_VERSION_ID: "3.1"
-          RUBY_PACKAGE_REVISION: "16"
-
-      - name: Archive package artifact to Google Cloud
-        run: ./internal-scripts/ci-cd/upload-artifact.sh
-        env:
-          ARTIFACT_NAME: "ruby-pkg_3.1_ubuntu-24.04_malloctrim"
-          ARTIFACT_PATH: output-malloctrim
-          CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
-
-  build_ruby_ubuntu_24_04-3_4_5-normal:
-    name: 'Ruby [ubuntu-24.04/3.4.5/normal]'
-
-    runs-on: ubuntu-24.04
-    environment: test
-    timeout-minutes: 30
-    permissions:
-      id-token: write
-      packages: read
-    # Run even if a dependent job has been skipped
-    if: |
-      contains(inputs.necessary_jobs, ';Build Ruby [ubuntu-24.04/3.4.5/normal];')
-      && !failure() && !cancelled()
-    steps:
-      
-
-      - uses: actions/checkout@v4
-      - uses: google-github-actions/auth@v2
-        with:
-          project_id: ${{ vars.GCLOUD_PROJECT_ID }}
-          workload_identity_provider: projects/${{ vars.GCLOUD_PROJECT_NUM }}/locations/global/workloadIdentityPools/github-ci-test/providers/github-ci-test
-      - name: Set up Cloud SDK
-        uses: google-github-actions/setup-gcloud@v2
-        with:
-          version: '>= 363.0.0'
-      - name: Login to Github Container Registry
-        run: docker login ghcr.io -u ${{ github.actor }} --password-stdin <<<"$GITHUB_TOKEN"
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      - name: Dump Azure connection string
-        run: echo -n "$CONNECTION_STRING" > azure-connection-string.txt
-        env:
-          CONNECTION_STRING: ${{ secrets.AZURE_CI2_STORAGE_CONNECTION_STRING }}
-      - name: Fetch Ruby source
-        run: ./internal-scripts/ci-cd/download-artifact.sh
-        env:
-          ARTIFACT_NAME: ruby-src-3.4.5
-          ARTIFACT_PATH: .
-          CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
-
-      - name: Download Docker image necessary for building
-        run: ./internal-scripts/ci-cd/download-artifact.sh
-        if: contains(inputs.necessary_jobs, ';Use locally-built Docker image ubuntu-24.04;')
-        env:
-          ARTIFACT_NAME: 'docker-image-ubuntu-24.04'
-          ARTIFACT_PATH: .
-          CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
-      - name: Load Docker image necessary for building
-        run: ./internal-scripts/ci-cd/load-docker-image.sh
-        if: contains(inputs.necessary_jobs, ';Use locally-built Docker image ubuntu-24.04;')
-        env:
-          TARBALL: image.tar.zst
-
-      - name: Download Docker image necessary for packaging
-        run: ./internal-scripts/ci-cd/download-artifact.sh
-        if: contains(inputs.necessary_jobs, ';Use locally-built Docker image utility;')
-        env:
-          ARTIFACT_NAME: docker-image-utility
-          ARTIFACT_PATH: .
-          CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
-      - name: Load Docker image necessary for packaging
-        run: ./internal-scripts/ci-cd/load-docker-image.sh
-        if: contains(inputs.necessary_jobs, ';Use locally-built Docker image utility;')
-        env:
-          TARBALL: image.tar.zst
-
-      
-
-      - name: Build binaries
-        run: ./internal-scripts/ci-cd/build-ruby-packages/build-binaries.sh
-        env:
-          ENVIRONMENT_NAME: "ubuntu-24.04"
-          VARIANT_NAME: "normal"
-          RUBY_PACKAGE_VERSION_ID: "3.4.5"
-          CACHE_KEY_PREFIX: "sccache/ubuntu-24.04"
-
-      - name: Build package
-        run: ./internal-scripts/ci-cd/build-ruby-packages/build-package.sh
-        env:
-          DISTRIBUTION_NAME: "ubuntu-24.04"
-          VARIANT_NAME: "normal"
-          VARIANT_PACKAGE_SUFFIX: ""
-          PACKAGE_FORMAT: "DEB"
-          RUBY_PACKAGE_VERSION_ID: "3.4.5"
-          RUBY_PACKAGE_REVISION: "0"
-
-      - name: Archive package artifact to Google Cloud
-        run: ./internal-scripts/ci-cd/upload-artifact.sh
-        env:
-          ARTIFACT_NAME: "ruby-pkg_3.4.5_ubuntu-24.04_normal"
-          ARTIFACT_PATH: output-normal
-          CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
-
-  build_ruby_ubuntu_24_04-3_4_5-jemalloc:
-    name: 'Ruby [ubuntu-24.04/3.4.5/jemalloc]'
-
-    needs: build_jemalloc_ubuntu_24_04
-    runs-on: ubuntu-24.04
-    environment: test
-    timeout-minutes: 30
-    permissions:
-      id-token: write
-      packages: read
-    # Run even if a dependent job has been skipped
-    if: |
-      contains(inputs.necessary_jobs, ';Build Ruby [ubuntu-24.04/3.4.5/jemalloc];')
-      && !failure() && !cancelled()
-    steps:
-      
-      - name: Check whether 'Build Jemalloc [ubuntu-24.04]' did not fail
-        run: 'false'
-        if: |
-          needs.build_jemalloc_ubuntu_24_04.result == 'skipped'
-          && contains(inputs.necessary_jobs, ';Build Jemalloc [ubuntu-24.04];')        
-
-      - uses: actions/checkout@v4
-      - uses: google-github-actions/auth@v2
-        with:
-          project_id: ${{ vars.GCLOUD_PROJECT_ID }}
-          workload_identity_provider: projects/${{ vars.GCLOUD_PROJECT_NUM }}/locations/global/workloadIdentityPools/github-ci-test/providers/github-ci-test
-      - name: Set up Cloud SDK
-        uses: google-github-actions/setup-gcloud@v2
-        with:
-          version: '>= 363.0.0'
-      - name: Login to Github Container Registry
-        run: docker login ghcr.io -u ${{ github.actor }} --password-stdin <<<"$GITHUB_TOKEN"
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      - name: Dump Azure connection string
-        run: echo -n "$CONNECTION_STRING" > azure-connection-string.txt
-        env:
-          CONNECTION_STRING: ${{ secrets.AZURE_CI2_STORAGE_CONNECTION_STRING }}
-      - name: Fetch Ruby source
-        run: ./internal-scripts/ci-cd/download-artifact.sh
-        env:
-          ARTIFACT_NAME: ruby-src-3.4.5
-          ARTIFACT_PATH: .
-          CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
-
-      - name: Download Docker image necessary for building
-        run: ./internal-scripts/ci-cd/download-artifact.sh
-        if: contains(inputs.necessary_jobs, ';Use locally-built Docker image ubuntu-24.04;')
-        env:
-          ARTIFACT_NAME: 'docker-image-ubuntu-24.04'
-          ARTIFACT_PATH: .
-          CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
-      - name: Load Docker image necessary for building
-        run: ./internal-scripts/ci-cd/load-docker-image.sh
-        if: contains(inputs.necessary_jobs, ';Use locally-built Docker image ubuntu-24.04;')
-        env:
-          TARBALL: image.tar.zst
-
-      - name: Download Docker image necessary for packaging
-        run: ./internal-scripts/ci-cd/download-artifact.sh
-        if: contains(inputs.necessary_jobs, ';Use locally-built Docker image utility;')
-        env:
-          ARTIFACT_NAME: docker-image-utility
-          ARTIFACT_PATH: .
-          CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
-      - name: Load Docker image necessary for packaging
-        run: ./internal-scripts/ci-cd/load-docker-image.sh
-        if: contains(inputs.necessary_jobs, ';Use locally-built Docker image utility;')
-        env:
-          TARBALL: image.tar.zst
-
-      
-      - name: Fetch Jemalloc binary
-        run: ./internal-scripts/ci-cd/download-artifact.sh
-        env:
-          ARTIFACT_NAME: jemalloc-bin-ubuntu-24.04
-          ARTIFACT_PATH: .
-          CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}        
-
-      - name: Build binaries
-        run: ./internal-scripts/ci-cd/build-ruby-packages/build-binaries.sh
-        env:
-          ENVIRONMENT_NAME: "ubuntu-24.04"
-          VARIANT_NAME: "jemalloc"
-          RUBY_PACKAGE_VERSION_ID: "3.4.5"
-          CACHE_KEY_PREFIX: "sccache/ubuntu-24.04"
-
-      - name: Build package
-        run: ./internal-scripts/ci-cd/build-ruby-packages/build-package.sh
-        env:
-          DISTRIBUTION_NAME: "ubuntu-24.04"
-          VARIANT_NAME: "jemalloc"
-          VARIANT_PACKAGE_SUFFIX: "-jemalloc"
-          PACKAGE_FORMAT: "DEB"
-          RUBY_PACKAGE_VERSION_ID: "3.4.5"
-          RUBY_PACKAGE_REVISION: "0"
-
-      - name: Archive package artifact to Google Cloud
-        run: ./internal-scripts/ci-cd/upload-artifact.sh
-        env:
-          ARTIFACT_NAME: "ruby-pkg_3.4.5_ubuntu-24.04_jemalloc"
-          ARTIFACT_PATH: output-jemalloc
-          CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
-
-  build_ruby_ubuntu_24_04-3_4_5-malloctrim:
-    name: 'Ruby [ubuntu-24.04/3.4.5/malloctrim]'
-
-    runs-on: ubuntu-24.04
-    environment: test
-    timeout-minutes: 30
-    permissions:
-      id-token: write
-      packages: read
-    # Run even if a dependent job has been skipped
-    if: |
-      contains(inputs.necessary_jobs, ';Build Ruby [ubuntu-24.04/3.4.5/malloctrim];')
-      && !failure() && !cancelled()
-    steps:
-      
-
-      - uses: actions/checkout@v4
-      - uses: google-github-actions/auth@v2
-        with:
-          project_id: ${{ vars.GCLOUD_PROJECT_ID }}
-          workload_identity_provider: projects/${{ vars.GCLOUD_PROJECT_NUM }}/locations/global/workloadIdentityPools/github-ci-test/providers/github-ci-test
-      - name: Set up Cloud SDK
-        uses: google-github-actions/setup-gcloud@v2
-        with:
-          version: '>= 363.0.0'
-      - name: Login to Github Container Registry
-        run: docker login ghcr.io -u ${{ github.actor }} --password-stdin <<<"$GITHUB_TOKEN"
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      - name: Dump Azure connection string
-        run: echo -n "$CONNECTION_STRING" > azure-connection-string.txt
-        env:
-          CONNECTION_STRING: ${{ secrets.AZURE_CI2_STORAGE_CONNECTION_STRING }}
-      - name: Fetch Ruby source
-        run: ./internal-scripts/ci-cd/download-artifact.sh
-        env:
-          ARTIFACT_NAME: ruby-src-3.4.5
-          ARTIFACT_PATH: .
-          CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
-
-      - name: Download Docker image necessary for building
-        run: ./internal-scripts/ci-cd/download-artifact.sh
-        if: contains(inputs.necessary_jobs, ';Use locally-built Docker image ubuntu-24.04;')
-        env:
-          ARTIFACT_NAME: 'docker-image-ubuntu-24.04'
-          ARTIFACT_PATH: .
-          CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
-      - name: Load Docker image necessary for building
-        run: ./internal-scripts/ci-cd/load-docker-image.sh
-        if: contains(inputs.necessary_jobs, ';Use locally-built Docker image ubuntu-24.04;')
-        env:
-          TARBALL: image.tar.zst
-
-      - name: Download Docker image necessary for packaging
-        run: ./internal-scripts/ci-cd/download-artifact.sh
-        if: contains(inputs.necessary_jobs, ';Use locally-built Docker image utility;')
-        env:
-          ARTIFACT_NAME: docker-image-utility
-          ARTIFACT_PATH: .
-          CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
-      - name: Load Docker image necessary for packaging
-        run: ./internal-scripts/ci-cd/load-docker-image.sh
-        if: contains(inputs.necessary_jobs, ';Use locally-built Docker image utility;')
-        env:
-          TARBALL: image.tar.zst
-
-      
-
-      - name: Build binaries
-        run: ./internal-scripts/ci-cd/build-ruby-packages/build-binaries.sh
-        env:
-          ENVIRONMENT_NAME: "ubuntu-24.04"
-          VARIANT_NAME: "malloctrim"
-          RUBY_PACKAGE_VERSION_ID: "3.4.5"
-          CACHE_KEY_PREFIX: "sccache/ubuntu-24.04"
-
-      - name: Build package
-        run: ./internal-scripts/ci-cd/build-ruby-packages/build-package.sh
-        env:
-          DISTRIBUTION_NAME: "ubuntu-24.04"
-          VARIANT_NAME: "malloctrim"
-          VARIANT_PACKAGE_SUFFIX: "-malloctrim"
-          PACKAGE_FORMAT: "DEB"
-          RUBY_PACKAGE_VERSION_ID: "3.4.5"
-          RUBY_PACKAGE_REVISION: "0"
-
-      - name: Archive package artifact to Google Cloud
-        run: ./internal-scripts/ci-cd/upload-artifact.sh
-        env:
-          ARTIFACT_NAME: "ruby-pkg_3.4.5_ubuntu-24.04_malloctrim"
-          ARTIFACT_PATH: output-malloctrim
-          CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
-
-  build_ruby_ubuntu_24_04-3_3_8-normal:
-    name: 'Ruby [ubuntu-24.04/3.3.8/normal]'
-
-    runs-on: ubuntu-24.04
-    environment: test
-    timeout-minutes: 30
-    permissions:
-      id-token: write
-      packages: read
-    # Run even if a dependent job has been skipped
-    if: |
-      contains(inputs.necessary_jobs, ';Build Ruby [ubuntu-24.04/3.3.8/normal];')
+      contains(inputs.necessary_jobs, ';Build Ruby [ubuntu-22.04/3.3/malloctrim];')
       && !failure() && !cancelled()
     steps:
       
@@ -3980,14 +3014,14 @@ jobs:
 
       - name: Download Docker image necessary for building
         run: ./internal-scripts/ci-cd/download-artifact.sh
-        if: contains(inputs.necessary_jobs, ';Use locally-built Docker image ubuntu-24.04;')
+        if: contains(inputs.necessary_jobs, ';Use locally-built Docker image ubuntu-22.04;')
         env:
-          ARTIFACT_NAME: 'docker-image-ubuntu-24.04'
+          ARTIFACT_NAME: 'docker-image-ubuntu-22.04'
           ARTIFACT_PATH: .
           CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
       - name: Load Docker image necessary for building
         run: ./internal-scripts/ci-cd/load-docker-image.sh
-        if: contains(inputs.necessary_jobs, ';Use locally-built Docker image ubuntu-24.04;')
+        if: contains(inputs.necessary_jobs, ';Use locally-built Docker image ubuntu-22.04;')
         env:
           TARBALL: image.tar.zst
 
@@ -4009,32 +3043,31 @@ jobs:
       - name: Build binaries
         run: ./internal-scripts/ci-cd/build-ruby-packages/build-binaries.sh
         env:
-          ENVIRONMENT_NAME: "ubuntu-24.04"
-          VARIANT_NAME: "normal"
-          RUBY_PACKAGE_VERSION_ID: "3.3.8"
-          CACHE_KEY_PREFIX: "sccache/ubuntu-24.04"
+          ENVIRONMENT_NAME: "ubuntu-22.04"
+          VARIANT_NAME: "malloctrim"
+          RUBY_PACKAGE_VERSION_ID: "3.3"
+          CACHE_KEY_PREFIX: "sccache/ubuntu-22.04"
 
       - name: Build package
         run: ./internal-scripts/ci-cd/build-ruby-packages/build-package.sh
         env:
-          DISTRIBUTION_NAME: "ubuntu-24.04"
-          VARIANT_NAME: "normal"
-          VARIANT_PACKAGE_SUFFIX: ""
+          DISTRIBUTION_NAME: "ubuntu-22.04"
+          VARIANT_NAME: "malloctrim"
+          VARIANT_PACKAGE_SUFFIX: "-malloctrim"
           PACKAGE_FORMAT: "DEB"
-          RUBY_PACKAGE_VERSION_ID: "3.3.8"
-          RUBY_PACKAGE_REVISION: "0"
+          RUBY_PACKAGE_VERSION_ID: "3.3"
+          RUBY_PACKAGE_REVISION: "8"
 
       - name: Archive package artifact to Google Cloud
         run: ./internal-scripts/ci-cd/upload-artifact.sh
         env:
-          ARTIFACT_NAME: "ruby-pkg_3.3.8_ubuntu-24.04_normal"
-          ARTIFACT_PATH: output-normal
+          ARTIFACT_NAME: "ruby-pkg_3.3_ubuntu-22.04_malloctrim"
+          ARTIFACT_PATH: output-malloctrim
           CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
 
-  build_ruby_ubuntu_24_04-3_3_8-jemalloc:
-    name: 'Ruby [ubuntu-24.04/3.3.8/jemalloc]'
+  build_ruby_ubuntu_22_04-3_2-normal:
+    name: 'Ruby [ubuntu-22.04/3.2/normal]'
 
-    needs: build_jemalloc_ubuntu_24_04
     runs-on: ubuntu-24.04
     environment: test
     timeout-minutes: 30
@@ -4043,15 +3076,883 @@ jobs:
       packages: read
     # Run even if a dependent job has been skipped
     if: |
-      contains(inputs.necessary_jobs, ';Build Ruby [ubuntu-24.04/3.3.8/jemalloc];')
+      contains(inputs.necessary_jobs, ';Build Ruby [ubuntu-22.04/3.2/normal];')
       && !failure() && !cancelled()
     steps:
       
-      - name: Check whether 'Build Jemalloc [ubuntu-24.04]' did not fail
+
+      - uses: actions/checkout@v4
+      - uses: google-github-actions/auth@v2
+        with:
+          project_id: ${{ vars.GCLOUD_PROJECT_ID }}
+          workload_identity_provider: projects/${{ vars.GCLOUD_PROJECT_NUM }}/locations/global/workloadIdentityPools/github-ci-test/providers/github-ci-test
+      - name: Set up Cloud SDK
+        uses: google-github-actions/setup-gcloud@v2
+        with:
+          version: '>= 363.0.0'
+      - name: Login to Github Container Registry
+        run: docker login ghcr.io -u ${{ github.actor }} --password-stdin <<<"$GITHUB_TOKEN"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Dump Azure connection string
+        run: echo -n "$CONNECTION_STRING" > azure-connection-string.txt
+        env:
+          CONNECTION_STRING: ${{ secrets.AZURE_CI2_STORAGE_CONNECTION_STRING }}
+      - name: Fetch Ruby source
+        run: ./internal-scripts/ci-cd/download-artifact.sh
+        env:
+          ARTIFACT_NAME: ruby-src-3.2.8
+          ARTIFACT_PATH: .
+          CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
+
+      - name: Download Docker image necessary for building
+        run: ./internal-scripts/ci-cd/download-artifact.sh
+        if: contains(inputs.necessary_jobs, ';Use locally-built Docker image ubuntu-22.04;')
+        env:
+          ARTIFACT_NAME: 'docker-image-ubuntu-22.04'
+          ARTIFACT_PATH: .
+          CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
+      - name: Load Docker image necessary for building
+        run: ./internal-scripts/ci-cd/load-docker-image.sh
+        if: contains(inputs.necessary_jobs, ';Use locally-built Docker image ubuntu-22.04;')
+        env:
+          TARBALL: image.tar.zst
+
+      - name: Download Docker image necessary for packaging
+        run: ./internal-scripts/ci-cd/download-artifact.sh
+        if: contains(inputs.necessary_jobs, ';Use locally-built Docker image utility;')
+        env:
+          ARTIFACT_NAME: docker-image-utility
+          ARTIFACT_PATH: .
+          CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
+      - name: Load Docker image necessary for packaging
+        run: ./internal-scripts/ci-cd/load-docker-image.sh
+        if: contains(inputs.necessary_jobs, ';Use locally-built Docker image utility;')
+        env:
+          TARBALL: image.tar.zst
+
+      
+
+      - name: Build binaries
+        run: ./internal-scripts/ci-cd/build-ruby-packages/build-binaries.sh
+        env:
+          ENVIRONMENT_NAME: "ubuntu-22.04"
+          VARIANT_NAME: "normal"
+          RUBY_PACKAGE_VERSION_ID: "3.2"
+          CACHE_KEY_PREFIX: "sccache/ubuntu-22.04"
+
+      - name: Build package
+        run: ./internal-scripts/ci-cd/build-ruby-packages/build-package.sh
+        env:
+          DISTRIBUTION_NAME: "ubuntu-22.04"
+          VARIANT_NAME: "normal"
+          VARIANT_PACKAGE_SUFFIX: ""
+          PACKAGE_FORMAT: "DEB"
+          RUBY_PACKAGE_VERSION_ID: "3.2"
+          RUBY_PACKAGE_REVISION: "11"
+
+      - name: Archive package artifact to Google Cloud
+        run: ./internal-scripts/ci-cd/upload-artifact.sh
+        env:
+          ARTIFACT_NAME: "ruby-pkg_3.2_ubuntu-22.04_normal"
+          ARTIFACT_PATH: output-normal
+          CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
+
+  build_ruby_ubuntu_22_04-3_2-jemalloc:
+    name: 'Ruby [ubuntu-22.04/3.2/jemalloc]'
+
+    needs: build_jemalloc_ubuntu_22_04
+    runs-on: ubuntu-24.04
+    environment: test
+    timeout-minutes: 30
+    permissions:
+      id-token: write
+      packages: read
+    # Run even if a dependent job has been skipped
+    if: |
+      contains(inputs.necessary_jobs, ';Build Ruby [ubuntu-22.04/3.2/jemalloc];')
+      && !failure() && !cancelled()
+    steps:
+      
+      - name: Check whether 'Build Jemalloc [ubuntu-22.04]' did not fail
         run: 'false'
         if: |
-          needs.build_jemalloc_ubuntu_24_04.result == 'skipped'
-          && contains(inputs.necessary_jobs, ';Build Jemalloc [ubuntu-24.04];')        
+          needs.build_jemalloc_ubuntu_22_04.result == 'skipped'
+          && contains(inputs.necessary_jobs, ';Build Jemalloc [ubuntu-22.04];')        
+
+      - uses: actions/checkout@v4
+      - uses: google-github-actions/auth@v2
+        with:
+          project_id: ${{ vars.GCLOUD_PROJECT_ID }}
+          workload_identity_provider: projects/${{ vars.GCLOUD_PROJECT_NUM }}/locations/global/workloadIdentityPools/github-ci-test/providers/github-ci-test
+      - name: Set up Cloud SDK
+        uses: google-github-actions/setup-gcloud@v2
+        with:
+          version: '>= 363.0.0'
+      - name: Login to Github Container Registry
+        run: docker login ghcr.io -u ${{ github.actor }} --password-stdin <<<"$GITHUB_TOKEN"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Dump Azure connection string
+        run: echo -n "$CONNECTION_STRING" > azure-connection-string.txt
+        env:
+          CONNECTION_STRING: ${{ secrets.AZURE_CI2_STORAGE_CONNECTION_STRING }}
+      - name: Fetch Ruby source
+        run: ./internal-scripts/ci-cd/download-artifact.sh
+        env:
+          ARTIFACT_NAME: ruby-src-3.2.8
+          ARTIFACT_PATH: .
+          CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
+
+      - name: Download Docker image necessary for building
+        run: ./internal-scripts/ci-cd/download-artifact.sh
+        if: contains(inputs.necessary_jobs, ';Use locally-built Docker image ubuntu-22.04;')
+        env:
+          ARTIFACT_NAME: 'docker-image-ubuntu-22.04'
+          ARTIFACT_PATH: .
+          CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
+      - name: Load Docker image necessary for building
+        run: ./internal-scripts/ci-cd/load-docker-image.sh
+        if: contains(inputs.necessary_jobs, ';Use locally-built Docker image ubuntu-22.04;')
+        env:
+          TARBALL: image.tar.zst
+
+      - name: Download Docker image necessary for packaging
+        run: ./internal-scripts/ci-cd/download-artifact.sh
+        if: contains(inputs.necessary_jobs, ';Use locally-built Docker image utility;')
+        env:
+          ARTIFACT_NAME: docker-image-utility
+          ARTIFACT_PATH: .
+          CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
+      - name: Load Docker image necessary for packaging
+        run: ./internal-scripts/ci-cd/load-docker-image.sh
+        if: contains(inputs.necessary_jobs, ';Use locally-built Docker image utility;')
+        env:
+          TARBALL: image.tar.zst
+
+      
+      - name: Fetch Jemalloc binary
+        run: ./internal-scripts/ci-cd/download-artifact.sh
+        env:
+          ARTIFACT_NAME: jemalloc-bin-ubuntu-22.04
+          ARTIFACT_PATH: .
+          CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}        
+
+      - name: Build binaries
+        run: ./internal-scripts/ci-cd/build-ruby-packages/build-binaries.sh
+        env:
+          ENVIRONMENT_NAME: "ubuntu-22.04"
+          VARIANT_NAME: "jemalloc"
+          RUBY_PACKAGE_VERSION_ID: "3.2"
+          CACHE_KEY_PREFIX: "sccache/ubuntu-22.04"
+
+      - name: Build package
+        run: ./internal-scripts/ci-cd/build-ruby-packages/build-package.sh
+        env:
+          DISTRIBUTION_NAME: "ubuntu-22.04"
+          VARIANT_NAME: "jemalloc"
+          VARIANT_PACKAGE_SUFFIX: "-jemalloc"
+          PACKAGE_FORMAT: "DEB"
+          RUBY_PACKAGE_VERSION_ID: "3.2"
+          RUBY_PACKAGE_REVISION: "11"
+
+      - name: Archive package artifact to Google Cloud
+        run: ./internal-scripts/ci-cd/upload-artifact.sh
+        env:
+          ARTIFACT_NAME: "ruby-pkg_3.2_ubuntu-22.04_jemalloc"
+          ARTIFACT_PATH: output-jemalloc
+          CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
+
+  build_ruby_ubuntu_22_04-3_2-malloctrim:
+    name: 'Ruby [ubuntu-22.04/3.2/malloctrim]'
+
+    runs-on: ubuntu-24.04
+    environment: test
+    timeout-minutes: 30
+    permissions:
+      id-token: write
+      packages: read
+    # Run even if a dependent job has been skipped
+    if: |
+      contains(inputs.necessary_jobs, ';Build Ruby [ubuntu-22.04/3.2/malloctrim];')
+      && !failure() && !cancelled()
+    steps:
+      
+
+      - uses: actions/checkout@v4
+      - uses: google-github-actions/auth@v2
+        with:
+          project_id: ${{ vars.GCLOUD_PROJECT_ID }}
+          workload_identity_provider: projects/${{ vars.GCLOUD_PROJECT_NUM }}/locations/global/workloadIdentityPools/github-ci-test/providers/github-ci-test
+      - name: Set up Cloud SDK
+        uses: google-github-actions/setup-gcloud@v2
+        with:
+          version: '>= 363.0.0'
+      - name: Login to Github Container Registry
+        run: docker login ghcr.io -u ${{ github.actor }} --password-stdin <<<"$GITHUB_TOKEN"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Dump Azure connection string
+        run: echo -n "$CONNECTION_STRING" > azure-connection-string.txt
+        env:
+          CONNECTION_STRING: ${{ secrets.AZURE_CI2_STORAGE_CONNECTION_STRING }}
+      - name: Fetch Ruby source
+        run: ./internal-scripts/ci-cd/download-artifact.sh
+        env:
+          ARTIFACT_NAME: ruby-src-3.2.8
+          ARTIFACT_PATH: .
+          CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
+
+      - name: Download Docker image necessary for building
+        run: ./internal-scripts/ci-cd/download-artifact.sh
+        if: contains(inputs.necessary_jobs, ';Use locally-built Docker image ubuntu-22.04;')
+        env:
+          ARTIFACT_NAME: 'docker-image-ubuntu-22.04'
+          ARTIFACT_PATH: .
+          CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
+      - name: Load Docker image necessary for building
+        run: ./internal-scripts/ci-cd/load-docker-image.sh
+        if: contains(inputs.necessary_jobs, ';Use locally-built Docker image ubuntu-22.04;')
+        env:
+          TARBALL: image.tar.zst
+
+      - name: Download Docker image necessary for packaging
+        run: ./internal-scripts/ci-cd/download-artifact.sh
+        if: contains(inputs.necessary_jobs, ';Use locally-built Docker image utility;')
+        env:
+          ARTIFACT_NAME: docker-image-utility
+          ARTIFACT_PATH: .
+          CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
+      - name: Load Docker image necessary for packaging
+        run: ./internal-scripts/ci-cd/load-docker-image.sh
+        if: contains(inputs.necessary_jobs, ';Use locally-built Docker image utility;')
+        env:
+          TARBALL: image.tar.zst
+
+      
+
+      - name: Build binaries
+        run: ./internal-scripts/ci-cd/build-ruby-packages/build-binaries.sh
+        env:
+          ENVIRONMENT_NAME: "ubuntu-22.04"
+          VARIANT_NAME: "malloctrim"
+          RUBY_PACKAGE_VERSION_ID: "3.2"
+          CACHE_KEY_PREFIX: "sccache/ubuntu-22.04"
+
+      - name: Build package
+        run: ./internal-scripts/ci-cd/build-ruby-packages/build-package.sh
+        env:
+          DISTRIBUTION_NAME: "ubuntu-22.04"
+          VARIANT_NAME: "malloctrim"
+          VARIANT_PACKAGE_SUFFIX: "-malloctrim"
+          PACKAGE_FORMAT: "DEB"
+          RUBY_PACKAGE_VERSION_ID: "3.2"
+          RUBY_PACKAGE_REVISION: "11"
+
+      - name: Archive package artifact to Google Cloud
+        run: ./internal-scripts/ci-cd/upload-artifact.sh
+        env:
+          ARTIFACT_NAME: "ruby-pkg_3.2_ubuntu-22.04_malloctrim"
+          ARTIFACT_PATH: output-malloctrim
+          CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
+
+  build_ruby_ubuntu_22_04-3_1-normal:
+    name: 'Ruby [ubuntu-22.04/3.1/normal]'
+
+    runs-on: ubuntu-24.04
+    environment: test
+    timeout-minutes: 30
+    permissions:
+      id-token: write
+      packages: read
+    # Run even if a dependent job has been skipped
+    if: |
+      contains(inputs.necessary_jobs, ';Build Ruby [ubuntu-22.04/3.1/normal];')
+      && !failure() && !cancelled()
+    steps:
+      
+
+      - uses: actions/checkout@v4
+      - uses: google-github-actions/auth@v2
+        with:
+          project_id: ${{ vars.GCLOUD_PROJECT_ID }}
+          workload_identity_provider: projects/${{ vars.GCLOUD_PROJECT_NUM }}/locations/global/workloadIdentityPools/github-ci-test/providers/github-ci-test
+      - name: Set up Cloud SDK
+        uses: google-github-actions/setup-gcloud@v2
+        with:
+          version: '>= 363.0.0'
+      - name: Login to Github Container Registry
+        run: docker login ghcr.io -u ${{ github.actor }} --password-stdin <<<"$GITHUB_TOKEN"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Dump Azure connection string
+        run: echo -n "$CONNECTION_STRING" > azure-connection-string.txt
+        env:
+          CONNECTION_STRING: ${{ secrets.AZURE_CI2_STORAGE_CONNECTION_STRING }}
+      - name: Fetch Ruby source
+        run: ./internal-scripts/ci-cd/download-artifact.sh
+        env:
+          ARTIFACT_NAME: ruby-src-3.1.7
+          ARTIFACT_PATH: .
+          CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
+
+      - name: Download Docker image necessary for building
+        run: ./internal-scripts/ci-cd/download-artifact.sh
+        if: contains(inputs.necessary_jobs, ';Use locally-built Docker image ubuntu-22.04;')
+        env:
+          ARTIFACT_NAME: 'docker-image-ubuntu-22.04'
+          ARTIFACT_PATH: .
+          CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
+      - name: Load Docker image necessary for building
+        run: ./internal-scripts/ci-cd/load-docker-image.sh
+        if: contains(inputs.necessary_jobs, ';Use locally-built Docker image ubuntu-22.04;')
+        env:
+          TARBALL: image.tar.zst
+
+      - name: Download Docker image necessary for packaging
+        run: ./internal-scripts/ci-cd/download-artifact.sh
+        if: contains(inputs.necessary_jobs, ';Use locally-built Docker image utility;')
+        env:
+          ARTIFACT_NAME: docker-image-utility
+          ARTIFACT_PATH: .
+          CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
+      - name: Load Docker image necessary for packaging
+        run: ./internal-scripts/ci-cd/load-docker-image.sh
+        if: contains(inputs.necessary_jobs, ';Use locally-built Docker image utility;')
+        env:
+          TARBALL: image.tar.zst
+
+      
+
+      - name: Build binaries
+        run: ./internal-scripts/ci-cd/build-ruby-packages/build-binaries.sh
+        env:
+          ENVIRONMENT_NAME: "ubuntu-22.04"
+          VARIANT_NAME: "normal"
+          RUBY_PACKAGE_VERSION_ID: "3.1"
+          CACHE_KEY_PREFIX: "sccache/ubuntu-22.04"
+
+      - name: Build package
+        run: ./internal-scripts/ci-cd/build-ruby-packages/build-package.sh
+        env:
+          DISTRIBUTION_NAME: "ubuntu-22.04"
+          VARIANT_NAME: "normal"
+          VARIANT_PACKAGE_SUFFIX: ""
+          PACKAGE_FORMAT: "DEB"
+          RUBY_PACKAGE_VERSION_ID: "3.1"
+          RUBY_PACKAGE_REVISION: "16"
+
+      - name: Archive package artifact to Google Cloud
+        run: ./internal-scripts/ci-cd/upload-artifact.sh
+        env:
+          ARTIFACT_NAME: "ruby-pkg_3.1_ubuntu-22.04_normal"
+          ARTIFACT_PATH: output-normal
+          CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
+
+  build_ruby_ubuntu_22_04-3_1-jemalloc:
+    name: 'Ruby [ubuntu-22.04/3.1/jemalloc]'
+
+    needs: build_jemalloc_ubuntu_22_04
+    runs-on: ubuntu-24.04
+    environment: test
+    timeout-minutes: 30
+    permissions:
+      id-token: write
+      packages: read
+    # Run even if a dependent job has been skipped
+    if: |
+      contains(inputs.necessary_jobs, ';Build Ruby [ubuntu-22.04/3.1/jemalloc];')
+      && !failure() && !cancelled()
+    steps:
+      
+      - name: Check whether 'Build Jemalloc [ubuntu-22.04]' did not fail
+        run: 'false'
+        if: |
+          needs.build_jemalloc_ubuntu_22_04.result == 'skipped'
+          && contains(inputs.necessary_jobs, ';Build Jemalloc [ubuntu-22.04];')        
+
+      - uses: actions/checkout@v4
+      - uses: google-github-actions/auth@v2
+        with:
+          project_id: ${{ vars.GCLOUD_PROJECT_ID }}
+          workload_identity_provider: projects/${{ vars.GCLOUD_PROJECT_NUM }}/locations/global/workloadIdentityPools/github-ci-test/providers/github-ci-test
+      - name: Set up Cloud SDK
+        uses: google-github-actions/setup-gcloud@v2
+        with:
+          version: '>= 363.0.0'
+      - name: Login to Github Container Registry
+        run: docker login ghcr.io -u ${{ github.actor }} --password-stdin <<<"$GITHUB_TOKEN"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Dump Azure connection string
+        run: echo -n "$CONNECTION_STRING" > azure-connection-string.txt
+        env:
+          CONNECTION_STRING: ${{ secrets.AZURE_CI2_STORAGE_CONNECTION_STRING }}
+      - name: Fetch Ruby source
+        run: ./internal-scripts/ci-cd/download-artifact.sh
+        env:
+          ARTIFACT_NAME: ruby-src-3.1.7
+          ARTIFACT_PATH: .
+          CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
+
+      - name: Download Docker image necessary for building
+        run: ./internal-scripts/ci-cd/download-artifact.sh
+        if: contains(inputs.necessary_jobs, ';Use locally-built Docker image ubuntu-22.04;')
+        env:
+          ARTIFACT_NAME: 'docker-image-ubuntu-22.04'
+          ARTIFACT_PATH: .
+          CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
+      - name: Load Docker image necessary for building
+        run: ./internal-scripts/ci-cd/load-docker-image.sh
+        if: contains(inputs.necessary_jobs, ';Use locally-built Docker image ubuntu-22.04;')
+        env:
+          TARBALL: image.tar.zst
+
+      - name: Download Docker image necessary for packaging
+        run: ./internal-scripts/ci-cd/download-artifact.sh
+        if: contains(inputs.necessary_jobs, ';Use locally-built Docker image utility;')
+        env:
+          ARTIFACT_NAME: docker-image-utility
+          ARTIFACT_PATH: .
+          CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
+      - name: Load Docker image necessary for packaging
+        run: ./internal-scripts/ci-cd/load-docker-image.sh
+        if: contains(inputs.necessary_jobs, ';Use locally-built Docker image utility;')
+        env:
+          TARBALL: image.tar.zst
+
+      
+      - name: Fetch Jemalloc binary
+        run: ./internal-scripts/ci-cd/download-artifact.sh
+        env:
+          ARTIFACT_NAME: jemalloc-bin-ubuntu-22.04
+          ARTIFACT_PATH: .
+          CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}        
+
+      - name: Build binaries
+        run: ./internal-scripts/ci-cd/build-ruby-packages/build-binaries.sh
+        env:
+          ENVIRONMENT_NAME: "ubuntu-22.04"
+          VARIANT_NAME: "jemalloc"
+          RUBY_PACKAGE_VERSION_ID: "3.1"
+          CACHE_KEY_PREFIX: "sccache/ubuntu-22.04"
+
+      - name: Build package
+        run: ./internal-scripts/ci-cd/build-ruby-packages/build-package.sh
+        env:
+          DISTRIBUTION_NAME: "ubuntu-22.04"
+          VARIANT_NAME: "jemalloc"
+          VARIANT_PACKAGE_SUFFIX: "-jemalloc"
+          PACKAGE_FORMAT: "DEB"
+          RUBY_PACKAGE_VERSION_ID: "3.1"
+          RUBY_PACKAGE_REVISION: "16"
+
+      - name: Archive package artifact to Google Cloud
+        run: ./internal-scripts/ci-cd/upload-artifact.sh
+        env:
+          ARTIFACT_NAME: "ruby-pkg_3.1_ubuntu-22.04_jemalloc"
+          ARTIFACT_PATH: output-jemalloc
+          CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
+
+  build_ruby_ubuntu_22_04-3_1-malloctrim:
+    name: 'Ruby [ubuntu-22.04/3.1/malloctrim]'
+
+    runs-on: ubuntu-24.04
+    environment: test
+    timeout-minutes: 30
+    permissions:
+      id-token: write
+      packages: read
+    # Run even if a dependent job has been skipped
+    if: |
+      contains(inputs.necessary_jobs, ';Build Ruby [ubuntu-22.04/3.1/malloctrim];')
+      && !failure() && !cancelled()
+    steps:
+      
+
+      - uses: actions/checkout@v4
+      - uses: google-github-actions/auth@v2
+        with:
+          project_id: ${{ vars.GCLOUD_PROJECT_ID }}
+          workload_identity_provider: projects/${{ vars.GCLOUD_PROJECT_NUM }}/locations/global/workloadIdentityPools/github-ci-test/providers/github-ci-test
+      - name: Set up Cloud SDK
+        uses: google-github-actions/setup-gcloud@v2
+        with:
+          version: '>= 363.0.0'
+      - name: Login to Github Container Registry
+        run: docker login ghcr.io -u ${{ github.actor }} --password-stdin <<<"$GITHUB_TOKEN"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Dump Azure connection string
+        run: echo -n "$CONNECTION_STRING" > azure-connection-string.txt
+        env:
+          CONNECTION_STRING: ${{ secrets.AZURE_CI2_STORAGE_CONNECTION_STRING }}
+      - name: Fetch Ruby source
+        run: ./internal-scripts/ci-cd/download-artifact.sh
+        env:
+          ARTIFACT_NAME: ruby-src-3.1.7
+          ARTIFACT_PATH: .
+          CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
+
+      - name: Download Docker image necessary for building
+        run: ./internal-scripts/ci-cd/download-artifact.sh
+        if: contains(inputs.necessary_jobs, ';Use locally-built Docker image ubuntu-22.04;')
+        env:
+          ARTIFACT_NAME: 'docker-image-ubuntu-22.04'
+          ARTIFACT_PATH: .
+          CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
+      - name: Load Docker image necessary for building
+        run: ./internal-scripts/ci-cd/load-docker-image.sh
+        if: contains(inputs.necessary_jobs, ';Use locally-built Docker image ubuntu-22.04;')
+        env:
+          TARBALL: image.tar.zst
+
+      - name: Download Docker image necessary for packaging
+        run: ./internal-scripts/ci-cd/download-artifact.sh
+        if: contains(inputs.necessary_jobs, ';Use locally-built Docker image utility;')
+        env:
+          ARTIFACT_NAME: docker-image-utility
+          ARTIFACT_PATH: .
+          CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
+      - name: Load Docker image necessary for packaging
+        run: ./internal-scripts/ci-cd/load-docker-image.sh
+        if: contains(inputs.necessary_jobs, ';Use locally-built Docker image utility;')
+        env:
+          TARBALL: image.tar.zst
+
+      
+
+      - name: Build binaries
+        run: ./internal-scripts/ci-cd/build-ruby-packages/build-binaries.sh
+        env:
+          ENVIRONMENT_NAME: "ubuntu-22.04"
+          VARIANT_NAME: "malloctrim"
+          RUBY_PACKAGE_VERSION_ID: "3.1"
+          CACHE_KEY_PREFIX: "sccache/ubuntu-22.04"
+
+      - name: Build package
+        run: ./internal-scripts/ci-cd/build-ruby-packages/build-package.sh
+        env:
+          DISTRIBUTION_NAME: "ubuntu-22.04"
+          VARIANT_NAME: "malloctrim"
+          VARIANT_PACKAGE_SUFFIX: "-malloctrim"
+          PACKAGE_FORMAT: "DEB"
+          RUBY_PACKAGE_VERSION_ID: "3.1"
+          RUBY_PACKAGE_REVISION: "16"
+
+      - name: Archive package artifact to Google Cloud
+        run: ./internal-scripts/ci-cd/upload-artifact.sh
+        env:
+          ARTIFACT_NAME: "ruby-pkg_3.1_ubuntu-22.04_malloctrim"
+          ARTIFACT_PATH: output-malloctrim
+          CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
+
+  build_ruby_ubuntu_22_04-3_4_5-normal:
+    name: 'Ruby [ubuntu-22.04/3.4.5/normal]'
+
+    runs-on: ubuntu-24.04
+    environment: test
+    timeout-minutes: 30
+    permissions:
+      id-token: write
+      packages: read
+    # Run even if a dependent job has been skipped
+    if: |
+      contains(inputs.necessary_jobs, ';Build Ruby [ubuntu-22.04/3.4.5/normal];')
+      && !failure() && !cancelled()
+    steps:
+      
+
+      - uses: actions/checkout@v4
+      - uses: google-github-actions/auth@v2
+        with:
+          project_id: ${{ vars.GCLOUD_PROJECT_ID }}
+          workload_identity_provider: projects/${{ vars.GCLOUD_PROJECT_NUM }}/locations/global/workloadIdentityPools/github-ci-test/providers/github-ci-test
+      - name: Set up Cloud SDK
+        uses: google-github-actions/setup-gcloud@v2
+        with:
+          version: '>= 363.0.0'
+      - name: Login to Github Container Registry
+        run: docker login ghcr.io -u ${{ github.actor }} --password-stdin <<<"$GITHUB_TOKEN"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Dump Azure connection string
+        run: echo -n "$CONNECTION_STRING" > azure-connection-string.txt
+        env:
+          CONNECTION_STRING: ${{ secrets.AZURE_CI2_STORAGE_CONNECTION_STRING }}
+      - name: Fetch Ruby source
+        run: ./internal-scripts/ci-cd/download-artifact.sh
+        env:
+          ARTIFACT_NAME: ruby-src-3.4.5
+          ARTIFACT_PATH: .
+          CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
+
+      - name: Download Docker image necessary for building
+        run: ./internal-scripts/ci-cd/download-artifact.sh
+        if: contains(inputs.necessary_jobs, ';Use locally-built Docker image ubuntu-22.04;')
+        env:
+          ARTIFACT_NAME: 'docker-image-ubuntu-22.04'
+          ARTIFACT_PATH: .
+          CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
+      - name: Load Docker image necessary for building
+        run: ./internal-scripts/ci-cd/load-docker-image.sh
+        if: contains(inputs.necessary_jobs, ';Use locally-built Docker image ubuntu-22.04;')
+        env:
+          TARBALL: image.tar.zst
+
+      - name: Download Docker image necessary for packaging
+        run: ./internal-scripts/ci-cd/download-artifact.sh
+        if: contains(inputs.necessary_jobs, ';Use locally-built Docker image utility;')
+        env:
+          ARTIFACT_NAME: docker-image-utility
+          ARTIFACT_PATH: .
+          CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
+      - name: Load Docker image necessary for packaging
+        run: ./internal-scripts/ci-cd/load-docker-image.sh
+        if: contains(inputs.necessary_jobs, ';Use locally-built Docker image utility;')
+        env:
+          TARBALL: image.tar.zst
+
+      
+
+      - name: Build binaries
+        run: ./internal-scripts/ci-cd/build-ruby-packages/build-binaries.sh
+        env:
+          ENVIRONMENT_NAME: "ubuntu-22.04"
+          VARIANT_NAME: "normal"
+          RUBY_PACKAGE_VERSION_ID: "3.4.5"
+          CACHE_KEY_PREFIX: "sccache/ubuntu-22.04"
+
+      - name: Build package
+        run: ./internal-scripts/ci-cd/build-ruby-packages/build-package.sh
+        env:
+          DISTRIBUTION_NAME: "ubuntu-22.04"
+          VARIANT_NAME: "normal"
+          VARIANT_PACKAGE_SUFFIX: ""
+          PACKAGE_FORMAT: "DEB"
+          RUBY_PACKAGE_VERSION_ID: "3.4.5"
+          RUBY_PACKAGE_REVISION: "0"
+
+      - name: Archive package artifact to Google Cloud
+        run: ./internal-scripts/ci-cd/upload-artifact.sh
+        env:
+          ARTIFACT_NAME: "ruby-pkg_3.4.5_ubuntu-22.04_normal"
+          ARTIFACT_PATH: output-normal
+          CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
+
+  build_ruby_ubuntu_22_04-3_4_5-jemalloc:
+    name: 'Ruby [ubuntu-22.04/3.4.5/jemalloc]'
+
+    needs: build_jemalloc_ubuntu_22_04
+    runs-on: ubuntu-24.04
+    environment: test
+    timeout-minutes: 30
+    permissions:
+      id-token: write
+      packages: read
+    # Run even if a dependent job has been skipped
+    if: |
+      contains(inputs.necessary_jobs, ';Build Ruby [ubuntu-22.04/3.4.5/jemalloc];')
+      && !failure() && !cancelled()
+    steps:
+      
+      - name: Check whether 'Build Jemalloc [ubuntu-22.04]' did not fail
+        run: 'false'
+        if: |
+          needs.build_jemalloc_ubuntu_22_04.result == 'skipped'
+          && contains(inputs.necessary_jobs, ';Build Jemalloc [ubuntu-22.04];')        
+
+      - uses: actions/checkout@v4
+      - uses: google-github-actions/auth@v2
+        with:
+          project_id: ${{ vars.GCLOUD_PROJECT_ID }}
+          workload_identity_provider: projects/${{ vars.GCLOUD_PROJECT_NUM }}/locations/global/workloadIdentityPools/github-ci-test/providers/github-ci-test
+      - name: Set up Cloud SDK
+        uses: google-github-actions/setup-gcloud@v2
+        with:
+          version: '>= 363.0.0'
+      - name: Login to Github Container Registry
+        run: docker login ghcr.io -u ${{ github.actor }} --password-stdin <<<"$GITHUB_TOKEN"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Dump Azure connection string
+        run: echo -n "$CONNECTION_STRING" > azure-connection-string.txt
+        env:
+          CONNECTION_STRING: ${{ secrets.AZURE_CI2_STORAGE_CONNECTION_STRING }}
+      - name: Fetch Ruby source
+        run: ./internal-scripts/ci-cd/download-artifact.sh
+        env:
+          ARTIFACT_NAME: ruby-src-3.4.5
+          ARTIFACT_PATH: .
+          CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
+
+      - name: Download Docker image necessary for building
+        run: ./internal-scripts/ci-cd/download-artifact.sh
+        if: contains(inputs.necessary_jobs, ';Use locally-built Docker image ubuntu-22.04;')
+        env:
+          ARTIFACT_NAME: 'docker-image-ubuntu-22.04'
+          ARTIFACT_PATH: .
+          CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
+      - name: Load Docker image necessary for building
+        run: ./internal-scripts/ci-cd/load-docker-image.sh
+        if: contains(inputs.necessary_jobs, ';Use locally-built Docker image ubuntu-22.04;')
+        env:
+          TARBALL: image.tar.zst
+
+      - name: Download Docker image necessary for packaging
+        run: ./internal-scripts/ci-cd/download-artifact.sh
+        if: contains(inputs.necessary_jobs, ';Use locally-built Docker image utility;')
+        env:
+          ARTIFACT_NAME: docker-image-utility
+          ARTIFACT_PATH: .
+          CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
+      - name: Load Docker image necessary for packaging
+        run: ./internal-scripts/ci-cd/load-docker-image.sh
+        if: contains(inputs.necessary_jobs, ';Use locally-built Docker image utility;')
+        env:
+          TARBALL: image.tar.zst
+
+      
+      - name: Fetch Jemalloc binary
+        run: ./internal-scripts/ci-cd/download-artifact.sh
+        env:
+          ARTIFACT_NAME: jemalloc-bin-ubuntu-22.04
+          ARTIFACT_PATH: .
+          CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}        
+
+      - name: Build binaries
+        run: ./internal-scripts/ci-cd/build-ruby-packages/build-binaries.sh
+        env:
+          ENVIRONMENT_NAME: "ubuntu-22.04"
+          VARIANT_NAME: "jemalloc"
+          RUBY_PACKAGE_VERSION_ID: "3.4.5"
+          CACHE_KEY_PREFIX: "sccache/ubuntu-22.04"
+
+      - name: Build package
+        run: ./internal-scripts/ci-cd/build-ruby-packages/build-package.sh
+        env:
+          DISTRIBUTION_NAME: "ubuntu-22.04"
+          VARIANT_NAME: "jemalloc"
+          VARIANT_PACKAGE_SUFFIX: "-jemalloc"
+          PACKAGE_FORMAT: "DEB"
+          RUBY_PACKAGE_VERSION_ID: "3.4.5"
+          RUBY_PACKAGE_REVISION: "0"
+
+      - name: Archive package artifact to Google Cloud
+        run: ./internal-scripts/ci-cd/upload-artifact.sh
+        env:
+          ARTIFACT_NAME: "ruby-pkg_3.4.5_ubuntu-22.04_jemalloc"
+          ARTIFACT_PATH: output-jemalloc
+          CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
+
+  build_ruby_ubuntu_22_04-3_4_5-malloctrim:
+    name: 'Ruby [ubuntu-22.04/3.4.5/malloctrim]'
+
+    runs-on: ubuntu-24.04
+    environment: test
+    timeout-minutes: 30
+    permissions:
+      id-token: write
+      packages: read
+    # Run even if a dependent job has been skipped
+    if: |
+      contains(inputs.necessary_jobs, ';Build Ruby [ubuntu-22.04/3.4.5/malloctrim];')
+      && !failure() && !cancelled()
+    steps:
+      
+
+      - uses: actions/checkout@v4
+      - uses: google-github-actions/auth@v2
+        with:
+          project_id: ${{ vars.GCLOUD_PROJECT_ID }}
+          workload_identity_provider: projects/${{ vars.GCLOUD_PROJECT_NUM }}/locations/global/workloadIdentityPools/github-ci-test/providers/github-ci-test
+      - name: Set up Cloud SDK
+        uses: google-github-actions/setup-gcloud@v2
+        with:
+          version: '>= 363.0.0'
+      - name: Login to Github Container Registry
+        run: docker login ghcr.io -u ${{ github.actor }} --password-stdin <<<"$GITHUB_TOKEN"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Dump Azure connection string
+        run: echo -n "$CONNECTION_STRING" > azure-connection-string.txt
+        env:
+          CONNECTION_STRING: ${{ secrets.AZURE_CI2_STORAGE_CONNECTION_STRING }}
+      - name: Fetch Ruby source
+        run: ./internal-scripts/ci-cd/download-artifact.sh
+        env:
+          ARTIFACT_NAME: ruby-src-3.4.5
+          ARTIFACT_PATH: .
+          CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
+
+      - name: Download Docker image necessary for building
+        run: ./internal-scripts/ci-cd/download-artifact.sh
+        if: contains(inputs.necessary_jobs, ';Use locally-built Docker image ubuntu-22.04;')
+        env:
+          ARTIFACT_NAME: 'docker-image-ubuntu-22.04'
+          ARTIFACT_PATH: .
+          CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
+      - name: Load Docker image necessary for building
+        run: ./internal-scripts/ci-cd/load-docker-image.sh
+        if: contains(inputs.necessary_jobs, ';Use locally-built Docker image ubuntu-22.04;')
+        env:
+          TARBALL: image.tar.zst
+
+      - name: Download Docker image necessary for packaging
+        run: ./internal-scripts/ci-cd/download-artifact.sh
+        if: contains(inputs.necessary_jobs, ';Use locally-built Docker image utility;')
+        env:
+          ARTIFACT_NAME: docker-image-utility
+          ARTIFACT_PATH: .
+          CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
+      - name: Load Docker image necessary for packaging
+        run: ./internal-scripts/ci-cd/load-docker-image.sh
+        if: contains(inputs.necessary_jobs, ';Use locally-built Docker image utility;')
+        env:
+          TARBALL: image.tar.zst
+
+      
+
+      - name: Build binaries
+        run: ./internal-scripts/ci-cd/build-ruby-packages/build-binaries.sh
+        env:
+          ENVIRONMENT_NAME: "ubuntu-22.04"
+          VARIANT_NAME: "malloctrim"
+          RUBY_PACKAGE_VERSION_ID: "3.4.5"
+          CACHE_KEY_PREFIX: "sccache/ubuntu-22.04"
+
+      - name: Build package
+        run: ./internal-scripts/ci-cd/build-ruby-packages/build-package.sh
+        env:
+          DISTRIBUTION_NAME: "ubuntu-22.04"
+          VARIANT_NAME: "malloctrim"
+          VARIANT_PACKAGE_SUFFIX: "-malloctrim"
+          PACKAGE_FORMAT: "DEB"
+          RUBY_PACKAGE_VERSION_ID: "3.4.5"
+          RUBY_PACKAGE_REVISION: "0"
+
+      - name: Archive package artifact to Google Cloud
+        run: ./internal-scripts/ci-cd/upload-artifact.sh
+        env:
+          ARTIFACT_NAME: "ruby-pkg_3.4.5_ubuntu-22.04_malloctrim"
+          ARTIFACT_PATH: output-malloctrim
+          CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
+
+  build_ruby_ubuntu_22_04-3_3_8-normal:
+    name: 'Ruby [ubuntu-22.04/3.3.8/normal]'
+
+    runs-on: ubuntu-24.04
+    environment: test
+    timeout-minutes: 30
+    permissions:
+      id-token: write
+      packages: read
+    # Run even if a dependent job has been skipped
+    if: |
+      contains(inputs.necessary_jobs, ';Build Ruby [ubuntu-22.04/3.3.8/normal];')
+      && !failure() && !cancelled()
+    steps:
+      
 
       - uses: actions/checkout@v4
       - uses: google-github-actions/auth@v2
@@ -4079,14 +3980,113 @@ jobs:
 
       - name: Download Docker image necessary for building
         run: ./internal-scripts/ci-cd/download-artifact.sh
-        if: contains(inputs.necessary_jobs, ';Use locally-built Docker image ubuntu-24.04;')
+        if: contains(inputs.necessary_jobs, ';Use locally-built Docker image ubuntu-22.04;')
         env:
-          ARTIFACT_NAME: 'docker-image-ubuntu-24.04'
+          ARTIFACT_NAME: 'docker-image-ubuntu-22.04'
           ARTIFACT_PATH: .
           CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
       - name: Load Docker image necessary for building
         run: ./internal-scripts/ci-cd/load-docker-image.sh
-        if: contains(inputs.necessary_jobs, ';Use locally-built Docker image ubuntu-24.04;')
+        if: contains(inputs.necessary_jobs, ';Use locally-built Docker image ubuntu-22.04;')
+        env:
+          TARBALL: image.tar.zst
+
+      - name: Download Docker image necessary for packaging
+        run: ./internal-scripts/ci-cd/download-artifact.sh
+        if: contains(inputs.necessary_jobs, ';Use locally-built Docker image utility;')
+        env:
+          ARTIFACT_NAME: docker-image-utility
+          ARTIFACT_PATH: .
+          CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
+      - name: Load Docker image necessary for packaging
+        run: ./internal-scripts/ci-cd/load-docker-image.sh
+        if: contains(inputs.necessary_jobs, ';Use locally-built Docker image utility;')
+        env:
+          TARBALL: image.tar.zst
+
+      
+
+      - name: Build binaries
+        run: ./internal-scripts/ci-cd/build-ruby-packages/build-binaries.sh
+        env:
+          ENVIRONMENT_NAME: "ubuntu-22.04"
+          VARIANT_NAME: "normal"
+          RUBY_PACKAGE_VERSION_ID: "3.3.8"
+          CACHE_KEY_PREFIX: "sccache/ubuntu-22.04"
+
+      - name: Build package
+        run: ./internal-scripts/ci-cd/build-ruby-packages/build-package.sh
+        env:
+          DISTRIBUTION_NAME: "ubuntu-22.04"
+          VARIANT_NAME: "normal"
+          VARIANT_PACKAGE_SUFFIX: ""
+          PACKAGE_FORMAT: "DEB"
+          RUBY_PACKAGE_VERSION_ID: "3.3.8"
+          RUBY_PACKAGE_REVISION: "0"
+
+      - name: Archive package artifact to Google Cloud
+        run: ./internal-scripts/ci-cd/upload-artifact.sh
+        env:
+          ARTIFACT_NAME: "ruby-pkg_3.3.8_ubuntu-22.04_normal"
+          ARTIFACT_PATH: output-normal
+          CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
+
+  build_ruby_ubuntu_22_04-3_3_8-jemalloc:
+    name: 'Ruby [ubuntu-22.04/3.3.8/jemalloc]'
+
+    needs: build_jemalloc_ubuntu_22_04
+    runs-on: ubuntu-24.04
+    environment: test
+    timeout-minutes: 30
+    permissions:
+      id-token: write
+      packages: read
+    # Run even if a dependent job has been skipped
+    if: |
+      contains(inputs.necessary_jobs, ';Build Ruby [ubuntu-22.04/3.3.8/jemalloc];')
+      && !failure() && !cancelled()
+    steps:
+      
+      - name: Check whether 'Build Jemalloc [ubuntu-22.04]' did not fail
+        run: 'false'
+        if: |
+          needs.build_jemalloc_ubuntu_22_04.result == 'skipped'
+          && contains(inputs.necessary_jobs, ';Build Jemalloc [ubuntu-22.04];')        
+
+      - uses: actions/checkout@v4
+      - uses: google-github-actions/auth@v2
+        with:
+          project_id: ${{ vars.GCLOUD_PROJECT_ID }}
+          workload_identity_provider: projects/${{ vars.GCLOUD_PROJECT_NUM }}/locations/global/workloadIdentityPools/github-ci-test/providers/github-ci-test
+      - name: Set up Cloud SDK
+        uses: google-github-actions/setup-gcloud@v2
+        with:
+          version: '>= 363.0.0'
+      - name: Login to Github Container Registry
+        run: docker login ghcr.io -u ${{ github.actor }} --password-stdin <<<"$GITHUB_TOKEN"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Dump Azure connection string
+        run: echo -n "$CONNECTION_STRING" > azure-connection-string.txt
+        env:
+          CONNECTION_STRING: ${{ secrets.AZURE_CI2_STORAGE_CONNECTION_STRING }}
+      - name: Fetch Ruby source
+        run: ./internal-scripts/ci-cd/download-artifact.sh
+        env:
+          ARTIFACT_NAME: ruby-src-3.3.8
+          ARTIFACT_PATH: .
+          CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
+
+      - name: Download Docker image necessary for building
+        run: ./internal-scripts/ci-cd/download-artifact.sh
+        if: contains(inputs.necessary_jobs, ';Use locally-built Docker image ubuntu-22.04;')
+        env:
+          ARTIFACT_NAME: 'docker-image-ubuntu-22.04'
+          ARTIFACT_PATH: .
+          CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
+      - name: Load Docker image necessary for building
+        run: ./internal-scripts/ci-cd/load-docker-image.sh
+        if: contains(inputs.necessary_jobs, ';Use locally-built Docker image ubuntu-22.04;')
         env:
           TARBALL: image.tar.zst
 
@@ -4107,22 +4107,22 @@ jobs:
       - name: Fetch Jemalloc binary
         run: ./internal-scripts/ci-cd/download-artifact.sh
         env:
-          ARTIFACT_NAME: jemalloc-bin-ubuntu-24.04
+          ARTIFACT_NAME: jemalloc-bin-ubuntu-22.04
           ARTIFACT_PATH: .
           CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}        
 
       - name: Build binaries
         run: ./internal-scripts/ci-cd/build-ruby-packages/build-binaries.sh
         env:
-          ENVIRONMENT_NAME: "ubuntu-24.04"
+          ENVIRONMENT_NAME: "ubuntu-22.04"
           VARIANT_NAME: "jemalloc"
           RUBY_PACKAGE_VERSION_ID: "3.3.8"
-          CACHE_KEY_PREFIX: "sccache/ubuntu-24.04"
+          CACHE_KEY_PREFIX: "sccache/ubuntu-22.04"
 
       - name: Build package
         run: ./internal-scripts/ci-cd/build-ruby-packages/build-package.sh
         env:
-          DISTRIBUTION_NAME: "ubuntu-24.04"
+          DISTRIBUTION_NAME: "ubuntu-22.04"
           VARIANT_NAME: "jemalloc"
           VARIANT_PACKAGE_SUFFIX: "-jemalloc"
           PACKAGE_FORMAT: "DEB"
@@ -4132,12 +4132,12 @@ jobs:
       - name: Archive package artifact to Google Cloud
         run: ./internal-scripts/ci-cd/upload-artifact.sh
         env:
-          ARTIFACT_NAME: "ruby-pkg_3.3.8_ubuntu-24.04_jemalloc"
+          ARTIFACT_NAME: "ruby-pkg_3.3.8_ubuntu-22.04_jemalloc"
           ARTIFACT_PATH: output-jemalloc
           CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
 
-  build_ruby_ubuntu_24_04-3_3_8-malloctrim:
-    name: 'Ruby [ubuntu-24.04/3.3.8/malloctrim]'
+  build_ruby_ubuntu_22_04-3_3_8-malloctrim:
+    name: 'Ruby [ubuntu-22.04/3.3.8/malloctrim]'
 
     runs-on: ubuntu-24.04
     environment: test
@@ -4147,7 +4147,7 @@ jobs:
       packages: read
     # Run even if a dependent job has been skipped
     if: |
-      contains(inputs.necessary_jobs, ';Build Ruby [ubuntu-24.04/3.3.8/malloctrim];')
+      contains(inputs.necessary_jobs, ';Build Ruby [ubuntu-22.04/3.3.8/malloctrim];')
       && !failure() && !cancelled()
     steps:
       
@@ -4178,14 +4178,14 @@ jobs:
 
       - name: Download Docker image necessary for building
         run: ./internal-scripts/ci-cd/download-artifact.sh
-        if: contains(inputs.necessary_jobs, ';Use locally-built Docker image ubuntu-24.04;')
+        if: contains(inputs.necessary_jobs, ';Use locally-built Docker image ubuntu-22.04;')
         env:
-          ARTIFACT_NAME: 'docker-image-ubuntu-24.04'
+          ARTIFACT_NAME: 'docker-image-ubuntu-22.04'
           ARTIFACT_PATH: .
           CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
       - name: Load Docker image necessary for building
         run: ./internal-scripts/ci-cd/load-docker-image.sh
-        if: contains(inputs.necessary_jobs, ';Use locally-built Docker image ubuntu-24.04;')
+        if: contains(inputs.necessary_jobs, ';Use locally-built Docker image ubuntu-22.04;')
         env:
           TARBALL: image.tar.zst
 
@@ -4207,15 +4207,15 @@ jobs:
       - name: Build binaries
         run: ./internal-scripts/ci-cd/build-ruby-packages/build-binaries.sh
         env:
-          ENVIRONMENT_NAME: "ubuntu-24.04"
+          ENVIRONMENT_NAME: "ubuntu-22.04"
           VARIANT_NAME: "malloctrim"
           RUBY_PACKAGE_VERSION_ID: "3.3.8"
-          CACHE_KEY_PREFIX: "sccache/ubuntu-24.04"
+          CACHE_KEY_PREFIX: "sccache/ubuntu-22.04"
 
       - name: Build package
         run: ./internal-scripts/ci-cd/build-ruby-packages/build-package.sh
         env:
-          DISTRIBUTION_NAME: "ubuntu-24.04"
+          DISTRIBUTION_NAME: "ubuntu-22.04"
           VARIANT_NAME: "malloctrim"
           VARIANT_PACKAGE_SUFFIX: "-malloctrim"
           PACKAGE_FORMAT: "DEB"
@@ -4225,12 +4225,12 @@ jobs:
       - name: Archive package artifact to Google Cloud
         run: ./internal-scripts/ci-cd/upload-artifact.sh
         env:
-          ARTIFACT_NAME: "ruby-pkg_3.3.8_ubuntu-24.04_malloctrim"
+          ARTIFACT_NAME: "ruby-pkg_3.3.8_ubuntu-22.04_malloctrim"
           ARTIFACT_PATH: output-malloctrim
           CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
 
-  build_ruby_ubuntu_24_04-3_2_8-normal:
-    name: 'Ruby [ubuntu-24.04/3.2.8/normal]'
+  build_ruby_ubuntu_22_04-3_2_8-normal:
+    name: 'Ruby [ubuntu-22.04/3.2.8/normal]'
 
     runs-on: ubuntu-24.04
     environment: test
@@ -4240,7 +4240,7 @@ jobs:
       packages: read
     # Run even if a dependent job has been skipped
     if: |
-      contains(inputs.necessary_jobs, ';Build Ruby [ubuntu-24.04/3.2.8/normal];')
+      contains(inputs.necessary_jobs, ';Build Ruby [ubuntu-22.04/3.2.8/normal];')
       && !failure() && !cancelled()
     steps:
       
@@ -4271,14 +4271,14 @@ jobs:
 
       - name: Download Docker image necessary for building
         run: ./internal-scripts/ci-cd/download-artifact.sh
-        if: contains(inputs.necessary_jobs, ';Use locally-built Docker image ubuntu-24.04;')
+        if: contains(inputs.necessary_jobs, ';Use locally-built Docker image ubuntu-22.04;')
         env:
-          ARTIFACT_NAME: 'docker-image-ubuntu-24.04'
+          ARTIFACT_NAME: 'docker-image-ubuntu-22.04'
           ARTIFACT_PATH: .
           CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
       - name: Load Docker image necessary for building
         run: ./internal-scripts/ci-cd/load-docker-image.sh
-        if: contains(inputs.necessary_jobs, ';Use locally-built Docker image ubuntu-24.04;')
+        if: contains(inputs.necessary_jobs, ';Use locally-built Docker image ubuntu-22.04;')
         env:
           TARBALL: image.tar.zst
 
@@ -4300,15 +4300,15 @@ jobs:
       - name: Build binaries
         run: ./internal-scripts/ci-cd/build-ruby-packages/build-binaries.sh
         env:
-          ENVIRONMENT_NAME: "ubuntu-24.04"
+          ENVIRONMENT_NAME: "ubuntu-22.04"
           VARIANT_NAME: "normal"
           RUBY_PACKAGE_VERSION_ID: "3.2.8"
-          CACHE_KEY_PREFIX: "sccache/ubuntu-24.04"
+          CACHE_KEY_PREFIX: "sccache/ubuntu-22.04"
 
       - name: Build package
         run: ./internal-scripts/ci-cd/build-ruby-packages/build-package.sh
         env:
-          DISTRIBUTION_NAME: "ubuntu-24.04"
+          DISTRIBUTION_NAME: "ubuntu-22.04"
           VARIANT_NAME: "normal"
           VARIANT_PACKAGE_SUFFIX: ""
           PACKAGE_FORMAT: "DEB"
@@ -4318,14 +4318,14 @@ jobs:
       - name: Archive package artifact to Google Cloud
         run: ./internal-scripts/ci-cd/upload-artifact.sh
         env:
-          ARTIFACT_NAME: "ruby-pkg_3.2.8_ubuntu-24.04_normal"
+          ARTIFACT_NAME: "ruby-pkg_3.2.8_ubuntu-22.04_normal"
           ARTIFACT_PATH: output-normal
           CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
 
-  build_ruby_ubuntu_24_04-3_2_8-jemalloc:
-    name: 'Ruby [ubuntu-24.04/3.2.8/jemalloc]'
+  build_ruby_ubuntu_22_04-3_2_8-jemalloc:
+    name: 'Ruby [ubuntu-22.04/3.2.8/jemalloc]'
 
-    needs: build_jemalloc_ubuntu_24_04
+    needs: build_jemalloc_ubuntu_22_04
     runs-on: ubuntu-24.04
     environment: test
     timeout-minutes: 30
@@ -4334,15 +4334,15 @@ jobs:
       packages: read
     # Run even if a dependent job has been skipped
     if: |
-      contains(inputs.necessary_jobs, ';Build Ruby [ubuntu-24.04/3.2.8/jemalloc];')
+      contains(inputs.necessary_jobs, ';Build Ruby [ubuntu-22.04/3.2.8/jemalloc];')
       && !failure() && !cancelled()
     steps:
       
-      - name: Check whether 'Build Jemalloc [ubuntu-24.04]' did not fail
+      - name: Check whether 'Build Jemalloc [ubuntu-22.04]' did not fail
         run: 'false'
         if: |
-          needs.build_jemalloc_ubuntu_24_04.result == 'skipped'
-          && contains(inputs.necessary_jobs, ';Build Jemalloc [ubuntu-24.04];')        
+          needs.build_jemalloc_ubuntu_22_04.result == 'skipped'
+          && contains(inputs.necessary_jobs, ';Build Jemalloc [ubuntu-22.04];')        
 
       - uses: actions/checkout@v4
       - uses: google-github-actions/auth@v2
@@ -4370,14 +4370,14 @@ jobs:
 
       - name: Download Docker image necessary for building
         run: ./internal-scripts/ci-cd/download-artifact.sh
-        if: contains(inputs.necessary_jobs, ';Use locally-built Docker image ubuntu-24.04;')
+        if: contains(inputs.necessary_jobs, ';Use locally-built Docker image ubuntu-22.04;')
         env:
-          ARTIFACT_NAME: 'docker-image-ubuntu-24.04'
+          ARTIFACT_NAME: 'docker-image-ubuntu-22.04'
           ARTIFACT_PATH: .
           CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
       - name: Load Docker image necessary for building
         run: ./internal-scripts/ci-cd/load-docker-image.sh
-        if: contains(inputs.necessary_jobs, ';Use locally-built Docker image ubuntu-24.04;')
+        if: contains(inputs.necessary_jobs, ';Use locally-built Docker image ubuntu-22.04;')
         env:
           TARBALL: image.tar.zst
 
@@ -4398,22 +4398,22 @@ jobs:
       - name: Fetch Jemalloc binary
         run: ./internal-scripts/ci-cd/download-artifact.sh
         env:
-          ARTIFACT_NAME: jemalloc-bin-ubuntu-24.04
+          ARTIFACT_NAME: jemalloc-bin-ubuntu-22.04
           ARTIFACT_PATH: .
           CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}        
 
       - name: Build binaries
         run: ./internal-scripts/ci-cd/build-ruby-packages/build-binaries.sh
         env:
-          ENVIRONMENT_NAME: "ubuntu-24.04"
+          ENVIRONMENT_NAME: "ubuntu-22.04"
           VARIANT_NAME: "jemalloc"
           RUBY_PACKAGE_VERSION_ID: "3.2.8"
-          CACHE_KEY_PREFIX: "sccache/ubuntu-24.04"
+          CACHE_KEY_PREFIX: "sccache/ubuntu-22.04"
 
       - name: Build package
         run: ./internal-scripts/ci-cd/build-ruby-packages/build-package.sh
         env:
-          DISTRIBUTION_NAME: "ubuntu-24.04"
+          DISTRIBUTION_NAME: "ubuntu-22.04"
           VARIANT_NAME: "jemalloc"
           VARIANT_PACKAGE_SUFFIX: "-jemalloc"
           PACKAGE_FORMAT: "DEB"
@@ -4423,12 +4423,12 @@ jobs:
       - name: Archive package artifact to Google Cloud
         run: ./internal-scripts/ci-cd/upload-artifact.sh
         env:
-          ARTIFACT_NAME: "ruby-pkg_3.2.8_ubuntu-24.04_jemalloc"
+          ARTIFACT_NAME: "ruby-pkg_3.2.8_ubuntu-22.04_jemalloc"
           ARTIFACT_PATH: output-jemalloc
           CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
 
-  build_ruby_ubuntu_24_04-3_2_8-malloctrim:
-    name: 'Ruby [ubuntu-24.04/3.2.8/malloctrim]'
+  build_ruby_ubuntu_22_04-3_2_8-malloctrim:
+    name: 'Ruby [ubuntu-22.04/3.2.8/malloctrim]'
 
     runs-on: ubuntu-24.04
     environment: test
@@ -4438,7 +4438,7 @@ jobs:
       packages: read
     # Run even if a dependent job has been skipped
     if: |
-      contains(inputs.necessary_jobs, ';Build Ruby [ubuntu-24.04/3.2.8/malloctrim];')
+      contains(inputs.necessary_jobs, ';Build Ruby [ubuntu-22.04/3.2.8/malloctrim];')
       && !failure() && !cancelled()
     steps:
       
@@ -4469,14 +4469,14 @@ jobs:
 
       - name: Download Docker image necessary for building
         run: ./internal-scripts/ci-cd/download-artifact.sh
-        if: contains(inputs.necessary_jobs, ';Use locally-built Docker image ubuntu-24.04;')
+        if: contains(inputs.necessary_jobs, ';Use locally-built Docker image ubuntu-22.04;')
         env:
-          ARTIFACT_NAME: 'docker-image-ubuntu-24.04'
+          ARTIFACT_NAME: 'docker-image-ubuntu-22.04'
           ARTIFACT_PATH: .
           CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
       - name: Load Docker image necessary for building
         run: ./internal-scripts/ci-cd/load-docker-image.sh
-        if: contains(inputs.necessary_jobs, ';Use locally-built Docker image ubuntu-24.04;')
+        if: contains(inputs.necessary_jobs, ';Use locally-built Docker image ubuntu-22.04;')
         env:
           TARBALL: image.tar.zst
 
@@ -4498,15 +4498,15 @@ jobs:
       - name: Build binaries
         run: ./internal-scripts/ci-cd/build-ruby-packages/build-binaries.sh
         env:
-          ENVIRONMENT_NAME: "ubuntu-24.04"
+          ENVIRONMENT_NAME: "ubuntu-22.04"
           VARIANT_NAME: "malloctrim"
           RUBY_PACKAGE_VERSION_ID: "3.2.8"
-          CACHE_KEY_PREFIX: "sccache/ubuntu-24.04"
+          CACHE_KEY_PREFIX: "sccache/ubuntu-22.04"
 
       - name: Build package
         run: ./internal-scripts/ci-cd/build-ruby-packages/build-package.sh
         env:
-          DISTRIBUTION_NAME: "ubuntu-24.04"
+          DISTRIBUTION_NAME: "ubuntu-22.04"
           VARIANT_NAME: "malloctrim"
           VARIANT_PACKAGE_SUFFIX: "-malloctrim"
           PACKAGE_FORMAT: "DEB"
@@ -4516,12 +4516,12 @@ jobs:
       - name: Archive package artifact to Google Cloud
         run: ./internal-scripts/ci-cd/upload-artifact.sh
         env:
-          ARTIFACT_NAME: "ruby-pkg_3.2.8_ubuntu-24.04_malloctrim"
+          ARTIFACT_NAME: "ruby-pkg_3.2.8_ubuntu-22.04_malloctrim"
           ARTIFACT_PATH: output-malloctrim
           CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
 
-  build_ruby_ubuntu_24_04-3_1_7-normal:
-    name: 'Ruby [ubuntu-24.04/3.1.7/normal]'
+  build_ruby_ubuntu_22_04-3_1_7-normal:
+    name: 'Ruby [ubuntu-22.04/3.1.7/normal]'
 
     runs-on: ubuntu-24.04
     environment: test
@@ -4531,7 +4531,7 @@ jobs:
       packages: read
     # Run even if a dependent job has been skipped
     if: |
-      contains(inputs.necessary_jobs, ';Build Ruby [ubuntu-24.04/3.1.7/normal];')
+      contains(inputs.necessary_jobs, ';Build Ruby [ubuntu-22.04/3.1.7/normal];')
       && !failure() && !cancelled()
     steps:
       
@@ -4562,14 +4562,14 @@ jobs:
 
       - name: Download Docker image necessary for building
         run: ./internal-scripts/ci-cd/download-artifact.sh
-        if: contains(inputs.necessary_jobs, ';Use locally-built Docker image ubuntu-24.04;')
+        if: contains(inputs.necessary_jobs, ';Use locally-built Docker image ubuntu-22.04;')
         env:
-          ARTIFACT_NAME: 'docker-image-ubuntu-24.04'
+          ARTIFACT_NAME: 'docker-image-ubuntu-22.04'
           ARTIFACT_PATH: .
           CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
       - name: Load Docker image necessary for building
         run: ./internal-scripts/ci-cd/load-docker-image.sh
-        if: contains(inputs.necessary_jobs, ';Use locally-built Docker image ubuntu-24.04;')
+        if: contains(inputs.necessary_jobs, ';Use locally-built Docker image ubuntu-22.04;')
         env:
           TARBALL: image.tar.zst
 
@@ -4591,15 +4591,15 @@ jobs:
       - name: Build binaries
         run: ./internal-scripts/ci-cd/build-ruby-packages/build-binaries.sh
         env:
-          ENVIRONMENT_NAME: "ubuntu-24.04"
+          ENVIRONMENT_NAME: "ubuntu-22.04"
           VARIANT_NAME: "normal"
           RUBY_PACKAGE_VERSION_ID: "3.1.7"
-          CACHE_KEY_PREFIX: "sccache/ubuntu-24.04"
+          CACHE_KEY_PREFIX: "sccache/ubuntu-22.04"
 
       - name: Build package
         run: ./internal-scripts/ci-cd/build-ruby-packages/build-package.sh
         env:
-          DISTRIBUTION_NAME: "ubuntu-24.04"
+          DISTRIBUTION_NAME: "ubuntu-22.04"
           VARIANT_NAME: "normal"
           VARIANT_PACKAGE_SUFFIX: ""
           PACKAGE_FORMAT: "DEB"
@@ -4609,14 +4609,14 @@ jobs:
       - name: Archive package artifact to Google Cloud
         run: ./internal-scripts/ci-cd/upload-artifact.sh
         env:
-          ARTIFACT_NAME: "ruby-pkg_3.1.7_ubuntu-24.04_normal"
+          ARTIFACT_NAME: "ruby-pkg_3.1.7_ubuntu-22.04_normal"
           ARTIFACT_PATH: output-normal
           CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
 
-  build_ruby_ubuntu_24_04-3_1_7-jemalloc:
-    name: 'Ruby [ubuntu-24.04/3.1.7/jemalloc]'
+  build_ruby_ubuntu_22_04-3_1_7-jemalloc:
+    name: 'Ruby [ubuntu-22.04/3.1.7/jemalloc]'
 
-    needs: build_jemalloc_ubuntu_24_04
+    needs: build_jemalloc_ubuntu_22_04
     runs-on: ubuntu-24.04
     environment: test
     timeout-minutes: 30
@@ -4625,15 +4625,15 @@ jobs:
       packages: read
     # Run even if a dependent job has been skipped
     if: |
-      contains(inputs.necessary_jobs, ';Build Ruby [ubuntu-24.04/3.1.7/jemalloc];')
+      contains(inputs.necessary_jobs, ';Build Ruby [ubuntu-22.04/3.1.7/jemalloc];')
       && !failure() && !cancelled()
     steps:
       
-      - name: Check whether 'Build Jemalloc [ubuntu-24.04]' did not fail
+      - name: Check whether 'Build Jemalloc [ubuntu-22.04]' did not fail
         run: 'false'
         if: |
-          needs.build_jemalloc_ubuntu_24_04.result == 'skipped'
-          && contains(inputs.necessary_jobs, ';Build Jemalloc [ubuntu-24.04];')        
+          needs.build_jemalloc_ubuntu_22_04.result == 'skipped'
+          && contains(inputs.necessary_jobs, ';Build Jemalloc [ubuntu-22.04];')        
 
       - uses: actions/checkout@v4
       - uses: google-github-actions/auth@v2
@@ -4661,14 +4661,14 @@ jobs:
 
       - name: Download Docker image necessary for building
         run: ./internal-scripts/ci-cd/download-artifact.sh
-        if: contains(inputs.necessary_jobs, ';Use locally-built Docker image ubuntu-24.04;')
+        if: contains(inputs.necessary_jobs, ';Use locally-built Docker image ubuntu-22.04;')
         env:
-          ARTIFACT_NAME: 'docker-image-ubuntu-24.04'
+          ARTIFACT_NAME: 'docker-image-ubuntu-22.04'
           ARTIFACT_PATH: .
           CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
       - name: Load Docker image necessary for building
         run: ./internal-scripts/ci-cd/load-docker-image.sh
-        if: contains(inputs.necessary_jobs, ';Use locally-built Docker image ubuntu-24.04;')
+        if: contains(inputs.necessary_jobs, ';Use locally-built Docker image ubuntu-22.04;')
         env:
           TARBALL: image.tar.zst
 
@@ -4689,22 +4689,22 @@ jobs:
       - name: Fetch Jemalloc binary
         run: ./internal-scripts/ci-cd/download-artifact.sh
         env:
-          ARTIFACT_NAME: jemalloc-bin-ubuntu-24.04
+          ARTIFACT_NAME: jemalloc-bin-ubuntu-22.04
           ARTIFACT_PATH: .
           CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}        
 
       - name: Build binaries
         run: ./internal-scripts/ci-cd/build-ruby-packages/build-binaries.sh
         env:
-          ENVIRONMENT_NAME: "ubuntu-24.04"
+          ENVIRONMENT_NAME: "ubuntu-22.04"
           VARIANT_NAME: "jemalloc"
           RUBY_PACKAGE_VERSION_ID: "3.1.7"
-          CACHE_KEY_PREFIX: "sccache/ubuntu-24.04"
+          CACHE_KEY_PREFIX: "sccache/ubuntu-22.04"
 
       - name: Build package
         run: ./internal-scripts/ci-cd/build-ruby-packages/build-package.sh
         env:
-          DISTRIBUTION_NAME: "ubuntu-24.04"
+          DISTRIBUTION_NAME: "ubuntu-22.04"
           VARIANT_NAME: "jemalloc"
           VARIANT_PACKAGE_SUFFIX: "-jemalloc"
           PACKAGE_FORMAT: "DEB"
@@ -4714,12 +4714,12 @@ jobs:
       - name: Archive package artifact to Google Cloud
         run: ./internal-scripts/ci-cd/upload-artifact.sh
         env:
-          ARTIFACT_NAME: "ruby-pkg_3.1.7_ubuntu-24.04_jemalloc"
+          ARTIFACT_NAME: "ruby-pkg_3.1.7_ubuntu-22.04_jemalloc"
           ARTIFACT_PATH: output-jemalloc
           CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
 
-  build_ruby_ubuntu_24_04-3_1_7-malloctrim:
-    name: 'Ruby [ubuntu-24.04/3.1.7/malloctrim]'
+  build_ruby_ubuntu_22_04-3_1_7-malloctrim:
+    name: 'Ruby [ubuntu-22.04/3.1.7/malloctrim]'
 
     runs-on: ubuntu-24.04
     environment: test
@@ -4729,7 +4729,7 @@ jobs:
       packages: read
     # Run even if a dependent job has been skipped
     if: |
-      contains(inputs.necessary_jobs, ';Build Ruby [ubuntu-24.04/3.1.7/malloctrim];')
+      contains(inputs.necessary_jobs, ';Build Ruby [ubuntu-22.04/3.1.7/malloctrim];')
       && !failure() && !cancelled()
     steps:
       
@@ -4760,14 +4760,14 @@ jobs:
 
       - name: Download Docker image necessary for building
         run: ./internal-scripts/ci-cd/download-artifact.sh
-        if: contains(inputs.necessary_jobs, ';Use locally-built Docker image ubuntu-24.04;')
+        if: contains(inputs.necessary_jobs, ';Use locally-built Docker image ubuntu-22.04;')
         env:
-          ARTIFACT_NAME: 'docker-image-ubuntu-24.04'
+          ARTIFACT_NAME: 'docker-image-ubuntu-22.04'
           ARTIFACT_PATH: .
           CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
       - name: Load Docker image necessary for building
         run: ./internal-scripts/ci-cd/load-docker-image.sh
-        if: contains(inputs.necessary_jobs, ';Use locally-built Docker image ubuntu-24.04;')
+        if: contains(inputs.necessary_jobs, ';Use locally-built Docker image ubuntu-22.04;')
         env:
           TARBALL: image.tar.zst
 
@@ -4789,15 +4789,15 @@ jobs:
       - name: Build binaries
         run: ./internal-scripts/ci-cd/build-ruby-packages/build-binaries.sh
         env:
-          ENVIRONMENT_NAME: "ubuntu-24.04"
+          ENVIRONMENT_NAME: "ubuntu-22.04"
           VARIANT_NAME: "malloctrim"
           RUBY_PACKAGE_VERSION_ID: "3.1.7"
-          CACHE_KEY_PREFIX: "sccache/ubuntu-24.04"
+          CACHE_KEY_PREFIX: "sccache/ubuntu-22.04"
 
       - name: Build package
         run: ./internal-scripts/ci-cd/build-ruby-packages/build-package.sh
         env:
-          DISTRIBUTION_NAME: "ubuntu-24.04"
+          DISTRIBUTION_NAME: "ubuntu-22.04"
           VARIANT_NAME: "malloctrim"
           VARIANT_PACKAGE_SUFFIX: "-malloctrim"
           PACKAGE_FORMAT: "DEB"
@@ -4807,7 +4807,7 @@ jobs:
       - name: Archive package artifact to Google Cloud
         run: ./internal-scripts/ci-cd/upload-artifact.sh
         env:
-          ARTIFACT_NAME: "ruby-pkg_3.1.7_ubuntu-24.04_malloctrim"
+          ARTIFACT_NAME: "ruby-pkg_3.1.7_ubuntu-22.04_malloctrim"
           ARTIFACT_PATH: output-malloctrim
           CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
 
@@ -4853,39 +4853,39 @@ jobs:
       - build_ruby_debian_11-3_1_7-jemalloc
       - build_ruby_debian_11-3_1_7-malloctrim
 
-      - build_jemalloc_ubuntu_24_04
+      - build_jemalloc_ubuntu_22_04
 
-      - build_ruby_ubuntu_24_04-3_4-normal
-      - build_ruby_ubuntu_24_04-3_4-jemalloc
-      - build_ruby_ubuntu_24_04-3_4-malloctrim
+      - build_ruby_ubuntu_22_04-3_4-normal
+      - build_ruby_ubuntu_22_04-3_4-jemalloc
+      - build_ruby_ubuntu_22_04-3_4-malloctrim
 
-      - build_ruby_ubuntu_24_04-3_3-normal
-      - build_ruby_ubuntu_24_04-3_3-jemalloc
-      - build_ruby_ubuntu_24_04-3_3-malloctrim
+      - build_ruby_ubuntu_22_04-3_3-normal
+      - build_ruby_ubuntu_22_04-3_3-jemalloc
+      - build_ruby_ubuntu_22_04-3_3-malloctrim
 
-      - build_ruby_ubuntu_24_04-3_2-normal
-      - build_ruby_ubuntu_24_04-3_2-jemalloc
-      - build_ruby_ubuntu_24_04-3_2-malloctrim
+      - build_ruby_ubuntu_22_04-3_2-normal
+      - build_ruby_ubuntu_22_04-3_2-jemalloc
+      - build_ruby_ubuntu_22_04-3_2-malloctrim
 
-      - build_ruby_ubuntu_24_04-3_1-normal
-      - build_ruby_ubuntu_24_04-3_1-jemalloc
-      - build_ruby_ubuntu_24_04-3_1-malloctrim
+      - build_ruby_ubuntu_22_04-3_1-normal
+      - build_ruby_ubuntu_22_04-3_1-jemalloc
+      - build_ruby_ubuntu_22_04-3_1-malloctrim
 
-      - build_ruby_ubuntu_24_04-3_4_5-normal
-      - build_ruby_ubuntu_24_04-3_4_5-jemalloc
-      - build_ruby_ubuntu_24_04-3_4_5-malloctrim
+      - build_ruby_ubuntu_22_04-3_4_5-normal
+      - build_ruby_ubuntu_22_04-3_4_5-jemalloc
+      - build_ruby_ubuntu_22_04-3_4_5-malloctrim
 
-      - build_ruby_ubuntu_24_04-3_3_8-normal
-      - build_ruby_ubuntu_24_04-3_3_8-jemalloc
-      - build_ruby_ubuntu_24_04-3_3_8-malloctrim
+      - build_ruby_ubuntu_22_04-3_3_8-normal
+      - build_ruby_ubuntu_22_04-3_3_8-jemalloc
+      - build_ruby_ubuntu_22_04-3_3_8-malloctrim
 
-      - build_ruby_ubuntu_24_04-3_2_8-normal
-      - build_ruby_ubuntu_24_04-3_2_8-jemalloc
-      - build_ruby_ubuntu_24_04-3_2_8-malloctrim
+      - build_ruby_ubuntu_22_04-3_2_8-normal
+      - build_ruby_ubuntu_22_04-3_2_8-jemalloc
+      - build_ruby_ubuntu_22_04-3_2_8-malloctrim
 
-      - build_ruby_ubuntu_24_04-3_1_7-normal
-      - build_ruby_ubuntu_24_04-3_1_7-jemalloc
-      - build_ruby_ubuntu_24_04-3_1_7-malloctrim
+      - build_ruby_ubuntu_22_04-3_1_7-normal
+      - build_ruby_ubuntu_22_04-3_1_7-jemalloc
+      - build_ruby_ubuntu_22_04-3_1_7-malloctrim
     runs-on: ubuntu-24.04
     environment: test
     timeout-minutes: 30
@@ -4914,7 +4914,7 @@ jobs:
         env:
           ARTIFACT_NAMES: |
             jemalloc-bin-debian-11
-            jemalloc-bin-ubuntu-24.04
+            jemalloc-bin-ubuntu-22.04
           ARTIFACT_PATH: artifacts
           CLEAR: true
           CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
@@ -4924,17 +4924,17 @@ jobs:
           name: 'jemalloc-bin-debian-11'
           path: 'artifacts/jemalloc-bin-debian-11'
           compression-level: 0
-      - name: Archive Jemalloc binary artifact [ubuntu-24.04] to Github
+      - name: Archive Jemalloc binary artifact [ubuntu-22.04] to Github
         uses: actions/upload-artifact@v4
         with:
-          name: 'jemalloc-bin-ubuntu-24.04'
-          path: 'artifacts/jemalloc-bin-ubuntu-24.04'
+          name: 'jemalloc-bin-ubuntu-22.04'
+          path: 'artifacts/jemalloc-bin-ubuntu-22.04'
           compression-level: 0
 
       - name: Download Ruby package artifacts from Google Cloud
         run: ./internal-scripts/ci-cd/download-artifacts.sh
         env:
-          ARTIFACT_NAMES: 'ruby-pkg_3.4_debian-11_normal ruby-pkg_3.4_debian-11_jemalloc ruby-pkg_3.4_debian-11_malloctrim ruby-pkg_3.3_debian-11_normal ruby-pkg_3.3_debian-11_jemalloc ruby-pkg_3.3_debian-11_malloctrim ruby-pkg_3.2_debian-11_normal ruby-pkg_3.2_debian-11_jemalloc ruby-pkg_3.2_debian-11_malloctrim ruby-pkg_3.1_debian-11_normal ruby-pkg_3.1_debian-11_jemalloc ruby-pkg_3.1_debian-11_malloctrim ruby-pkg_3.4.5_debian-11_normal ruby-pkg_3.4.5_debian-11_jemalloc ruby-pkg_3.4.5_debian-11_malloctrim ruby-pkg_3.3.8_debian-11_normal ruby-pkg_3.3.8_debian-11_jemalloc ruby-pkg_3.3.8_debian-11_malloctrim ruby-pkg_3.2.8_debian-11_normal ruby-pkg_3.2.8_debian-11_jemalloc ruby-pkg_3.2.8_debian-11_malloctrim ruby-pkg_3.1.7_debian-11_normal ruby-pkg_3.1.7_debian-11_jemalloc ruby-pkg_3.1.7_debian-11_malloctrim ruby-pkg_3.4_ubuntu-24.04_normal ruby-pkg_3.4_ubuntu-24.04_jemalloc ruby-pkg_3.4_ubuntu-24.04_malloctrim ruby-pkg_3.3_ubuntu-24.04_normal ruby-pkg_3.3_ubuntu-24.04_jemalloc ruby-pkg_3.3_ubuntu-24.04_malloctrim ruby-pkg_3.2_ubuntu-24.04_normal ruby-pkg_3.2_ubuntu-24.04_jemalloc ruby-pkg_3.2_ubuntu-24.04_malloctrim ruby-pkg_3.1_ubuntu-24.04_normal ruby-pkg_3.1_ubuntu-24.04_jemalloc ruby-pkg_3.1_ubuntu-24.04_malloctrim ruby-pkg_3.4.5_ubuntu-24.04_normal ruby-pkg_3.4.5_ubuntu-24.04_jemalloc ruby-pkg_3.4.5_ubuntu-24.04_malloctrim ruby-pkg_3.3.8_ubuntu-24.04_normal ruby-pkg_3.3.8_ubuntu-24.04_jemalloc ruby-pkg_3.3.8_ubuntu-24.04_malloctrim ruby-pkg_3.2.8_ubuntu-24.04_normal ruby-pkg_3.2.8_ubuntu-24.04_jemalloc ruby-pkg_3.2.8_ubuntu-24.04_malloctrim ruby-pkg_3.1.7_ubuntu-24.04_normal ruby-pkg_3.1.7_ubuntu-24.04_jemalloc ruby-pkg_3.1.7_ubuntu-24.04_malloctrim'
+          ARTIFACT_NAMES: 'ruby-pkg_3.4_debian-11_normal ruby-pkg_3.4_debian-11_jemalloc ruby-pkg_3.4_debian-11_malloctrim ruby-pkg_3.3_debian-11_normal ruby-pkg_3.3_debian-11_jemalloc ruby-pkg_3.3_debian-11_malloctrim ruby-pkg_3.2_debian-11_normal ruby-pkg_3.2_debian-11_jemalloc ruby-pkg_3.2_debian-11_malloctrim ruby-pkg_3.1_debian-11_normal ruby-pkg_3.1_debian-11_jemalloc ruby-pkg_3.1_debian-11_malloctrim ruby-pkg_3.4.5_debian-11_normal ruby-pkg_3.4.5_debian-11_jemalloc ruby-pkg_3.4.5_debian-11_malloctrim ruby-pkg_3.3.8_debian-11_normal ruby-pkg_3.3.8_debian-11_jemalloc ruby-pkg_3.3.8_debian-11_malloctrim ruby-pkg_3.2.8_debian-11_normal ruby-pkg_3.2.8_debian-11_jemalloc ruby-pkg_3.2.8_debian-11_malloctrim ruby-pkg_3.1.7_debian-11_normal ruby-pkg_3.1.7_debian-11_jemalloc ruby-pkg_3.1.7_debian-11_malloctrim ruby-pkg_3.4_ubuntu-22.04_normal ruby-pkg_3.4_ubuntu-22.04_jemalloc ruby-pkg_3.4_ubuntu-22.04_malloctrim ruby-pkg_3.3_ubuntu-22.04_normal ruby-pkg_3.3_ubuntu-22.04_jemalloc ruby-pkg_3.3_ubuntu-22.04_malloctrim ruby-pkg_3.2_ubuntu-22.04_normal ruby-pkg_3.2_ubuntu-22.04_jemalloc ruby-pkg_3.2_ubuntu-22.04_malloctrim ruby-pkg_3.1_ubuntu-22.04_normal ruby-pkg_3.1_ubuntu-22.04_jemalloc ruby-pkg_3.1_ubuntu-22.04_malloctrim ruby-pkg_3.4.5_ubuntu-22.04_normal ruby-pkg_3.4.5_ubuntu-22.04_jemalloc ruby-pkg_3.4.5_ubuntu-22.04_malloctrim ruby-pkg_3.3.8_ubuntu-22.04_normal ruby-pkg_3.3.8_ubuntu-22.04_jemalloc ruby-pkg_3.3.8_ubuntu-22.04_malloctrim ruby-pkg_3.2.8_ubuntu-22.04_normal ruby-pkg_3.2.8_ubuntu-22.04_jemalloc ruby-pkg_3.2.8_ubuntu-22.04_malloctrim ruby-pkg_3.1.7_ubuntu-22.04_normal ruby-pkg_3.1.7_ubuntu-22.04_jemalloc ruby-pkg_3.1.7_ubuntu-22.04_malloctrim'
           ARTIFACT_PATH: artifacts
           CLEAR: true
           CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
@@ -5082,149 +5082,149 @@ jobs:
           name: ruby-pkg_3.1.7_debian-11_malloctrim
           path: artifacts/ruby-pkg_3.1.7_debian-11_malloctrim
           compression-level: 0
-      - name: Archive Ruby package artifact [ruby-pkg_3.4_ubuntu-24.04_normal] to Github
+      - name: Archive Ruby package artifact [ruby-pkg_3.4_ubuntu-22.04_normal] to Github
         uses: actions/upload-artifact@v4
         with:
-          name: ruby-pkg_3.4_ubuntu-24.04_normal
-          path: artifacts/ruby-pkg_3.4_ubuntu-24.04_normal
+          name: ruby-pkg_3.4_ubuntu-22.04_normal
+          path: artifacts/ruby-pkg_3.4_ubuntu-22.04_normal
           compression-level: 0
-      - name: Archive Ruby package artifact [ruby-pkg_3.4_ubuntu-24.04_jemalloc] to Github
+      - name: Archive Ruby package artifact [ruby-pkg_3.4_ubuntu-22.04_jemalloc] to Github
         uses: actions/upload-artifact@v4
         with:
-          name: ruby-pkg_3.4_ubuntu-24.04_jemalloc
-          path: artifacts/ruby-pkg_3.4_ubuntu-24.04_jemalloc
+          name: ruby-pkg_3.4_ubuntu-22.04_jemalloc
+          path: artifacts/ruby-pkg_3.4_ubuntu-22.04_jemalloc
           compression-level: 0
-      - name: Archive Ruby package artifact [ruby-pkg_3.4_ubuntu-24.04_malloctrim] to Github
+      - name: Archive Ruby package artifact [ruby-pkg_3.4_ubuntu-22.04_malloctrim] to Github
         uses: actions/upload-artifact@v4
         with:
-          name: ruby-pkg_3.4_ubuntu-24.04_malloctrim
-          path: artifacts/ruby-pkg_3.4_ubuntu-24.04_malloctrim
+          name: ruby-pkg_3.4_ubuntu-22.04_malloctrim
+          path: artifacts/ruby-pkg_3.4_ubuntu-22.04_malloctrim
           compression-level: 0
-      - name: Archive Ruby package artifact [ruby-pkg_3.3_ubuntu-24.04_normal] to Github
+      - name: Archive Ruby package artifact [ruby-pkg_3.3_ubuntu-22.04_normal] to Github
         uses: actions/upload-artifact@v4
         with:
-          name: ruby-pkg_3.3_ubuntu-24.04_normal
-          path: artifacts/ruby-pkg_3.3_ubuntu-24.04_normal
+          name: ruby-pkg_3.3_ubuntu-22.04_normal
+          path: artifacts/ruby-pkg_3.3_ubuntu-22.04_normal
           compression-level: 0
-      - name: Archive Ruby package artifact [ruby-pkg_3.3_ubuntu-24.04_jemalloc] to Github
+      - name: Archive Ruby package artifact [ruby-pkg_3.3_ubuntu-22.04_jemalloc] to Github
         uses: actions/upload-artifact@v4
         with:
-          name: ruby-pkg_3.3_ubuntu-24.04_jemalloc
-          path: artifacts/ruby-pkg_3.3_ubuntu-24.04_jemalloc
+          name: ruby-pkg_3.3_ubuntu-22.04_jemalloc
+          path: artifacts/ruby-pkg_3.3_ubuntu-22.04_jemalloc
           compression-level: 0
-      - name: Archive Ruby package artifact [ruby-pkg_3.3_ubuntu-24.04_malloctrim] to Github
+      - name: Archive Ruby package artifact [ruby-pkg_3.3_ubuntu-22.04_malloctrim] to Github
         uses: actions/upload-artifact@v4
         with:
-          name: ruby-pkg_3.3_ubuntu-24.04_malloctrim
-          path: artifacts/ruby-pkg_3.3_ubuntu-24.04_malloctrim
+          name: ruby-pkg_3.3_ubuntu-22.04_malloctrim
+          path: artifacts/ruby-pkg_3.3_ubuntu-22.04_malloctrim
           compression-level: 0
-      - name: Archive Ruby package artifact [ruby-pkg_3.2_ubuntu-24.04_normal] to Github
+      - name: Archive Ruby package artifact [ruby-pkg_3.2_ubuntu-22.04_normal] to Github
         uses: actions/upload-artifact@v4
         with:
-          name: ruby-pkg_3.2_ubuntu-24.04_normal
-          path: artifacts/ruby-pkg_3.2_ubuntu-24.04_normal
+          name: ruby-pkg_3.2_ubuntu-22.04_normal
+          path: artifacts/ruby-pkg_3.2_ubuntu-22.04_normal
           compression-level: 0
-      - name: Archive Ruby package artifact [ruby-pkg_3.2_ubuntu-24.04_jemalloc] to Github
+      - name: Archive Ruby package artifact [ruby-pkg_3.2_ubuntu-22.04_jemalloc] to Github
         uses: actions/upload-artifact@v4
         with:
-          name: ruby-pkg_3.2_ubuntu-24.04_jemalloc
-          path: artifacts/ruby-pkg_3.2_ubuntu-24.04_jemalloc
+          name: ruby-pkg_3.2_ubuntu-22.04_jemalloc
+          path: artifacts/ruby-pkg_3.2_ubuntu-22.04_jemalloc
           compression-level: 0
-      - name: Archive Ruby package artifact [ruby-pkg_3.2_ubuntu-24.04_malloctrim] to Github
+      - name: Archive Ruby package artifact [ruby-pkg_3.2_ubuntu-22.04_malloctrim] to Github
         uses: actions/upload-artifact@v4
         with:
-          name: ruby-pkg_3.2_ubuntu-24.04_malloctrim
-          path: artifacts/ruby-pkg_3.2_ubuntu-24.04_malloctrim
+          name: ruby-pkg_3.2_ubuntu-22.04_malloctrim
+          path: artifacts/ruby-pkg_3.2_ubuntu-22.04_malloctrim
           compression-level: 0
-      - name: Archive Ruby package artifact [ruby-pkg_3.1_ubuntu-24.04_normal] to Github
+      - name: Archive Ruby package artifact [ruby-pkg_3.1_ubuntu-22.04_normal] to Github
         uses: actions/upload-artifact@v4
         with:
-          name: ruby-pkg_3.1_ubuntu-24.04_normal
-          path: artifacts/ruby-pkg_3.1_ubuntu-24.04_normal
+          name: ruby-pkg_3.1_ubuntu-22.04_normal
+          path: artifacts/ruby-pkg_3.1_ubuntu-22.04_normal
           compression-level: 0
-      - name: Archive Ruby package artifact [ruby-pkg_3.1_ubuntu-24.04_jemalloc] to Github
+      - name: Archive Ruby package artifact [ruby-pkg_3.1_ubuntu-22.04_jemalloc] to Github
         uses: actions/upload-artifact@v4
         with:
-          name: ruby-pkg_3.1_ubuntu-24.04_jemalloc
-          path: artifacts/ruby-pkg_3.1_ubuntu-24.04_jemalloc
+          name: ruby-pkg_3.1_ubuntu-22.04_jemalloc
+          path: artifacts/ruby-pkg_3.1_ubuntu-22.04_jemalloc
           compression-level: 0
-      - name: Archive Ruby package artifact [ruby-pkg_3.1_ubuntu-24.04_malloctrim] to Github
+      - name: Archive Ruby package artifact [ruby-pkg_3.1_ubuntu-22.04_malloctrim] to Github
         uses: actions/upload-artifact@v4
         with:
-          name: ruby-pkg_3.1_ubuntu-24.04_malloctrim
-          path: artifacts/ruby-pkg_3.1_ubuntu-24.04_malloctrim
+          name: ruby-pkg_3.1_ubuntu-22.04_malloctrim
+          path: artifacts/ruby-pkg_3.1_ubuntu-22.04_malloctrim
           compression-level: 0
-      - name: Archive Ruby package artifact [ruby-pkg_3.4.5_ubuntu-24.04_normal] to Github
+      - name: Archive Ruby package artifact [ruby-pkg_3.4.5_ubuntu-22.04_normal] to Github
         uses: actions/upload-artifact@v4
         with:
-          name: ruby-pkg_3.4.5_ubuntu-24.04_normal
-          path: artifacts/ruby-pkg_3.4.5_ubuntu-24.04_normal
+          name: ruby-pkg_3.4.5_ubuntu-22.04_normal
+          path: artifacts/ruby-pkg_3.4.5_ubuntu-22.04_normal
           compression-level: 0
-      - name: Archive Ruby package artifact [ruby-pkg_3.4.5_ubuntu-24.04_jemalloc] to Github
+      - name: Archive Ruby package artifact [ruby-pkg_3.4.5_ubuntu-22.04_jemalloc] to Github
         uses: actions/upload-artifact@v4
         with:
-          name: ruby-pkg_3.4.5_ubuntu-24.04_jemalloc
-          path: artifacts/ruby-pkg_3.4.5_ubuntu-24.04_jemalloc
+          name: ruby-pkg_3.4.5_ubuntu-22.04_jemalloc
+          path: artifacts/ruby-pkg_3.4.5_ubuntu-22.04_jemalloc
           compression-level: 0
-      - name: Archive Ruby package artifact [ruby-pkg_3.4.5_ubuntu-24.04_malloctrim] to Github
+      - name: Archive Ruby package artifact [ruby-pkg_3.4.5_ubuntu-22.04_malloctrim] to Github
         uses: actions/upload-artifact@v4
         with:
-          name: ruby-pkg_3.4.5_ubuntu-24.04_malloctrim
-          path: artifacts/ruby-pkg_3.4.5_ubuntu-24.04_malloctrim
+          name: ruby-pkg_3.4.5_ubuntu-22.04_malloctrim
+          path: artifacts/ruby-pkg_3.4.5_ubuntu-22.04_malloctrim
           compression-level: 0
-      - name: Archive Ruby package artifact [ruby-pkg_3.3.8_ubuntu-24.04_normal] to Github
+      - name: Archive Ruby package artifact [ruby-pkg_3.3.8_ubuntu-22.04_normal] to Github
         uses: actions/upload-artifact@v4
         with:
-          name: ruby-pkg_3.3.8_ubuntu-24.04_normal
-          path: artifacts/ruby-pkg_3.3.8_ubuntu-24.04_normal
+          name: ruby-pkg_3.3.8_ubuntu-22.04_normal
+          path: artifacts/ruby-pkg_3.3.8_ubuntu-22.04_normal
           compression-level: 0
-      - name: Archive Ruby package artifact [ruby-pkg_3.3.8_ubuntu-24.04_jemalloc] to Github
+      - name: Archive Ruby package artifact [ruby-pkg_3.3.8_ubuntu-22.04_jemalloc] to Github
         uses: actions/upload-artifact@v4
         with:
-          name: ruby-pkg_3.3.8_ubuntu-24.04_jemalloc
-          path: artifacts/ruby-pkg_3.3.8_ubuntu-24.04_jemalloc
+          name: ruby-pkg_3.3.8_ubuntu-22.04_jemalloc
+          path: artifacts/ruby-pkg_3.3.8_ubuntu-22.04_jemalloc
           compression-level: 0
-      - name: Archive Ruby package artifact [ruby-pkg_3.3.8_ubuntu-24.04_malloctrim] to Github
+      - name: Archive Ruby package artifact [ruby-pkg_3.3.8_ubuntu-22.04_malloctrim] to Github
         uses: actions/upload-artifact@v4
         with:
-          name: ruby-pkg_3.3.8_ubuntu-24.04_malloctrim
-          path: artifacts/ruby-pkg_3.3.8_ubuntu-24.04_malloctrim
+          name: ruby-pkg_3.3.8_ubuntu-22.04_malloctrim
+          path: artifacts/ruby-pkg_3.3.8_ubuntu-22.04_malloctrim
           compression-level: 0
-      - name: Archive Ruby package artifact [ruby-pkg_3.2.8_ubuntu-24.04_normal] to Github
+      - name: Archive Ruby package artifact [ruby-pkg_3.2.8_ubuntu-22.04_normal] to Github
         uses: actions/upload-artifact@v4
         with:
-          name: ruby-pkg_3.2.8_ubuntu-24.04_normal
-          path: artifacts/ruby-pkg_3.2.8_ubuntu-24.04_normal
+          name: ruby-pkg_3.2.8_ubuntu-22.04_normal
+          path: artifacts/ruby-pkg_3.2.8_ubuntu-22.04_normal
           compression-level: 0
-      - name: Archive Ruby package artifact [ruby-pkg_3.2.8_ubuntu-24.04_jemalloc] to Github
+      - name: Archive Ruby package artifact [ruby-pkg_3.2.8_ubuntu-22.04_jemalloc] to Github
         uses: actions/upload-artifact@v4
         with:
-          name: ruby-pkg_3.2.8_ubuntu-24.04_jemalloc
-          path: artifacts/ruby-pkg_3.2.8_ubuntu-24.04_jemalloc
+          name: ruby-pkg_3.2.8_ubuntu-22.04_jemalloc
+          path: artifacts/ruby-pkg_3.2.8_ubuntu-22.04_jemalloc
           compression-level: 0
-      - name: Archive Ruby package artifact [ruby-pkg_3.2.8_ubuntu-24.04_malloctrim] to Github
+      - name: Archive Ruby package artifact [ruby-pkg_3.2.8_ubuntu-22.04_malloctrim] to Github
         uses: actions/upload-artifact@v4
         with:
-          name: ruby-pkg_3.2.8_ubuntu-24.04_malloctrim
-          path: artifacts/ruby-pkg_3.2.8_ubuntu-24.04_malloctrim
+          name: ruby-pkg_3.2.8_ubuntu-22.04_malloctrim
+          path: artifacts/ruby-pkg_3.2.8_ubuntu-22.04_malloctrim
           compression-level: 0
-      - name: Archive Ruby package artifact [ruby-pkg_3.1.7_ubuntu-24.04_normal] to Github
+      - name: Archive Ruby package artifact [ruby-pkg_3.1.7_ubuntu-22.04_normal] to Github
         uses: actions/upload-artifact@v4
         with:
-          name: ruby-pkg_3.1.7_ubuntu-24.04_normal
-          path: artifacts/ruby-pkg_3.1.7_ubuntu-24.04_normal
+          name: ruby-pkg_3.1.7_ubuntu-22.04_normal
+          path: artifacts/ruby-pkg_3.1.7_ubuntu-22.04_normal
           compression-level: 0
-      - name: Archive Ruby package artifact [ruby-pkg_3.1.7_ubuntu-24.04_jemalloc] to Github
+      - name: Archive Ruby package artifact [ruby-pkg_3.1.7_ubuntu-22.04_jemalloc] to Github
         uses: actions/upload-artifact@v4
         with:
-          name: ruby-pkg_3.1.7_ubuntu-24.04_jemalloc
-          path: artifacts/ruby-pkg_3.1.7_ubuntu-24.04_jemalloc
+          name: ruby-pkg_3.1.7_ubuntu-22.04_jemalloc
+          path: artifacts/ruby-pkg_3.1.7_ubuntu-22.04_jemalloc
           compression-level: 0
-      - name: Archive Ruby package artifact [ruby-pkg_3.1.7_ubuntu-24.04_malloctrim] to Github
+      - name: Archive Ruby package artifact [ruby-pkg_3.1.7_ubuntu-22.04_malloctrim] to Github
         uses: actions/upload-artifact@v4
         with:
-          name: ruby-pkg_3.1.7_ubuntu-24.04_malloctrim
-          path: artifacts/ruby-pkg_3.1.7_ubuntu-24.04_malloctrim
+          name: ruby-pkg_3.1.7_ubuntu-22.04_malloctrim
+          path: artifacts/ruby-pkg_3.1.7_ubuntu-22.04_malloctrim
           compression-level: 0
 
 
@@ -5237,9 +5237,9 @@ jobs:
             || (needs.build_jemalloc_debian_11.result != 'success'
               && (needs.build_jemalloc_debian_11.result != 'skipped'
                 || contains(inputs.necessary_jobs, ';Build Jemalloc [debian-11];')))
-            || (needs.build_jemalloc_ubuntu_24_04.result != 'success'
-              && (needs.build_jemalloc_ubuntu_24_04.result != 'skipped'
-                || contains(inputs.necessary_jobs, ';Build Jemalloc [ubuntu-24.04];')))
+            || (needs.build_jemalloc_ubuntu_22_04.result != 'success'
+              && (needs.build_jemalloc_ubuntu_22_04.result != 'skipped'
+                || contains(inputs.necessary_jobs, ';Build Jemalloc [ubuntu-22.04];')))
       - name: Check whether 'Ruby [debian-11]' job did not fail
         run: 'false'
         if: |
@@ -5316,79 +5316,79 @@ jobs:
             || (needs.build_ruby_debian_11-3_1_7-malloctrim.result != 'success'
               && (needs.build_ruby_debian_11-3_1_7-malloctrim.result != 'skipped'
                 || contains(inputs.necessary_jobs, ';Build Ruby [debian-11/3.1.7/malloctrim];')))
-      - name: Check whether 'Ruby [ubuntu-24.04]' job did not fail
+      - name: Check whether 'Ruby [ubuntu-22.04]' job did not fail
         run: 'false'
         if: |
           false
-            || (needs.build_ruby_ubuntu_24_04-3_4-normal.result != 'success'
-              && (needs.build_ruby_ubuntu_24_04-3_4-normal.result != 'skipped'
-                || contains(inputs.necessary_jobs, ';Build Ruby [ubuntu-24.04/3.4/normal];')))
-            || (needs.build_ruby_ubuntu_24_04-3_4-jemalloc.result != 'success'
-              && (needs.build_ruby_ubuntu_24_04-3_4-jemalloc.result != 'skipped'
-                || contains(inputs.necessary_jobs, ';Build Ruby [ubuntu-24.04/3.4/jemalloc];')))
-            || (needs.build_ruby_ubuntu_24_04-3_4-malloctrim.result != 'success'
-              && (needs.build_ruby_ubuntu_24_04-3_4-malloctrim.result != 'skipped'
-                || contains(inputs.necessary_jobs, ';Build Ruby [ubuntu-24.04/3.4/malloctrim];')))
-            || (needs.build_ruby_ubuntu_24_04-3_3-normal.result != 'success'
-              && (needs.build_ruby_ubuntu_24_04-3_3-normal.result != 'skipped'
-                || contains(inputs.necessary_jobs, ';Build Ruby [ubuntu-24.04/3.3/normal];')))
-            || (needs.build_ruby_ubuntu_24_04-3_3-jemalloc.result != 'success'
-              && (needs.build_ruby_ubuntu_24_04-3_3-jemalloc.result != 'skipped'
-                || contains(inputs.necessary_jobs, ';Build Ruby [ubuntu-24.04/3.3/jemalloc];')))
-            || (needs.build_ruby_ubuntu_24_04-3_3-malloctrim.result != 'success'
-              && (needs.build_ruby_ubuntu_24_04-3_3-malloctrim.result != 'skipped'
-                || contains(inputs.necessary_jobs, ';Build Ruby [ubuntu-24.04/3.3/malloctrim];')))
-            || (needs.build_ruby_ubuntu_24_04-3_2-normal.result != 'success'
-              && (needs.build_ruby_ubuntu_24_04-3_2-normal.result != 'skipped'
-                || contains(inputs.necessary_jobs, ';Build Ruby [ubuntu-24.04/3.2/normal];')))
-            || (needs.build_ruby_ubuntu_24_04-3_2-jemalloc.result != 'success'
-              && (needs.build_ruby_ubuntu_24_04-3_2-jemalloc.result != 'skipped'
-                || contains(inputs.necessary_jobs, ';Build Ruby [ubuntu-24.04/3.2/jemalloc];')))
-            || (needs.build_ruby_ubuntu_24_04-3_2-malloctrim.result != 'success'
-              && (needs.build_ruby_ubuntu_24_04-3_2-malloctrim.result != 'skipped'
-                || contains(inputs.necessary_jobs, ';Build Ruby [ubuntu-24.04/3.2/malloctrim];')))
-            || (needs.build_ruby_ubuntu_24_04-3_1-normal.result != 'success'
-              && (needs.build_ruby_ubuntu_24_04-3_1-normal.result != 'skipped'
-                || contains(inputs.necessary_jobs, ';Build Ruby [ubuntu-24.04/3.1/normal];')))
-            || (needs.build_ruby_ubuntu_24_04-3_1-jemalloc.result != 'success'
-              && (needs.build_ruby_ubuntu_24_04-3_1-jemalloc.result != 'skipped'
-                || contains(inputs.necessary_jobs, ';Build Ruby [ubuntu-24.04/3.1/jemalloc];')))
-            || (needs.build_ruby_ubuntu_24_04-3_1-malloctrim.result != 'success'
-              && (needs.build_ruby_ubuntu_24_04-3_1-malloctrim.result != 'skipped'
-                || contains(inputs.necessary_jobs, ';Build Ruby [ubuntu-24.04/3.1/malloctrim];')))
-            || (needs.build_ruby_ubuntu_24_04-3_4_5-normal.result != 'success'
-              && (needs.build_ruby_ubuntu_24_04-3_4_5-normal.result != 'skipped'
-                || contains(inputs.necessary_jobs, ';Build Ruby [ubuntu-24.04/3.4.5/normal];')))
-            || (needs.build_ruby_ubuntu_24_04-3_4_5-jemalloc.result != 'success'
-              && (needs.build_ruby_ubuntu_24_04-3_4_5-jemalloc.result != 'skipped'
-                || contains(inputs.necessary_jobs, ';Build Ruby [ubuntu-24.04/3.4.5/jemalloc];')))
-            || (needs.build_ruby_ubuntu_24_04-3_4_5-malloctrim.result != 'success'
-              && (needs.build_ruby_ubuntu_24_04-3_4_5-malloctrim.result != 'skipped'
-                || contains(inputs.necessary_jobs, ';Build Ruby [ubuntu-24.04/3.4.5/malloctrim];')))
-            || (needs.build_ruby_ubuntu_24_04-3_3_8-normal.result != 'success'
-              && (needs.build_ruby_ubuntu_24_04-3_3_8-normal.result != 'skipped'
-                || contains(inputs.necessary_jobs, ';Build Ruby [ubuntu-24.04/3.3.8/normal];')))
-            || (needs.build_ruby_ubuntu_24_04-3_3_8-jemalloc.result != 'success'
-              && (needs.build_ruby_ubuntu_24_04-3_3_8-jemalloc.result != 'skipped'
-                || contains(inputs.necessary_jobs, ';Build Ruby [ubuntu-24.04/3.3.8/jemalloc];')))
-            || (needs.build_ruby_ubuntu_24_04-3_3_8-malloctrim.result != 'success'
-              && (needs.build_ruby_ubuntu_24_04-3_3_8-malloctrim.result != 'skipped'
-                || contains(inputs.necessary_jobs, ';Build Ruby [ubuntu-24.04/3.3.8/malloctrim];')))
-            || (needs.build_ruby_ubuntu_24_04-3_2_8-normal.result != 'success'
-              && (needs.build_ruby_ubuntu_24_04-3_2_8-normal.result != 'skipped'
-                || contains(inputs.necessary_jobs, ';Build Ruby [ubuntu-24.04/3.2.8/normal];')))
-            || (needs.build_ruby_ubuntu_24_04-3_2_8-jemalloc.result != 'success'
-              && (needs.build_ruby_ubuntu_24_04-3_2_8-jemalloc.result != 'skipped'
-                || contains(inputs.necessary_jobs, ';Build Ruby [ubuntu-24.04/3.2.8/jemalloc];')))
-            || (needs.build_ruby_ubuntu_24_04-3_2_8-malloctrim.result != 'success'
-              && (needs.build_ruby_ubuntu_24_04-3_2_8-malloctrim.result != 'skipped'
-                || contains(inputs.necessary_jobs, ';Build Ruby [ubuntu-24.04/3.2.8/malloctrim];')))
-            || (needs.build_ruby_ubuntu_24_04-3_1_7-normal.result != 'success'
-              && (needs.build_ruby_ubuntu_24_04-3_1_7-normal.result != 'skipped'
-                || contains(inputs.necessary_jobs, ';Build Ruby [ubuntu-24.04/3.1.7/normal];')))
-            || (needs.build_ruby_ubuntu_24_04-3_1_7-jemalloc.result != 'success'
-              && (needs.build_ruby_ubuntu_24_04-3_1_7-jemalloc.result != 'skipped'
-                || contains(inputs.necessary_jobs, ';Build Ruby [ubuntu-24.04/3.1.7/jemalloc];')))
-            || (needs.build_ruby_ubuntu_24_04-3_1_7-malloctrim.result != 'success'
-              && (needs.build_ruby_ubuntu_24_04-3_1_7-malloctrim.result != 'skipped'
-                || contains(inputs.necessary_jobs, ';Build Ruby [ubuntu-24.04/3.1.7/malloctrim];')))
+            || (needs.build_ruby_ubuntu_22_04-3_4-normal.result != 'success'
+              && (needs.build_ruby_ubuntu_22_04-3_4-normal.result != 'skipped'
+                || contains(inputs.necessary_jobs, ';Build Ruby [ubuntu-22.04/3.4/normal];')))
+            || (needs.build_ruby_ubuntu_22_04-3_4-jemalloc.result != 'success'
+              && (needs.build_ruby_ubuntu_22_04-3_4-jemalloc.result != 'skipped'
+                || contains(inputs.necessary_jobs, ';Build Ruby [ubuntu-22.04/3.4/jemalloc];')))
+            || (needs.build_ruby_ubuntu_22_04-3_4-malloctrim.result != 'success'
+              && (needs.build_ruby_ubuntu_22_04-3_4-malloctrim.result != 'skipped'
+                || contains(inputs.necessary_jobs, ';Build Ruby [ubuntu-22.04/3.4/malloctrim];')))
+            || (needs.build_ruby_ubuntu_22_04-3_3-normal.result != 'success'
+              && (needs.build_ruby_ubuntu_22_04-3_3-normal.result != 'skipped'
+                || contains(inputs.necessary_jobs, ';Build Ruby [ubuntu-22.04/3.3/normal];')))
+            || (needs.build_ruby_ubuntu_22_04-3_3-jemalloc.result != 'success'
+              && (needs.build_ruby_ubuntu_22_04-3_3-jemalloc.result != 'skipped'
+                || contains(inputs.necessary_jobs, ';Build Ruby [ubuntu-22.04/3.3/jemalloc];')))
+            || (needs.build_ruby_ubuntu_22_04-3_3-malloctrim.result != 'success'
+              && (needs.build_ruby_ubuntu_22_04-3_3-malloctrim.result != 'skipped'
+                || contains(inputs.necessary_jobs, ';Build Ruby [ubuntu-22.04/3.3/malloctrim];')))
+            || (needs.build_ruby_ubuntu_22_04-3_2-normal.result != 'success'
+              && (needs.build_ruby_ubuntu_22_04-3_2-normal.result != 'skipped'
+                || contains(inputs.necessary_jobs, ';Build Ruby [ubuntu-22.04/3.2/normal];')))
+            || (needs.build_ruby_ubuntu_22_04-3_2-jemalloc.result != 'success'
+              && (needs.build_ruby_ubuntu_22_04-3_2-jemalloc.result != 'skipped'
+                || contains(inputs.necessary_jobs, ';Build Ruby [ubuntu-22.04/3.2/jemalloc];')))
+            || (needs.build_ruby_ubuntu_22_04-3_2-malloctrim.result != 'success'
+              && (needs.build_ruby_ubuntu_22_04-3_2-malloctrim.result != 'skipped'
+                || contains(inputs.necessary_jobs, ';Build Ruby [ubuntu-22.04/3.2/malloctrim];')))
+            || (needs.build_ruby_ubuntu_22_04-3_1-normal.result != 'success'
+              && (needs.build_ruby_ubuntu_22_04-3_1-normal.result != 'skipped'
+                || contains(inputs.necessary_jobs, ';Build Ruby [ubuntu-22.04/3.1/normal];')))
+            || (needs.build_ruby_ubuntu_22_04-3_1-jemalloc.result != 'success'
+              && (needs.build_ruby_ubuntu_22_04-3_1-jemalloc.result != 'skipped'
+                || contains(inputs.necessary_jobs, ';Build Ruby [ubuntu-22.04/3.1/jemalloc];')))
+            || (needs.build_ruby_ubuntu_22_04-3_1-malloctrim.result != 'success'
+              && (needs.build_ruby_ubuntu_22_04-3_1-malloctrim.result != 'skipped'
+                || contains(inputs.necessary_jobs, ';Build Ruby [ubuntu-22.04/3.1/malloctrim];')))
+            || (needs.build_ruby_ubuntu_22_04-3_4_5-normal.result != 'success'
+              && (needs.build_ruby_ubuntu_22_04-3_4_5-normal.result != 'skipped'
+                || contains(inputs.necessary_jobs, ';Build Ruby [ubuntu-22.04/3.4.5/normal];')))
+            || (needs.build_ruby_ubuntu_22_04-3_4_5-jemalloc.result != 'success'
+              && (needs.build_ruby_ubuntu_22_04-3_4_5-jemalloc.result != 'skipped'
+                || contains(inputs.necessary_jobs, ';Build Ruby [ubuntu-22.04/3.4.5/jemalloc];')))
+            || (needs.build_ruby_ubuntu_22_04-3_4_5-malloctrim.result != 'success'
+              && (needs.build_ruby_ubuntu_22_04-3_4_5-malloctrim.result != 'skipped'
+                || contains(inputs.necessary_jobs, ';Build Ruby [ubuntu-22.04/3.4.5/malloctrim];')))
+            || (needs.build_ruby_ubuntu_22_04-3_3_8-normal.result != 'success'
+              && (needs.build_ruby_ubuntu_22_04-3_3_8-normal.result != 'skipped'
+                || contains(inputs.necessary_jobs, ';Build Ruby [ubuntu-22.04/3.3.8/normal];')))
+            || (needs.build_ruby_ubuntu_22_04-3_3_8-jemalloc.result != 'success'
+              && (needs.build_ruby_ubuntu_22_04-3_3_8-jemalloc.result != 'skipped'
+                || contains(inputs.necessary_jobs, ';Build Ruby [ubuntu-22.04/3.3.8/jemalloc];')))
+            || (needs.build_ruby_ubuntu_22_04-3_3_8-malloctrim.result != 'success'
+              && (needs.build_ruby_ubuntu_22_04-3_3_8-malloctrim.result != 'skipped'
+                || contains(inputs.necessary_jobs, ';Build Ruby [ubuntu-22.04/3.3.8/malloctrim];')))
+            || (needs.build_ruby_ubuntu_22_04-3_2_8-normal.result != 'success'
+              && (needs.build_ruby_ubuntu_22_04-3_2_8-normal.result != 'skipped'
+                || contains(inputs.necessary_jobs, ';Build Ruby [ubuntu-22.04/3.2.8/normal];')))
+            || (needs.build_ruby_ubuntu_22_04-3_2_8-jemalloc.result != 'success'
+              && (needs.build_ruby_ubuntu_22_04-3_2_8-jemalloc.result != 'skipped'
+                || contains(inputs.necessary_jobs, ';Build Ruby [ubuntu-22.04/3.2.8/jemalloc];')))
+            || (needs.build_ruby_ubuntu_22_04-3_2_8-malloctrim.result != 'success'
+              && (needs.build_ruby_ubuntu_22_04-3_2_8-malloctrim.result != 'skipped'
+                || contains(inputs.necessary_jobs, ';Build Ruby [ubuntu-22.04/3.2.8/malloctrim];')))
+            || (needs.build_ruby_ubuntu_22_04-3_1_7-normal.result != 'success'
+              && (needs.build_ruby_ubuntu_22_04-3_1_7-normal.result != 'skipped'
+                || contains(inputs.necessary_jobs, ';Build Ruby [ubuntu-22.04/3.1.7/normal];')))
+            || (needs.build_ruby_ubuntu_22_04-3_1_7-jemalloc.result != 'success'
+              && (needs.build_ruby_ubuntu_22_04-3_1_7-jemalloc.result != 'skipped'
+                || contains(inputs.necessary_jobs, ';Build Ruby [ubuntu-22.04/3.1.7/jemalloc];')))
+            || (needs.build_ruby_ubuntu_22_04-3_1_7-malloctrim.result != 'success'
+              && (needs.build_ruby_ubuntu_22_04-3_1_7-malloctrim.result != 'skipped'
+                || contains(inputs.necessary_jobs, ';Build Ruby [ubuntu-22.04/3.1.7/malloctrim];')))
