@@ -255,6 +255,48 @@ jobs:
           ARTIFACT_PATH: output
           CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
 
+  build_docker_image_debian_13:
+    name: 'Build Docker image [debian-13]'
+    runs-on: ubuntu-24.04
+    permissions:
+      id-token: write
+    environment: test
+    if: contains(inputs.necessary_jobs, ';Build Docker image debian-13;')
+    steps:
+      - uses: actions/checkout@v4
+      - uses: azure/login@v2
+        with:
+          tenant-id: ${{ vars.AZURE_TENANT_ID }}
+          client-id: ${{ vars.AZURE_CLIENT_ID }}
+          subscription-id: ${{ vars.AZURE_SUBSCRIPTION_ID }}
+      - uses: google-github-actions/auth@v2
+        with:
+          project_id: ${{ vars.GCLOUD_PROJECT_ID }}
+          workload_identity_provider: projects/${{ vars.GCLOUD_PROJECT_NUM }}/locations/global/workloadIdentityPools/github-ci-test/providers/github-ci-test
+      - name: Set up Cloud SDK
+        uses: google-github-actions/setup-gcloud@v2
+        with:
+          version: '>= 363.0.0'
+
+      - name: Build
+        run: ./internal-scripts/ci-cd/build-docker-images/build.sh
+        env:
+          IMAGE_NAME: 'ghcr.io/fullstaq-ruby/server-edition-ci-images'
+          IMAGE_TAG: 'debian-13-v1'
+          SOURCE_DIR: 'environments/debian-13'
+
+      - name: Dump image
+        run: ./internal-scripts/ci-cd/build-docker-images/dump-image.sh
+        env:
+          IMAGE_NAME: 'ghcr.io/fullstaq-ruby/server-edition-ci-images'
+          IMAGE_TAG: 'debian-13-v1'
+      - name: Archive artifact
+        run: ./internal-scripts/ci-cd/upload-artifact.sh
+        env:
+          ARTIFACT_NAME: 'docker-image-debian-13'
+          ARTIFACT_PATH: output
+          CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
+
   build_docker_image_el_9:
     name: 'Build Docker image [el-9]'
     runs-on: ubuntu-24.04
@@ -917,6 +959,7 @@ jobs:
       - build_docker_image_centos_8
       - build_docker_image_debian_11
       - build_docker_image_debian_12
+      - build_docker_image_debian_13
       - build_docker_image_el_9
       - build_docker_image_ubuntu_22_04
       - build_docker_image_ubuntu_24_04
@@ -1025,6 +1068,20 @@ jobs:
         if: contains(inputs.necessary_jobs, ';Build Docker image debian-12;')
         with:
           name: 'docker-image-debian-12'
+          path: artifacts
+      - name: Download Docker image artifact [debian-13] from Google Cloud
+        run: ./internal-scripts/ci-cd/download-artifact.sh
+        if: contains(inputs.necessary_jobs, ';Build Docker image debian-13;')
+        env:
+          ARTIFACT_NAME: 'docker-image-debian-13'
+          ARTIFACT_PATH: artifacts
+          CLEAR: true
+          CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
+      - name: Archive Docker image artifact [debian-13] to Github
+        uses: actions/upload-artifact@v4
+        if: contains(inputs.necessary_jobs, ';Build Docker image debian-13;')
+        with:
+          name: 'docker-image-debian-13'
           path: artifacts
       - name: Download Docker image artifact [el-9] from Google Cloud
         run: ./internal-scripts/ci-cd/download-artifact.sh
@@ -1224,6 +1281,9 @@ jobs:
             || (needs.build_docker_image_debian_12.result != 'success'
               && (needs.build_docker_image_debian_12.result != 'skipped'
                 || contains(inputs.necessary_jobs, ';Build Docker image debian-12;')))
+            || (needs.build_docker_image_debian_13.result != 'success'
+              && (needs.build_docker_image_debian_13.result != 'skipped'
+                || contains(inputs.necessary_jobs, ';Build Docker image debian-13;')))
             || (needs.build_docker_image_el_9.result != 'success'
               && (needs.build_docker_image_el_9.result != 'skipped'
                 || contains(inputs.necessary_jobs, ';Build Docker image el-9;')))
