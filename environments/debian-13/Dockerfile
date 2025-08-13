@@ -14,7 +14,7 @@ RUN set -x && \
         dpkg-dev curl ca-certificates pkg-config rustc \
         libssl-dev libyaml-dev libreadline-dev zlib1g-dev \
         libncurses5-dev libffi-dev libgdbm6 libgdbm-dev \
-        adduser && \
+        gpg adduser && \
     apt clean && \
     rm -rf /tmp/* /var/tmp/* /var/lib/apt/lists/*
 

@@ -14,7 +14,7 @@ RUN set -x && \
     apt update && \
     apt install -y wget ca-certificates binutils build-essential \
         curl ca-certificates rpm file ruby ruby-dev rubygems sudo \
-        aptly createrepo-c parallel && \
+        aptly createrepo-c parallel gpg && \
     apt clean && \
     rm -rf /tmp/* /var/tmp/* /var/lib/apt/lists/*
 

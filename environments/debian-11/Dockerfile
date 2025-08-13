@@ -13,7 +13,8 @@ RUN set -x && \
     apt install -y autoconf bison bzip2 build-essential \
         dpkg-dev curl ca-certificates pkg-config \
         libssl-dev libyaml-dev libreadline-dev zlib1g-dev \
-        libncurses5-dev libffi-dev libgdbm6 libgdbm-dev && \
+        libncurses5-dev libffi-dev libgdbm6 libgdbm-dev \
+        gpg && \
     apt clean && \
     rm -rf /tmp/* /var/tmp/* /var/lib/apt/lists/*
 
