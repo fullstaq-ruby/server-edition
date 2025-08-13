@@ -31,7 +31,7 @@ if [[ "$SERVER" = "" ]]; then
 else
     run apt update
     run apt install -y "${ESSENTIAL_PACKAGES[@]}" gnupg apt-transport-https ca-certificates
-    run apt-key add /system/fullstaq-ruby.asc
+    run gpg --dearmor -o "/etc/apt/trusted.gpg.d/fullstaq-ruby.gpg" /system/fullstaq-ruby.asc
     echo "+ Create /etc/apt/sources.list.d/server.list"
     echo "deb $SERVER $APT_DISTRO_NAME main" > /etc/apt/sources.list.d/server.list
     cat /etc/apt/sources.list.d/server.list

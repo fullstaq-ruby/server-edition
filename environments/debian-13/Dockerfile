@@ -13,7 +13,8 @@ RUN set -x && \
     apt install -y autoconf bison bzip2 build-essential \
         dpkg-dev curl ca-certificates pkg-config rustc \
         libssl-dev libyaml-dev libreadline-dev zlib1g-dev \
-        libncurses5-dev libffi-dev libgdbm6 libgdbm-dev && \
+        libncurses5-dev libffi-dev libgdbm6 libgdbm-dev \
+        gpg adduser && \
     apt clean && \
     rm -rf /tmp/* /var/tmp/* /var/lib/apt/lists/*
 
@@ -36,8 +37,8 @@ RUN curl -fsSLo sccache.tar.gz https://github.com/mozilla/sccache/releases/downl
     mkdir /etc/matchhostfsowner && \
     echo 'app_account: builder' > /etc/matchhostfsowner/config.yml && \
     \
-    groupadd --gid 9999 builder && \
-    useradd --uid 9999 --gid 9999 --comment Builder --create-home builder && \
+    addgroup --gid 9999 builder && \
+    adduser --uid 9999 --gid 9999 --disabled-password --gecos Builder builder && \
     usermod -L builder && \
     \
     rm -rf /tmp/* /var/tmp/*
