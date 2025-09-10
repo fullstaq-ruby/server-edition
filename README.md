@@ -381,10 +381,21 @@ Fullstaq Ruby, ensures that the right version of Jemalloc is used. We are a bunc
 
 > Red Hat Enterprise Linux (RHEL) is the original "Enterprise Linux". Compatible derivatives are CentOS, Rocky Linux and Alma Linux.
 
- * Supported Enterprise Linux versions: 9, 8, 7
+ * Supported Enterprise Linux versions: 10, 9, 8
  * Supported architectures: x86-64
 
 Add the Fullstaq Ruby repository by creating `/etc/yum.repos.d/fullstaq-ruby.repo`. Pick one of the following:
+
+Enterprise Linux 10:
+
+    [fullstaq-ruby]
+    name=fullstaq-ruby
+    baseurl=https://yum.fullstaqruby.org/el-10/$basearch
+    gpgcheck=0
+    repo_gpgcheck=1
+    enabled=1
+    gpgkey=https://raw.githubusercontent.com/fullstaq-ruby/server-edition/main/fullstaq-ruby.asc
+    sslverify=1
 
 Enterprise Linux 9:
 
