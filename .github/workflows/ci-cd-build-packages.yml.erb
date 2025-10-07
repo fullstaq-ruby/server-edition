@@ -20,11 +20,12 @@ jobs:
   ### Jemalloc ###
 
   <%- distributions.each do |distribution| %>
+  <%- architectures.each do |arch| %>
   <%- unindent(2) do -%>
-    build_jemalloc_<%= slug(distribution[:name]) %>:
-      name: 'Jemalloc [<%= distribution[:name] %>]'
-      if: contains(inputs.necessary_jobs, ';Build Jemalloc [<%= distribution[:name] %>];')
-      runs-on: ubuntu-24.04
+    build_jemalloc_<%= slug(distribution[:name]) %>_<%= arch %>:
+      name: 'Jemalloc [<%= distribution[:name] %>/<%= arch %>]'
+      if: contains(inputs.necessary_jobs, ';Build Jemalloc [<%= distribution[:name] %>/<%= arch %>];')
+      runs-on: <%= arch == 'arm64' ? 'ubuntu-24.04-arm' : 'ubuntu-24.04' %>
       environment: test
       permissions:
         id-token: write
@@ -54,7 +55,7 @@ jobs:
           run: ./internal-scripts/ci-cd/download-artifact.sh
           if: contains(inputs.necessary_jobs, ';Use locally-built Docker image <%= distribution[:name] %>;')
           env:
-            ARTIFACT_NAME: '<%= docker_image_artifact_name(distribution[:name]) %>'
+            ARTIFACT_NAME: '<%= docker_image_artifact_name(distribution[:name]) %>-<%= arch %>'
             ARTIFACT_PATH: .
             CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
         - name: Load Docker image necessary for building
@@ -73,15 +74,16 @@ jobs:
         - name: Build
           run: ./internal-scripts/ci-cd/build-jemalloc-binaries/build.sh
           env:
-            ENVIRONMENT_NAME: '<%= distribution[:name] %>'
-            CACHE_KEY_PREFIX: 'sccache/<%= distribution[:name] %>'
+            ENVIRONMENT_NAME: "<%= distribution[:name] %>"
+            CACHE_KEY_PREFIX: "sccache/<%= distribution[:name] %>/<%= arch %>"
 
         - name: Archive artifact
           run: ./internal-scripts/ci-cd/upload-artifact.sh
           env:
-            ARTIFACT_NAME: 'jemalloc-bin-<%= distribution[:name] %>'
+            ARTIFACT_NAME: 'jemalloc-bin-<%= distribution[:name] %>-<%= arch %>'
             ARTIFACT_PATH: output
             CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
+  <%- end -%>
   <%- end -%>
   <%- end %>
 
@@ -91,15 +93,16 @@ jobs:
   <%- distributions.each do |distribution| %>
   <%- ruby_package_versions_for_distro(distribution).each do |ruby_package_version| -%>
   <%- variants.each do |variant| -%>
+  <%- architectures.each do |arch| -%>
   <%- unindent(2) do %>
-    build_ruby_<%= slug(distribution[:name]) %>-<%= slug(ruby_package_version[:id]) %>-<%= slug(variant[:name]) %>:
-      name: 'Ruby [<%= distribution[:name] %>/<%= ruby_package_version[:id] %>/<%= variant[:name] %>]'
+    build_ruby_<%= slug(distribution[:name]) %>-<%= slug(ruby_package_version[:id]) %>-<%= slug(variant[:name]) %>_<%= arch %>:
+      name: 'Ruby [<%= distribution[:name] %>/<%= ruby_package_version[:id] %>/<%= variant[:name] %>/<%= arch %>]'
       <%- if variant[:name] == 'jemalloc' %>
       <%- unindent(2) do -%>
-        needs: build_jemalloc_<%= slug(distribution[:name]) %>
+        needs: build_jemalloc_<%= slug(distribution[:name]) %>_<%= arch %>
       <%- end -%>
       <%- end %>
-      runs-on: ubuntu-24.04
+      runs-on: <%= arch == 'arm64' ? 'ubuntu-24.04-arm' : 'ubuntu-24.04' %>
       environment: test
       timeout-minutes: 30
       permissions:
@@ -107,18 +110,18 @@ jobs:
         packages: read
       # Run even if a dependent job has been skipped
       if: |
-        contains(inputs.necessary_jobs, ';Build Ruby [<%= distribution[:name] %>/<%= ruby_package_version[:id] %>/<%= variant[:name] %>];')
+        contains(inputs.necessary_jobs, ';Build Ruby [<%= distribution[:name] %>/<%= ruby_package_version[:id] %>/<%= variant[:name] %>/<%= arch %>];')
         && !failure() && !cancelled()
       steps:
-        <% if variant[:name] == 'jemalloc' %>
+        <%- if variant[:name] == 'jemalloc' -%>
         <%- unindent(2) do -%>
-          - name: Check whether 'Build Jemalloc [<%= distribution[:name] %>]' did not fail
+          - name: Check whether 'Build Jemalloc [<%= distribution[:name] %>/<%= arch %>]' did not fail
             run: 'false'
             if: |
-              needs.build_jemalloc_<%= slug(distribution[:name]) %>.result == 'skipped'
-              && contains(inputs.necessary_jobs, ';Build Jemalloc [<%= distribution[:name] %>];')
+              needs.build_jemalloc_<%= slug(distribution[:name]) %>_<%= arch %>.result == 'skipped'
+              && contains(inputs.necessary_jobs, ';Build Jemalloc [<%= distribution[:name] %>/<%= arch %>];')
         <%- end -%>
-        <% end %>
+        <%- end %>
 
         - uses: actions/checkout@v5
         - uses: google-github-actions/auth@v3
@@ -150,7 +153,7 @@ jobs:
           run: ./internal-scripts/ci-cd/download-artifact.sh
           if: contains(inputs.necessary_jobs, ';Use locally-built Docker image <%= distribution[:name] %>;')
           env:
-            ARTIFACT_NAME: '<%= docker_image_artifact_name(distribution[:name]) %>'
+            ARTIFACT_NAME: '<%= docker_image_artifact_name(distribution[:name]) %>-<%= arch %>'
             ARTIFACT_PATH: .
             CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
         - name: Load Docker image necessary for building
@@ -163,7 +166,7 @@ jobs:
           run: ./internal-scripts/ci-cd/download-artifact.sh
           if: contains(inputs.necessary_jobs, ';Use locally-built Docker image utility;')
           env:
-            ARTIFACT_NAME: <%= docker_image_artifact_name('utility') %>
+            ARTIFACT_NAME: <%= docker_image_artifact_name('utility') %>-<%= arch %>
             ARTIFACT_PATH: .
             CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
         - name: Load Docker image necessary for packaging
@@ -172,16 +175,16 @@ jobs:
           env:
             TARBALL: image.tar.zst
 
-        <% if variant[:name] == 'jemalloc' %>
+        <%- if variant[:name] == 'jemalloc' -%>
         <%- unindent(2) do -%>
           - name: Fetch Jemalloc binary
             run: ./internal-scripts/ci-cd/download-artifact.sh
             env:
-              ARTIFACT_NAME: jemalloc-bin-<%= distribution[:name] %>
+              ARTIFACT_NAME: jemalloc-bin-<%= distribution[:name] %>-<%= arch %>
               ARTIFACT_PATH: .
               CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
         <%- end -%>
-        <% end %>
+        <%- end %>
 
         - name: Build binaries
           run: ./internal-scripts/ci-cd/build-ruby-packages/build-binaries.sh
@@ -189,7 +192,7 @@ jobs:
             ENVIRONMENT_NAME: "<%= distribution[:name] %>"
             VARIANT_NAME: "<%= variant[:name] %>"
             RUBY_PACKAGE_VERSION_ID: "<%= ruby_package_version[:id] %>"
-            CACHE_KEY_PREFIX: "sccache/<%= distribution[:name] %>"
+            CACHE_KEY_PREFIX: "sccache/<%= distribution[:name] %>/<%= arch %>"
 
         - name: Build package
           run: ./internal-scripts/ci-cd/build-ruby-packages/build-package.sh
@@ -200,17 +203,19 @@ jobs:
             PACKAGE_FORMAT: "<%= distribution[:package_format] %>"
             RUBY_PACKAGE_VERSION_ID: "<%= ruby_package_version[:id] %>"
             RUBY_PACKAGE_REVISION: "<%= ruby_package_version[:package_revision] %>"
+            ARCH: "<%= arch %>"
 
         - name: Archive package artifact to Google Cloud
           run: ./internal-scripts/ci-cd/upload-artifact.sh
           env:
-            ARTIFACT_NAME: "<%= ruby_package_artifact_name(ruby_package_version, distribution, variant) %>"
+            ARTIFACT_NAME: "<%= ruby_package_artifact_name(ruby_package_version, distribution, variant, arch) %>"
             ARTIFACT_PATH: output-<%= variant[:name] %>
             CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
   <%- end %>
   <%- end -%>
   <%- end -%>
   <%- end %>
+  <%- end -%>
 
 
   ### Finalize ###
@@ -220,10 +225,14 @@ jobs:
     needs:
       <%- distributions.each do |distribution| -%>
       <%- unindent(2) do %>
-        - build_jemalloc_<%= slug(distribution[:name]) %>
+        <%- architectures.each do |arch| -%>
+        - build_jemalloc_<%= slug(distribution[:name]) %>_<%= arch %>
+        <%- end -%>
         <%- ruby_package_versions_for_distro(distribution).each do |ruby_package_version| %>
         <%- variants.each do |variant| -%>
-        - build_ruby_<%= slug(distribution[:name]) %>-<%= slug(ruby_package_version[:id]) %>-<%= slug(variant[:name]) %>
+        <%- architectures.each do |arch| -%>
+        - build_ruby_<%= slug(distribution[:name]) %>-<%= slug(ruby_package_version[:id]) %>-<%= slug(variant[:name]) %>_<%= arch %>
+        <%- end -%>
         <%- end -%>
         <%- end %>
       <%- end %>
@@ -256,18 +265,22 @@ jobs:
         env:
           ARTIFACT_NAMES: |
             <%- distributions.each do |distribution| -%>
-            jemalloc-bin-<%= distribution[:name] %>
+            <%- architectures.each do |arch| -%>
+            jemalloc-bin-<%= distribution[:name] %>-<%= arch %>
+            <%- end -%>
             <%- end -%>
           ARTIFACT_PATH: artifacts
           CLEAR: true
           CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
       <%- distributions.each do |distribution| -%>
-      - name: Archive Jemalloc binary artifact [<%= distribution[:name] %>] to Github
+      <%- architectures.each do |arch| -%>
+      - name: Archive Jemalloc binary artifact [<%= distribution[:name] %>/<%= arch %>] to Github
         uses: actions/upload-artifact@v4
         with:
-          name: 'jemalloc-bin-<%= distribution[:name] %>'
-          path: 'artifacts/jemalloc-bin-<%= distribution[:name] %>'
+          name: 'jemalloc-bin-<%= distribution[:name] %>-<%= arch %>'
+          path: 'artifacts/jemalloc-bin-<%= distribution[:name] %>-<%= arch %>'
           compression-level: 0
+      <%- end -%>
       <%- end -%>
 
       - name: Download Ruby package artifacts from Google Cloud
@@ -294,9 +307,11 @@ jobs:
         if: |
           false
           <%- distributions.each do |distribution| -%>
-            || (needs.build_jemalloc_<%= slug(distribution[:name]) %>.result != 'success'
-              && (needs.build_jemalloc_<%= slug(distribution[:name]) %>.result != 'skipped'
-                || contains(inputs.necessary_jobs, ';Build Jemalloc [<%= distribution[:name] %>];')))
+          <%- architectures.each do |arch| -%>
+            || (needs.build_jemalloc_<%= slug(distribution[:name]) %>_<%= arch %>.result != 'success'
+              && (needs.build_jemalloc_<%= slug(distribution[:name]) %>_<%= arch %>.result != 'skipped'
+                || contains(inputs.necessary_jobs, ';Build Jemalloc [<%= distribution[:name] %>/<%= arch %>];')))
+          <%- end -%>
           <%- end -%>
       <%- distributions.each do |distribution| -%>
       - name: Check whether 'Ruby [<%= distribution[:name] %>]' job did not fail
@@ -305,9 +320,11 @@ jobs:
           false
           <%- ruby_package_versions_for_distro(distribution).each do |ruby_package_version| -%>
           <%- variants.each do |variant| -%>
-            || (needs.build_ruby_<%= slug(distribution[:name]) %>-<%= slug(ruby_package_version[:id]) %>-<%= slug(variant[:name]) %>.result != 'success'
-              && (needs.build_ruby_<%= slug(distribution[:name]) %>-<%= slug(ruby_package_version[:id]) %>-<%= slug(variant[:name]) %>.result != 'skipped'
+          <%- architectures.each do |arch| -%>
+            || (needs.build_ruby_<%= slug(distribution[:name]) %>-<%= slug(ruby_package_version[:id]) %>-<%= slug(variant[:name]) %>_<%= arch %>.result != 'success'
+              && (needs.build_ruby_<%= slug(distribution[:name]) %>-<%= slug(ruby_package_version[:id]) %>-<%= slug(variant[:name]) %>_<%= arch %>.result != 'skipped'
                 || contains(inputs.necessary_jobs, ';Build Ruby [<%= distribution[:name] %>/<%= ruby_package_version[:id] %>/<%= variant[:name] %>];')))
+          <%- end -%>
           <%- end -%>
           <%- end -%>
       <%- end -%>

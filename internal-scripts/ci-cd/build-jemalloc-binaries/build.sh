@@ -17,7 +17,7 @@ exec "$ROOTDIR/build-jemalloc" \
     -n "$ENVIRONMENT_NAME" \
     -s "$(pwd)/cache/jemalloc-src.tar.bz2" \
     -o "$(pwd)/output/jemalloc-bin.tar.gz" \
-    -j 2 \
+    -j $(nproc) \
     -c azure-connection-string.txt \
     -r "$CACHE_CONTAINER" \
     -d "$CACHE_KEY_PREFIX"

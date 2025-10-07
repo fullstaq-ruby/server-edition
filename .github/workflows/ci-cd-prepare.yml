@@ -129,8 +129,9 @@ jobs:
   ### Docker images ###
 
 
-  build_docker_image_centos_8:
-    name: 'Build Docker image [centos-8]'
+
+  build_docker_image_centos_8_amd64:
+    name: 'Build Docker image [centos-8/amd64]'
     runs-on: ubuntu-24.04
     permissions:
       id-token: write
@@ -156,23 +157,69 @@ jobs:
         run: ./internal-scripts/ci-cd/build-docker-images/build.sh
         env:
           IMAGE_NAME: 'ghcr.io/fullstaq-ruby/server-edition-ci-images'
-          IMAGE_TAG: 'centos-8-v3'
+          IMAGE_TAG: 'centos-8-v3-amd64'
           SOURCE_DIR: 'environments/centos-8'
+          ARCH: 'amd64'
 
       - name: Dump image
         run: ./internal-scripts/ci-cd/build-docker-images/dump-image.sh
         env:
           IMAGE_NAME: 'ghcr.io/fullstaq-ruby/server-edition-ci-images'
-          IMAGE_TAG: 'centos-8-v3'
+          IMAGE_TAG: 'centos-8-v3-amd64'
       - name: Archive artifact
         run: ./internal-scripts/ci-cd/upload-artifact.sh
         env:
-          ARTIFACT_NAME: 'docker-image-centos-8'
+          ARTIFACT_NAME: 'docker-image-centos-8-amd64'
           ARTIFACT_PATH: output
           CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
 
-  build_docker_image_debian_11:
-    name: 'Build Docker image [debian-11]'
+  build_docker_image_centos_8_arm64:
+    name: 'Build Docker image [centos-8/arm64]'
+    runs-on: ubuntu-24.04-arm
+    permissions:
+      id-token: write
+    environment: test
+    if: contains(inputs.necessary_jobs, ';Build Docker image centos-8;')
+    steps:
+      - uses: actions/checkout@v5
+      - uses: azure/login@v2
+        with:
+          tenant-id: ${{ vars.AZURE_TENANT_ID }}
+          client-id: ${{ vars.AZURE_CLIENT_ID }}
+          subscription-id: ${{ vars.AZURE_SUBSCRIPTION_ID }}
+      - uses: google-github-actions/auth@v3
+        with:
+          project_id: ${{ vars.GCLOUD_PROJECT_ID }}
+          workload_identity_provider: projects/${{ vars.GCLOUD_PROJECT_NUM }}/locations/global/workloadIdentityPools/github-ci-test/providers/github-ci-test
+      - name: Set up Cloud SDK
+        uses: google-github-actions/setup-gcloud@v3
+        with:
+          version: '>= 363.0.0'
+
+      - name: Build
+        run: ./internal-scripts/ci-cd/build-docker-images/build.sh
+        env:
+          IMAGE_NAME: 'ghcr.io/fullstaq-ruby/server-edition-ci-images'
+          IMAGE_TAG: 'centos-8-v3-arm64'
+          SOURCE_DIR: 'environments/centos-8'
+          ARCH: 'arm64'
+
+      - name: Dump image
+        run: ./internal-scripts/ci-cd/build-docker-images/dump-image.sh
+        env:
+          IMAGE_NAME: 'ghcr.io/fullstaq-ruby/server-edition-ci-images'
+          IMAGE_TAG: 'centos-8-v3-arm64'
+      - name: Archive artifact
+        run: ./internal-scripts/ci-cd/upload-artifact.sh
+        env:
+          ARTIFACT_NAME: 'docker-image-centos-8-arm64'
+          ARTIFACT_PATH: output
+          CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
+
+
+
+  build_docker_image_debian_11_amd64:
+    name: 'Build Docker image [debian-11/amd64]'
     runs-on: ubuntu-24.04
     permissions:
       id-token: write
@@ -198,23 +245,69 @@ jobs:
         run: ./internal-scripts/ci-cd/build-docker-images/build.sh
         env:
           IMAGE_NAME: 'ghcr.io/fullstaq-ruby/server-edition-ci-images'
-          IMAGE_TAG: 'debian-11-v4'
+          IMAGE_TAG: 'debian-11-v4-amd64'
           SOURCE_DIR: 'environments/debian-11'
+          ARCH: 'amd64'
 
       - name: Dump image
         run: ./internal-scripts/ci-cd/build-docker-images/dump-image.sh
         env:
           IMAGE_NAME: 'ghcr.io/fullstaq-ruby/server-edition-ci-images'
-          IMAGE_TAG: 'debian-11-v4'
+          IMAGE_TAG: 'debian-11-v4-amd64'
       - name: Archive artifact
         run: ./internal-scripts/ci-cd/upload-artifact.sh
         env:
-          ARTIFACT_NAME: 'docker-image-debian-11'
+          ARTIFACT_NAME: 'docker-image-debian-11-amd64'
           ARTIFACT_PATH: output
           CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
 
-  build_docker_image_debian_12:
-    name: 'Build Docker image [debian-12]'
+  build_docker_image_debian_11_arm64:
+    name: 'Build Docker image [debian-11/arm64]'
+    runs-on: ubuntu-24.04-arm
+    permissions:
+      id-token: write
+    environment: test
+    if: contains(inputs.necessary_jobs, ';Build Docker image debian-11;')
+    steps:
+      - uses: actions/checkout@v5
+      - uses: azure/login@v2
+        with:
+          tenant-id: ${{ vars.AZURE_TENANT_ID }}
+          client-id: ${{ vars.AZURE_CLIENT_ID }}
+          subscription-id: ${{ vars.AZURE_SUBSCRIPTION_ID }}
+      - uses: google-github-actions/auth@v3
+        with:
+          project_id: ${{ vars.GCLOUD_PROJECT_ID }}
+          workload_identity_provider: projects/${{ vars.GCLOUD_PROJECT_NUM }}/locations/global/workloadIdentityPools/github-ci-test/providers/github-ci-test
+      - name: Set up Cloud SDK
+        uses: google-github-actions/setup-gcloud@v3
+        with:
+          version: '>= 363.0.0'
+
+      - name: Build
+        run: ./internal-scripts/ci-cd/build-docker-images/build.sh
+        env:
+          IMAGE_NAME: 'ghcr.io/fullstaq-ruby/server-edition-ci-images'
+          IMAGE_TAG: 'debian-11-v4-arm64'
+          SOURCE_DIR: 'environments/debian-11'
+          ARCH: 'arm64'
+
+      - name: Dump image
+        run: ./internal-scripts/ci-cd/build-docker-images/dump-image.sh
+        env:
+          IMAGE_NAME: 'ghcr.io/fullstaq-ruby/server-edition-ci-images'
+          IMAGE_TAG: 'debian-11-v4-arm64'
+      - name: Archive artifact
+        run: ./internal-scripts/ci-cd/upload-artifact.sh
+        env:
+          ARTIFACT_NAME: 'docker-image-debian-11-arm64'
+          ARTIFACT_PATH: output
+          CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
+
+
+
+  build_docker_image_debian_12_amd64:
+    name: 'Build Docker image [debian-12/amd64]'
     runs-on: ubuntu-24.04
     permissions:
       id-token: write
@@ -240,23 +333,69 @@ jobs:
         run: ./internal-scripts/ci-cd/build-docker-images/build.sh
         env:
           IMAGE_NAME: 'ghcr.io/fullstaq-ruby/server-edition-ci-images'
-          IMAGE_TAG: 'debian-12-v3'
+          IMAGE_TAG: 'debian-12-v3-amd64'
           SOURCE_DIR: 'environments/debian-12'
+          ARCH: 'amd64'
 
       - name: Dump image
         run: ./internal-scripts/ci-cd/build-docker-images/dump-image.sh
         env:
           IMAGE_NAME: 'ghcr.io/fullstaq-ruby/server-edition-ci-images'
-          IMAGE_TAG: 'debian-12-v3'
+          IMAGE_TAG: 'debian-12-v3-amd64'
       - name: Archive artifact
         run: ./internal-scripts/ci-cd/upload-artifact.sh
         env:
-          ARTIFACT_NAME: 'docker-image-debian-12'
+          ARTIFACT_NAME: 'docker-image-debian-12-amd64'
           ARTIFACT_PATH: output
           CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
 
-  build_docker_image_debian_13:
-    name: 'Build Docker image [debian-13]'
+  build_docker_image_debian_12_arm64:
+    name: 'Build Docker image [debian-12/arm64]'
+    runs-on: ubuntu-24.04-arm
+    permissions:
+      id-token: write
+    environment: test
+    if: contains(inputs.necessary_jobs, ';Build Docker image debian-12;')
+    steps:
+      - uses: actions/checkout@v5
+      - uses: azure/login@v2
+        with:
+          tenant-id: ${{ vars.AZURE_TENANT_ID }}
+          client-id: ${{ vars.AZURE_CLIENT_ID }}
+          subscription-id: ${{ vars.AZURE_SUBSCRIPTION_ID }}
+      - uses: google-github-actions/auth@v3
+        with:
+          project_id: ${{ vars.GCLOUD_PROJECT_ID }}
+          workload_identity_provider: projects/${{ vars.GCLOUD_PROJECT_NUM }}/locations/global/workloadIdentityPools/github-ci-test/providers/github-ci-test
+      - name: Set up Cloud SDK
+        uses: google-github-actions/setup-gcloud@v3
+        with:
+          version: '>= 363.0.0'
+
+      - name: Build
+        run: ./internal-scripts/ci-cd/build-docker-images/build.sh
+        env:
+          IMAGE_NAME: 'ghcr.io/fullstaq-ruby/server-edition-ci-images'
+          IMAGE_TAG: 'debian-12-v3-arm64'
+          SOURCE_DIR: 'environments/debian-12'
+          ARCH: 'arm64'
+
+      - name: Dump image
+        run: ./internal-scripts/ci-cd/build-docker-images/dump-image.sh
+        env:
+          IMAGE_NAME: 'ghcr.io/fullstaq-ruby/server-edition-ci-images'
+          IMAGE_TAG: 'debian-12-v3-arm64'
+      - name: Archive artifact
+        run: ./internal-scripts/ci-cd/upload-artifact.sh
+        env:
+          ARTIFACT_NAME: 'docker-image-debian-12-arm64'
+          ARTIFACT_PATH: output
+          CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
+
+
+
+  build_docker_image_debian_13_amd64:
+    name: 'Build Docker image [debian-13/amd64]'
     runs-on: ubuntu-24.04
     permissions:
       id-token: write
@@ -282,23 +421,69 @@ jobs:
         run: ./internal-scripts/ci-cd/build-docker-images/build.sh
         env:
           IMAGE_NAME: 'ghcr.io/fullstaq-ruby/server-edition-ci-images'
-          IMAGE_TAG: 'debian-13-v2'
+          IMAGE_TAG: 'debian-13-v2-amd64'
           SOURCE_DIR: 'environments/debian-13'
+          ARCH: 'amd64'
 
       - name: Dump image
         run: ./internal-scripts/ci-cd/build-docker-images/dump-image.sh
         env:
           IMAGE_NAME: 'ghcr.io/fullstaq-ruby/server-edition-ci-images'
-          IMAGE_TAG: 'debian-13-v2'
+          IMAGE_TAG: 'debian-13-v2-amd64'
       - name: Archive artifact
         run: ./internal-scripts/ci-cd/upload-artifact.sh
         env:
-          ARTIFACT_NAME: 'docker-image-debian-13'
+          ARTIFACT_NAME: 'docker-image-debian-13-amd64'
           ARTIFACT_PATH: output
           CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
 
-  build_docker_image_el_9:
-    name: 'Build Docker image [el-9]'
+  build_docker_image_debian_13_arm64:
+    name: 'Build Docker image [debian-13/arm64]'
+    runs-on: ubuntu-24.04-arm
+    permissions:
+      id-token: write
+    environment: test
+    if: contains(inputs.necessary_jobs, ';Build Docker image debian-13;')
+    steps:
+      - uses: actions/checkout@v5
+      - uses: azure/login@v2
+        with:
+          tenant-id: ${{ vars.AZURE_TENANT_ID }}
+          client-id: ${{ vars.AZURE_CLIENT_ID }}
+          subscription-id: ${{ vars.AZURE_SUBSCRIPTION_ID }}
+      - uses: google-github-actions/auth@v3
+        with:
+          project_id: ${{ vars.GCLOUD_PROJECT_ID }}
+          workload_identity_provider: projects/${{ vars.GCLOUD_PROJECT_NUM }}/locations/global/workloadIdentityPools/github-ci-test/providers/github-ci-test
+      - name: Set up Cloud SDK
+        uses: google-github-actions/setup-gcloud@v3
+        with:
+          version: '>= 363.0.0'
+
+      - name: Build
+        run: ./internal-scripts/ci-cd/build-docker-images/build.sh
+        env:
+          IMAGE_NAME: 'ghcr.io/fullstaq-ruby/server-edition-ci-images'
+          IMAGE_TAG: 'debian-13-v2-arm64'
+          SOURCE_DIR: 'environments/debian-13'
+          ARCH: 'arm64'
+
+      - name: Dump image
+        run: ./internal-scripts/ci-cd/build-docker-images/dump-image.sh
+        env:
+          IMAGE_NAME: 'ghcr.io/fullstaq-ruby/server-edition-ci-images'
+          IMAGE_TAG: 'debian-13-v2-arm64'
+      - name: Archive artifact
+        run: ./internal-scripts/ci-cd/upload-artifact.sh
+        env:
+          ARTIFACT_NAME: 'docker-image-debian-13-arm64'
+          ARTIFACT_PATH: output
+          CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
+
+
+
+  build_docker_image_el_9_amd64:
+    name: 'Build Docker image [el-9/amd64]'
     runs-on: ubuntu-24.04
     permissions:
       id-token: write
@@ -324,23 +509,69 @@ jobs:
         run: ./internal-scripts/ci-cd/build-docker-images/build.sh
         env:
           IMAGE_NAME: 'ghcr.io/fullstaq-ruby/server-edition-ci-images'
-          IMAGE_TAG: 'el-9-v2'
+          IMAGE_TAG: 'el-9-v2-amd64'
           SOURCE_DIR: 'environments/el-9'
+          ARCH: 'amd64'
 
       - name: Dump image
         run: ./internal-scripts/ci-cd/build-docker-images/dump-image.sh
         env:
           IMAGE_NAME: 'ghcr.io/fullstaq-ruby/server-edition-ci-images'
-          IMAGE_TAG: 'el-9-v2'
+          IMAGE_TAG: 'el-9-v2-amd64'
       - name: Archive artifact
         run: ./internal-scripts/ci-cd/upload-artifact.sh
         env:
-          ARTIFACT_NAME: 'docker-image-el-9'
+          ARTIFACT_NAME: 'docker-image-el-9-amd64'
           ARTIFACT_PATH: output
           CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
 
-  build_docker_image_ubuntu_22_04:
-    name: 'Build Docker image [ubuntu-22.04]'
+  build_docker_image_el_9_arm64:
+    name: 'Build Docker image [el-9/arm64]'
+    runs-on: ubuntu-24.04-arm
+    permissions:
+      id-token: write
+    environment: test
+    if: contains(inputs.necessary_jobs, ';Build Docker image el-9;')
+    steps:
+      - uses: actions/checkout@v5
+      - uses: azure/login@v2
+        with:
+          tenant-id: ${{ vars.AZURE_TENANT_ID }}
+          client-id: ${{ vars.AZURE_CLIENT_ID }}
+          subscription-id: ${{ vars.AZURE_SUBSCRIPTION_ID }}
+      - uses: google-github-actions/auth@v3
+        with:
+          project_id: ${{ vars.GCLOUD_PROJECT_ID }}
+          workload_identity_provider: projects/${{ vars.GCLOUD_PROJECT_NUM }}/locations/global/workloadIdentityPools/github-ci-test/providers/github-ci-test
+      - name: Set up Cloud SDK
+        uses: google-github-actions/setup-gcloud@v3
+        with:
+          version: '>= 363.0.0'
+
+      - name: Build
+        run: ./internal-scripts/ci-cd/build-docker-images/build.sh
+        env:
+          IMAGE_NAME: 'ghcr.io/fullstaq-ruby/server-edition-ci-images'
+          IMAGE_TAG: 'el-9-v2-arm64'
+          SOURCE_DIR: 'environments/el-9'
+          ARCH: 'arm64'
+
+      - name: Dump image
+        run: ./internal-scripts/ci-cd/build-docker-images/dump-image.sh
+        env:
+          IMAGE_NAME: 'ghcr.io/fullstaq-ruby/server-edition-ci-images'
+          IMAGE_TAG: 'el-9-v2-arm64'
+      - name: Archive artifact
+        run: ./internal-scripts/ci-cd/upload-artifact.sh
+        env:
+          ARTIFACT_NAME: 'docker-image-el-9-arm64'
+          ARTIFACT_PATH: output
+          CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
+
+
+
+  build_docker_image_ubuntu_22_04_amd64:
+    name: 'Build Docker image [ubuntu-22.04/amd64]'
     runs-on: ubuntu-24.04
     permissions:
       id-token: write
@@ -366,23 +597,69 @@ jobs:
         run: ./internal-scripts/ci-cd/build-docker-images/build.sh
         env:
           IMAGE_NAME: 'ghcr.io/fullstaq-ruby/server-edition-ci-images'
-          IMAGE_TAG: 'ubuntu-22.04-v4'
+          IMAGE_TAG: 'ubuntu-22.04-v4-amd64'
           SOURCE_DIR: 'environments/ubuntu-22.04'
+          ARCH: 'amd64'
 
       - name: Dump image
         run: ./internal-scripts/ci-cd/build-docker-images/dump-image.sh
         env:
           IMAGE_NAME: 'ghcr.io/fullstaq-ruby/server-edition-ci-images'
-          IMAGE_TAG: 'ubuntu-22.04-v4'
+          IMAGE_TAG: 'ubuntu-22.04-v4-amd64'
       - name: Archive artifact
         run: ./internal-scripts/ci-cd/upload-artifact.sh
         env:
-          ARTIFACT_NAME: 'docker-image-ubuntu-22.04'
+          ARTIFACT_NAME: 'docker-image-ubuntu-22.04-amd64'
           ARTIFACT_PATH: output
           CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
 
-  build_docker_image_ubuntu_24_04:
-    name: 'Build Docker image [ubuntu-24.04]'
+  build_docker_image_ubuntu_22_04_arm64:
+    name: 'Build Docker image [ubuntu-22.04/arm64]'
+    runs-on: ubuntu-24.04-arm
+    permissions:
+      id-token: write
+    environment: test
+    if: contains(inputs.necessary_jobs, ';Build Docker image ubuntu-22.04;')
+    steps:
+      - uses: actions/checkout@v5
+      - uses: azure/login@v2
+        with:
+          tenant-id: ${{ vars.AZURE_TENANT_ID }}
+          client-id: ${{ vars.AZURE_CLIENT_ID }}
+          subscription-id: ${{ vars.AZURE_SUBSCRIPTION_ID }}
+      - uses: google-github-actions/auth@v3
+        with:
+          project_id: ${{ vars.GCLOUD_PROJECT_ID }}
+          workload_identity_provider: projects/${{ vars.GCLOUD_PROJECT_NUM }}/locations/global/workloadIdentityPools/github-ci-test/providers/github-ci-test
+      - name: Set up Cloud SDK
+        uses: google-github-actions/setup-gcloud@v3
+        with:
+          version: '>= 363.0.0'
+
+      - name: Build
+        run: ./internal-scripts/ci-cd/build-docker-images/build.sh
+        env:
+          IMAGE_NAME: 'ghcr.io/fullstaq-ruby/server-edition-ci-images'
+          IMAGE_TAG: 'ubuntu-22.04-v4-arm64'
+          SOURCE_DIR: 'environments/ubuntu-22.04'
+          ARCH: 'arm64'
+
+      - name: Dump image
+        run: ./internal-scripts/ci-cd/build-docker-images/dump-image.sh
+        env:
+          IMAGE_NAME: 'ghcr.io/fullstaq-ruby/server-edition-ci-images'
+          IMAGE_TAG: 'ubuntu-22.04-v4-arm64'
+      - name: Archive artifact
+        run: ./internal-scripts/ci-cd/upload-artifact.sh
+        env:
+          ARTIFACT_NAME: 'docker-image-ubuntu-22.04-arm64'
+          ARTIFACT_PATH: output
+          CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
+
+
+
+  build_docker_image_ubuntu_24_04_amd64:
+    name: 'Build Docker image [ubuntu-24.04/amd64]'
     runs-on: ubuntu-24.04
     permissions:
       id-token: write
@@ -408,23 +685,69 @@ jobs:
         run: ./internal-scripts/ci-cd/build-docker-images/build.sh
         env:
           IMAGE_NAME: 'ghcr.io/fullstaq-ruby/server-edition-ci-images'
-          IMAGE_TAG: 'ubuntu-24.04-v2'
+          IMAGE_TAG: 'ubuntu-24.04-v2-amd64'
           SOURCE_DIR: 'environments/ubuntu-24.04'
+          ARCH: 'amd64'
 
       - name: Dump image
         run: ./internal-scripts/ci-cd/build-docker-images/dump-image.sh
         env:
           IMAGE_NAME: 'ghcr.io/fullstaq-ruby/server-edition-ci-images'
-          IMAGE_TAG: 'ubuntu-24.04-v2'
+          IMAGE_TAG: 'ubuntu-24.04-v2-amd64'
       - name: Archive artifact
         run: ./internal-scripts/ci-cd/upload-artifact.sh
         env:
-          ARTIFACT_NAME: 'docker-image-ubuntu-24.04'
+          ARTIFACT_NAME: 'docker-image-ubuntu-24.04-amd64'
           ARTIFACT_PATH: output
           CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
 
-  build_docker_image_utility:
-    name: 'Build Docker image [utility]'
+  build_docker_image_ubuntu_24_04_arm64:
+    name: 'Build Docker image [ubuntu-24.04/arm64]'
+    runs-on: ubuntu-24.04-arm
+    permissions:
+      id-token: write
+    environment: test
+    if: contains(inputs.necessary_jobs, ';Build Docker image ubuntu-24.04;')
+    steps:
+      - uses: actions/checkout@v5
+      - uses: azure/login@v2
+        with:
+          tenant-id: ${{ vars.AZURE_TENANT_ID }}
+          client-id: ${{ vars.AZURE_CLIENT_ID }}
+          subscription-id: ${{ vars.AZURE_SUBSCRIPTION_ID }}
+      - uses: google-github-actions/auth@v3
+        with:
+          project_id: ${{ vars.GCLOUD_PROJECT_ID }}
+          workload_identity_provider: projects/${{ vars.GCLOUD_PROJECT_NUM }}/locations/global/workloadIdentityPools/github-ci-test/providers/github-ci-test
+      - name: Set up Cloud SDK
+        uses: google-github-actions/setup-gcloud@v3
+        with:
+          version: '>= 363.0.0'
+
+      - name: Build
+        run: ./internal-scripts/ci-cd/build-docker-images/build.sh
+        env:
+          IMAGE_NAME: 'ghcr.io/fullstaq-ruby/server-edition-ci-images'
+          IMAGE_TAG: 'ubuntu-24.04-v2-arm64'
+          SOURCE_DIR: 'environments/ubuntu-24.04'
+          ARCH: 'arm64'
+
+      - name: Dump image
+        run: ./internal-scripts/ci-cd/build-docker-images/dump-image.sh
+        env:
+          IMAGE_NAME: 'ghcr.io/fullstaq-ruby/server-edition-ci-images'
+          IMAGE_TAG: 'ubuntu-24.04-v2-arm64'
+      - name: Archive artifact
+        run: ./internal-scripts/ci-cd/upload-artifact.sh
+        env:
+          ARTIFACT_NAME: 'docker-image-ubuntu-24.04-arm64'
+          ARTIFACT_PATH: output
+          CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
+
+
+
+  build_docker_image_utility_amd64:
+    name: 'Build Docker image [utility/amd64]'
     runs-on: ubuntu-24.04
     permissions:
       id-token: write
@@ -450,20 +773,65 @@ jobs:
         run: ./internal-scripts/ci-cd/build-docker-images/build.sh
         env:
           IMAGE_NAME: 'ghcr.io/fullstaq-ruby/server-edition-ci-images'
-          IMAGE_TAG: 'utility-v3'
+          IMAGE_TAG: 'utility-v3-amd64'
           SOURCE_DIR: 'environments/utility'
+          ARCH: 'amd64'
 
       - name: Dump image
         run: ./internal-scripts/ci-cd/build-docker-images/dump-image.sh
         env:
           IMAGE_NAME: 'ghcr.io/fullstaq-ruby/server-edition-ci-images'
-          IMAGE_TAG: 'utility-v3'
+          IMAGE_TAG: 'utility-v3-amd64'
       - name: Archive artifact
         run: ./internal-scripts/ci-cd/upload-artifact.sh
         env:
-          ARTIFACT_NAME: 'docker-image-utility'
+          ARTIFACT_NAME: 'docker-image-utility-amd64'
           ARTIFACT_PATH: output
           CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
+
+  build_docker_image_utility_arm64:
+    name: 'Build Docker image [utility/arm64]'
+    runs-on: ubuntu-24.04-arm
+    permissions:
+      id-token: write
+    environment: test
+    if: contains(inputs.necessary_jobs, ';Build Docker image utility;')
+    steps:
+      - uses: actions/checkout@v5
+      - uses: azure/login@v2
+        with:
+          tenant-id: ${{ vars.AZURE_TENANT_ID }}
+          client-id: ${{ vars.AZURE_CLIENT_ID }}
+          subscription-id: ${{ vars.AZURE_SUBSCRIPTION_ID }}
+      - uses: google-github-actions/auth@v3
+        with:
+          project_id: ${{ vars.GCLOUD_PROJECT_ID }}
+          workload_identity_provider: projects/${{ vars.GCLOUD_PROJECT_NUM }}/locations/global/workloadIdentityPools/github-ci-test/providers/github-ci-test
+      - name: Set up Cloud SDK
+        uses: google-github-actions/setup-gcloud@v3
+        with:
+          version: '>= 363.0.0'
+
+      - name: Build
+        run: ./internal-scripts/ci-cd/build-docker-images/build.sh
+        env:
+          IMAGE_NAME: 'ghcr.io/fullstaq-ruby/server-edition-ci-images'
+          IMAGE_TAG: 'utility-v3-arm64'
+          SOURCE_DIR: 'environments/utility'
+          ARCH: 'arm64'
+
+      - name: Dump image
+        run: ./internal-scripts/ci-cd/build-docker-images/dump-image.sh
+        env:
+          IMAGE_NAME: 'ghcr.io/fullstaq-ruby/server-edition-ci-images'
+          IMAGE_TAG: 'utility-v3-arm64'
+      - name: Archive artifact
+        run: ./internal-scripts/ci-cd/upload-artifact.sh
+        env:
+          ARTIFACT_NAME: 'docker-image-utility-arm64'
+          ARTIFACT_PATH: output
+          CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
+
 
 
 
@@ -657,7 +1025,7 @@ jobs:
       id-token: write
       packages: read
     needs:
-      - build_docker_image_utility
+      - build_docker_image_utility_amd64
     environment: test
     # Run even if a dependent job has been skipped
     if: |
@@ -667,7 +1035,7 @@ jobs:
       - name: Check whether dependent jobs did not fail
         run: 'false'
         if: |
-          needs.build_docker_image_utility.result == 'skipped'
+          needs.build_docker_image_utility_amd64.result == 'skipped'
           && contains(inputs.necessary_jobs.outputs.necessary_jobs, ';Build Docker image utility;')
 
       - uses: actions/checkout@v5
@@ -726,7 +1094,7 @@ jobs:
       id-token: write
       packages: read
     needs:
-      - build_docker_image_utility
+      - build_docker_image_utility_amd64
     environment: test
     # Run even if a dependent job has been skipped
     if: |
@@ -736,7 +1104,7 @@ jobs:
       - name: Check whether dependent jobs did not fail
         run: 'false'
         if: |
-          needs.build_docker_image_utility.result == 'skipped'
+          needs.build_docker_image_utility_amd64.result == 'skipped'
           && contains(inputs.necessary_jobs, ';Build Docker image utility;')
 
       - uses: actions/checkout@v5
@@ -798,7 +1166,7 @@ jobs:
       packages: read
     needs:
       - download_rbenv_source
-      - build_docker_image_utility
+      - build_docker_image_utility_amd64
     environment: test
     # Run even if a dependent job has been skipped
     if: |
@@ -812,7 +1180,7 @@ jobs:
             needs.download_rbenv_source.result == 'skipped'
             && contains(inputs.necessary_jobs, ';Download Rbenv source;')
           ) || (
-            needs.build_docker_image_utility.result == 'skipped'
+            needs.build_docker_image_utility_amd64.result == 'skipped'
             && contains(inputs.necessary_jobs, ';Build Docker image utility;')
           )
 
@@ -880,7 +1248,7 @@ jobs:
       packages: read
     needs:
       - download_rbenv_source
-      - build_docker_image_utility
+      - build_docker_image_utility_amd64
     environment: test
     # Run even if a dependent job has been skipped
     if: |
@@ -894,7 +1262,7 @@ jobs:
             needs.download_rbenv_source.result == 'skipped'
             && contains(inputs.necessary_jobs, ';Download Rbenv source;')
           ) || (
-            needs.build_docker_image_utility.result == 'skipped'
+            needs.build_docker_image_utility_amd64.result == 'skipped'
             && contains(inputs.necessary_jobs, ';Build Docker image utility;')
           )
 
@@ -964,14 +1332,22 @@ jobs:
       - check_version_numbers_need_bumping
       - bundle_install
       - download_rbenv_source
-      - build_docker_image_centos_8
-      - build_docker_image_debian_11
-      - build_docker_image_debian_12
-      - build_docker_image_debian_13
-      - build_docker_image_el_9
-      - build_docker_image_ubuntu_22_04
-      - build_docker_image_ubuntu_24_04
-      - build_docker_image_utility
+      - build_docker_image_centos_8_amd64
+      - build_docker_image_centos_8_arm64
+      - build_docker_image_debian_11_amd64
+      - build_docker_image_debian_11_arm64
+      - build_docker_image_debian_12_amd64
+      - build_docker_image_debian_12_arm64
+      - build_docker_image_debian_13_amd64
+      - build_docker_image_debian_13_arm64
+      - build_docker_image_el_9_amd64
+      - build_docker_image_el_9_arm64
+      - build_docker_image_ubuntu_22_04_amd64
+      - build_docker_image_ubuntu_22_04_arm64
+      - build_docker_image_ubuntu_24_04_amd64
+      - build_docker_image_ubuntu_24_04_arm64
+      - build_docker_image_utility_amd64
+      - build_docker_image_utility_arm64
       - download_ruby_source_3_4_7
       - download_ruby_source_3_3_9
       - download_ruby_source_3_2_9
@@ -1280,30 +1656,54 @@ jobs:
         run: 'false'
         if: |
           false
-            || (needs.build_docker_image_centos_8.result != 'success'
-              && (needs.build_docker_image_centos_8.result != 'skipped'
-                || contains(inputs.necessary_jobs, ';Build Docker image centos-8;')))
-            || (needs.build_docker_image_debian_11.result != 'success'
-              && (needs.build_docker_image_debian_11.result != 'skipped'
-                || contains(inputs.necessary_jobs, ';Build Docker image debian-11;')))
-            || (needs.build_docker_image_debian_12.result != 'success'
-              && (needs.build_docker_image_debian_12.result != 'skipped'
-                || contains(inputs.necessary_jobs, ';Build Docker image debian-12;')))
-            || (needs.build_docker_image_debian_13.result != 'success'
-              && (needs.build_docker_image_debian_13.result != 'skipped'
-                || contains(inputs.necessary_jobs, ';Build Docker image debian-13;')))
-            || (needs.build_docker_image_el_9.result != 'success'
-              && (needs.build_docker_image_el_9.result != 'skipped'
-                || contains(inputs.necessary_jobs, ';Build Docker image el-9;')))
-            || (needs.build_docker_image_ubuntu_22_04.result != 'success'
-              && (needs.build_docker_image_ubuntu_22_04.result != 'skipped'
-                || contains(inputs.necessary_jobs, ';Build Docker image ubuntu-22.04;')))
-            || (needs.build_docker_image_ubuntu_24_04.result != 'success'
-              && (needs.build_docker_image_ubuntu_24_04.result != 'skipped'
-                || contains(inputs.necessary_jobs, ';Build Docker image ubuntu-24.04;')))
-            || (needs.build_docker_image_utility.result != 'success'
-              && (needs.build_docker_image_utility.result != 'skipped'
-                || contains(inputs.necessary_jobs, ';Build Docker image utility;')))
+            || (needs.build_docker_image_centos_8_amd64.result != 'success'
+              && (needs.build_docker_image_centos_8_amd64.result != 'skipped'
+                || contains(inputs.necessary_jobs, ';Build Docker image centos-8 amd64;')))
+            || (needs.build_docker_image_centos_8_arm64.result != 'success'
+              && (needs.build_docker_image_centos_8_arm64.result != 'skipped'
+                || contains(inputs.necessary_jobs, ';Build Docker image centos-8 arm64;')))
+            || (needs.build_docker_image_debian_11_amd64.result != 'success'
+              && (needs.build_docker_image_debian_11_amd64.result != 'skipped'
+                || contains(inputs.necessary_jobs, ';Build Docker image debian-11 amd64;')))
+            || (needs.build_docker_image_debian_11_arm64.result != 'success'
+              && (needs.build_docker_image_debian_11_arm64.result != 'skipped'
+                || contains(inputs.necessary_jobs, ';Build Docker image debian-11 arm64;')))
+            || (needs.build_docker_image_debian_12_amd64.result != 'success'
+              && (needs.build_docker_image_debian_12_amd64.result != 'skipped'
+                || contains(inputs.necessary_jobs, ';Build Docker image debian-12 amd64;')))
+            || (needs.build_docker_image_debian_12_arm64.result != 'success'
+              && (needs.build_docker_image_debian_12_arm64.result != 'skipped'
+                || contains(inputs.necessary_jobs, ';Build Docker image debian-12 arm64;')))
+            || (needs.build_docker_image_debian_13_amd64.result != 'success'
+              && (needs.build_docker_image_debian_13_amd64.result != 'skipped'
+                || contains(inputs.necessary_jobs, ';Build Docker image debian-13 amd64;')))
+            || (needs.build_docker_image_debian_13_arm64.result != 'success'
+              && (needs.build_docker_image_debian_13_arm64.result != 'skipped'
+                || contains(inputs.necessary_jobs, ';Build Docker image debian-13 arm64;')))
+            || (needs.build_docker_image_el_9_amd64.result != 'success'
+              && (needs.build_docker_image_el_9_amd64.result != 'skipped'
+                || contains(inputs.necessary_jobs, ';Build Docker image el-9 amd64;')))
+            || (needs.build_docker_image_el_9_arm64.result != 'success'
+              && (needs.build_docker_image_el_9_arm64.result != 'skipped'
+                || contains(inputs.necessary_jobs, ';Build Docker image el-9 arm64;')))
+            || (needs.build_docker_image_ubuntu_22_04_amd64.result != 'success'
+              && (needs.build_docker_image_ubuntu_22_04_amd64.result != 'skipped'
+                || contains(inputs.necessary_jobs, ';Build Docker image ubuntu-22.04 amd64;')))
+            || (needs.build_docker_image_ubuntu_22_04_arm64.result != 'success'
+              && (needs.build_docker_image_ubuntu_22_04_arm64.result != 'skipped'
+                || contains(inputs.necessary_jobs, ';Build Docker image ubuntu-22.04 arm64;')))
+            || (needs.build_docker_image_ubuntu_24_04_amd64.result != 'success'
+              && (needs.build_docker_image_ubuntu_24_04_amd64.result != 'skipped'
+                || contains(inputs.necessary_jobs, ';Build Docker image ubuntu-24.04 amd64;')))
+            || (needs.build_docker_image_ubuntu_24_04_arm64.result != 'success'
+              && (needs.build_docker_image_ubuntu_24_04_arm64.result != 'skipped'
+                || contains(inputs.necessary_jobs, ';Build Docker image ubuntu-24.04 arm64;')))
+            || (needs.build_docker_image_utility_amd64.result != 'success'
+              && (needs.build_docker_image_utility_amd64.result != 'skipped'
+                || contains(inputs.necessary_jobs, ';Build Docker image utility amd64;')))
+            || (needs.build_docker_image_utility_arm64.result != 'success'
+              && (needs.build_docker_image_utility_arm64.result != 'skipped'
+                || contains(inputs.necessary_jobs, ';Build Docker image utility arm64;')))
       - name: Check whether 'Download Ruby source' did not fail
         run: 'false'
         if: |

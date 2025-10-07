@@ -28,7 +28,7 @@ exec "$ROOTDIR/build-ruby" \
     -v "$RUBY_PACKAGE_VERSION_ID" \
     -o "$(pwd)/ruby-bin-$VARIANT_NAME.tar.gz" \
     "${VARIANT_ARGS[@]}" \
-    -j 2 \
+    -j $(nproc) \
     -c azure-connection-string.txt \
     -r "$CACHE_CONTAINER" \
     -d "$CACHE_KEY_PREFIX"

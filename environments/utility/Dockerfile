@@ -1,4 +1,6 @@
 FROM ubuntu:22.04
+ARG TARGETARCH
+ENV TARGETARCH=${TARGETARCH}
 
 # Used to link container image to the repo:
 # https://docs.github.com/en/free-pro-team@latest/packages/managing-container-images-with-github-container-registry/connecting-a-repository-to-a-container-image#connecting-a-repository-to-a-container-image-on-the-command-line
@@ -18,8 +20,13 @@ RUN set -x && \
     apt clean && \
     rm -rf /tmp/* /var/tmp/* /var/lib/apt/lists/*
 
-RUN set -x && \
-    curl -fsSLo /sbin/matchhostfsowner.gz https://github.com/FooBarWidget/matchhostfsowner/releases/download/v0.9.8/matchhostfsowner-0.9.8-x86_64-linux.gz && \
+RUN set -x; \
+    case "$TARGETARCH" in \
+        amd64) MHF_ARCH=x86_64 ;; \
+        arm64) MHF_ARCH=aarch64 ;; \
+        *) echo "Unsupported TARGETARCH=$TARGETARCH" >&2; exit 1 ;; \
+    esac; \
+    curl -fsSLo /sbin/matchhostfsowner.gz "https://github.com/FooBarWidget/matchhostfsowner/releases/download/v0.9.8/matchhostfsowner-0.9.8-${MHF_ARCH}-linux.gz" && \
     gunzip /sbin/matchhostfsowner.gz && \
     chmod +x,+s /sbin/matchhostfsowner && \
     mkdir /etc/matchhostfsowner && \

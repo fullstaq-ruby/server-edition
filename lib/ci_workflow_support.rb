@@ -279,12 +279,12 @@ module CiWorkflowSupport
     "https://cache.ruby-lang.org/pub/ruby/#{minor_version}/#{ruby_source_basename(source_version)}"
   end
 
-  def ruby_package_basename(package_version, distro, variant)
+  def ruby_package_basename(package_version, distro, variant, arch)
     case distro[:package_format]
     when :DEB
-      "fullstaq-ruby-#{package_version[:id]}#{variant[:package_suffix]}_#{package_version[:package_revision]}-#{distro[:name]}_#{deb_arch}.deb"
+      "fullstaq-ruby-#{package_version[:id]}#{variant[:package_suffix]}_#{package_version[:package_revision]}-#{distro[:name]}_#{deb_arch_for(arch)}.deb"
     when :RPM
-      "fullstaq-ruby-#{package_version[:id]}#{variant[:package_suffix]}-rev#{package_version[:package_revision]}-#{sanitize_distro_name_for_rpm(distro[:name])}.#{rpm_arch}.rpm"
+      "fullstaq-ruby-#{package_version[:id]}#{variant[:package_suffix]}-rev#{package_version[:package_revision]}-#{sanitize_distro_name_for_rpm(distro[:name])}.#{rpm_arch_for(arch)}.rpm"
     else
       raise "Unsupported package format: #{distro[:package_format].inspect}"
     end
@@ -294,8 +294,8 @@ module CiWorkflowSupport
     "ruby-src-#{ruby_version}"
   end
 
-  def ruby_package_artifact_name(ruby_package_version, distribution, variant)
-    "ruby-pkg_#{ruby_package_version[:id]}_#{distribution[:name]}_#{variant[:name]}"
+  def ruby_package_artifact_name(ruby_package_version, distribution, variant, arch)
+    "ruby-pkg_#{ruby_package_version[:id]}_#{distribution[:name]}_#{variant[:name]}_#{arch}"
   end
 
   def ruby_package_artifact_names
@@ -303,11 +303,47 @@ module CiWorkflowSupport
     distributions.each do |distribution|
       ruby_package_versions_for_distro(distribution).each do |ruby_package_version|
         variants.each do |variant|
-          result << ruby_package_artifact_name(ruby_package_version, distribution, variant)
+          architectures.each do |arch|
+            result << ruby_package_artifact_name(ruby_package_version, distribution, variant, arch)
+          end
         end
       end
     end
     result
+  end
+
+  # List of architectures to build for. Supported values currently: amd64, arm64.
+  def architectures
+    @architectures ||= begin
+      list = config.dig(:architectures)
+      if list.nil?
+        ['amd64']
+      else
+        list.map(&:to_s)
+      end
+    end
+  end
+
+  def deb_arch_for(arch)
+    case arch
+    when 'amd64'
+      'amd64'
+    when 'arm64'
+      'arm64'
+    else
+      arch
+    end
+  end
+
+  def rpm_arch_for(arch)
+    case arch
+    when 'amd64'
+      'x86_64'
+    when 'arm64'
+      'aarch64'
+    else
+      arch
+    end
   end
 
 private

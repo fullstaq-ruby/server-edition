@@ -13,5 +13,5 @@ require_envvar IMAGE_TAG
 
 set -x
 mkdir output
-docker save "$IMAGE_NAME:$IMAGE_TAG" | zstd -o output/image.tar.zst
+docker save "$IMAGE_NAME:$IMAGE_TAG" | zstd -T0 -o output/image.tar.zst
 set +x

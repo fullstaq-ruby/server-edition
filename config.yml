@@ -110,6 +110,11 @@ distributions: all
 #   - ubuntu-22.04
 #   - ubuntu-24.04
 
+## Architectures to build for. Defaults to just amd64 if omitted.
+architectures:
+  - amd64
+  - arm64
+
 ## (Optional)
 ## Excludes certain Ruby minor versions from certain distributions.
 ## Useful if certain older Ruby versions don't compile on newer distributions or viceversa.

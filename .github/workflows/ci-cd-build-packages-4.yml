@@ -30,9 +30,10 @@ jobs:
   ### Jemalloc ###
 
 
-  build_jemalloc_debian_13:
-    name: 'Jemalloc [debian-13]'
-    if: contains(inputs.necessary_jobs, ';Build Jemalloc [debian-13];')
+
+  build_jemalloc_debian_13_amd64:
+    name: 'Jemalloc [debian-13/amd64]'
+    if: contains(inputs.necessary_jobs, ';Build Jemalloc [debian-13/amd64];')
     runs-on: ubuntu-24.04
     environment: test
     permissions:
@@ -63,7 +64,7 @@ jobs:
         run: ./internal-scripts/ci-cd/download-artifact.sh
         if: contains(inputs.necessary_jobs, ';Use locally-built Docker image debian-13;')
         env:
-          ARTIFACT_NAME: 'docker-image-debian-13'
+          ARTIFACT_NAME: 'docker-image-debian-13-amd64'
           ARTIFACT_PATH: .
           CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
       - name: Load Docker image necessary for building
@@ -82,13 +83,74 @@ jobs:
       - name: Build
         run: ./internal-scripts/ci-cd/build-jemalloc-binaries/build.sh
         env:
-          ENVIRONMENT_NAME: 'debian-13'
-          CACHE_KEY_PREFIX: 'sccache/debian-13'
+          ENVIRONMENT_NAME: "debian-13"
+          CACHE_KEY_PREFIX: "sccache/debian-13/amd64"
 
       - name: Archive artifact
         run: ./internal-scripts/ci-cd/upload-artifact.sh
         env:
-          ARTIFACT_NAME: 'jemalloc-bin-debian-13'
+          ARTIFACT_NAME: 'jemalloc-bin-debian-13-amd64'
+          ARTIFACT_PATH: output
+          CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
+  build_jemalloc_debian_13_arm64:
+    name: 'Jemalloc [debian-13/arm64]'
+    if: contains(inputs.necessary_jobs, ';Build Jemalloc [debian-13/arm64];')
+    runs-on: ubuntu-24.04-arm
+    environment: test
+    permissions:
+      id-token: write
+      packages: read
+    steps:
+      - uses: actions/checkout@v5
+      - uses: google-github-actions/auth@v3
+        with:
+          project_id: ${{ vars.GCLOUD_PROJECT_ID }}
+          workload_identity_provider: projects/${{ vars.GCLOUD_PROJECT_NUM }}/locations/global/workloadIdentityPools/github-ci-test/providers/github-ci-test
+      - name: Set up Cloud SDK
+        uses: google-github-actions/setup-gcloud@v3
+        with:
+          version: '>= 363.0.0'
+      - name: Login to Github Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Dump Azure connection string
+        run: echo -n "$CONNECTION_STRING" > azure-connection-string.txt
+        env:
+          CONNECTION_STRING: ${{ secrets.AZURE_CI2_STORAGE_CONNECTION_STRING }}
+
+      - name: Download Docker image necessary for building
+        run: ./internal-scripts/ci-cd/download-artifact.sh
+        if: contains(inputs.necessary_jobs, ';Use locally-built Docker image debian-13;')
+        env:
+          ARTIFACT_NAME: 'docker-image-debian-13-arm64'
+          ARTIFACT_PATH: .
+          CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
+      - name: Load Docker image necessary for building
+        run: ./internal-scripts/ci-cd/load-docker-image.sh
+        if: contains(inputs.necessary_jobs, ';Use locally-built Docker image debian-13;')
+        env:
+          TARBALL: image.tar.zst
+
+      - run: mkdir cache
+
+      - name: Download source
+        run: ./internal-scripts/ci-cd/build-jemalloc-binaries/download-source.sh
+        env:
+          JEMALLOC_VERSION: "3.6.0"
+
+      - name: Build
+        run: ./internal-scripts/ci-cd/build-jemalloc-binaries/build.sh
+        env:
+          ENVIRONMENT_NAME: "debian-13"
+          CACHE_KEY_PREFIX: "sccache/debian-13/arm64"
+
+      - name: Archive artifact
+        run: ./internal-scripts/ci-cd/upload-artifact.sh
+        env:
+          ARTIFACT_NAME: 'jemalloc-bin-debian-13-arm64'
           ARTIFACT_PATH: output
           CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
 
@@ -97,8 +159,8 @@ jobs:
 
 
 
-  build_ruby_debian_13-3_4-normal:
-    name: 'Ruby [debian-13/3.4/normal]'
+  build_ruby_debian_13-3_4-normal_amd64:
+    name: 'Ruby [debian-13/3.4/normal/amd64]'
 
     runs-on: ubuntu-24.04
     environment: test
@@ -108,10 +170,10 @@ jobs:
       packages: read
     # Run even if a dependent job has been skipped
     if: |
-      contains(inputs.necessary_jobs, ';Build Ruby [debian-13/3.4/normal];')
+      contains(inputs.necessary_jobs, ';Build Ruby [debian-13/3.4/normal/amd64];')
       && !failure() && !cancelled()
     steps:
-      
+
 
       - uses: actions/checkout@v5
       - uses: google-github-actions/auth@v3
@@ -143,7 +205,7 @@ jobs:
         run: ./internal-scripts/ci-cd/download-artifact.sh
         if: contains(inputs.necessary_jobs, ';Use locally-built Docker image debian-13;')
         env:
-          ARTIFACT_NAME: 'docker-image-debian-13'
+          ARTIFACT_NAME: 'docker-image-debian-13-amd64'
           ARTIFACT_PATH: .
           CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
       - name: Load Docker image necessary for building
@@ -156,7 +218,7 @@ jobs:
         run: ./internal-scripts/ci-cd/download-artifact.sh
         if: contains(inputs.necessary_jobs, ';Use locally-built Docker image utility;')
         env:
-          ARTIFACT_NAME: docker-image-utility
+          ARTIFACT_NAME: docker-image-utility-amd64
           ARTIFACT_PATH: .
           CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
       - name: Load Docker image necessary for packaging
@@ -165,7 +227,7 @@ jobs:
         env:
           TARBALL: image.tar.zst
 
-      
+
 
       - name: Build binaries
         run: ./internal-scripts/ci-cd/build-ruby-packages/build-binaries.sh
@@ -173,7 +235,7 @@ jobs:
           ENVIRONMENT_NAME: "debian-13"
           VARIANT_NAME: "normal"
           RUBY_PACKAGE_VERSION_ID: "3.4"
-          CACHE_KEY_PREFIX: "sccache/debian-13"
+          CACHE_KEY_PREFIX: "sccache/debian-13/amd64"
 
       - name: Build package
         run: ./internal-scripts/ci-cd/build-ruby-packages/build-package.sh
@@ -184,19 +246,19 @@ jobs:
           PACKAGE_FORMAT: "DEB"
           RUBY_PACKAGE_VERSION_ID: "3.4"
           RUBY_PACKAGE_REVISION: "6"
+          ARCH: "amd64"
 
       - name: Archive package artifact to Google Cloud
         run: ./internal-scripts/ci-cd/upload-artifact.sh
         env:
-          ARTIFACT_NAME: "ruby-pkg_3.4_debian-13_normal"
+          ARTIFACT_NAME: "ruby-pkg_3.4_debian-13_normal_amd64"
           ARTIFACT_PATH: output-normal
           CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
 
-  build_ruby_debian_13-3_4-jemalloc:
-    name: 'Ruby [debian-13/3.4/jemalloc]'
+  build_ruby_debian_13-3_4-normal_arm64:
+    name: 'Ruby [debian-13/3.4/normal/arm64]'
 
-    needs: build_jemalloc_debian_13
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-24.04-arm
     environment: test
     timeout-minutes: 30
     permissions:
@@ -204,15 +266,10 @@ jobs:
       packages: read
     # Run even if a dependent job has been skipped
     if: |
-      contains(inputs.necessary_jobs, ';Build Ruby [debian-13/3.4/jemalloc];')
+      contains(inputs.necessary_jobs, ';Build Ruby [debian-13/3.4/normal/arm64];')
       && !failure() && !cancelled()
     steps:
-      
-      - name: Check whether 'Build Jemalloc [debian-13]' did not fail
-        run: 'false'
-        if: |
-          needs.build_jemalloc_debian_13.result == 'skipped'
-          && contains(inputs.necessary_jobs, ';Build Jemalloc [debian-13];')        
+
 
       - uses: actions/checkout@v5
       - uses: google-github-actions/auth@v3
@@ -244,7 +301,7 @@ jobs:
         run: ./internal-scripts/ci-cd/download-artifact.sh
         if: contains(inputs.necessary_jobs, ';Use locally-built Docker image debian-13;')
         env:
-          ARTIFACT_NAME: 'docker-image-debian-13'
+          ARTIFACT_NAME: 'docker-image-debian-13-arm64'
           ARTIFACT_PATH: .
           CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
       - name: Load Docker image necessary for building
@@ -257,7 +314,7 @@ jobs:
         run: ./internal-scripts/ci-cd/download-artifact.sh
         if: contains(inputs.necessary_jobs, ';Use locally-built Docker image utility;')
         env:
-          ARTIFACT_NAME: docker-image-utility
+          ARTIFACT_NAME: docker-image-utility-arm64
           ARTIFACT_PATH: .
           CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
       - name: Load Docker image necessary for packaging
@@ -266,13 +323,113 @@ jobs:
         env:
           TARBALL: image.tar.zst
 
-      
+
+
+      - name: Build binaries
+        run: ./internal-scripts/ci-cd/build-ruby-packages/build-binaries.sh
+        env:
+          ENVIRONMENT_NAME: "debian-13"
+          VARIANT_NAME: "normal"
+          RUBY_PACKAGE_VERSION_ID: "3.4"
+          CACHE_KEY_PREFIX: "sccache/debian-13/arm64"
+
+      - name: Build package
+        run: ./internal-scripts/ci-cd/build-ruby-packages/build-package.sh
+        env:
+          DISTRIBUTION_NAME: "debian-13"
+          VARIANT_NAME: "normal"
+          VARIANT_PACKAGE_SUFFIX: ""
+          PACKAGE_FORMAT: "DEB"
+          RUBY_PACKAGE_VERSION_ID: "3.4"
+          RUBY_PACKAGE_REVISION: "6"
+          ARCH: "arm64"
+
+      - name: Archive package artifact to Google Cloud
+        run: ./internal-scripts/ci-cd/upload-artifact.sh
+        env:
+          ARTIFACT_NAME: "ruby-pkg_3.4_debian-13_normal_arm64"
+          ARTIFACT_PATH: output-normal
+          CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
+
+  build_ruby_debian_13-3_4-jemalloc_amd64:
+    name: 'Ruby [debian-13/3.4/jemalloc/amd64]'
+
+    needs: build_jemalloc_debian_13_amd64
+    runs-on: ubuntu-24.04
+    environment: test
+    timeout-minutes: 30
+    permissions:
+      id-token: write
+      packages: read
+    # Run even if a dependent job has been skipped
+    if: |
+      contains(inputs.necessary_jobs, ';Build Ruby [debian-13/3.4/jemalloc/amd64];')
+      && !failure() && !cancelled()
+    steps:
+      - name: Check whether 'Build Jemalloc [debian-13/amd64]' did not fail
+        run: 'false'
+        if: |
+          needs.build_jemalloc_debian_13_amd64.result == 'skipped'
+          && contains(inputs.necessary_jobs, ';Build Jemalloc [debian-13/amd64];')
+
+      - uses: actions/checkout@v5
+      - uses: google-github-actions/auth@v3
+        with:
+          project_id: ${{ vars.GCLOUD_PROJECT_ID }}
+          workload_identity_provider: projects/${{ vars.GCLOUD_PROJECT_NUM }}/locations/global/workloadIdentityPools/github-ci-test/providers/github-ci-test
+      - name: Set up Cloud SDK
+        uses: google-github-actions/setup-gcloud@v3
+        with:
+          version: '>= 363.0.0'
+      - name: Login to Github Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Dump Azure connection string
+        run: echo -n "$CONNECTION_STRING" > azure-connection-string.txt
+        env:
+          CONNECTION_STRING: ${{ secrets.AZURE_CI2_STORAGE_CONNECTION_STRING }}
+      - name: Fetch Ruby source
+        run: ./internal-scripts/ci-cd/download-artifact.sh
+        env:
+          ARTIFACT_NAME: ruby-src-3.4.7
+          ARTIFACT_PATH: .
+          CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
+
+      - name: Download Docker image necessary for building
+        run: ./internal-scripts/ci-cd/download-artifact.sh
+        if: contains(inputs.necessary_jobs, ';Use locally-built Docker image debian-13;')
+        env:
+          ARTIFACT_NAME: 'docker-image-debian-13-amd64'
+          ARTIFACT_PATH: .
+          CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
+      - name: Load Docker image necessary for building
+        run: ./internal-scripts/ci-cd/load-docker-image.sh
+        if: contains(inputs.necessary_jobs, ';Use locally-built Docker image debian-13;')
+        env:
+          TARBALL: image.tar.zst
+
+      - name: Download Docker image necessary for packaging
+        run: ./internal-scripts/ci-cd/download-artifact.sh
+        if: contains(inputs.necessary_jobs, ';Use locally-built Docker image utility;')
+        env:
+          ARTIFACT_NAME: docker-image-utility-amd64
+          ARTIFACT_PATH: .
+          CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
+      - name: Load Docker image necessary for packaging
+        run: ./internal-scripts/ci-cd/load-docker-image.sh
+        if: contains(inputs.necessary_jobs, ';Use locally-built Docker image utility;')
+        env:
+          TARBALL: image.tar.zst
+
       - name: Fetch Jemalloc binary
         run: ./internal-scripts/ci-cd/download-artifact.sh
         env:
-          ARTIFACT_NAME: jemalloc-bin-debian-13
+          ARTIFACT_NAME: jemalloc-bin-debian-13-amd64
           ARTIFACT_PATH: .
-          CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}        
+          CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
 
       - name: Build binaries
         run: ./internal-scripts/ci-cd/build-ruby-packages/build-binaries.sh
@@ -280,7 +437,7 @@ jobs:
           ENVIRONMENT_NAME: "debian-13"
           VARIANT_NAME: "jemalloc"
           RUBY_PACKAGE_VERSION_ID: "3.4"
-          CACHE_KEY_PREFIX: "sccache/debian-13"
+          CACHE_KEY_PREFIX: "sccache/debian-13/amd64"
 
       - name: Build package
         run: ./internal-scripts/ci-cd/build-ruby-packages/build-package.sh
@@ -291,18 +448,20 @@ jobs:
           PACKAGE_FORMAT: "DEB"
           RUBY_PACKAGE_VERSION_ID: "3.4"
           RUBY_PACKAGE_REVISION: "6"
+          ARCH: "amd64"
 
       - name: Archive package artifact to Google Cloud
         run: ./internal-scripts/ci-cd/upload-artifact.sh
         env:
-          ARTIFACT_NAME: "ruby-pkg_3.4_debian-13_jemalloc"
+          ARTIFACT_NAME: "ruby-pkg_3.4_debian-13_jemalloc_amd64"
           ARTIFACT_PATH: output-jemalloc
           CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
 
-  build_ruby_debian_13-3_4-malloctrim:
-    name: 'Ruby [debian-13/3.4/malloctrim]'
+  build_ruby_debian_13-3_4-jemalloc_arm64:
+    name: 'Ruby [debian-13/3.4/jemalloc/arm64]'
 
-    runs-on: ubuntu-24.04
+    needs: build_jemalloc_debian_13_arm64
+    runs-on: ubuntu-24.04-arm
     environment: test
     timeout-minutes: 30
     permissions:
@@ -310,10 +469,14 @@ jobs:
       packages: read
     # Run even if a dependent job has been skipped
     if: |
-      contains(inputs.necessary_jobs, ';Build Ruby [debian-13/3.4/malloctrim];')
+      contains(inputs.necessary_jobs, ';Build Ruby [debian-13/3.4/jemalloc/arm64];')
       && !failure() && !cancelled()
     steps:
-      
+      - name: Check whether 'Build Jemalloc [debian-13/arm64]' did not fail
+        run: 'false'
+        if: |
+          needs.build_jemalloc_debian_13_arm64.result == 'skipped'
+          && contains(inputs.necessary_jobs, ';Build Jemalloc [debian-13/arm64];')
 
       - uses: actions/checkout@v5
       - uses: google-github-actions/auth@v3
@@ -345,7 +508,7 @@ jobs:
         run: ./internal-scripts/ci-cd/download-artifact.sh
         if: contains(inputs.necessary_jobs, ';Use locally-built Docker image debian-13;')
         env:
-          ARTIFACT_NAME: 'docker-image-debian-13'
+          ARTIFACT_NAME: 'docker-image-debian-13-arm64'
           ARTIFACT_PATH: .
           CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
       - name: Load Docker image necessary for building
@@ -358,7 +521,7 @@ jobs:
         run: ./internal-scripts/ci-cd/download-artifact.sh
         if: contains(inputs.necessary_jobs, ';Use locally-built Docker image utility;')
         env:
-          ARTIFACT_NAME: docker-image-utility
+          ARTIFACT_NAME: docker-image-utility-arm64
           ARTIFACT_PATH: .
           CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
       - name: Load Docker image necessary for packaging
@@ -367,7 +530,108 @@ jobs:
         env:
           TARBALL: image.tar.zst
 
-      
+      - name: Fetch Jemalloc binary
+        run: ./internal-scripts/ci-cd/download-artifact.sh
+        env:
+          ARTIFACT_NAME: jemalloc-bin-debian-13-arm64
+          ARTIFACT_PATH: .
+          CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
+
+      - name: Build binaries
+        run: ./internal-scripts/ci-cd/build-ruby-packages/build-binaries.sh
+        env:
+          ENVIRONMENT_NAME: "debian-13"
+          VARIANT_NAME: "jemalloc"
+          RUBY_PACKAGE_VERSION_ID: "3.4"
+          CACHE_KEY_PREFIX: "sccache/debian-13/arm64"
+
+      - name: Build package
+        run: ./internal-scripts/ci-cd/build-ruby-packages/build-package.sh
+        env:
+          DISTRIBUTION_NAME: "debian-13"
+          VARIANT_NAME: "jemalloc"
+          VARIANT_PACKAGE_SUFFIX: "-jemalloc"
+          PACKAGE_FORMAT: "DEB"
+          RUBY_PACKAGE_VERSION_ID: "3.4"
+          RUBY_PACKAGE_REVISION: "6"
+          ARCH: "arm64"
+
+      - name: Archive package artifact to Google Cloud
+        run: ./internal-scripts/ci-cd/upload-artifact.sh
+        env:
+          ARTIFACT_NAME: "ruby-pkg_3.4_debian-13_jemalloc_arm64"
+          ARTIFACT_PATH: output-jemalloc
+          CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
+
+  build_ruby_debian_13-3_4-malloctrim_amd64:
+    name: 'Ruby [debian-13/3.4/malloctrim/amd64]'
+
+    runs-on: ubuntu-24.04
+    environment: test
+    timeout-minutes: 30
+    permissions:
+      id-token: write
+      packages: read
+    # Run even if a dependent job has been skipped
+    if: |
+      contains(inputs.necessary_jobs, ';Build Ruby [debian-13/3.4/malloctrim/amd64];')
+      && !failure() && !cancelled()
+    steps:
+
+
+      - uses: actions/checkout@v5
+      - uses: google-github-actions/auth@v3
+        with:
+          project_id: ${{ vars.GCLOUD_PROJECT_ID }}
+          workload_identity_provider: projects/${{ vars.GCLOUD_PROJECT_NUM }}/locations/global/workloadIdentityPools/github-ci-test/providers/github-ci-test
+      - name: Set up Cloud SDK
+        uses: google-github-actions/setup-gcloud@v3
+        with:
+          version: '>= 363.0.0'
+      - name: Login to Github Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Dump Azure connection string
+        run: echo -n "$CONNECTION_STRING" > azure-connection-string.txt
+        env:
+          CONNECTION_STRING: ${{ secrets.AZURE_CI2_STORAGE_CONNECTION_STRING }}
+      - name: Fetch Ruby source
+        run: ./internal-scripts/ci-cd/download-artifact.sh
+        env:
+          ARTIFACT_NAME: ruby-src-3.4.7
+          ARTIFACT_PATH: .
+          CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
+
+      - name: Download Docker image necessary for building
+        run: ./internal-scripts/ci-cd/download-artifact.sh
+        if: contains(inputs.necessary_jobs, ';Use locally-built Docker image debian-13;')
+        env:
+          ARTIFACT_NAME: 'docker-image-debian-13-amd64'
+          ARTIFACT_PATH: .
+          CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
+      - name: Load Docker image necessary for building
+        run: ./internal-scripts/ci-cd/load-docker-image.sh
+        if: contains(inputs.necessary_jobs, ';Use locally-built Docker image debian-13;')
+        env:
+          TARBALL: image.tar.zst
+
+      - name: Download Docker image necessary for packaging
+        run: ./internal-scripts/ci-cd/download-artifact.sh
+        if: contains(inputs.necessary_jobs, ';Use locally-built Docker image utility;')
+        env:
+          ARTIFACT_NAME: docker-image-utility-amd64
+          ARTIFACT_PATH: .
+          CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
+      - name: Load Docker image necessary for packaging
+        run: ./internal-scripts/ci-cd/load-docker-image.sh
+        if: contains(inputs.necessary_jobs, ';Use locally-built Docker image utility;')
+        env:
+          TARBALL: image.tar.zst
+
+
 
       - name: Build binaries
         run: ./internal-scripts/ci-cd/build-ruby-packages/build-binaries.sh
@@ -375,7 +639,7 @@ jobs:
           ENVIRONMENT_NAME: "debian-13"
           VARIANT_NAME: "malloctrim"
           RUBY_PACKAGE_VERSION_ID: "3.4"
-          CACHE_KEY_PREFIX: "sccache/debian-13"
+          CACHE_KEY_PREFIX: "sccache/debian-13/amd64"
 
       - name: Build package
         run: ./internal-scripts/ci-cd/build-ruby-packages/build-package.sh
@@ -386,18 +650,19 @@ jobs:
           PACKAGE_FORMAT: "DEB"
           RUBY_PACKAGE_VERSION_ID: "3.4"
           RUBY_PACKAGE_REVISION: "6"
+          ARCH: "amd64"
 
       - name: Archive package artifact to Google Cloud
         run: ./internal-scripts/ci-cd/upload-artifact.sh
         env:
-          ARTIFACT_NAME: "ruby-pkg_3.4_debian-13_malloctrim"
+          ARTIFACT_NAME: "ruby-pkg_3.4_debian-13_malloctrim_amd64"
           ARTIFACT_PATH: output-malloctrim
           CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
 
-  build_ruby_debian_13-3_3-normal:
-    name: 'Ruby [debian-13/3.3/normal]'
+  build_ruby_debian_13-3_4-malloctrim_arm64:
+    name: 'Ruby [debian-13/3.4/malloctrim/arm64]'
 
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-24.04-arm
     environment: test
     timeout-minutes: 30
     permissions:
@@ -405,307 +670,10 @@ jobs:
       packages: read
     # Run even if a dependent job has been skipped
     if: |
-      contains(inputs.necessary_jobs, ';Build Ruby [debian-13/3.3/normal];')
+      contains(inputs.necessary_jobs, ';Build Ruby [debian-13/3.4/malloctrim/arm64];')
       && !failure() && !cancelled()
     steps:
-      
 
-      - uses: actions/checkout@v5
-      - uses: google-github-actions/auth@v3
-        with:
-          project_id: ${{ vars.GCLOUD_PROJECT_ID }}
-          workload_identity_provider: projects/${{ vars.GCLOUD_PROJECT_NUM }}/locations/global/workloadIdentityPools/github-ci-test/providers/github-ci-test
-      - name: Set up Cloud SDK
-        uses: google-github-actions/setup-gcloud@v3
-        with:
-          version: '>= 363.0.0'
-      - name: Login to Github Container Registry
-        uses: docker/login-action@v3
-        with:
-          registry: ghcr.io
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
-      - name: Dump Azure connection string
-        run: echo -n "$CONNECTION_STRING" > azure-connection-string.txt
-        env:
-          CONNECTION_STRING: ${{ secrets.AZURE_CI2_STORAGE_CONNECTION_STRING }}
-      - name: Fetch Ruby source
-        run: ./internal-scripts/ci-cd/download-artifact.sh
-        env:
-          ARTIFACT_NAME: ruby-src-3.3.9
-          ARTIFACT_PATH: .
-          CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
-
-      - name: Download Docker image necessary for building
-        run: ./internal-scripts/ci-cd/download-artifact.sh
-        if: contains(inputs.necessary_jobs, ';Use locally-built Docker image debian-13;')
-        env:
-          ARTIFACT_NAME: 'docker-image-debian-13'
-          ARTIFACT_PATH: .
-          CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
-      - name: Load Docker image necessary for building
-        run: ./internal-scripts/ci-cd/load-docker-image.sh
-        if: contains(inputs.necessary_jobs, ';Use locally-built Docker image debian-13;')
-        env:
-          TARBALL: image.tar.zst
-
-      - name: Download Docker image necessary for packaging
-        run: ./internal-scripts/ci-cd/download-artifact.sh
-        if: contains(inputs.necessary_jobs, ';Use locally-built Docker image utility;')
-        env:
-          ARTIFACT_NAME: docker-image-utility
-          ARTIFACT_PATH: .
-          CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
-      - name: Load Docker image necessary for packaging
-        run: ./internal-scripts/ci-cd/load-docker-image.sh
-        if: contains(inputs.necessary_jobs, ';Use locally-built Docker image utility;')
-        env:
-          TARBALL: image.tar.zst
-
-      
-
-      - name: Build binaries
-        run: ./internal-scripts/ci-cd/build-ruby-packages/build-binaries.sh
-        env:
-          ENVIRONMENT_NAME: "debian-13"
-          VARIANT_NAME: "normal"
-          RUBY_PACKAGE_VERSION_ID: "3.3"
-          CACHE_KEY_PREFIX: "sccache/debian-13"
-
-      - name: Build package
-        run: ./internal-scripts/ci-cd/build-ruby-packages/build-package.sh
-        env:
-          DISTRIBUTION_NAME: "debian-13"
-          VARIANT_NAME: "normal"
-          VARIANT_PACKAGE_SUFFIX: ""
-          PACKAGE_FORMAT: "DEB"
-          RUBY_PACKAGE_VERSION_ID: "3.3"
-          RUBY_PACKAGE_REVISION: "9"
-
-      - name: Archive package artifact to Google Cloud
-        run: ./internal-scripts/ci-cd/upload-artifact.sh
-        env:
-          ARTIFACT_NAME: "ruby-pkg_3.3_debian-13_normal"
-          ARTIFACT_PATH: output-normal
-          CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
-
-  build_ruby_debian_13-3_3-jemalloc:
-    name: 'Ruby [debian-13/3.3/jemalloc]'
-
-    needs: build_jemalloc_debian_13
-    runs-on: ubuntu-24.04
-    environment: test
-    timeout-minutes: 30
-    permissions:
-      id-token: write
-      packages: read
-    # Run even if a dependent job has been skipped
-    if: |
-      contains(inputs.necessary_jobs, ';Build Ruby [debian-13/3.3/jemalloc];')
-      && !failure() && !cancelled()
-    steps:
-      
-      - name: Check whether 'Build Jemalloc [debian-13]' did not fail
-        run: 'false'
-        if: |
-          needs.build_jemalloc_debian_13.result == 'skipped'
-          && contains(inputs.necessary_jobs, ';Build Jemalloc [debian-13];')        
-
-      - uses: actions/checkout@v5
-      - uses: google-github-actions/auth@v3
-        with:
-          project_id: ${{ vars.GCLOUD_PROJECT_ID }}
-          workload_identity_provider: projects/${{ vars.GCLOUD_PROJECT_NUM }}/locations/global/workloadIdentityPools/github-ci-test/providers/github-ci-test
-      - name: Set up Cloud SDK
-        uses: google-github-actions/setup-gcloud@v3
-        with:
-          version: '>= 363.0.0'
-      - name: Login to Github Container Registry
-        uses: docker/login-action@v3
-        with:
-          registry: ghcr.io
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
-      - name: Dump Azure connection string
-        run: echo -n "$CONNECTION_STRING" > azure-connection-string.txt
-        env:
-          CONNECTION_STRING: ${{ secrets.AZURE_CI2_STORAGE_CONNECTION_STRING }}
-      - name: Fetch Ruby source
-        run: ./internal-scripts/ci-cd/download-artifact.sh
-        env:
-          ARTIFACT_NAME: ruby-src-3.3.9
-          ARTIFACT_PATH: .
-          CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
-
-      - name: Download Docker image necessary for building
-        run: ./internal-scripts/ci-cd/download-artifact.sh
-        if: contains(inputs.necessary_jobs, ';Use locally-built Docker image debian-13;')
-        env:
-          ARTIFACT_NAME: 'docker-image-debian-13'
-          ARTIFACT_PATH: .
-          CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
-      - name: Load Docker image necessary for building
-        run: ./internal-scripts/ci-cd/load-docker-image.sh
-        if: contains(inputs.necessary_jobs, ';Use locally-built Docker image debian-13;')
-        env:
-          TARBALL: image.tar.zst
-
-      - name: Download Docker image necessary for packaging
-        run: ./internal-scripts/ci-cd/download-artifact.sh
-        if: contains(inputs.necessary_jobs, ';Use locally-built Docker image utility;')
-        env:
-          ARTIFACT_NAME: docker-image-utility
-          ARTIFACT_PATH: .
-          CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
-      - name: Load Docker image necessary for packaging
-        run: ./internal-scripts/ci-cd/load-docker-image.sh
-        if: contains(inputs.necessary_jobs, ';Use locally-built Docker image utility;')
-        env:
-          TARBALL: image.tar.zst
-
-      
-      - name: Fetch Jemalloc binary
-        run: ./internal-scripts/ci-cd/download-artifact.sh
-        env:
-          ARTIFACT_NAME: jemalloc-bin-debian-13
-          ARTIFACT_PATH: .
-          CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}        
-
-      - name: Build binaries
-        run: ./internal-scripts/ci-cd/build-ruby-packages/build-binaries.sh
-        env:
-          ENVIRONMENT_NAME: "debian-13"
-          VARIANT_NAME: "jemalloc"
-          RUBY_PACKAGE_VERSION_ID: "3.3"
-          CACHE_KEY_PREFIX: "sccache/debian-13"
-
-      - name: Build package
-        run: ./internal-scripts/ci-cd/build-ruby-packages/build-package.sh
-        env:
-          DISTRIBUTION_NAME: "debian-13"
-          VARIANT_NAME: "jemalloc"
-          VARIANT_PACKAGE_SUFFIX: "-jemalloc"
-          PACKAGE_FORMAT: "DEB"
-          RUBY_PACKAGE_VERSION_ID: "3.3"
-          RUBY_PACKAGE_REVISION: "9"
-
-      - name: Archive package artifact to Google Cloud
-        run: ./internal-scripts/ci-cd/upload-artifact.sh
-        env:
-          ARTIFACT_NAME: "ruby-pkg_3.3_debian-13_jemalloc"
-          ARTIFACT_PATH: output-jemalloc
-          CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
-
-  build_ruby_debian_13-3_3-malloctrim:
-    name: 'Ruby [debian-13/3.3/malloctrim]'
-
-    runs-on: ubuntu-24.04
-    environment: test
-    timeout-minutes: 30
-    permissions:
-      id-token: write
-      packages: read
-    # Run even if a dependent job has been skipped
-    if: |
-      contains(inputs.necessary_jobs, ';Build Ruby [debian-13/3.3/malloctrim];')
-      && !failure() && !cancelled()
-    steps:
-      
-
-      - uses: actions/checkout@v5
-      - uses: google-github-actions/auth@v3
-        with:
-          project_id: ${{ vars.GCLOUD_PROJECT_ID }}
-          workload_identity_provider: projects/${{ vars.GCLOUD_PROJECT_NUM }}/locations/global/workloadIdentityPools/github-ci-test/providers/github-ci-test
-      - name: Set up Cloud SDK
-        uses: google-github-actions/setup-gcloud@v3
-        with:
-          version: '>= 363.0.0'
-      - name: Login to Github Container Registry
-        uses: docker/login-action@v3
-        with:
-          registry: ghcr.io
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
-      - name: Dump Azure connection string
-        run: echo -n "$CONNECTION_STRING" > azure-connection-string.txt
-        env:
-          CONNECTION_STRING: ${{ secrets.AZURE_CI2_STORAGE_CONNECTION_STRING }}
-      - name: Fetch Ruby source
-        run: ./internal-scripts/ci-cd/download-artifact.sh
-        env:
-          ARTIFACT_NAME: ruby-src-3.3.9
-          ARTIFACT_PATH: .
-          CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
-
-      - name: Download Docker image necessary for building
-        run: ./internal-scripts/ci-cd/download-artifact.sh
-        if: contains(inputs.necessary_jobs, ';Use locally-built Docker image debian-13;')
-        env:
-          ARTIFACT_NAME: 'docker-image-debian-13'
-          ARTIFACT_PATH: .
-          CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
-      - name: Load Docker image necessary for building
-        run: ./internal-scripts/ci-cd/load-docker-image.sh
-        if: contains(inputs.necessary_jobs, ';Use locally-built Docker image debian-13;')
-        env:
-          TARBALL: image.tar.zst
-
-      - name: Download Docker image necessary for packaging
-        run: ./internal-scripts/ci-cd/download-artifact.sh
-        if: contains(inputs.necessary_jobs, ';Use locally-built Docker image utility;')
-        env:
-          ARTIFACT_NAME: docker-image-utility
-          ARTIFACT_PATH: .
-          CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
-      - name: Load Docker image necessary for packaging
-        run: ./internal-scripts/ci-cd/load-docker-image.sh
-        if: contains(inputs.necessary_jobs, ';Use locally-built Docker image utility;')
-        env:
-          TARBALL: image.tar.zst
-
-      
-
-      - name: Build binaries
-        run: ./internal-scripts/ci-cd/build-ruby-packages/build-binaries.sh
-        env:
-          ENVIRONMENT_NAME: "debian-13"
-          VARIANT_NAME: "malloctrim"
-          RUBY_PACKAGE_VERSION_ID: "3.3"
-          CACHE_KEY_PREFIX: "sccache/debian-13"
-
-      - name: Build package
-        run: ./internal-scripts/ci-cd/build-ruby-packages/build-package.sh
-        env:
-          DISTRIBUTION_NAME: "debian-13"
-          VARIANT_NAME: "malloctrim"
-          VARIANT_PACKAGE_SUFFIX: "-malloctrim"
-          PACKAGE_FORMAT: "DEB"
-          RUBY_PACKAGE_VERSION_ID: "3.3"
-          RUBY_PACKAGE_REVISION: "9"
-
-      - name: Archive package artifact to Google Cloud
-        run: ./internal-scripts/ci-cd/upload-artifact.sh
-        env:
-          ARTIFACT_NAME: "ruby-pkg_3.3_debian-13_malloctrim"
-          ARTIFACT_PATH: output-malloctrim
-          CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
-
-  build_ruby_debian_13-3_4_7-normal:
-    name: 'Ruby [debian-13/3.4.7/normal]'
-
-    runs-on: ubuntu-24.04
-    environment: test
-    timeout-minutes: 30
-    permissions:
-      id-token: write
-      packages: read
-    # Run even if a dependent job has been skipped
-    if: |
-      contains(inputs.necessary_jobs, ';Build Ruby [debian-13/3.4.7/normal];')
-      && !failure() && !cancelled()
-    steps:
-      
 
       - uses: actions/checkout@v5
       - uses: google-github-actions/auth@v3
@@ -737,7 +705,7 @@ jobs:
         run: ./internal-scripts/ci-cd/download-artifact.sh
         if: contains(inputs.necessary_jobs, ';Use locally-built Docker image debian-13;')
         env:
-          ARTIFACT_NAME: 'docker-image-debian-13'
+          ARTIFACT_NAME: 'docker-image-debian-13-arm64'
           ARTIFACT_PATH: .
           CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
       - name: Load Docker image necessary for building
@@ -750,7 +718,7 @@ jobs:
         run: ./internal-scripts/ci-cd/download-artifact.sh
         if: contains(inputs.necessary_jobs, ';Use locally-built Docker image utility;')
         env:
-          ARTIFACT_NAME: docker-image-utility
+          ARTIFACT_NAME: docker-image-utility-arm64
           ARTIFACT_PATH: .
           CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
       - name: Load Docker image necessary for packaging
@@ -759,217 +727,15 @@ jobs:
         env:
           TARBALL: image.tar.zst
 
-      
 
-      - name: Build binaries
-        run: ./internal-scripts/ci-cd/build-ruby-packages/build-binaries.sh
-        env:
-          ENVIRONMENT_NAME: "debian-13"
-          VARIANT_NAME: "normal"
-          RUBY_PACKAGE_VERSION_ID: "3.4.7"
-          CACHE_KEY_PREFIX: "sccache/debian-13"
-
-      - name: Build package
-        run: ./internal-scripts/ci-cd/build-ruby-packages/build-package.sh
-        env:
-          DISTRIBUTION_NAME: "debian-13"
-          VARIANT_NAME: "normal"
-          VARIANT_PACKAGE_SUFFIX: ""
-          PACKAGE_FORMAT: "DEB"
-          RUBY_PACKAGE_VERSION_ID: "3.4.7"
-          RUBY_PACKAGE_REVISION: "0"
-
-      - name: Archive package artifact to Google Cloud
-        run: ./internal-scripts/ci-cd/upload-artifact.sh
-        env:
-          ARTIFACT_NAME: "ruby-pkg_3.4.7_debian-13_normal"
-          ARTIFACT_PATH: output-normal
-          CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
-
-  build_ruby_debian_13-3_4_7-jemalloc:
-    name: 'Ruby [debian-13/3.4.7/jemalloc]'
-
-    needs: build_jemalloc_debian_13
-    runs-on: ubuntu-24.04
-    environment: test
-    timeout-minutes: 30
-    permissions:
-      id-token: write
-      packages: read
-    # Run even if a dependent job has been skipped
-    if: |
-      contains(inputs.necessary_jobs, ';Build Ruby [debian-13/3.4.7/jemalloc];')
-      && !failure() && !cancelled()
-    steps:
-      
-      - name: Check whether 'Build Jemalloc [debian-13]' did not fail
-        run: 'false'
-        if: |
-          needs.build_jemalloc_debian_13.result == 'skipped'
-          && contains(inputs.necessary_jobs, ';Build Jemalloc [debian-13];')        
-
-      - uses: actions/checkout@v5
-      - uses: google-github-actions/auth@v3
-        with:
-          project_id: ${{ vars.GCLOUD_PROJECT_ID }}
-          workload_identity_provider: projects/${{ vars.GCLOUD_PROJECT_NUM }}/locations/global/workloadIdentityPools/github-ci-test/providers/github-ci-test
-      - name: Set up Cloud SDK
-        uses: google-github-actions/setup-gcloud@v3
-        with:
-          version: '>= 363.0.0'
-      - name: Login to Github Container Registry
-        uses: docker/login-action@v3
-        with:
-          registry: ghcr.io
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
-      - name: Dump Azure connection string
-        run: echo -n "$CONNECTION_STRING" > azure-connection-string.txt
-        env:
-          CONNECTION_STRING: ${{ secrets.AZURE_CI2_STORAGE_CONNECTION_STRING }}
-      - name: Fetch Ruby source
-        run: ./internal-scripts/ci-cd/download-artifact.sh
-        env:
-          ARTIFACT_NAME: ruby-src-3.4.7
-          ARTIFACT_PATH: .
-          CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
-
-      - name: Download Docker image necessary for building
-        run: ./internal-scripts/ci-cd/download-artifact.sh
-        if: contains(inputs.necessary_jobs, ';Use locally-built Docker image debian-13;')
-        env:
-          ARTIFACT_NAME: 'docker-image-debian-13'
-          ARTIFACT_PATH: .
-          CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
-      - name: Load Docker image necessary for building
-        run: ./internal-scripts/ci-cd/load-docker-image.sh
-        if: contains(inputs.necessary_jobs, ';Use locally-built Docker image debian-13;')
-        env:
-          TARBALL: image.tar.zst
-
-      - name: Download Docker image necessary for packaging
-        run: ./internal-scripts/ci-cd/download-artifact.sh
-        if: contains(inputs.necessary_jobs, ';Use locally-built Docker image utility;')
-        env:
-          ARTIFACT_NAME: docker-image-utility
-          ARTIFACT_PATH: .
-          CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
-      - name: Load Docker image necessary for packaging
-        run: ./internal-scripts/ci-cd/load-docker-image.sh
-        if: contains(inputs.necessary_jobs, ';Use locally-built Docker image utility;')
-        env:
-          TARBALL: image.tar.zst
-
-      
-      - name: Fetch Jemalloc binary
-        run: ./internal-scripts/ci-cd/download-artifact.sh
-        env:
-          ARTIFACT_NAME: jemalloc-bin-debian-13
-          ARTIFACT_PATH: .
-          CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}        
-
-      - name: Build binaries
-        run: ./internal-scripts/ci-cd/build-ruby-packages/build-binaries.sh
-        env:
-          ENVIRONMENT_NAME: "debian-13"
-          VARIANT_NAME: "jemalloc"
-          RUBY_PACKAGE_VERSION_ID: "3.4.7"
-          CACHE_KEY_PREFIX: "sccache/debian-13"
-
-      - name: Build package
-        run: ./internal-scripts/ci-cd/build-ruby-packages/build-package.sh
-        env:
-          DISTRIBUTION_NAME: "debian-13"
-          VARIANT_NAME: "jemalloc"
-          VARIANT_PACKAGE_SUFFIX: "-jemalloc"
-          PACKAGE_FORMAT: "DEB"
-          RUBY_PACKAGE_VERSION_ID: "3.4.7"
-          RUBY_PACKAGE_REVISION: "0"
-
-      - name: Archive package artifact to Google Cloud
-        run: ./internal-scripts/ci-cd/upload-artifact.sh
-        env:
-          ARTIFACT_NAME: "ruby-pkg_3.4.7_debian-13_jemalloc"
-          ARTIFACT_PATH: output-jemalloc
-          CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
-
-  build_ruby_debian_13-3_4_7-malloctrim:
-    name: 'Ruby [debian-13/3.4.7/malloctrim]'
-
-    runs-on: ubuntu-24.04
-    environment: test
-    timeout-minutes: 30
-    permissions:
-      id-token: write
-      packages: read
-    # Run even if a dependent job has been skipped
-    if: |
-      contains(inputs.necessary_jobs, ';Build Ruby [debian-13/3.4.7/malloctrim];')
-      && !failure() && !cancelled()
-    steps:
-      
-
-      - uses: actions/checkout@v5
-      - uses: google-github-actions/auth@v3
-        with:
-          project_id: ${{ vars.GCLOUD_PROJECT_ID }}
-          workload_identity_provider: projects/${{ vars.GCLOUD_PROJECT_NUM }}/locations/global/workloadIdentityPools/github-ci-test/providers/github-ci-test
-      - name: Set up Cloud SDK
-        uses: google-github-actions/setup-gcloud@v3
-        with:
-          version: '>= 363.0.0'
-      - name: Login to Github Container Registry
-        uses: docker/login-action@v3
-        with:
-          registry: ghcr.io
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
-      - name: Dump Azure connection string
-        run: echo -n "$CONNECTION_STRING" > azure-connection-string.txt
-        env:
-          CONNECTION_STRING: ${{ secrets.AZURE_CI2_STORAGE_CONNECTION_STRING }}
-      - name: Fetch Ruby source
-        run: ./internal-scripts/ci-cd/download-artifact.sh
-        env:
-          ARTIFACT_NAME: ruby-src-3.4.7
-          ARTIFACT_PATH: .
-          CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
-
-      - name: Download Docker image necessary for building
-        run: ./internal-scripts/ci-cd/download-artifact.sh
-        if: contains(inputs.necessary_jobs, ';Use locally-built Docker image debian-13;')
-        env:
-          ARTIFACT_NAME: 'docker-image-debian-13'
-          ARTIFACT_PATH: .
-          CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
-      - name: Load Docker image necessary for building
-        run: ./internal-scripts/ci-cd/load-docker-image.sh
-        if: contains(inputs.necessary_jobs, ';Use locally-built Docker image debian-13;')
-        env:
-          TARBALL: image.tar.zst
-
-      - name: Download Docker image necessary for packaging
-        run: ./internal-scripts/ci-cd/download-artifact.sh
-        if: contains(inputs.necessary_jobs, ';Use locally-built Docker image utility;')
-        env:
-          ARTIFACT_NAME: docker-image-utility
-          ARTIFACT_PATH: .
-          CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
-      - name: Load Docker image necessary for packaging
-        run: ./internal-scripts/ci-cd/load-docker-image.sh
-        if: contains(inputs.necessary_jobs, ';Use locally-built Docker image utility;')
-        env:
-          TARBALL: image.tar.zst
-
-      
 
       - name: Build binaries
         run: ./internal-scripts/ci-cd/build-ruby-packages/build-binaries.sh
         env:
           ENVIRONMENT_NAME: "debian-13"
           VARIANT_NAME: "malloctrim"
-          RUBY_PACKAGE_VERSION_ID: "3.4.7"
-          CACHE_KEY_PREFIX: "sccache/debian-13"
+          RUBY_PACKAGE_VERSION_ID: "3.4"
+          CACHE_KEY_PREFIX: "sccache/debian-13/arm64"
 
       - name: Build package
         run: ./internal-scripts/ci-cd/build-ruby-packages/build-package.sh
@@ -978,18 +744,19 @@ jobs:
           VARIANT_NAME: "malloctrim"
           VARIANT_PACKAGE_SUFFIX: "-malloctrim"
           PACKAGE_FORMAT: "DEB"
-          RUBY_PACKAGE_VERSION_ID: "3.4.7"
-          RUBY_PACKAGE_REVISION: "0"
+          RUBY_PACKAGE_VERSION_ID: "3.4"
+          RUBY_PACKAGE_REVISION: "6"
+          ARCH: "arm64"
 
       - name: Archive package artifact to Google Cloud
         run: ./internal-scripts/ci-cd/upload-artifact.sh
         env:
-          ARTIFACT_NAME: "ruby-pkg_3.4.7_debian-13_malloctrim"
+          ARTIFACT_NAME: "ruby-pkg_3.4_debian-13_malloctrim_arm64"
           ARTIFACT_PATH: output-malloctrim
           CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
 
-  build_ruby_debian_13-3_3_9-normal:
-    name: 'Ruby [debian-13/3.3.9/normal]'
+  build_ruby_debian_13-3_3-normal_amd64:
+    name: 'Ruby [debian-13/3.3/normal/amd64]'
 
     runs-on: ubuntu-24.04
     environment: test
@@ -999,10 +766,10 @@ jobs:
       packages: read
     # Run even if a dependent job has been skipped
     if: |
-      contains(inputs.necessary_jobs, ';Build Ruby [debian-13/3.3.9/normal];')
+      contains(inputs.necessary_jobs, ';Build Ruby [debian-13/3.3/normal/amd64];')
       && !failure() && !cancelled()
     steps:
-      
+
 
       - uses: actions/checkout@v5
       - uses: google-github-actions/auth@v3
@@ -1034,7 +801,7 @@ jobs:
         run: ./internal-scripts/ci-cd/download-artifact.sh
         if: contains(inputs.necessary_jobs, ';Use locally-built Docker image debian-13;')
         env:
-          ARTIFACT_NAME: 'docker-image-debian-13'
+          ARTIFACT_NAME: 'docker-image-debian-13-amd64'
           ARTIFACT_PATH: .
           CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
       - name: Load Docker image necessary for building
@@ -1047,7 +814,7 @@ jobs:
         run: ./internal-scripts/ci-cd/download-artifact.sh
         if: contains(inputs.necessary_jobs, ';Use locally-built Docker image utility;')
         env:
-          ARTIFACT_NAME: docker-image-utility
+          ARTIFACT_NAME: docker-image-utility-amd64
           ARTIFACT_PATH: .
           CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
       - name: Load Docker image necessary for packaging
@@ -1056,7 +823,1199 @@ jobs:
         env:
           TARBALL: image.tar.zst
 
-      
+
+
+      - name: Build binaries
+        run: ./internal-scripts/ci-cd/build-ruby-packages/build-binaries.sh
+        env:
+          ENVIRONMENT_NAME: "debian-13"
+          VARIANT_NAME: "normal"
+          RUBY_PACKAGE_VERSION_ID: "3.3"
+          CACHE_KEY_PREFIX: "sccache/debian-13/amd64"
+
+      - name: Build package
+        run: ./internal-scripts/ci-cd/build-ruby-packages/build-package.sh
+        env:
+          DISTRIBUTION_NAME: "debian-13"
+          VARIANT_NAME: "normal"
+          VARIANT_PACKAGE_SUFFIX: ""
+          PACKAGE_FORMAT: "DEB"
+          RUBY_PACKAGE_VERSION_ID: "3.3"
+          RUBY_PACKAGE_REVISION: "9"
+          ARCH: "amd64"
+
+      - name: Archive package artifact to Google Cloud
+        run: ./internal-scripts/ci-cd/upload-artifact.sh
+        env:
+          ARTIFACT_NAME: "ruby-pkg_3.3_debian-13_normal_amd64"
+          ARTIFACT_PATH: output-normal
+          CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
+
+  build_ruby_debian_13-3_3-normal_arm64:
+    name: 'Ruby [debian-13/3.3/normal/arm64]'
+
+    runs-on: ubuntu-24.04-arm
+    environment: test
+    timeout-minutes: 30
+    permissions:
+      id-token: write
+      packages: read
+    # Run even if a dependent job has been skipped
+    if: |
+      contains(inputs.necessary_jobs, ';Build Ruby [debian-13/3.3/normal/arm64];')
+      && !failure() && !cancelled()
+    steps:
+
+
+      - uses: actions/checkout@v5
+      - uses: google-github-actions/auth@v3
+        with:
+          project_id: ${{ vars.GCLOUD_PROJECT_ID }}
+          workload_identity_provider: projects/${{ vars.GCLOUD_PROJECT_NUM }}/locations/global/workloadIdentityPools/github-ci-test/providers/github-ci-test
+      - name: Set up Cloud SDK
+        uses: google-github-actions/setup-gcloud@v3
+        with:
+          version: '>= 363.0.0'
+      - name: Login to Github Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Dump Azure connection string
+        run: echo -n "$CONNECTION_STRING" > azure-connection-string.txt
+        env:
+          CONNECTION_STRING: ${{ secrets.AZURE_CI2_STORAGE_CONNECTION_STRING }}
+      - name: Fetch Ruby source
+        run: ./internal-scripts/ci-cd/download-artifact.sh
+        env:
+          ARTIFACT_NAME: ruby-src-3.3.9
+          ARTIFACT_PATH: .
+          CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
+
+      - name: Download Docker image necessary for building
+        run: ./internal-scripts/ci-cd/download-artifact.sh
+        if: contains(inputs.necessary_jobs, ';Use locally-built Docker image debian-13;')
+        env:
+          ARTIFACT_NAME: 'docker-image-debian-13-arm64'
+          ARTIFACT_PATH: .
+          CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
+      - name: Load Docker image necessary for building
+        run: ./internal-scripts/ci-cd/load-docker-image.sh
+        if: contains(inputs.necessary_jobs, ';Use locally-built Docker image debian-13;')
+        env:
+          TARBALL: image.tar.zst
+
+      - name: Download Docker image necessary for packaging
+        run: ./internal-scripts/ci-cd/download-artifact.sh
+        if: contains(inputs.necessary_jobs, ';Use locally-built Docker image utility;')
+        env:
+          ARTIFACT_NAME: docker-image-utility-arm64
+          ARTIFACT_PATH: .
+          CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
+      - name: Load Docker image necessary for packaging
+        run: ./internal-scripts/ci-cd/load-docker-image.sh
+        if: contains(inputs.necessary_jobs, ';Use locally-built Docker image utility;')
+        env:
+          TARBALL: image.tar.zst
+
+
+
+      - name: Build binaries
+        run: ./internal-scripts/ci-cd/build-ruby-packages/build-binaries.sh
+        env:
+          ENVIRONMENT_NAME: "debian-13"
+          VARIANT_NAME: "normal"
+          RUBY_PACKAGE_VERSION_ID: "3.3"
+          CACHE_KEY_PREFIX: "sccache/debian-13/arm64"
+
+      - name: Build package
+        run: ./internal-scripts/ci-cd/build-ruby-packages/build-package.sh
+        env:
+          DISTRIBUTION_NAME: "debian-13"
+          VARIANT_NAME: "normal"
+          VARIANT_PACKAGE_SUFFIX: ""
+          PACKAGE_FORMAT: "DEB"
+          RUBY_PACKAGE_VERSION_ID: "3.3"
+          RUBY_PACKAGE_REVISION: "9"
+          ARCH: "arm64"
+
+      - name: Archive package artifact to Google Cloud
+        run: ./internal-scripts/ci-cd/upload-artifact.sh
+        env:
+          ARTIFACT_NAME: "ruby-pkg_3.3_debian-13_normal_arm64"
+          ARTIFACT_PATH: output-normal
+          CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
+
+  build_ruby_debian_13-3_3-jemalloc_amd64:
+    name: 'Ruby [debian-13/3.3/jemalloc/amd64]'
+
+    needs: build_jemalloc_debian_13_amd64
+    runs-on: ubuntu-24.04
+    environment: test
+    timeout-minutes: 30
+    permissions:
+      id-token: write
+      packages: read
+    # Run even if a dependent job has been skipped
+    if: |
+      contains(inputs.necessary_jobs, ';Build Ruby [debian-13/3.3/jemalloc/amd64];')
+      && !failure() && !cancelled()
+    steps:
+      - name: Check whether 'Build Jemalloc [debian-13/amd64]' did not fail
+        run: 'false'
+        if: |
+          needs.build_jemalloc_debian_13_amd64.result == 'skipped'
+          && contains(inputs.necessary_jobs, ';Build Jemalloc [debian-13/amd64];')
+
+      - uses: actions/checkout@v5
+      - uses: google-github-actions/auth@v3
+        with:
+          project_id: ${{ vars.GCLOUD_PROJECT_ID }}
+          workload_identity_provider: projects/${{ vars.GCLOUD_PROJECT_NUM }}/locations/global/workloadIdentityPools/github-ci-test/providers/github-ci-test
+      - name: Set up Cloud SDK
+        uses: google-github-actions/setup-gcloud@v3
+        with:
+          version: '>= 363.0.0'
+      - name: Login to Github Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Dump Azure connection string
+        run: echo -n "$CONNECTION_STRING" > azure-connection-string.txt
+        env:
+          CONNECTION_STRING: ${{ secrets.AZURE_CI2_STORAGE_CONNECTION_STRING }}
+      - name: Fetch Ruby source
+        run: ./internal-scripts/ci-cd/download-artifact.sh
+        env:
+          ARTIFACT_NAME: ruby-src-3.3.9
+          ARTIFACT_PATH: .
+          CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
+
+      - name: Download Docker image necessary for building
+        run: ./internal-scripts/ci-cd/download-artifact.sh
+        if: contains(inputs.necessary_jobs, ';Use locally-built Docker image debian-13;')
+        env:
+          ARTIFACT_NAME: 'docker-image-debian-13-amd64'
+          ARTIFACT_PATH: .
+          CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
+      - name: Load Docker image necessary for building
+        run: ./internal-scripts/ci-cd/load-docker-image.sh
+        if: contains(inputs.necessary_jobs, ';Use locally-built Docker image debian-13;')
+        env:
+          TARBALL: image.tar.zst
+
+      - name: Download Docker image necessary for packaging
+        run: ./internal-scripts/ci-cd/download-artifact.sh
+        if: contains(inputs.necessary_jobs, ';Use locally-built Docker image utility;')
+        env:
+          ARTIFACT_NAME: docker-image-utility-amd64
+          ARTIFACT_PATH: .
+          CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
+      - name: Load Docker image necessary for packaging
+        run: ./internal-scripts/ci-cd/load-docker-image.sh
+        if: contains(inputs.necessary_jobs, ';Use locally-built Docker image utility;')
+        env:
+          TARBALL: image.tar.zst
+
+      - name: Fetch Jemalloc binary
+        run: ./internal-scripts/ci-cd/download-artifact.sh
+        env:
+          ARTIFACT_NAME: jemalloc-bin-debian-13-amd64
+          ARTIFACT_PATH: .
+          CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
+
+      - name: Build binaries
+        run: ./internal-scripts/ci-cd/build-ruby-packages/build-binaries.sh
+        env:
+          ENVIRONMENT_NAME: "debian-13"
+          VARIANT_NAME: "jemalloc"
+          RUBY_PACKAGE_VERSION_ID: "3.3"
+          CACHE_KEY_PREFIX: "sccache/debian-13/amd64"
+
+      - name: Build package
+        run: ./internal-scripts/ci-cd/build-ruby-packages/build-package.sh
+        env:
+          DISTRIBUTION_NAME: "debian-13"
+          VARIANT_NAME: "jemalloc"
+          VARIANT_PACKAGE_SUFFIX: "-jemalloc"
+          PACKAGE_FORMAT: "DEB"
+          RUBY_PACKAGE_VERSION_ID: "3.3"
+          RUBY_PACKAGE_REVISION: "9"
+          ARCH: "amd64"
+
+      - name: Archive package artifact to Google Cloud
+        run: ./internal-scripts/ci-cd/upload-artifact.sh
+        env:
+          ARTIFACT_NAME: "ruby-pkg_3.3_debian-13_jemalloc_amd64"
+          ARTIFACT_PATH: output-jemalloc
+          CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
+
+  build_ruby_debian_13-3_3-jemalloc_arm64:
+    name: 'Ruby [debian-13/3.3/jemalloc/arm64]'
+
+    needs: build_jemalloc_debian_13_arm64
+    runs-on: ubuntu-24.04-arm
+    environment: test
+    timeout-minutes: 30
+    permissions:
+      id-token: write
+      packages: read
+    # Run even if a dependent job has been skipped
+    if: |
+      contains(inputs.necessary_jobs, ';Build Ruby [debian-13/3.3/jemalloc/arm64];')
+      && !failure() && !cancelled()
+    steps:
+      - name: Check whether 'Build Jemalloc [debian-13/arm64]' did not fail
+        run: 'false'
+        if: |
+          needs.build_jemalloc_debian_13_arm64.result == 'skipped'
+          && contains(inputs.necessary_jobs, ';Build Jemalloc [debian-13/arm64];')
+
+      - uses: actions/checkout@v5
+      - uses: google-github-actions/auth@v3
+        with:
+          project_id: ${{ vars.GCLOUD_PROJECT_ID }}
+          workload_identity_provider: projects/${{ vars.GCLOUD_PROJECT_NUM }}/locations/global/workloadIdentityPools/github-ci-test/providers/github-ci-test
+      - name: Set up Cloud SDK
+        uses: google-github-actions/setup-gcloud@v3
+        with:
+          version: '>= 363.0.0'
+      - name: Login to Github Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Dump Azure connection string
+        run: echo -n "$CONNECTION_STRING" > azure-connection-string.txt
+        env:
+          CONNECTION_STRING: ${{ secrets.AZURE_CI2_STORAGE_CONNECTION_STRING }}
+      - name: Fetch Ruby source
+        run: ./internal-scripts/ci-cd/download-artifact.sh
+        env:
+          ARTIFACT_NAME: ruby-src-3.3.9
+          ARTIFACT_PATH: .
+          CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
+
+      - name: Download Docker image necessary for building
+        run: ./internal-scripts/ci-cd/download-artifact.sh
+        if: contains(inputs.necessary_jobs, ';Use locally-built Docker image debian-13;')
+        env:
+          ARTIFACT_NAME: 'docker-image-debian-13-arm64'
+          ARTIFACT_PATH: .
+          CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
+      - name: Load Docker image necessary for building
+        run: ./internal-scripts/ci-cd/load-docker-image.sh
+        if: contains(inputs.necessary_jobs, ';Use locally-built Docker image debian-13;')
+        env:
+          TARBALL: image.tar.zst
+
+      - name: Download Docker image necessary for packaging
+        run: ./internal-scripts/ci-cd/download-artifact.sh
+        if: contains(inputs.necessary_jobs, ';Use locally-built Docker image utility;')
+        env:
+          ARTIFACT_NAME: docker-image-utility-arm64
+          ARTIFACT_PATH: .
+          CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
+      - name: Load Docker image necessary for packaging
+        run: ./internal-scripts/ci-cd/load-docker-image.sh
+        if: contains(inputs.necessary_jobs, ';Use locally-built Docker image utility;')
+        env:
+          TARBALL: image.tar.zst
+
+      - name: Fetch Jemalloc binary
+        run: ./internal-scripts/ci-cd/download-artifact.sh
+        env:
+          ARTIFACT_NAME: jemalloc-bin-debian-13-arm64
+          ARTIFACT_PATH: .
+          CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
+
+      - name: Build binaries
+        run: ./internal-scripts/ci-cd/build-ruby-packages/build-binaries.sh
+        env:
+          ENVIRONMENT_NAME: "debian-13"
+          VARIANT_NAME: "jemalloc"
+          RUBY_PACKAGE_VERSION_ID: "3.3"
+          CACHE_KEY_PREFIX: "sccache/debian-13/arm64"
+
+      - name: Build package
+        run: ./internal-scripts/ci-cd/build-ruby-packages/build-package.sh
+        env:
+          DISTRIBUTION_NAME: "debian-13"
+          VARIANT_NAME: "jemalloc"
+          VARIANT_PACKAGE_SUFFIX: "-jemalloc"
+          PACKAGE_FORMAT: "DEB"
+          RUBY_PACKAGE_VERSION_ID: "3.3"
+          RUBY_PACKAGE_REVISION: "9"
+          ARCH: "arm64"
+
+      - name: Archive package artifact to Google Cloud
+        run: ./internal-scripts/ci-cd/upload-artifact.sh
+        env:
+          ARTIFACT_NAME: "ruby-pkg_3.3_debian-13_jemalloc_arm64"
+          ARTIFACT_PATH: output-jemalloc
+          CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
+
+  build_ruby_debian_13-3_3-malloctrim_amd64:
+    name: 'Ruby [debian-13/3.3/malloctrim/amd64]'
+
+    runs-on: ubuntu-24.04
+    environment: test
+    timeout-minutes: 30
+    permissions:
+      id-token: write
+      packages: read
+    # Run even if a dependent job has been skipped
+    if: |
+      contains(inputs.necessary_jobs, ';Build Ruby [debian-13/3.3/malloctrim/amd64];')
+      && !failure() && !cancelled()
+    steps:
+
+
+      - uses: actions/checkout@v5
+      - uses: google-github-actions/auth@v3
+        with:
+          project_id: ${{ vars.GCLOUD_PROJECT_ID }}
+          workload_identity_provider: projects/${{ vars.GCLOUD_PROJECT_NUM }}/locations/global/workloadIdentityPools/github-ci-test/providers/github-ci-test
+      - name: Set up Cloud SDK
+        uses: google-github-actions/setup-gcloud@v3
+        with:
+          version: '>= 363.0.0'
+      - name: Login to Github Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Dump Azure connection string
+        run: echo -n "$CONNECTION_STRING" > azure-connection-string.txt
+        env:
+          CONNECTION_STRING: ${{ secrets.AZURE_CI2_STORAGE_CONNECTION_STRING }}
+      - name: Fetch Ruby source
+        run: ./internal-scripts/ci-cd/download-artifact.sh
+        env:
+          ARTIFACT_NAME: ruby-src-3.3.9
+          ARTIFACT_PATH: .
+          CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
+
+      - name: Download Docker image necessary for building
+        run: ./internal-scripts/ci-cd/download-artifact.sh
+        if: contains(inputs.necessary_jobs, ';Use locally-built Docker image debian-13;')
+        env:
+          ARTIFACT_NAME: 'docker-image-debian-13-amd64'
+          ARTIFACT_PATH: .
+          CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
+      - name: Load Docker image necessary for building
+        run: ./internal-scripts/ci-cd/load-docker-image.sh
+        if: contains(inputs.necessary_jobs, ';Use locally-built Docker image debian-13;')
+        env:
+          TARBALL: image.tar.zst
+
+      - name: Download Docker image necessary for packaging
+        run: ./internal-scripts/ci-cd/download-artifact.sh
+        if: contains(inputs.necessary_jobs, ';Use locally-built Docker image utility;')
+        env:
+          ARTIFACT_NAME: docker-image-utility-amd64
+          ARTIFACT_PATH: .
+          CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
+      - name: Load Docker image necessary for packaging
+        run: ./internal-scripts/ci-cd/load-docker-image.sh
+        if: contains(inputs.necessary_jobs, ';Use locally-built Docker image utility;')
+        env:
+          TARBALL: image.tar.zst
+
+
+
+      - name: Build binaries
+        run: ./internal-scripts/ci-cd/build-ruby-packages/build-binaries.sh
+        env:
+          ENVIRONMENT_NAME: "debian-13"
+          VARIANT_NAME: "malloctrim"
+          RUBY_PACKAGE_VERSION_ID: "3.3"
+          CACHE_KEY_PREFIX: "sccache/debian-13/amd64"
+
+      - name: Build package
+        run: ./internal-scripts/ci-cd/build-ruby-packages/build-package.sh
+        env:
+          DISTRIBUTION_NAME: "debian-13"
+          VARIANT_NAME: "malloctrim"
+          VARIANT_PACKAGE_SUFFIX: "-malloctrim"
+          PACKAGE_FORMAT: "DEB"
+          RUBY_PACKAGE_VERSION_ID: "3.3"
+          RUBY_PACKAGE_REVISION: "9"
+          ARCH: "amd64"
+
+      - name: Archive package artifact to Google Cloud
+        run: ./internal-scripts/ci-cd/upload-artifact.sh
+        env:
+          ARTIFACT_NAME: "ruby-pkg_3.3_debian-13_malloctrim_amd64"
+          ARTIFACT_PATH: output-malloctrim
+          CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
+
+  build_ruby_debian_13-3_3-malloctrim_arm64:
+    name: 'Ruby [debian-13/3.3/malloctrim/arm64]'
+
+    runs-on: ubuntu-24.04-arm
+    environment: test
+    timeout-minutes: 30
+    permissions:
+      id-token: write
+      packages: read
+    # Run even if a dependent job has been skipped
+    if: |
+      contains(inputs.necessary_jobs, ';Build Ruby [debian-13/3.3/malloctrim/arm64];')
+      && !failure() && !cancelled()
+    steps:
+
+
+      - uses: actions/checkout@v5
+      - uses: google-github-actions/auth@v3
+        with:
+          project_id: ${{ vars.GCLOUD_PROJECT_ID }}
+          workload_identity_provider: projects/${{ vars.GCLOUD_PROJECT_NUM }}/locations/global/workloadIdentityPools/github-ci-test/providers/github-ci-test
+      - name: Set up Cloud SDK
+        uses: google-github-actions/setup-gcloud@v3
+        with:
+          version: '>= 363.0.0'
+      - name: Login to Github Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Dump Azure connection string
+        run: echo -n "$CONNECTION_STRING" > azure-connection-string.txt
+        env:
+          CONNECTION_STRING: ${{ secrets.AZURE_CI2_STORAGE_CONNECTION_STRING }}
+      - name: Fetch Ruby source
+        run: ./internal-scripts/ci-cd/download-artifact.sh
+        env:
+          ARTIFACT_NAME: ruby-src-3.3.9
+          ARTIFACT_PATH: .
+          CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
+
+      - name: Download Docker image necessary for building
+        run: ./internal-scripts/ci-cd/download-artifact.sh
+        if: contains(inputs.necessary_jobs, ';Use locally-built Docker image debian-13;')
+        env:
+          ARTIFACT_NAME: 'docker-image-debian-13-arm64'
+          ARTIFACT_PATH: .
+          CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
+      - name: Load Docker image necessary for building
+        run: ./internal-scripts/ci-cd/load-docker-image.sh
+        if: contains(inputs.necessary_jobs, ';Use locally-built Docker image debian-13;')
+        env:
+          TARBALL: image.tar.zst
+
+      - name: Download Docker image necessary for packaging
+        run: ./internal-scripts/ci-cd/download-artifact.sh
+        if: contains(inputs.necessary_jobs, ';Use locally-built Docker image utility;')
+        env:
+          ARTIFACT_NAME: docker-image-utility-arm64
+          ARTIFACT_PATH: .
+          CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
+      - name: Load Docker image necessary for packaging
+        run: ./internal-scripts/ci-cd/load-docker-image.sh
+        if: contains(inputs.necessary_jobs, ';Use locally-built Docker image utility;')
+        env:
+          TARBALL: image.tar.zst
+
+
+
+      - name: Build binaries
+        run: ./internal-scripts/ci-cd/build-ruby-packages/build-binaries.sh
+        env:
+          ENVIRONMENT_NAME: "debian-13"
+          VARIANT_NAME: "malloctrim"
+          RUBY_PACKAGE_VERSION_ID: "3.3"
+          CACHE_KEY_PREFIX: "sccache/debian-13/arm64"
+
+      - name: Build package
+        run: ./internal-scripts/ci-cd/build-ruby-packages/build-package.sh
+        env:
+          DISTRIBUTION_NAME: "debian-13"
+          VARIANT_NAME: "malloctrim"
+          VARIANT_PACKAGE_SUFFIX: "-malloctrim"
+          PACKAGE_FORMAT: "DEB"
+          RUBY_PACKAGE_VERSION_ID: "3.3"
+          RUBY_PACKAGE_REVISION: "9"
+          ARCH: "arm64"
+
+      - name: Archive package artifact to Google Cloud
+        run: ./internal-scripts/ci-cd/upload-artifact.sh
+        env:
+          ARTIFACT_NAME: "ruby-pkg_3.3_debian-13_malloctrim_arm64"
+          ARTIFACT_PATH: output-malloctrim
+          CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
+
+  build_ruby_debian_13-3_4_7-normal_amd64:
+    name: 'Ruby [debian-13/3.4.7/normal/amd64]'
+
+    runs-on: ubuntu-24.04
+    environment: test
+    timeout-minutes: 30
+    permissions:
+      id-token: write
+      packages: read
+    # Run even if a dependent job has been skipped
+    if: |
+      contains(inputs.necessary_jobs, ';Build Ruby [debian-13/3.4.7/normal/amd64];')
+      && !failure() && !cancelled()
+    steps:
+
+
+      - uses: actions/checkout@v5
+      - uses: google-github-actions/auth@v3
+        with:
+          project_id: ${{ vars.GCLOUD_PROJECT_ID }}
+          workload_identity_provider: projects/${{ vars.GCLOUD_PROJECT_NUM }}/locations/global/workloadIdentityPools/github-ci-test/providers/github-ci-test
+      - name: Set up Cloud SDK
+        uses: google-github-actions/setup-gcloud@v3
+        with:
+          version: '>= 363.0.0'
+      - name: Login to Github Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Dump Azure connection string
+        run: echo -n "$CONNECTION_STRING" > azure-connection-string.txt
+        env:
+          CONNECTION_STRING: ${{ secrets.AZURE_CI2_STORAGE_CONNECTION_STRING }}
+      - name: Fetch Ruby source
+        run: ./internal-scripts/ci-cd/download-artifact.sh
+        env:
+          ARTIFACT_NAME: ruby-src-3.4.7
+          ARTIFACT_PATH: .
+          CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
+
+      - name: Download Docker image necessary for building
+        run: ./internal-scripts/ci-cd/download-artifact.sh
+        if: contains(inputs.necessary_jobs, ';Use locally-built Docker image debian-13;')
+        env:
+          ARTIFACT_NAME: 'docker-image-debian-13-amd64'
+          ARTIFACT_PATH: .
+          CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
+      - name: Load Docker image necessary for building
+        run: ./internal-scripts/ci-cd/load-docker-image.sh
+        if: contains(inputs.necessary_jobs, ';Use locally-built Docker image debian-13;')
+        env:
+          TARBALL: image.tar.zst
+
+      - name: Download Docker image necessary for packaging
+        run: ./internal-scripts/ci-cd/download-artifact.sh
+        if: contains(inputs.necessary_jobs, ';Use locally-built Docker image utility;')
+        env:
+          ARTIFACT_NAME: docker-image-utility-amd64
+          ARTIFACT_PATH: .
+          CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
+      - name: Load Docker image necessary for packaging
+        run: ./internal-scripts/ci-cd/load-docker-image.sh
+        if: contains(inputs.necessary_jobs, ';Use locally-built Docker image utility;')
+        env:
+          TARBALL: image.tar.zst
+
+
+
+      - name: Build binaries
+        run: ./internal-scripts/ci-cd/build-ruby-packages/build-binaries.sh
+        env:
+          ENVIRONMENT_NAME: "debian-13"
+          VARIANT_NAME: "normal"
+          RUBY_PACKAGE_VERSION_ID: "3.4.7"
+          CACHE_KEY_PREFIX: "sccache/debian-13/amd64"
+
+      - name: Build package
+        run: ./internal-scripts/ci-cd/build-ruby-packages/build-package.sh
+        env:
+          DISTRIBUTION_NAME: "debian-13"
+          VARIANT_NAME: "normal"
+          VARIANT_PACKAGE_SUFFIX: ""
+          PACKAGE_FORMAT: "DEB"
+          RUBY_PACKAGE_VERSION_ID: "3.4.7"
+          RUBY_PACKAGE_REVISION: "0"
+          ARCH: "amd64"
+
+      - name: Archive package artifact to Google Cloud
+        run: ./internal-scripts/ci-cd/upload-artifact.sh
+        env:
+          ARTIFACT_NAME: "ruby-pkg_3.4.7_debian-13_normal_amd64"
+          ARTIFACT_PATH: output-normal
+          CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
+
+  build_ruby_debian_13-3_4_7-normal_arm64:
+    name: 'Ruby [debian-13/3.4.7/normal/arm64]'
+
+    runs-on: ubuntu-24.04-arm
+    environment: test
+    timeout-minutes: 30
+    permissions:
+      id-token: write
+      packages: read
+    # Run even if a dependent job has been skipped
+    if: |
+      contains(inputs.necessary_jobs, ';Build Ruby [debian-13/3.4.7/normal/arm64];')
+      && !failure() && !cancelled()
+    steps:
+
+
+      - uses: actions/checkout@v5
+      - uses: google-github-actions/auth@v3
+        with:
+          project_id: ${{ vars.GCLOUD_PROJECT_ID }}
+          workload_identity_provider: projects/${{ vars.GCLOUD_PROJECT_NUM }}/locations/global/workloadIdentityPools/github-ci-test/providers/github-ci-test
+      - name: Set up Cloud SDK
+        uses: google-github-actions/setup-gcloud@v3
+        with:
+          version: '>= 363.0.0'
+      - name: Login to Github Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Dump Azure connection string
+        run: echo -n "$CONNECTION_STRING" > azure-connection-string.txt
+        env:
+          CONNECTION_STRING: ${{ secrets.AZURE_CI2_STORAGE_CONNECTION_STRING }}
+      - name: Fetch Ruby source
+        run: ./internal-scripts/ci-cd/download-artifact.sh
+        env:
+          ARTIFACT_NAME: ruby-src-3.4.7
+          ARTIFACT_PATH: .
+          CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
+
+      - name: Download Docker image necessary for building
+        run: ./internal-scripts/ci-cd/download-artifact.sh
+        if: contains(inputs.necessary_jobs, ';Use locally-built Docker image debian-13;')
+        env:
+          ARTIFACT_NAME: 'docker-image-debian-13-arm64'
+          ARTIFACT_PATH: .
+          CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
+      - name: Load Docker image necessary for building
+        run: ./internal-scripts/ci-cd/load-docker-image.sh
+        if: contains(inputs.necessary_jobs, ';Use locally-built Docker image debian-13;')
+        env:
+          TARBALL: image.tar.zst
+
+      - name: Download Docker image necessary for packaging
+        run: ./internal-scripts/ci-cd/download-artifact.sh
+        if: contains(inputs.necessary_jobs, ';Use locally-built Docker image utility;')
+        env:
+          ARTIFACT_NAME: docker-image-utility-arm64
+          ARTIFACT_PATH: .
+          CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
+      - name: Load Docker image necessary for packaging
+        run: ./internal-scripts/ci-cd/load-docker-image.sh
+        if: contains(inputs.necessary_jobs, ';Use locally-built Docker image utility;')
+        env:
+          TARBALL: image.tar.zst
+
+
+
+      - name: Build binaries
+        run: ./internal-scripts/ci-cd/build-ruby-packages/build-binaries.sh
+        env:
+          ENVIRONMENT_NAME: "debian-13"
+          VARIANT_NAME: "normal"
+          RUBY_PACKAGE_VERSION_ID: "3.4.7"
+          CACHE_KEY_PREFIX: "sccache/debian-13/arm64"
+
+      - name: Build package
+        run: ./internal-scripts/ci-cd/build-ruby-packages/build-package.sh
+        env:
+          DISTRIBUTION_NAME: "debian-13"
+          VARIANT_NAME: "normal"
+          VARIANT_PACKAGE_SUFFIX: ""
+          PACKAGE_FORMAT: "DEB"
+          RUBY_PACKAGE_VERSION_ID: "3.4.7"
+          RUBY_PACKAGE_REVISION: "0"
+          ARCH: "arm64"
+
+      - name: Archive package artifact to Google Cloud
+        run: ./internal-scripts/ci-cd/upload-artifact.sh
+        env:
+          ARTIFACT_NAME: "ruby-pkg_3.4.7_debian-13_normal_arm64"
+          ARTIFACT_PATH: output-normal
+          CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
+
+  build_ruby_debian_13-3_4_7-jemalloc_amd64:
+    name: 'Ruby [debian-13/3.4.7/jemalloc/amd64]'
+
+    needs: build_jemalloc_debian_13_amd64
+    runs-on: ubuntu-24.04
+    environment: test
+    timeout-minutes: 30
+    permissions:
+      id-token: write
+      packages: read
+    # Run even if a dependent job has been skipped
+    if: |
+      contains(inputs.necessary_jobs, ';Build Ruby [debian-13/3.4.7/jemalloc/amd64];')
+      && !failure() && !cancelled()
+    steps:
+      - name: Check whether 'Build Jemalloc [debian-13/amd64]' did not fail
+        run: 'false'
+        if: |
+          needs.build_jemalloc_debian_13_amd64.result == 'skipped'
+          && contains(inputs.necessary_jobs, ';Build Jemalloc [debian-13/amd64];')
+
+      - uses: actions/checkout@v5
+      - uses: google-github-actions/auth@v3
+        with:
+          project_id: ${{ vars.GCLOUD_PROJECT_ID }}
+          workload_identity_provider: projects/${{ vars.GCLOUD_PROJECT_NUM }}/locations/global/workloadIdentityPools/github-ci-test/providers/github-ci-test
+      - name: Set up Cloud SDK
+        uses: google-github-actions/setup-gcloud@v3
+        with:
+          version: '>= 363.0.0'
+      - name: Login to Github Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Dump Azure connection string
+        run: echo -n "$CONNECTION_STRING" > azure-connection-string.txt
+        env:
+          CONNECTION_STRING: ${{ secrets.AZURE_CI2_STORAGE_CONNECTION_STRING }}
+      - name: Fetch Ruby source
+        run: ./internal-scripts/ci-cd/download-artifact.sh
+        env:
+          ARTIFACT_NAME: ruby-src-3.4.7
+          ARTIFACT_PATH: .
+          CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
+
+      - name: Download Docker image necessary for building
+        run: ./internal-scripts/ci-cd/download-artifact.sh
+        if: contains(inputs.necessary_jobs, ';Use locally-built Docker image debian-13;')
+        env:
+          ARTIFACT_NAME: 'docker-image-debian-13-amd64'
+          ARTIFACT_PATH: .
+          CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
+      - name: Load Docker image necessary for building
+        run: ./internal-scripts/ci-cd/load-docker-image.sh
+        if: contains(inputs.necessary_jobs, ';Use locally-built Docker image debian-13;')
+        env:
+          TARBALL: image.tar.zst
+
+      - name: Download Docker image necessary for packaging
+        run: ./internal-scripts/ci-cd/download-artifact.sh
+        if: contains(inputs.necessary_jobs, ';Use locally-built Docker image utility;')
+        env:
+          ARTIFACT_NAME: docker-image-utility-amd64
+          ARTIFACT_PATH: .
+          CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
+      - name: Load Docker image necessary for packaging
+        run: ./internal-scripts/ci-cd/load-docker-image.sh
+        if: contains(inputs.necessary_jobs, ';Use locally-built Docker image utility;')
+        env:
+          TARBALL: image.tar.zst
+
+      - name: Fetch Jemalloc binary
+        run: ./internal-scripts/ci-cd/download-artifact.sh
+        env:
+          ARTIFACT_NAME: jemalloc-bin-debian-13-amd64
+          ARTIFACT_PATH: .
+          CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
+
+      - name: Build binaries
+        run: ./internal-scripts/ci-cd/build-ruby-packages/build-binaries.sh
+        env:
+          ENVIRONMENT_NAME: "debian-13"
+          VARIANT_NAME: "jemalloc"
+          RUBY_PACKAGE_VERSION_ID: "3.4.7"
+          CACHE_KEY_PREFIX: "sccache/debian-13/amd64"
+
+      - name: Build package
+        run: ./internal-scripts/ci-cd/build-ruby-packages/build-package.sh
+        env:
+          DISTRIBUTION_NAME: "debian-13"
+          VARIANT_NAME: "jemalloc"
+          VARIANT_PACKAGE_SUFFIX: "-jemalloc"
+          PACKAGE_FORMAT: "DEB"
+          RUBY_PACKAGE_VERSION_ID: "3.4.7"
+          RUBY_PACKAGE_REVISION: "0"
+          ARCH: "amd64"
+
+      - name: Archive package artifact to Google Cloud
+        run: ./internal-scripts/ci-cd/upload-artifact.sh
+        env:
+          ARTIFACT_NAME: "ruby-pkg_3.4.7_debian-13_jemalloc_amd64"
+          ARTIFACT_PATH: output-jemalloc
+          CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
+
+  build_ruby_debian_13-3_4_7-jemalloc_arm64:
+    name: 'Ruby [debian-13/3.4.7/jemalloc/arm64]'
+
+    needs: build_jemalloc_debian_13_arm64
+    runs-on: ubuntu-24.04-arm
+    environment: test
+    timeout-minutes: 30
+    permissions:
+      id-token: write
+      packages: read
+    # Run even if a dependent job has been skipped
+    if: |
+      contains(inputs.necessary_jobs, ';Build Ruby [debian-13/3.4.7/jemalloc/arm64];')
+      && !failure() && !cancelled()
+    steps:
+      - name: Check whether 'Build Jemalloc [debian-13/arm64]' did not fail
+        run: 'false'
+        if: |
+          needs.build_jemalloc_debian_13_arm64.result == 'skipped'
+          && contains(inputs.necessary_jobs, ';Build Jemalloc [debian-13/arm64];')
+
+      - uses: actions/checkout@v5
+      - uses: google-github-actions/auth@v3
+        with:
+          project_id: ${{ vars.GCLOUD_PROJECT_ID }}
+          workload_identity_provider: projects/${{ vars.GCLOUD_PROJECT_NUM }}/locations/global/workloadIdentityPools/github-ci-test/providers/github-ci-test
+      - name: Set up Cloud SDK
+        uses: google-github-actions/setup-gcloud@v3
+        with:
+          version: '>= 363.0.0'
+      - name: Login to Github Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Dump Azure connection string
+        run: echo -n "$CONNECTION_STRING" > azure-connection-string.txt
+        env:
+          CONNECTION_STRING: ${{ secrets.AZURE_CI2_STORAGE_CONNECTION_STRING }}
+      - name: Fetch Ruby source
+        run: ./internal-scripts/ci-cd/download-artifact.sh
+        env:
+          ARTIFACT_NAME: ruby-src-3.4.7
+          ARTIFACT_PATH: .
+          CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
+
+      - name: Download Docker image necessary for building
+        run: ./internal-scripts/ci-cd/download-artifact.sh
+        if: contains(inputs.necessary_jobs, ';Use locally-built Docker image debian-13;')
+        env:
+          ARTIFACT_NAME: 'docker-image-debian-13-arm64'
+          ARTIFACT_PATH: .
+          CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
+      - name: Load Docker image necessary for building
+        run: ./internal-scripts/ci-cd/load-docker-image.sh
+        if: contains(inputs.necessary_jobs, ';Use locally-built Docker image debian-13;')
+        env:
+          TARBALL: image.tar.zst
+
+      - name: Download Docker image necessary for packaging
+        run: ./internal-scripts/ci-cd/download-artifact.sh
+        if: contains(inputs.necessary_jobs, ';Use locally-built Docker image utility;')
+        env:
+          ARTIFACT_NAME: docker-image-utility-arm64
+          ARTIFACT_PATH: .
+          CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
+      - name: Load Docker image necessary for packaging
+        run: ./internal-scripts/ci-cd/load-docker-image.sh
+        if: contains(inputs.necessary_jobs, ';Use locally-built Docker image utility;')
+        env:
+          TARBALL: image.tar.zst
+
+      - name: Fetch Jemalloc binary
+        run: ./internal-scripts/ci-cd/download-artifact.sh
+        env:
+          ARTIFACT_NAME: jemalloc-bin-debian-13-arm64
+          ARTIFACT_PATH: .
+          CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
+
+      - name: Build binaries
+        run: ./internal-scripts/ci-cd/build-ruby-packages/build-binaries.sh
+        env:
+          ENVIRONMENT_NAME: "debian-13"
+          VARIANT_NAME: "jemalloc"
+          RUBY_PACKAGE_VERSION_ID: "3.4.7"
+          CACHE_KEY_PREFIX: "sccache/debian-13/arm64"
+
+      - name: Build package
+        run: ./internal-scripts/ci-cd/build-ruby-packages/build-package.sh
+        env:
+          DISTRIBUTION_NAME: "debian-13"
+          VARIANT_NAME: "jemalloc"
+          VARIANT_PACKAGE_SUFFIX: "-jemalloc"
+          PACKAGE_FORMAT: "DEB"
+          RUBY_PACKAGE_VERSION_ID: "3.4.7"
+          RUBY_PACKAGE_REVISION: "0"
+          ARCH: "arm64"
+
+      - name: Archive package artifact to Google Cloud
+        run: ./internal-scripts/ci-cd/upload-artifact.sh
+        env:
+          ARTIFACT_NAME: "ruby-pkg_3.4.7_debian-13_jemalloc_arm64"
+          ARTIFACT_PATH: output-jemalloc
+          CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
+
+  build_ruby_debian_13-3_4_7-malloctrim_amd64:
+    name: 'Ruby [debian-13/3.4.7/malloctrim/amd64]'
+
+    runs-on: ubuntu-24.04
+    environment: test
+    timeout-minutes: 30
+    permissions:
+      id-token: write
+      packages: read
+    # Run even if a dependent job has been skipped
+    if: |
+      contains(inputs.necessary_jobs, ';Build Ruby [debian-13/3.4.7/malloctrim/amd64];')
+      && !failure() && !cancelled()
+    steps:
+
+
+      - uses: actions/checkout@v5
+      - uses: google-github-actions/auth@v3
+        with:
+          project_id: ${{ vars.GCLOUD_PROJECT_ID }}
+          workload_identity_provider: projects/${{ vars.GCLOUD_PROJECT_NUM }}/locations/global/workloadIdentityPools/github-ci-test/providers/github-ci-test
+      - name: Set up Cloud SDK
+        uses: google-github-actions/setup-gcloud@v3
+        with:
+          version: '>= 363.0.0'
+      - name: Login to Github Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Dump Azure connection string
+        run: echo -n "$CONNECTION_STRING" > azure-connection-string.txt
+        env:
+          CONNECTION_STRING: ${{ secrets.AZURE_CI2_STORAGE_CONNECTION_STRING }}
+      - name: Fetch Ruby source
+        run: ./internal-scripts/ci-cd/download-artifact.sh
+        env:
+          ARTIFACT_NAME: ruby-src-3.4.7
+          ARTIFACT_PATH: .
+          CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
+
+      - name: Download Docker image necessary for building
+        run: ./internal-scripts/ci-cd/download-artifact.sh
+        if: contains(inputs.necessary_jobs, ';Use locally-built Docker image debian-13;')
+        env:
+          ARTIFACT_NAME: 'docker-image-debian-13-amd64'
+          ARTIFACT_PATH: .
+          CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
+      - name: Load Docker image necessary for building
+        run: ./internal-scripts/ci-cd/load-docker-image.sh
+        if: contains(inputs.necessary_jobs, ';Use locally-built Docker image debian-13;')
+        env:
+          TARBALL: image.tar.zst
+
+      - name: Download Docker image necessary for packaging
+        run: ./internal-scripts/ci-cd/download-artifact.sh
+        if: contains(inputs.necessary_jobs, ';Use locally-built Docker image utility;')
+        env:
+          ARTIFACT_NAME: docker-image-utility-amd64
+          ARTIFACT_PATH: .
+          CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
+      - name: Load Docker image necessary for packaging
+        run: ./internal-scripts/ci-cd/load-docker-image.sh
+        if: contains(inputs.necessary_jobs, ';Use locally-built Docker image utility;')
+        env:
+          TARBALL: image.tar.zst
+
+
+
+      - name: Build binaries
+        run: ./internal-scripts/ci-cd/build-ruby-packages/build-binaries.sh
+        env:
+          ENVIRONMENT_NAME: "debian-13"
+          VARIANT_NAME: "malloctrim"
+          RUBY_PACKAGE_VERSION_ID: "3.4.7"
+          CACHE_KEY_PREFIX: "sccache/debian-13/amd64"
+
+      - name: Build package
+        run: ./internal-scripts/ci-cd/build-ruby-packages/build-package.sh
+        env:
+          DISTRIBUTION_NAME: "debian-13"
+          VARIANT_NAME: "malloctrim"
+          VARIANT_PACKAGE_SUFFIX: "-malloctrim"
+          PACKAGE_FORMAT: "DEB"
+          RUBY_PACKAGE_VERSION_ID: "3.4.7"
+          RUBY_PACKAGE_REVISION: "0"
+          ARCH: "amd64"
+
+      - name: Archive package artifact to Google Cloud
+        run: ./internal-scripts/ci-cd/upload-artifact.sh
+        env:
+          ARTIFACT_NAME: "ruby-pkg_3.4.7_debian-13_malloctrim_amd64"
+          ARTIFACT_PATH: output-malloctrim
+          CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
+
+  build_ruby_debian_13-3_4_7-malloctrim_arm64:
+    name: 'Ruby [debian-13/3.4.7/malloctrim/arm64]'
+
+    runs-on: ubuntu-24.04-arm
+    environment: test
+    timeout-minutes: 30
+    permissions:
+      id-token: write
+      packages: read
+    # Run even if a dependent job has been skipped
+    if: |
+      contains(inputs.necessary_jobs, ';Build Ruby [debian-13/3.4.7/malloctrim/arm64];')
+      && !failure() && !cancelled()
+    steps:
+
+
+      - uses: actions/checkout@v5
+      - uses: google-github-actions/auth@v3
+        with:
+          project_id: ${{ vars.GCLOUD_PROJECT_ID }}
+          workload_identity_provider: projects/${{ vars.GCLOUD_PROJECT_NUM }}/locations/global/workloadIdentityPools/github-ci-test/providers/github-ci-test
+      - name: Set up Cloud SDK
+        uses: google-github-actions/setup-gcloud@v3
+        with:
+          version: '>= 363.0.0'
+      - name: Login to Github Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Dump Azure connection string
+        run: echo -n "$CONNECTION_STRING" > azure-connection-string.txt
+        env:
+          CONNECTION_STRING: ${{ secrets.AZURE_CI2_STORAGE_CONNECTION_STRING }}
+      - name: Fetch Ruby source
+        run: ./internal-scripts/ci-cd/download-artifact.sh
+        env:
+          ARTIFACT_NAME: ruby-src-3.4.7
+          ARTIFACT_PATH: .
+          CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
+
+      - name: Download Docker image necessary for building
+        run: ./internal-scripts/ci-cd/download-artifact.sh
+        if: contains(inputs.necessary_jobs, ';Use locally-built Docker image debian-13;')
+        env:
+          ARTIFACT_NAME: 'docker-image-debian-13-arm64'
+          ARTIFACT_PATH: .
+          CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
+      - name: Load Docker image necessary for building
+        run: ./internal-scripts/ci-cd/load-docker-image.sh
+        if: contains(inputs.necessary_jobs, ';Use locally-built Docker image debian-13;')
+        env:
+          TARBALL: image.tar.zst
+
+      - name: Download Docker image necessary for packaging
+        run: ./internal-scripts/ci-cd/download-artifact.sh
+        if: contains(inputs.necessary_jobs, ';Use locally-built Docker image utility;')
+        env:
+          ARTIFACT_NAME: docker-image-utility-arm64
+          ARTIFACT_PATH: .
+          CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
+      - name: Load Docker image necessary for packaging
+        run: ./internal-scripts/ci-cd/load-docker-image.sh
+        if: contains(inputs.necessary_jobs, ';Use locally-built Docker image utility;')
+        env:
+          TARBALL: image.tar.zst
+
+
+
+      - name: Build binaries
+        run: ./internal-scripts/ci-cd/build-ruby-packages/build-binaries.sh
+        env:
+          ENVIRONMENT_NAME: "debian-13"
+          VARIANT_NAME: "malloctrim"
+          RUBY_PACKAGE_VERSION_ID: "3.4.7"
+          CACHE_KEY_PREFIX: "sccache/debian-13/arm64"
+
+      - name: Build package
+        run: ./internal-scripts/ci-cd/build-ruby-packages/build-package.sh
+        env:
+          DISTRIBUTION_NAME: "debian-13"
+          VARIANT_NAME: "malloctrim"
+          VARIANT_PACKAGE_SUFFIX: "-malloctrim"
+          PACKAGE_FORMAT: "DEB"
+          RUBY_PACKAGE_VERSION_ID: "3.4.7"
+          RUBY_PACKAGE_REVISION: "0"
+          ARCH: "arm64"
+
+      - name: Archive package artifact to Google Cloud
+        run: ./internal-scripts/ci-cd/upload-artifact.sh
+        env:
+          ARTIFACT_NAME: "ruby-pkg_3.4.7_debian-13_malloctrim_arm64"
+          ARTIFACT_PATH: output-malloctrim
+          CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
+
+  build_ruby_debian_13-3_3_9-normal_amd64:
+    name: 'Ruby [debian-13/3.3.9/normal/amd64]'
+
+    runs-on: ubuntu-24.04
+    environment: test
+    timeout-minutes: 30
+    permissions:
+      id-token: write
+      packages: read
+    # Run even if a dependent job has been skipped
+    if: |
+      contains(inputs.necessary_jobs, ';Build Ruby [debian-13/3.3.9/normal/amd64];')
+      && !failure() && !cancelled()
+    steps:
+
+
+      - uses: actions/checkout@v5
+      - uses: google-github-actions/auth@v3
+        with:
+          project_id: ${{ vars.GCLOUD_PROJECT_ID }}
+          workload_identity_provider: projects/${{ vars.GCLOUD_PROJECT_NUM }}/locations/global/workloadIdentityPools/github-ci-test/providers/github-ci-test
+      - name: Set up Cloud SDK
+        uses: google-github-actions/setup-gcloud@v3
+        with:
+          version: '>= 363.0.0'
+      - name: Login to Github Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Dump Azure connection string
+        run: echo -n "$CONNECTION_STRING" > azure-connection-string.txt
+        env:
+          CONNECTION_STRING: ${{ secrets.AZURE_CI2_STORAGE_CONNECTION_STRING }}
+      - name: Fetch Ruby source
+        run: ./internal-scripts/ci-cd/download-artifact.sh
+        env:
+          ARTIFACT_NAME: ruby-src-3.3.9
+          ARTIFACT_PATH: .
+          CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
+
+      - name: Download Docker image necessary for building
+        run: ./internal-scripts/ci-cd/download-artifact.sh
+        if: contains(inputs.necessary_jobs, ';Use locally-built Docker image debian-13;')
+        env:
+          ARTIFACT_NAME: 'docker-image-debian-13-amd64'
+          ARTIFACT_PATH: .
+          CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
+      - name: Load Docker image necessary for building
+        run: ./internal-scripts/ci-cd/load-docker-image.sh
+        if: contains(inputs.necessary_jobs, ';Use locally-built Docker image debian-13;')
+        env:
+          TARBALL: image.tar.zst
+
+      - name: Download Docker image necessary for packaging
+        run: ./internal-scripts/ci-cd/download-artifact.sh
+        if: contains(inputs.necessary_jobs, ';Use locally-built Docker image utility;')
+        env:
+          ARTIFACT_NAME: docker-image-utility-amd64
+          ARTIFACT_PATH: .
+          CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
+      - name: Load Docker image necessary for packaging
+        run: ./internal-scripts/ci-cd/load-docker-image.sh
+        if: contains(inputs.necessary_jobs, ';Use locally-built Docker image utility;')
+        env:
+          TARBALL: image.tar.zst
+
+
 
       - name: Build binaries
         run: ./internal-scripts/ci-cd/build-ruby-packages/build-binaries.sh
@@ -1064,7 +2023,7 @@ jobs:
           ENVIRONMENT_NAME: "debian-13"
           VARIANT_NAME: "normal"
           RUBY_PACKAGE_VERSION_ID: "3.3.9"
-          CACHE_KEY_PREFIX: "sccache/debian-13"
+          CACHE_KEY_PREFIX: "sccache/debian-13/amd64"
 
       - name: Build package
         run: ./internal-scripts/ci-cd/build-ruby-packages/build-package.sh
@@ -1075,19 +2034,19 @@ jobs:
           PACKAGE_FORMAT: "DEB"
           RUBY_PACKAGE_VERSION_ID: "3.3.9"
           RUBY_PACKAGE_REVISION: "0"
+          ARCH: "amd64"
 
       - name: Archive package artifact to Google Cloud
         run: ./internal-scripts/ci-cd/upload-artifact.sh
         env:
-          ARTIFACT_NAME: "ruby-pkg_3.3.9_debian-13_normal"
+          ARTIFACT_NAME: "ruby-pkg_3.3.9_debian-13_normal_amd64"
           ARTIFACT_PATH: output-normal
           CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
 
-  build_ruby_debian_13-3_3_9-jemalloc:
-    name: 'Ruby [debian-13/3.3.9/jemalloc]'
+  build_ruby_debian_13-3_3_9-normal_arm64:
+    name: 'Ruby [debian-13/3.3.9/normal/arm64]'
 
-    needs: build_jemalloc_debian_13
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-24.04-arm
     environment: test
     timeout-minutes: 30
     permissions:
@@ -1095,15 +2054,10 @@ jobs:
       packages: read
     # Run even if a dependent job has been skipped
     if: |
-      contains(inputs.necessary_jobs, ';Build Ruby [debian-13/3.3.9/jemalloc];')
+      contains(inputs.necessary_jobs, ';Build Ruby [debian-13/3.3.9/normal/arm64];')
       && !failure() && !cancelled()
     steps:
-      
-      - name: Check whether 'Build Jemalloc [debian-13]' did not fail
-        run: 'false'
-        if: |
-          needs.build_jemalloc_debian_13.result == 'skipped'
-          && contains(inputs.necessary_jobs, ';Build Jemalloc [debian-13];')        
+
 
       - uses: actions/checkout@v5
       - uses: google-github-actions/auth@v3
@@ -1135,7 +2089,7 @@ jobs:
         run: ./internal-scripts/ci-cd/download-artifact.sh
         if: contains(inputs.necessary_jobs, ';Use locally-built Docker image debian-13;')
         env:
-          ARTIFACT_NAME: 'docker-image-debian-13'
+          ARTIFACT_NAME: 'docker-image-debian-13-arm64'
           ARTIFACT_PATH: .
           CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
       - name: Load Docker image necessary for building
@@ -1148,7 +2102,7 @@ jobs:
         run: ./internal-scripts/ci-cd/download-artifact.sh
         if: contains(inputs.necessary_jobs, ';Use locally-built Docker image utility;')
         env:
-          ARTIFACT_NAME: docker-image-utility
+          ARTIFACT_NAME: docker-image-utility-arm64
           ARTIFACT_PATH: .
           CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
       - name: Load Docker image necessary for packaging
@@ -1157,13 +2111,113 @@ jobs:
         env:
           TARBALL: image.tar.zst
 
-      
+
+
+      - name: Build binaries
+        run: ./internal-scripts/ci-cd/build-ruby-packages/build-binaries.sh
+        env:
+          ENVIRONMENT_NAME: "debian-13"
+          VARIANT_NAME: "normal"
+          RUBY_PACKAGE_VERSION_ID: "3.3.9"
+          CACHE_KEY_PREFIX: "sccache/debian-13/arm64"
+
+      - name: Build package
+        run: ./internal-scripts/ci-cd/build-ruby-packages/build-package.sh
+        env:
+          DISTRIBUTION_NAME: "debian-13"
+          VARIANT_NAME: "normal"
+          VARIANT_PACKAGE_SUFFIX: ""
+          PACKAGE_FORMAT: "DEB"
+          RUBY_PACKAGE_VERSION_ID: "3.3.9"
+          RUBY_PACKAGE_REVISION: "0"
+          ARCH: "arm64"
+
+      - name: Archive package artifact to Google Cloud
+        run: ./internal-scripts/ci-cd/upload-artifact.sh
+        env:
+          ARTIFACT_NAME: "ruby-pkg_3.3.9_debian-13_normal_arm64"
+          ARTIFACT_PATH: output-normal
+          CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
+
+  build_ruby_debian_13-3_3_9-jemalloc_amd64:
+    name: 'Ruby [debian-13/3.3.9/jemalloc/amd64]'
+
+    needs: build_jemalloc_debian_13_amd64
+    runs-on: ubuntu-24.04
+    environment: test
+    timeout-minutes: 30
+    permissions:
+      id-token: write
+      packages: read
+    # Run even if a dependent job has been skipped
+    if: |
+      contains(inputs.necessary_jobs, ';Build Ruby [debian-13/3.3.9/jemalloc/amd64];')
+      && !failure() && !cancelled()
+    steps:
+      - name: Check whether 'Build Jemalloc [debian-13/amd64]' did not fail
+        run: 'false'
+        if: |
+          needs.build_jemalloc_debian_13_amd64.result == 'skipped'
+          && contains(inputs.necessary_jobs, ';Build Jemalloc [debian-13/amd64];')
+
+      - uses: actions/checkout@v5
+      - uses: google-github-actions/auth@v3
+        with:
+          project_id: ${{ vars.GCLOUD_PROJECT_ID }}
+          workload_identity_provider: projects/${{ vars.GCLOUD_PROJECT_NUM }}/locations/global/workloadIdentityPools/github-ci-test/providers/github-ci-test
+      - name: Set up Cloud SDK
+        uses: google-github-actions/setup-gcloud@v3
+        with:
+          version: '>= 363.0.0'
+      - name: Login to Github Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Dump Azure connection string
+        run: echo -n "$CONNECTION_STRING" > azure-connection-string.txt
+        env:
+          CONNECTION_STRING: ${{ secrets.AZURE_CI2_STORAGE_CONNECTION_STRING }}
+      - name: Fetch Ruby source
+        run: ./internal-scripts/ci-cd/download-artifact.sh
+        env:
+          ARTIFACT_NAME: ruby-src-3.3.9
+          ARTIFACT_PATH: .
+          CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
+
+      - name: Download Docker image necessary for building
+        run: ./internal-scripts/ci-cd/download-artifact.sh
+        if: contains(inputs.necessary_jobs, ';Use locally-built Docker image debian-13;')
+        env:
+          ARTIFACT_NAME: 'docker-image-debian-13-amd64'
+          ARTIFACT_PATH: .
+          CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
+      - name: Load Docker image necessary for building
+        run: ./internal-scripts/ci-cd/load-docker-image.sh
+        if: contains(inputs.necessary_jobs, ';Use locally-built Docker image debian-13;')
+        env:
+          TARBALL: image.tar.zst
+
+      - name: Download Docker image necessary for packaging
+        run: ./internal-scripts/ci-cd/download-artifact.sh
+        if: contains(inputs.necessary_jobs, ';Use locally-built Docker image utility;')
+        env:
+          ARTIFACT_NAME: docker-image-utility-amd64
+          ARTIFACT_PATH: .
+          CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
+      - name: Load Docker image necessary for packaging
+        run: ./internal-scripts/ci-cd/load-docker-image.sh
+        if: contains(inputs.necessary_jobs, ';Use locally-built Docker image utility;')
+        env:
+          TARBALL: image.tar.zst
+
       - name: Fetch Jemalloc binary
         run: ./internal-scripts/ci-cd/download-artifact.sh
         env:
-          ARTIFACT_NAME: jemalloc-bin-debian-13
+          ARTIFACT_NAME: jemalloc-bin-debian-13-amd64
           ARTIFACT_PATH: .
-          CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}        
+          CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
 
       - name: Build binaries
         run: ./internal-scripts/ci-cd/build-ruby-packages/build-binaries.sh
@@ -1171,7 +2225,7 @@ jobs:
           ENVIRONMENT_NAME: "debian-13"
           VARIANT_NAME: "jemalloc"
           RUBY_PACKAGE_VERSION_ID: "3.3.9"
-          CACHE_KEY_PREFIX: "sccache/debian-13"
+          CACHE_KEY_PREFIX: "sccache/debian-13/amd64"
 
       - name: Build package
         run: ./internal-scripts/ci-cd/build-ruby-packages/build-package.sh
@@ -1182,18 +2236,20 @@ jobs:
           PACKAGE_FORMAT: "DEB"
           RUBY_PACKAGE_VERSION_ID: "3.3.9"
           RUBY_PACKAGE_REVISION: "0"
+          ARCH: "amd64"
 
       - name: Archive package artifact to Google Cloud
         run: ./internal-scripts/ci-cd/upload-artifact.sh
         env:
-          ARTIFACT_NAME: "ruby-pkg_3.3.9_debian-13_jemalloc"
+          ARTIFACT_NAME: "ruby-pkg_3.3.9_debian-13_jemalloc_amd64"
           ARTIFACT_PATH: output-jemalloc
           CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
 
-  build_ruby_debian_13-3_3_9-malloctrim:
-    name: 'Ruby [debian-13/3.3.9/malloctrim]'
+  build_ruby_debian_13-3_3_9-jemalloc_arm64:
+    name: 'Ruby [debian-13/3.3.9/jemalloc/arm64]'
 
-    runs-on: ubuntu-24.04
+    needs: build_jemalloc_debian_13_arm64
+    runs-on: ubuntu-24.04-arm
     environment: test
     timeout-minutes: 30
     permissions:
@@ -1201,10 +2257,14 @@ jobs:
       packages: read
     # Run even if a dependent job has been skipped
     if: |
-      contains(inputs.necessary_jobs, ';Build Ruby [debian-13/3.3.9/malloctrim];')
+      contains(inputs.necessary_jobs, ';Build Ruby [debian-13/3.3.9/jemalloc/arm64];')
       && !failure() && !cancelled()
     steps:
-      
+      - name: Check whether 'Build Jemalloc [debian-13/arm64]' did not fail
+        run: 'false'
+        if: |
+          needs.build_jemalloc_debian_13_arm64.result == 'skipped'
+          && contains(inputs.necessary_jobs, ';Build Jemalloc [debian-13/arm64];')
 
       - uses: actions/checkout@v5
       - uses: google-github-actions/auth@v3
@@ -1236,7 +2296,7 @@ jobs:
         run: ./internal-scripts/ci-cd/download-artifact.sh
         if: contains(inputs.necessary_jobs, ';Use locally-built Docker image debian-13;')
         env:
-          ARTIFACT_NAME: 'docker-image-debian-13'
+          ARTIFACT_NAME: 'docker-image-debian-13-arm64'
           ARTIFACT_PATH: .
           CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
       - name: Load Docker image necessary for building
@@ -1249,7 +2309,7 @@ jobs:
         run: ./internal-scripts/ci-cd/download-artifact.sh
         if: contains(inputs.necessary_jobs, ';Use locally-built Docker image utility;')
         env:
-          ARTIFACT_NAME: docker-image-utility
+          ARTIFACT_NAME: docker-image-utility-arm64
           ARTIFACT_PATH: .
           CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
       - name: Load Docker image necessary for packaging
@@ -1258,7 +2318,108 @@ jobs:
         env:
           TARBALL: image.tar.zst
 
-      
+      - name: Fetch Jemalloc binary
+        run: ./internal-scripts/ci-cd/download-artifact.sh
+        env:
+          ARTIFACT_NAME: jemalloc-bin-debian-13-arm64
+          ARTIFACT_PATH: .
+          CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
+
+      - name: Build binaries
+        run: ./internal-scripts/ci-cd/build-ruby-packages/build-binaries.sh
+        env:
+          ENVIRONMENT_NAME: "debian-13"
+          VARIANT_NAME: "jemalloc"
+          RUBY_PACKAGE_VERSION_ID: "3.3.9"
+          CACHE_KEY_PREFIX: "sccache/debian-13/arm64"
+
+      - name: Build package
+        run: ./internal-scripts/ci-cd/build-ruby-packages/build-package.sh
+        env:
+          DISTRIBUTION_NAME: "debian-13"
+          VARIANT_NAME: "jemalloc"
+          VARIANT_PACKAGE_SUFFIX: "-jemalloc"
+          PACKAGE_FORMAT: "DEB"
+          RUBY_PACKAGE_VERSION_ID: "3.3.9"
+          RUBY_PACKAGE_REVISION: "0"
+          ARCH: "arm64"
+
+      - name: Archive package artifact to Google Cloud
+        run: ./internal-scripts/ci-cd/upload-artifact.sh
+        env:
+          ARTIFACT_NAME: "ruby-pkg_3.3.9_debian-13_jemalloc_arm64"
+          ARTIFACT_PATH: output-jemalloc
+          CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
+
+  build_ruby_debian_13-3_3_9-malloctrim_amd64:
+    name: 'Ruby [debian-13/3.3.9/malloctrim/amd64]'
+
+    runs-on: ubuntu-24.04
+    environment: test
+    timeout-minutes: 30
+    permissions:
+      id-token: write
+      packages: read
+    # Run even if a dependent job has been skipped
+    if: |
+      contains(inputs.necessary_jobs, ';Build Ruby [debian-13/3.3.9/malloctrim/amd64];')
+      && !failure() && !cancelled()
+    steps:
+
+
+      - uses: actions/checkout@v5
+      - uses: google-github-actions/auth@v3
+        with:
+          project_id: ${{ vars.GCLOUD_PROJECT_ID }}
+          workload_identity_provider: projects/${{ vars.GCLOUD_PROJECT_NUM }}/locations/global/workloadIdentityPools/github-ci-test/providers/github-ci-test
+      - name: Set up Cloud SDK
+        uses: google-github-actions/setup-gcloud@v3
+        with:
+          version: '>= 363.0.0'
+      - name: Login to Github Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Dump Azure connection string
+        run: echo -n "$CONNECTION_STRING" > azure-connection-string.txt
+        env:
+          CONNECTION_STRING: ${{ secrets.AZURE_CI2_STORAGE_CONNECTION_STRING }}
+      - name: Fetch Ruby source
+        run: ./internal-scripts/ci-cd/download-artifact.sh
+        env:
+          ARTIFACT_NAME: ruby-src-3.3.9
+          ARTIFACT_PATH: .
+          CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
+
+      - name: Download Docker image necessary for building
+        run: ./internal-scripts/ci-cd/download-artifact.sh
+        if: contains(inputs.necessary_jobs, ';Use locally-built Docker image debian-13;')
+        env:
+          ARTIFACT_NAME: 'docker-image-debian-13-amd64'
+          ARTIFACT_PATH: .
+          CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
+      - name: Load Docker image necessary for building
+        run: ./internal-scripts/ci-cd/load-docker-image.sh
+        if: contains(inputs.necessary_jobs, ';Use locally-built Docker image debian-13;')
+        env:
+          TARBALL: image.tar.zst
+
+      - name: Download Docker image necessary for packaging
+        run: ./internal-scripts/ci-cd/download-artifact.sh
+        if: contains(inputs.necessary_jobs, ';Use locally-built Docker image utility;')
+        env:
+          ARTIFACT_NAME: docker-image-utility-amd64
+          ARTIFACT_PATH: .
+          CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
+      - name: Load Docker image necessary for packaging
+        run: ./internal-scripts/ci-cd/load-docker-image.sh
+        if: contains(inputs.necessary_jobs, ';Use locally-built Docker image utility;')
+        env:
+          TARBALL: image.tar.zst
+
+
 
       - name: Build binaries
         run: ./internal-scripts/ci-cd/build-ruby-packages/build-binaries.sh
@@ -1266,7 +2427,7 @@ jobs:
           ENVIRONMENT_NAME: "debian-13"
           VARIANT_NAME: "malloctrim"
           RUBY_PACKAGE_VERSION_ID: "3.3.9"
-          CACHE_KEY_PREFIX: "sccache/debian-13"
+          CACHE_KEY_PREFIX: "sccache/debian-13/amd64"
 
       - name: Build package
         run: ./internal-scripts/ci-cd/build-ruby-packages/build-package.sh
@@ -1277,11 +2438,108 @@ jobs:
           PACKAGE_FORMAT: "DEB"
           RUBY_PACKAGE_VERSION_ID: "3.3.9"
           RUBY_PACKAGE_REVISION: "0"
+          ARCH: "amd64"
 
       - name: Archive package artifact to Google Cloud
         run: ./internal-scripts/ci-cd/upload-artifact.sh
         env:
-          ARTIFACT_NAME: "ruby-pkg_3.3.9_debian-13_malloctrim"
+          ARTIFACT_NAME: "ruby-pkg_3.3.9_debian-13_malloctrim_amd64"
+          ARTIFACT_PATH: output-malloctrim
+          CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
+
+  build_ruby_debian_13-3_3_9-malloctrim_arm64:
+    name: 'Ruby [debian-13/3.3.9/malloctrim/arm64]'
+
+    runs-on: ubuntu-24.04-arm
+    environment: test
+    timeout-minutes: 30
+    permissions:
+      id-token: write
+      packages: read
+    # Run even if a dependent job has been skipped
+    if: |
+      contains(inputs.necessary_jobs, ';Build Ruby [debian-13/3.3.9/malloctrim/arm64];')
+      && !failure() && !cancelled()
+    steps:
+
+
+      - uses: actions/checkout@v5
+      - uses: google-github-actions/auth@v3
+        with:
+          project_id: ${{ vars.GCLOUD_PROJECT_ID }}
+          workload_identity_provider: projects/${{ vars.GCLOUD_PROJECT_NUM }}/locations/global/workloadIdentityPools/github-ci-test/providers/github-ci-test
+      - name: Set up Cloud SDK
+        uses: google-github-actions/setup-gcloud@v3
+        with:
+          version: '>= 363.0.0'
+      - name: Login to Github Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Dump Azure connection string
+        run: echo -n "$CONNECTION_STRING" > azure-connection-string.txt
+        env:
+          CONNECTION_STRING: ${{ secrets.AZURE_CI2_STORAGE_CONNECTION_STRING }}
+      - name: Fetch Ruby source
+        run: ./internal-scripts/ci-cd/download-artifact.sh
+        env:
+          ARTIFACT_NAME: ruby-src-3.3.9
+          ARTIFACT_PATH: .
+          CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
+
+      - name: Download Docker image necessary for building
+        run: ./internal-scripts/ci-cd/download-artifact.sh
+        if: contains(inputs.necessary_jobs, ';Use locally-built Docker image debian-13;')
+        env:
+          ARTIFACT_NAME: 'docker-image-debian-13-arm64'
+          ARTIFACT_PATH: .
+          CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
+      - name: Load Docker image necessary for building
+        run: ./internal-scripts/ci-cd/load-docker-image.sh
+        if: contains(inputs.necessary_jobs, ';Use locally-built Docker image debian-13;')
+        env:
+          TARBALL: image.tar.zst
+
+      - name: Download Docker image necessary for packaging
+        run: ./internal-scripts/ci-cd/download-artifact.sh
+        if: contains(inputs.necessary_jobs, ';Use locally-built Docker image utility;')
+        env:
+          ARTIFACT_NAME: docker-image-utility-arm64
+          ARTIFACT_PATH: .
+          CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
+      - name: Load Docker image necessary for packaging
+        run: ./internal-scripts/ci-cd/load-docker-image.sh
+        if: contains(inputs.necessary_jobs, ';Use locally-built Docker image utility;')
+        env:
+          TARBALL: image.tar.zst
+
+
+
+      - name: Build binaries
+        run: ./internal-scripts/ci-cd/build-ruby-packages/build-binaries.sh
+        env:
+          ENVIRONMENT_NAME: "debian-13"
+          VARIANT_NAME: "malloctrim"
+          RUBY_PACKAGE_VERSION_ID: "3.3.9"
+          CACHE_KEY_PREFIX: "sccache/debian-13/arm64"
+
+      - name: Build package
+        run: ./internal-scripts/ci-cd/build-ruby-packages/build-package.sh
+        env:
+          DISTRIBUTION_NAME: "debian-13"
+          VARIANT_NAME: "malloctrim"
+          VARIANT_PACKAGE_SUFFIX: "-malloctrim"
+          PACKAGE_FORMAT: "DEB"
+          RUBY_PACKAGE_VERSION_ID: "3.3.9"
+          RUBY_PACKAGE_REVISION: "0"
+          ARCH: "arm64"
+
+      - name: Archive package artifact to Google Cloud
+        run: ./internal-scripts/ci-cd/upload-artifact.sh
+        env:
+          ARTIFACT_NAME: "ruby-pkg_3.3.9_debian-13_malloctrim_arm64"
           ARTIFACT_PATH: output-malloctrim
           CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
 
@@ -1293,23 +2551,36 @@ jobs:
     name: Finalize
     needs:
 
-      - build_jemalloc_debian_13
+      - build_jemalloc_debian_13_amd64
+      - build_jemalloc_debian_13_arm64
 
-      - build_ruby_debian_13-3_4-normal
-      - build_ruby_debian_13-3_4-jemalloc
-      - build_ruby_debian_13-3_4-malloctrim
+      - build_ruby_debian_13-3_4-normal_amd64
+      - build_ruby_debian_13-3_4-normal_arm64
+      - build_ruby_debian_13-3_4-jemalloc_amd64
+      - build_ruby_debian_13-3_4-jemalloc_arm64
+      - build_ruby_debian_13-3_4-malloctrim_amd64
+      - build_ruby_debian_13-3_4-malloctrim_arm64
 
-      - build_ruby_debian_13-3_3-normal
-      - build_ruby_debian_13-3_3-jemalloc
-      - build_ruby_debian_13-3_3-malloctrim
+      - build_ruby_debian_13-3_3-normal_amd64
+      - build_ruby_debian_13-3_3-normal_arm64
+      - build_ruby_debian_13-3_3-jemalloc_amd64
+      - build_ruby_debian_13-3_3-jemalloc_arm64
+      - build_ruby_debian_13-3_3-malloctrim_amd64
+      - build_ruby_debian_13-3_3-malloctrim_arm64
 
-      - build_ruby_debian_13-3_4_7-normal
-      - build_ruby_debian_13-3_4_7-jemalloc
-      - build_ruby_debian_13-3_4_7-malloctrim
+      - build_ruby_debian_13-3_4_7-normal_amd64
+      - build_ruby_debian_13-3_4_7-normal_arm64
+      - build_ruby_debian_13-3_4_7-jemalloc_amd64
+      - build_ruby_debian_13-3_4_7-jemalloc_arm64
+      - build_ruby_debian_13-3_4_7-malloctrim_amd64
+      - build_ruby_debian_13-3_4_7-malloctrim_arm64
 
-      - build_ruby_debian_13-3_3_9-normal
-      - build_ruby_debian_13-3_3_9-jemalloc
-      - build_ruby_debian_13-3_3_9-malloctrim
+      - build_ruby_debian_13-3_3_9-normal_amd64
+      - build_ruby_debian_13-3_3_9-normal_arm64
+      - build_ruby_debian_13-3_3_9-jemalloc_amd64
+      - build_ruby_debian_13-3_3_9-jemalloc_arm64
+      - build_ruby_debian_13-3_3_9-malloctrim_amd64
+      - build_ruby_debian_13-3_3_9-malloctrim_arm64
     runs-on: ubuntu-24.04
     environment: test
     timeout-minutes: 30
@@ -1337,95 +2608,174 @@ jobs:
         run: ./internal-scripts/ci-cd/download-artifacts.sh
         env:
           ARTIFACT_NAMES: |
-            jemalloc-bin-debian-13
+            jemalloc-bin-debian-13-amd64
+            jemalloc-bin-debian-13-arm64
           ARTIFACT_PATH: artifacts
           CLEAR: true
           CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
-      - name: Archive Jemalloc binary artifact [debian-13] to Github
+      - name: Archive Jemalloc binary artifact [debian-13/amd64] to Github
         uses: actions/upload-artifact@v4
         with:
-          name: 'jemalloc-bin-debian-13'
-          path: 'artifacts/jemalloc-bin-debian-13'
+          name: 'jemalloc-bin-debian-13-amd64'
+          path: 'artifacts/jemalloc-bin-debian-13-amd64'
+          compression-level: 0
+      - name: Archive Jemalloc binary artifact [debian-13/arm64] to Github
+        uses: actions/upload-artifact@v4
+        with:
+          name: 'jemalloc-bin-debian-13-arm64'
+          path: 'artifacts/jemalloc-bin-debian-13-arm64'
           compression-level: 0
 
       - name: Download Ruby package artifacts from Google Cloud
         run: ./internal-scripts/ci-cd/download-artifacts.sh
         env:
-          ARTIFACT_NAMES: 'ruby-pkg_3.4_debian-13_normal ruby-pkg_3.4_debian-13_jemalloc ruby-pkg_3.4_debian-13_malloctrim ruby-pkg_3.3_debian-13_normal ruby-pkg_3.3_debian-13_jemalloc ruby-pkg_3.3_debian-13_malloctrim ruby-pkg_3.4.7_debian-13_normal ruby-pkg_3.4.7_debian-13_jemalloc ruby-pkg_3.4.7_debian-13_malloctrim ruby-pkg_3.3.9_debian-13_normal ruby-pkg_3.3.9_debian-13_jemalloc ruby-pkg_3.3.9_debian-13_malloctrim'
+          ARTIFACT_NAMES: 'ruby-pkg_3.4_debian-13_normal_amd64 ruby-pkg_3.4_debian-13_normal_arm64 ruby-pkg_3.4_debian-13_jemalloc_amd64 ruby-pkg_3.4_debian-13_jemalloc_arm64 ruby-pkg_3.4_debian-13_malloctrim_amd64 ruby-pkg_3.4_debian-13_malloctrim_arm64 ruby-pkg_3.3_debian-13_normal_amd64 ruby-pkg_3.3_debian-13_normal_arm64 ruby-pkg_3.3_debian-13_jemalloc_amd64 ruby-pkg_3.3_debian-13_jemalloc_arm64 ruby-pkg_3.3_debian-13_malloctrim_amd64 ruby-pkg_3.3_debian-13_malloctrim_arm64 ruby-pkg_3.4.7_debian-13_normal_amd64 ruby-pkg_3.4.7_debian-13_normal_arm64 ruby-pkg_3.4.7_debian-13_jemalloc_amd64 ruby-pkg_3.4.7_debian-13_jemalloc_arm64 ruby-pkg_3.4.7_debian-13_malloctrim_amd64 ruby-pkg_3.4.7_debian-13_malloctrim_arm64 ruby-pkg_3.3.9_debian-13_normal_amd64 ruby-pkg_3.3.9_debian-13_normal_arm64 ruby-pkg_3.3.9_debian-13_jemalloc_amd64 ruby-pkg_3.3.9_debian-13_jemalloc_arm64 ruby-pkg_3.3.9_debian-13_malloctrim_amd64 ruby-pkg_3.3.9_debian-13_malloctrim_arm64'
           ARTIFACT_PATH: artifacts
           CLEAR: true
           CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
-      - name: Archive Ruby package artifact [ruby-pkg_3.4_debian-13_normal] to Github
+      - name: Archive Ruby package artifact [ruby-pkg_3.4_debian-13_normal_amd64] to Github
         uses: actions/upload-artifact@v4
         with:
-          name: ruby-pkg_3.4_debian-13_normal
-          path: artifacts/ruby-pkg_3.4_debian-13_normal
+          name: ruby-pkg_3.4_debian-13_normal_amd64
+          path: artifacts/ruby-pkg_3.4_debian-13_normal_amd64
           compression-level: 0
-      - name: Archive Ruby package artifact [ruby-pkg_3.4_debian-13_jemalloc] to Github
+      - name: Archive Ruby package artifact [ruby-pkg_3.4_debian-13_normal_arm64] to Github
         uses: actions/upload-artifact@v4
         with:
-          name: ruby-pkg_3.4_debian-13_jemalloc
-          path: artifacts/ruby-pkg_3.4_debian-13_jemalloc
+          name: ruby-pkg_3.4_debian-13_normal_arm64
+          path: artifacts/ruby-pkg_3.4_debian-13_normal_arm64
           compression-level: 0
-      - name: Archive Ruby package artifact [ruby-pkg_3.4_debian-13_malloctrim] to Github
+      - name: Archive Ruby package artifact [ruby-pkg_3.4_debian-13_jemalloc_amd64] to Github
         uses: actions/upload-artifact@v4
         with:
-          name: ruby-pkg_3.4_debian-13_malloctrim
-          path: artifacts/ruby-pkg_3.4_debian-13_malloctrim
+          name: ruby-pkg_3.4_debian-13_jemalloc_amd64
+          path: artifacts/ruby-pkg_3.4_debian-13_jemalloc_amd64
           compression-level: 0
-      - name: Archive Ruby package artifact [ruby-pkg_3.3_debian-13_normal] to Github
+      - name: Archive Ruby package artifact [ruby-pkg_3.4_debian-13_jemalloc_arm64] to Github
         uses: actions/upload-artifact@v4
         with:
-          name: ruby-pkg_3.3_debian-13_normal
-          path: artifacts/ruby-pkg_3.3_debian-13_normal
+          name: ruby-pkg_3.4_debian-13_jemalloc_arm64
+          path: artifacts/ruby-pkg_3.4_debian-13_jemalloc_arm64
           compression-level: 0
-      - name: Archive Ruby package artifact [ruby-pkg_3.3_debian-13_jemalloc] to Github
+      - name: Archive Ruby package artifact [ruby-pkg_3.4_debian-13_malloctrim_amd64] to Github
         uses: actions/upload-artifact@v4
         with:
-          name: ruby-pkg_3.3_debian-13_jemalloc
-          path: artifacts/ruby-pkg_3.3_debian-13_jemalloc
+          name: ruby-pkg_3.4_debian-13_malloctrim_amd64
+          path: artifacts/ruby-pkg_3.4_debian-13_malloctrim_amd64
           compression-level: 0
-      - name: Archive Ruby package artifact [ruby-pkg_3.3_debian-13_malloctrim] to Github
+      - name: Archive Ruby package artifact [ruby-pkg_3.4_debian-13_malloctrim_arm64] to Github
         uses: actions/upload-artifact@v4
         with:
-          name: ruby-pkg_3.3_debian-13_malloctrim
-          path: artifacts/ruby-pkg_3.3_debian-13_malloctrim
+          name: ruby-pkg_3.4_debian-13_malloctrim_arm64
+          path: artifacts/ruby-pkg_3.4_debian-13_malloctrim_arm64
           compression-level: 0
-      - name: Archive Ruby package artifact [ruby-pkg_3.4.7_debian-13_normal] to Github
+      - name: Archive Ruby package artifact [ruby-pkg_3.3_debian-13_normal_amd64] to Github
         uses: actions/upload-artifact@v4
         with:
-          name: ruby-pkg_3.4.7_debian-13_normal
-          path: artifacts/ruby-pkg_3.4.7_debian-13_normal
+          name: ruby-pkg_3.3_debian-13_normal_amd64
+          path: artifacts/ruby-pkg_3.3_debian-13_normal_amd64
           compression-level: 0
-      - name: Archive Ruby package artifact [ruby-pkg_3.4.7_debian-13_jemalloc] to Github
+      - name: Archive Ruby package artifact [ruby-pkg_3.3_debian-13_normal_arm64] to Github
         uses: actions/upload-artifact@v4
         with:
-          name: ruby-pkg_3.4.7_debian-13_jemalloc
-          path: artifacts/ruby-pkg_3.4.7_debian-13_jemalloc
+          name: ruby-pkg_3.3_debian-13_normal_arm64
+          path: artifacts/ruby-pkg_3.3_debian-13_normal_arm64
           compression-level: 0
-      - name: Archive Ruby package artifact [ruby-pkg_3.4.7_debian-13_malloctrim] to Github
+      - name: Archive Ruby package artifact [ruby-pkg_3.3_debian-13_jemalloc_amd64] to Github
         uses: actions/upload-artifact@v4
         with:
-          name: ruby-pkg_3.4.7_debian-13_malloctrim
-          path: artifacts/ruby-pkg_3.4.7_debian-13_malloctrim
+          name: ruby-pkg_3.3_debian-13_jemalloc_amd64
+          path: artifacts/ruby-pkg_3.3_debian-13_jemalloc_amd64
           compression-level: 0
-      - name: Archive Ruby package artifact [ruby-pkg_3.3.9_debian-13_normal] to Github
+      - name: Archive Ruby package artifact [ruby-pkg_3.3_debian-13_jemalloc_arm64] to Github
         uses: actions/upload-artifact@v4
         with:
-          name: ruby-pkg_3.3.9_debian-13_normal
-          path: artifacts/ruby-pkg_3.3.9_debian-13_normal
+          name: ruby-pkg_3.3_debian-13_jemalloc_arm64
+          path: artifacts/ruby-pkg_3.3_debian-13_jemalloc_arm64
           compression-level: 0
-      - name: Archive Ruby package artifact [ruby-pkg_3.3.9_debian-13_jemalloc] to Github
+      - name: Archive Ruby package artifact [ruby-pkg_3.3_debian-13_malloctrim_amd64] to Github
         uses: actions/upload-artifact@v4
         with:
-          name: ruby-pkg_3.3.9_debian-13_jemalloc
-          path: artifacts/ruby-pkg_3.3.9_debian-13_jemalloc
+          name: ruby-pkg_3.3_debian-13_malloctrim_amd64
+          path: artifacts/ruby-pkg_3.3_debian-13_malloctrim_amd64
           compression-level: 0
-      - name: Archive Ruby package artifact [ruby-pkg_3.3.9_debian-13_malloctrim] to Github
+      - name: Archive Ruby package artifact [ruby-pkg_3.3_debian-13_malloctrim_arm64] to Github
         uses: actions/upload-artifact@v4
         with:
-          name: ruby-pkg_3.3.9_debian-13_malloctrim
-          path: artifacts/ruby-pkg_3.3.9_debian-13_malloctrim
+          name: ruby-pkg_3.3_debian-13_malloctrim_arm64
+          path: artifacts/ruby-pkg_3.3_debian-13_malloctrim_arm64
+          compression-level: 0
+      - name: Archive Ruby package artifact [ruby-pkg_3.4.7_debian-13_normal_amd64] to Github
+        uses: actions/upload-artifact@v4
+        with:
+          name: ruby-pkg_3.4.7_debian-13_normal_amd64
+          path: artifacts/ruby-pkg_3.4.7_debian-13_normal_amd64
+          compression-level: 0
+      - name: Archive Ruby package artifact [ruby-pkg_3.4.7_debian-13_normal_arm64] to Github
+        uses: actions/upload-artifact@v4
+        with:
+          name: ruby-pkg_3.4.7_debian-13_normal_arm64
+          path: artifacts/ruby-pkg_3.4.7_debian-13_normal_arm64
+          compression-level: 0
+      - name: Archive Ruby package artifact [ruby-pkg_3.4.7_debian-13_jemalloc_amd64] to Github
+        uses: actions/upload-artifact@v4
+        with:
+          name: ruby-pkg_3.4.7_debian-13_jemalloc_amd64
+          path: artifacts/ruby-pkg_3.4.7_debian-13_jemalloc_amd64
+          compression-level: 0
+      - name: Archive Ruby package artifact [ruby-pkg_3.4.7_debian-13_jemalloc_arm64] to Github
+        uses: actions/upload-artifact@v4
+        with:
+          name: ruby-pkg_3.4.7_debian-13_jemalloc_arm64
+          path: artifacts/ruby-pkg_3.4.7_debian-13_jemalloc_arm64
+          compression-level: 0
+      - name: Archive Ruby package artifact [ruby-pkg_3.4.7_debian-13_malloctrim_amd64] to Github
+        uses: actions/upload-artifact@v4
+        with:
+          name: ruby-pkg_3.4.7_debian-13_malloctrim_amd64
+          path: artifacts/ruby-pkg_3.4.7_debian-13_malloctrim_amd64
+          compression-level: 0
+      - name: Archive Ruby package artifact [ruby-pkg_3.4.7_debian-13_malloctrim_arm64] to Github
+        uses: actions/upload-artifact@v4
+        with:
+          name: ruby-pkg_3.4.7_debian-13_malloctrim_arm64
+          path: artifacts/ruby-pkg_3.4.7_debian-13_malloctrim_arm64
+          compression-level: 0
+      - name: Archive Ruby package artifact [ruby-pkg_3.3.9_debian-13_normal_amd64] to Github
+        uses: actions/upload-artifact@v4
+        with:
+          name: ruby-pkg_3.3.9_debian-13_normal_amd64
+          path: artifacts/ruby-pkg_3.3.9_debian-13_normal_amd64
+          compression-level: 0
+      - name: Archive Ruby package artifact [ruby-pkg_3.3.9_debian-13_normal_arm64] to Github
+        uses: actions/upload-artifact@v4
+        with:
+          name: ruby-pkg_3.3.9_debian-13_normal_arm64
+          path: artifacts/ruby-pkg_3.3.9_debian-13_normal_arm64
+          compression-level: 0
+      - name: Archive Ruby package artifact [ruby-pkg_3.3.9_debian-13_jemalloc_amd64] to Github
+        uses: actions/upload-artifact@v4
+        with:
+          name: ruby-pkg_3.3.9_debian-13_jemalloc_amd64
+          path: artifacts/ruby-pkg_3.3.9_debian-13_jemalloc_amd64
+          compression-level: 0
+      - name: Archive Ruby package artifact [ruby-pkg_3.3.9_debian-13_jemalloc_arm64] to Github
+        uses: actions/upload-artifact@v4
+        with:
+          name: ruby-pkg_3.3.9_debian-13_jemalloc_arm64
+          path: artifacts/ruby-pkg_3.3.9_debian-13_jemalloc_arm64
+          compression-level: 0
+      - name: Archive Ruby package artifact [ruby-pkg_3.3.9_debian-13_malloctrim_amd64] to Github
+        uses: actions/upload-artifact@v4
+        with:
+          name: ruby-pkg_3.3.9_debian-13_malloctrim_amd64
+          path: artifacts/ruby-pkg_3.3.9_debian-13_malloctrim_amd64
+          compression-level: 0
+      - name: Archive Ruby package artifact [ruby-pkg_3.3.9_debian-13_malloctrim_arm64] to Github
+        uses: actions/upload-artifact@v4
+        with:
+          name: ruby-pkg_3.3.9_debian-13_malloctrim_arm64
+          path: artifacts/ruby-pkg_3.3.9_debian-13_malloctrim_arm64
           compression-level: 0
 
 
@@ -1435,46 +2785,85 @@ jobs:
         run: 'false'
         if: |
           false
-            || (needs.build_jemalloc_debian_13.result != 'success'
-              && (needs.build_jemalloc_debian_13.result != 'skipped'
-                || contains(inputs.necessary_jobs, ';Build Jemalloc [debian-13];')))
+            || (needs.build_jemalloc_debian_13_amd64.result != 'success'
+              && (needs.build_jemalloc_debian_13_amd64.result != 'skipped'
+                || contains(inputs.necessary_jobs, ';Build Jemalloc [debian-13/amd64];')))
+            || (needs.build_jemalloc_debian_13_arm64.result != 'success'
+              && (needs.build_jemalloc_debian_13_arm64.result != 'skipped'
+                || contains(inputs.necessary_jobs, ';Build Jemalloc [debian-13/arm64];')))
       - name: Check whether 'Ruby [debian-13]' job did not fail
         run: 'false'
         if: |
           false
-            || (needs.build_ruby_debian_13-3_4-normal.result != 'success'
-              && (needs.build_ruby_debian_13-3_4-normal.result != 'skipped'
+            || (needs.build_ruby_debian_13-3_4-normal_amd64.result != 'success'
+              && (needs.build_ruby_debian_13-3_4-normal_amd64.result != 'skipped'
                 || contains(inputs.necessary_jobs, ';Build Ruby [debian-13/3.4/normal];')))
-            || (needs.build_ruby_debian_13-3_4-jemalloc.result != 'success'
-              && (needs.build_ruby_debian_13-3_4-jemalloc.result != 'skipped'
+            || (needs.build_ruby_debian_13-3_4-normal_arm64.result != 'success'
+              && (needs.build_ruby_debian_13-3_4-normal_arm64.result != 'skipped'
+                || contains(inputs.necessary_jobs, ';Build Ruby [debian-13/3.4/normal];')))
+            || (needs.build_ruby_debian_13-3_4-jemalloc_amd64.result != 'success'
+              && (needs.build_ruby_debian_13-3_4-jemalloc_amd64.result != 'skipped'
                 || contains(inputs.necessary_jobs, ';Build Ruby [debian-13/3.4/jemalloc];')))
-            || (needs.build_ruby_debian_13-3_4-malloctrim.result != 'success'
-              && (needs.build_ruby_debian_13-3_4-malloctrim.result != 'skipped'
+            || (needs.build_ruby_debian_13-3_4-jemalloc_arm64.result != 'success'
+              && (needs.build_ruby_debian_13-3_4-jemalloc_arm64.result != 'skipped'
+                || contains(inputs.necessary_jobs, ';Build Ruby [debian-13/3.4/jemalloc];')))
+            || (needs.build_ruby_debian_13-3_4-malloctrim_amd64.result != 'success'
+              && (needs.build_ruby_debian_13-3_4-malloctrim_amd64.result != 'skipped'
                 || contains(inputs.necessary_jobs, ';Build Ruby [debian-13/3.4/malloctrim];')))
-            || (needs.build_ruby_debian_13-3_3-normal.result != 'success'
-              && (needs.build_ruby_debian_13-3_3-normal.result != 'skipped'
+            || (needs.build_ruby_debian_13-3_4-malloctrim_arm64.result != 'success'
+              && (needs.build_ruby_debian_13-3_4-malloctrim_arm64.result != 'skipped'
+                || contains(inputs.necessary_jobs, ';Build Ruby [debian-13/3.4/malloctrim];')))
+            || (needs.build_ruby_debian_13-3_3-normal_amd64.result != 'success'
+              && (needs.build_ruby_debian_13-3_3-normal_amd64.result != 'skipped'
                 || contains(inputs.necessary_jobs, ';Build Ruby [debian-13/3.3/normal];')))
-            || (needs.build_ruby_debian_13-3_3-jemalloc.result != 'success'
-              && (needs.build_ruby_debian_13-3_3-jemalloc.result != 'skipped'
+            || (needs.build_ruby_debian_13-3_3-normal_arm64.result != 'success'
+              && (needs.build_ruby_debian_13-3_3-normal_arm64.result != 'skipped'
+                || contains(inputs.necessary_jobs, ';Build Ruby [debian-13/3.3/normal];')))
+            || (needs.build_ruby_debian_13-3_3-jemalloc_amd64.result != 'success'
+              && (needs.build_ruby_debian_13-3_3-jemalloc_amd64.result != 'skipped'
                 || contains(inputs.necessary_jobs, ';Build Ruby [debian-13/3.3/jemalloc];')))
-            || (needs.build_ruby_debian_13-3_3-malloctrim.result != 'success'
-              && (needs.build_ruby_debian_13-3_3-malloctrim.result != 'skipped'
+            || (needs.build_ruby_debian_13-3_3-jemalloc_arm64.result != 'success'
+              && (needs.build_ruby_debian_13-3_3-jemalloc_arm64.result != 'skipped'
+                || contains(inputs.necessary_jobs, ';Build Ruby [debian-13/3.3/jemalloc];')))
+            || (needs.build_ruby_debian_13-3_3-malloctrim_amd64.result != 'success'
+              && (needs.build_ruby_debian_13-3_3-malloctrim_amd64.result != 'skipped'
                 || contains(inputs.necessary_jobs, ';Build Ruby [debian-13/3.3/malloctrim];')))
-            || (needs.build_ruby_debian_13-3_4_7-normal.result != 'success'
-              && (needs.build_ruby_debian_13-3_4_7-normal.result != 'skipped'
+            || (needs.build_ruby_debian_13-3_3-malloctrim_arm64.result != 'success'
+              && (needs.build_ruby_debian_13-3_3-malloctrim_arm64.result != 'skipped'
+                || contains(inputs.necessary_jobs, ';Build Ruby [debian-13/3.3/malloctrim];')))
+            || (needs.build_ruby_debian_13-3_4_7-normal_amd64.result != 'success'
+              && (needs.build_ruby_debian_13-3_4_7-normal_amd64.result != 'skipped'
                 || contains(inputs.necessary_jobs, ';Build Ruby [debian-13/3.4.7/normal];')))
-            || (needs.build_ruby_debian_13-3_4_7-jemalloc.result != 'success'
-              && (needs.build_ruby_debian_13-3_4_7-jemalloc.result != 'skipped'
+            || (needs.build_ruby_debian_13-3_4_7-normal_arm64.result != 'success'
+              && (needs.build_ruby_debian_13-3_4_7-normal_arm64.result != 'skipped'
+                || contains(inputs.necessary_jobs, ';Build Ruby [debian-13/3.4.7/normal];')))
+            || (needs.build_ruby_debian_13-3_4_7-jemalloc_amd64.result != 'success'
+              && (needs.build_ruby_debian_13-3_4_7-jemalloc_amd64.result != 'skipped'
                 || contains(inputs.necessary_jobs, ';Build Ruby [debian-13/3.4.7/jemalloc];')))
-            || (needs.build_ruby_debian_13-3_4_7-malloctrim.result != 'success'
-              && (needs.build_ruby_debian_13-3_4_7-malloctrim.result != 'skipped'
+            || (needs.build_ruby_debian_13-3_4_7-jemalloc_arm64.result != 'success'
+              && (needs.build_ruby_debian_13-3_4_7-jemalloc_arm64.result != 'skipped'
+                || contains(inputs.necessary_jobs, ';Build Ruby [debian-13/3.4.7/jemalloc];')))
+            || (needs.build_ruby_debian_13-3_4_7-malloctrim_amd64.result != 'success'
+              && (needs.build_ruby_debian_13-3_4_7-malloctrim_amd64.result != 'skipped'
                 || contains(inputs.necessary_jobs, ';Build Ruby [debian-13/3.4.7/malloctrim];')))
-            || (needs.build_ruby_debian_13-3_3_9-normal.result != 'success'
-              && (needs.build_ruby_debian_13-3_3_9-normal.result != 'skipped'
+            || (needs.build_ruby_debian_13-3_4_7-malloctrim_arm64.result != 'success'
+              && (needs.build_ruby_debian_13-3_4_7-malloctrim_arm64.result != 'skipped'
+                || contains(inputs.necessary_jobs, ';Build Ruby [debian-13/3.4.7/malloctrim];')))
+            || (needs.build_ruby_debian_13-3_3_9-normal_amd64.result != 'success'
+              && (needs.build_ruby_debian_13-3_3_9-normal_amd64.result != 'skipped'
                 || contains(inputs.necessary_jobs, ';Build Ruby [debian-13/3.3.9/normal];')))
-            || (needs.build_ruby_debian_13-3_3_9-jemalloc.result != 'success'
-              && (needs.build_ruby_debian_13-3_3_9-jemalloc.result != 'skipped'
+            || (needs.build_ruby_debian_13-3_3_9-normal_arm64.result != 'success'
+              && (needs.build_ruby_debian_13-3_3_9-normal_arm64.result != 'skipped'
+                || contains(inputs.necessary_jobs, ';Build Ruby [debian-13/3.3.9/normal];')))
+            || (needs.build_ruby_debian_13-3_3_9-jemalloc_amd64.result != 'success'
+              && (needs.build_ruby_debian_13-3_3_9-jemalloc_amd64.result != 'skipped'
                 || contains(inputs.necessary_jobs, ';Build Ruby [debian-13/3.3.9/jemalloc];')))
-            || (needs.build_ruby_debian_13-3_3_9-malloctrim.result != 'success'
-              && (needs.build_ruby_debian_13-3_3_9-malloctrim.result != 'skipped'
+            || (needs.build_ruby_debian_13-3_3_9-jemalloc_arm64.result != 'success'
+              && (needs.build_ruby_debian_13-3_3_9-jemalloc_arm64.result != 'skipped'
+                || contains(inputs.necessary_jobs, ';Build Ruby [debian-13/3.3.9/jemalloc];')))
+            || (needs.build_ruby_debian_13-3_3_9-malloctrim_amd64.result != 'success'
+              && (needs.build_ruby_debian_13-3_3_9-malloctrim_amd64.result != 'skipped'
+                || contains(inputs.necessary_jobs, ';Build Ruby [debian-13/3.3.9/malloctrim];')))
+            || (needs.build_ruby_debian_13-3_3_9-malloctrim_arm64.result != 'success'
+              && (needs.build_ruby_debian_13-3_3_9-malloctrim_arm64.result != 'skipped'
                 || contains(inputs.necessary_jobs, ';Build Ruby [debian-13/3.3.9/malloctrim];')))

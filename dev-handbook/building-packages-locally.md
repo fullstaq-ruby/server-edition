@@ -67,7 +67,7 @@ Run the `build-jemalloc` script to compile Jemalloc. Example invocation:
   -n centos-8 \
   -s jemalloc-3.6.0.tar.bz2 \
   -o jemalloc-bin.tar.gz \
-  -j 2
+  -j $(nproc)
 ~~~
 
 Here's what the parameters mean:
@@ -92,7 +92,7 @@ If you intend to build the Jemalloc variant of Fullstaq Ruby, then this script r
   -v 3.1.2 \
   -o ruby-bin.tar.gz \
   -m jemalloc-bin.tar.gz \
-  -j 2
+  -j $(nproc)
 ~~~
 
 Here's what the parameters mean:
@@ -117,7 +117,7 @@ Example invocation with `malloc_trim` support:
   -v 3.1.2 \
   -o ruby-bin.tar.gz \
   -t \
-  -j 2
+  -j $(nproc)
 ~~~
 
 Example invocation _without_ `malloc_trim` (and also without Jemalloc) support:
@@ -128,7 +128,7 @@ Example invocation _without_ `malloc_trim` (and also without Jemalloc) support:
   -s ruby-3.1.2.tar.gz \
   -v 3.1.2 \
   -o ruby-bin.tar.gz \
-  -j 2
+  -j $(nproc)
 ~~~
 
 ## Step 4: Build Ruby package

@@ -104,15 +104,16 @@ jobs:
   <%- distributions.each do |distribution| %>
   <%- ruby_package_versions_for_distro(distribution).each do |ruby_package_version| -%>
   <%- variants.each do |variant| -%>
+  <%- architectures.each do |arch| -%>
   <%- unindent(2) do %>
-    test_<%= slug(distribution[:name]) %>-<%= slug(ruby_package_version[:id]) %>-<%= slug(variant[:name]) %>:
-      name: 'Test [<%= distribution[:name] %>/<%= ruby_package_version[:id] %>/<%= variant[:name] %>]'
+    test_<%= slug(distribution[:name]) %>-<%= slug(ruby_package_version[:id]) %>-<%= slug(variant[:name]) %>_<%= arch %>:
+      name: 'Test [<%= distribution[:name] %>/<%= ruby_package_version[:id] %>/<%= variant[:name] %>/<%= arch %>]'
       needs:
         - publish
-      runs-on: ubuntu-24.04
+      runs-on: <%= arch == 'arm64' ? 'ubuntu-24.04-arm' : 'ubuntu-24.04' %>
       environment: test
       timeout-minutes: 30
-      if: contains(inputs.necessary_jobs, ';Test against test repo [<%= distribution[:name] %>/<%= ruby_package_version[:id] %>/<%= variant[:name] %>];')
+      if: contains(inputs.necessary_jobs, ';Test against test repo [<%= distribution[:name] %>/<%= ruby_package_version[:id] %>/<%= variant[:name] %>/<%= arch %>];')
       permissions:
         id-token: write
       steps:
@@ -137,19 +138,21 @@ jobs:
             TEST_IMAGE_NAME: "<%= distribution[:test_image] %>"
             APT_REPO_URL: https://storage.googleapis.com/${{ vars.CI_ARTIFACTS_BUCKET }}/${{ env.CI_ARTIFACTS_RUN_NUMBER }}/apt-repo/versions/singleton/public
             YUM_REPO_URL: https://storage.googleapis.com/${{ vars.CI_ARTIFACTS_BUCKET }}/${{ env.CI_ARTIFACTS_RUN_NUMBER }}/yum-repo/versions/singleton/public
+            ARCH: "<%= arch %>"
 
         - name: Create mark file
           run: mkdir mark-<%= variant[:name] %> && touch mark-<%= variant[:name] %>/done.txt
         - name: Mark job as done
           run: ./internal-scripts/ci-cd/upload-artifact.sh
           env:
-            ARTIFACT_NAME: tested-against-test-<%= distribution[:name] %>_<%= ruby_package_version[:id] %>_<%= variant[:name] %>
+            ARTIFACT_NAME: tested-against-test-<%= distribution[:name] %>_<%= ruby_package_version[:id] %>_<%= variant[:name] %>-<%= arch %>
             ARTIFACT_PATH: mark-<%= variant[:name] %>
             CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
   <%- end %>
   <%- end -%>
   <%- end -%>
   <%- end %>
+  <%- end -%>
 
 
   ### Finalize ###
@@ -164,7 +167,9 @@ jobs:
       <%- distributions.each do |distribution| -%>
       <%- ruby_package_versions_for_distro(distribution).each do |ruby_package_version| -%>
       <%- variants.each do |variant| -%>
-      - test_<%= slug(distribution[:name]) %>-<%= slug(ruby_package_version[:id]) %>-<%= slug(variant[:name]) %>
+      <%- architectures.each do |arch| -%>
+      - test_<%= slug(distribution[:name]) %>-<%= slug(ruby_package_version[:id]) %>-<%= slug(variant[:name]) %>_<%= arch %>
+      <%- end -%>
       <%- end -%>
       <%- end -%>
       <%- end -%>
@@ -183,12 +188,14 @@ jobs:
       <%- distributions.each do |distribution| -%>
       <%- ruby_package_versions_for_distro(distribution).each do |ruby_package_version| -%>
       <%- variants.each do |variant| -%>
-      - name: Check whether 'Test [<%= distribution[:name] %>/<%= ruby_package_version[:id] %>/<%= variant[:name] %>]' did not fail
+      <%- architectures.each do |arch| -%>
+      - name: Check whether 'Test [<%= distribution[:name] %>/<%= ruby_package_version[:id] %>/<%= variant[:name] %>/<%= arch %>]' did not fail
         run: 'false'
         if: |
-          needs.test_<%= slug(distribution[:name]) %>-<%= slug(ruby_package_version[:id]) %>-<%= slug(variant[:name]) %>.result != 'success'
-          && (needs.test_<%= slug(distribution[:name]) %>-<%= slug(ruby_package_version[:id]) %>-<%= slug(variant[:name]) %>.result != 'skipped'
-            || contains(inputs.necessary_jobs, ';Test against test repo [<%= distribution[:name] %>/<%= ruby_package_version[:id] %>/<%= variant[:name] %>];'))
+          needs.test_<%= slug(distribution[:name]) %>-<%= slug(ruby_package_version[:id]) %>-<%= slug(variant[:name]) %>_<%= arch %>.result != 'success'
+          && (needs.test_<%= slug(distribution[:name]) %>-<%= slug(ruby_package_version[:id]) %>-<%= slug(variant[:name]) %>_<%= arch %>.result != 'skipped'
+            || contains(inputs.necessary_jobs, ';Test against test repo [<%= distribution[:name] %>/<%= ruby_package_version[:id] %>/<%= variant[:name] %>/<%= arch %>];'))
+      <%- end -%>
       <%- end -%>
       <%- end -%>
       <%- end -%>
