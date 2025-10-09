@@ -43,13 +43,13 @@ jobs:
           exit 1
         if: github.event_name == 'push' && github.ref == 'refs/heads/fix/cicd-new-workflows'
 
-      - uses: actions/checkout@v4
-      - uses: google-github-actions/auth@v2
+      - uses: actions/checkout@v5
+      - uses: google-github-actions/auth@v3
         with:
           project_id: ${{ vars.GCLOUD_PROJECT_ID }}
           workload_identity_provider: projects/${{ vars.GCLOUD_PROJECT_NUM }}/locations/global/workloadIdentityPools/github-ci-test/providers/github-ci-test
       - name: Set up Cloud SDK
-        uses: google-github-actions/setup-gcloud@v2
+        uses: google-github-actions/setup-gcloud@v3
         with:
           version: '>= 363.0.0'
 
@@ -74,7 +74,7 @@ jobs:
     name: Check whether workflow is up-to-date
     runs-on: ubuntu-24.04
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - name: Check
         run: ./internal-scripts/ci-cd/check-workflow-uptodate/check.sh
 
