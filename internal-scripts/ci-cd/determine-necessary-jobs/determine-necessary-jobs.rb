@@ -51,8 +51,10 @@ class App
 
 
     distributions.each do |distribution|
-      determine_necessary_job("Build Jemalloc [#{distribution[:name]}]") do
-        artifact_absent?("jemalloc-bin-#{distribution[:name]}")
+      architectures.each do |arch|
+        determine_necessary_job("Build Jemalloc [#{distribution[:name]}]/#{arch}") do
+          artifact_absent?("jemalloc-bin-#{distribution[:name]}_#{arch}")
+        end
       end
     end
 
@@ -78,8 +80,10 @@ class App
     distributions.each do |distribution|
       ruby_package_versions_for_distro(distribution).each do |ruby_package_version|
         variants.each do |variant|
-          determine_necessary_job("Build Ruby [#{distribution[:name]}/#{ruby_package_version[:id]}/#{variant[:name]}]") do
-            artifact_absent?(ruby_package_artifact_name(ruby_package_version, distribution, variant))
+          architectures.each do |arch|
+              determine_necessary_job("Build Ruby [#{distribution[:name]}/#{ruby_package_version[:id]}/#{variant[:name]}/#{arch}]") do
+              artifact_absent?(ruby_package_artifact_name(ruby_package_version, distribution, variant, arch))
+            end
           end
         end
       end
@@ -89,8 +93,10 @@ class App
     distributions.each do |distribution|
       ruby_package_versions_for_distro(distribution).each do |ruby_package_version|
         variants.each do |variant|
-          determine_necessary_job("Test against test repo [#{distribution[:name]}/#{ruby_package_version[:id]}/#{variant[:name]}]") do
-            artifact_absent?("tested-against-test-#{distribution[:name]}_#{ruby_package_version[:id]}_#{variant[:name]}")
+          architectures.each do |arch|
+            determine_necessary_job("Test against test repo [#{distribution[:name]}/#{ruby_package_version[:id]}/#{variant[:name]}/#{arch}]") do
+              artifact_absent?("tested-against-test-#{distribution[:name]}_#{ruby_package_version[:id]}_#{variant[:name]}_#{arch}")
+            end
           end
         end
       end
@@ -99,8 +105,10 @@ class App
     distributions.each do |distribution|
       ruby_package_versions_for_distro(distribution).each do |ruby_package_version|
         variants.each do |variant|
-          determine_necessary_job("Test against production repo [#{distribution[:name]}/#{ruby_package_version[:id]}/#{variant[:name]}]") do
-            artifact_absent?("tested-against-production-#{distribution[:name]}_#{ruby_package_version[:id]}_#{variant[:name]}")
+          architectures.each do |arch|
+            determine_necessary_job("Test against production repo [#{distribution[:name]}/#{ruby_package_version[:id]}/#{variant[:name]}/#{arch}]") do
+              artifact_absent?("tested-against-production-#{distribution[:name]}_#{ruby_package_version[:id]}_#{variant[:name]}_#{arch}")
+            end
           end
         end
       end

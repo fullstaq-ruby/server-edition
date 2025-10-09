@@ -97,7 +97,7 @@ Next, we compile Jemalloc, for CentOS 7:
   -n centos-7 \
   -s jemalloc-3.6.0.tar.bz2 \
   -o jemalloc-bin.tar.gz \
-  -j 2
+  -j $(nproc)
 ~~~
 
 We then inspect the resulting binary tarball. But we see that it doesn't contain any build-id files:
@@ -115,7 +115,7 @@ Next, we compile Ruby 2.6.6 and then 2.7.1, using the exact same parameters that
   -v 2.6 \
   -o ruby-bin-2.6.tar.gz \
   -m jemalloc-bin.tar.gz \
-  -j 2
+  -j $(nproc)
 
 ./build-ruby \
   -n centos-7 \
@@ -123,7 +123,7 @@ Next, we compile Ruby 2.6.6 and then 2.7.1, using the exact same parameters that
   -v 2.7 \
   -o ruby-bin-2.7.tar.gz \
   -m jemalloc-bin.tar.gz \
-  -j 2
+  -j $(nproc)
 ~~~
 
 We then inspect the resulting binary tarballs. But we still don't see any build-id files:

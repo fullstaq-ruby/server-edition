@@ -119,10 +119,11 @@ jobs:
   ### Docker images ###
 
   <%- docker_images.each do |image| %>
+  <%- architectures.each do |arch| %>
   <%- unindent(2) do -%>
-    build_docker_image_<%= slug(image[:id]) %>:
-      name: 'Build Docker image [<%= image[:id] %>]'
-      runs-on: ubuntu-24.04
+    build_docker_image_<%= slug(image[:id]) %>_<%= arch %>:
+      name: 'Build Docker image [<%= image[:id] %>/<%= arch %>]'
+      runs-on: <%= arch == 'arm64' ? 'ubuntu-24.04-arm' : 'ubuntu-24.04' %>
       permissions:
         id-token: write
       environment: test
@@ -147,20 +148,22 @@ jobs:
           run: ./internal-scripts/ci-cd/build-docker-images/build.sh
           env:
             IMAGE_NAME: '<%= image[:name] %>'
-            IMAGE_TAG: '<%= image[:tag] %>'
+            IMAGE_TAG: '<%= image[:tag] %>-<%= arch %>'
             SOURCE_DIR: 'environments/<%= image[:id] %>'
+            ARCH: '<%= arch %>'
 
         - name: Dump image
           run: ./internal-scripts/ci-cd/build-docker-images/dump-image.sh
           env:
             IMAGE_NAME: '<%= image[:name] %>'
-            IMAGE_TAG: '<%= image[:tag] %>'
+            IMAGE_TAG: '<%= image[:tag] %>-<%= arch %>'
         - name: Archive artifact
           run: ./internal-scripts/ci-cd/upload-artifact.sh
           env:
-            ARTIFACT_NAME: '<%= docker_image_artifact_name(image[:id]) %>'
+            ARTIFACT_NAME: '<%= docker_image_artifact_name(image[:id]) %>-<%= arch %>'
             ARTIFACT_PATH: output
             CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
+  <%- end %>
   <%- end %>
   <%- end %>
 
@@ -256,7 +259,7 @@ jobs:
       id-token: write
       packages: read
     needs:
-      - build_docker_image_utility
+      - build_docker_image_utility_amd64
     environment: test
     # Run even if a dependent job has been skipped
     if: |
@@ -266,7 +269,7 @@ jobs:
       - name: Check whether dependent jobs did not fail
         run: 'false'
         if: |
-          needs.build_docker_image_utility.result == 'skipped'
+          needs.build_docker_image_utility_amd64.result == 'skipped'
           && contains(inputs.necessary_jobs.outputs.necessary_jobs, ';Build Docker image utility;')
 
       - uses: actions/checkout@v5
@@ -325,7 +328,7 @@ jobs:
       id-token: write
       packages: read
     needs:
-      - build_docker_image_utility
+      - build_docker_image_utility_amd64
     environment: test
     # Run even if a dependent job has been skipped
     if: |
@@ -335,7 +338,7 @@ jobs:
       - name: Check whether dependent jobs did not fail
         run: 'false'
         if: |
-          needs.build_docker_image_utility.result == 'skipped'
+          needs.build_docker_image_utility_amd64.result == 'skipped'
           && contains(inputs.necessary_jobs, ';Build Docker image utility;')
 
       - uses: actions/checkout@v5
@@ -397,7 +400,7 @@ jobs:
       packages: read
     needs:
       - download_rbenv_source
-      - build_docker_image_utility
+      - build_docker_image_utility_amd64
     environment: test
     # Run even if a dependent job has been skipped
     if: |
@@ -411,7 +414,7 @@ jobs:
             needs.download_rbenv_source.result == 'skipped'
             && contains(inputs.necessary_jobs, ';Download Rbenv source;')
           ) || (
-            needs.build_docker_image_utility.result == 'skipped'
+            needs.build_docker_image_utility_amd64.result == 'skipped'
             && contains(inputs.necessary_jobs, ';Build Docker image utility;')
           )
 
@@ -479,7 +482,7 @@ jobs:
       packages: read
     needs:
       - download_rbenv_source
-      - build_docker_image_utility
+      - build_docker_image_utility_amd64
     environment: test
     # Run even if a dependent job has been skipped
     if: |
@@ -493,7 +496,7 @@ jobs:
             needs.download_rbenv_source.result == 'skipped'
             && contains(inputs.necessary_jobs, ';Download Rbenv source;')
           ) || (
-            needs.build_docker_image_utility.result == 'skipped'
+            needs.build_docker_image_utility_amd64.result == 'skipped'
             && contains(inputs.necessary_jobs, ';Build Docker image utility;')
           )
 
@@ -564,7 +567,9 @@ jobs:
       - bundle_install
       - download_rbenv_source
       <%- docker_images.each do |image| -%>
-      - build_docker_image_<%= slug(image[:id]) %>
+      <%- architectures.each do |arch| -%>
+      - build_docker_image_<%= slug(image[:id]) %>_<%= arch %>
+      <%- end -%>
       <%- end -%>
       <%- ruby_source_versions.each do |ruby_version| -%>
       - download_ruby_source_<%= slug(ruby_version) %>
@@ -743,9 +748,11 @@ jobs:
         if: |
           false
           <%- docker_images.each do |image| -%>
-            || (needs.build_docker_image_<%= slug(image[:id]) %>.result != 'success'
-              && (needs.build_docker_image_<%= slug(image[:id]) %>.result != 'skipped'
-                || contains(inputs.necessary_jobs, ';Build Docker image <%= image[:id] %>;')))
+          <%- architectures.each do |arch| -%>
+            || (needs.build_docker_image_<%= slug(image[:id]) %>_<%= arch %>.result != 'success'
+              && (needs.build_docker_image_<%= slug(image[:id]) %>_<%= arch %>.result != 'skipped'
+                || contains(inputs.necessary_jobs, ';Build Docker image <%= image[:id] %> <%= arch %>;')))
+          <%- end -%>
           <%- end -%>
       - name: Check whether 'Download Ruby source' did not fail
         run: 'false'

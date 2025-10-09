@@ -32,7 +32,7 @@ The `determine_necessary_jobs` job [outputs a variable](https://docs.github.com/
 ~~~yaml
 determine_necessary_jobs:
   name: Determine necessary jobs
-  runs-on: ubuntu-20.04
+  runs-on: ubuntu-24.04
   outputs:
     necessary_jobs: ${{ steps.check.outputs.necessary_jobs }}
     ...
@@ -49,7 +49,7 @@ Then, other jobs use an `if` statement which performs a substring match, in orde
 ~~~yaml
 download_ruby_source_<%= slug(ruby_version) %>:
   name: Download Ruby source [<%= ruby_version %>]
-  runs-on: ubuntu-20.04
+  runs-on: ubuntu-24.04
   needs:
     - determine_necessary_jobs
   if: contains(needs.determine_necessary_jobs.outputs.necessary_jobs, ';Download Ruby source <%= ruby_version %>;')
