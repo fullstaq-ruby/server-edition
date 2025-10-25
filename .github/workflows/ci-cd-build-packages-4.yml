@@ -49,11 +49,9 @@ jobs:
         with:
           version: '>= 363.0.0'
       - name: Login to Github Container Registry
-        uses: docker/login-action@v3
-        with:
-          registry: ghcr.io
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
+        run: docker login ghcr.io -u ${{ github.actor }} --password-stdin <<<"$GITHUB_TOKEN"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Dump Azure connection string
         run: echo -n "$CONNECTION_STRING" > azure-connection-string.txt
         env:
@@ -123,11 +121,9 @@ jobs:
         with:
           version: '>= 363.0.0'
       - name: Login to Github Container Registry
-        uses: docker/login-action@v3
-        with:
-          registry: ghcr.io
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
+        run: docker login ghcr.io -u ${{ github.actor }} --password-stdin <<<"$GITHUB_TOKEN"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Dump Azure connection string
         run: echo -n "$CONNECTION_STRING" > azure-connection-string.txt
         env:
@@ -224,11 +220,9 @@ jobs:
         with:
           version: '>= 363.0.0'
       - name: Login to Github Container Registry
-        uses: docker/login-action@v3
-        with:
-          registry: ghcr.io
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
+        run: docker login ghcr.io -u ${{ github.actor }} --password-stdin <<<"$GITHUB_TOKEN"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Dump Azure connection string
         run: echo -n "$CONNECTION_STRING" > azure-connection-string.txt
         env:
@@ -325,11 +319,9 @@ jobs:
         with:
           version: '>= 363.0.0'
       - name: Login to Github Container Registry
-        uses: docker/login-action@v3
-        with:
-          registry: ghcr.io
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
+        run: docker login ghcr.io -u ${{ github.actor }} --password-stdin <<<"$GITHUB_TOKEN"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Dump Azure connection string
         run: echo -n "$CONNECTION_STRING" > azure-connection-string.txt
         env:
@@ -420,11 +412,9 @@ jobs:
         with:
           version: '>= 363.0.0'
       - name: Login to Github Container Registry
-        uses: docker/login-action@v3
-        with:
-          registry: ghcr.io
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
+        run: docker login ghcr.io -u ${{ github.actor }} --password-stdin <<<"$GITHUB_TOKEN"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Dump Azure connection string
         run: echo -n "$CONNECTION_STRING" > azure-connection-string.txt
         env:
@@ -521,11 +511,9 @@ jobs:
         with:
           version: '>= 363.0.0'
       - name: Login to Github Container Registry
-        uses: docker/login-action@v3
-        with:
-          registry: ghcr.io
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
+        run: docker login ghcr.io -u ${{ github.actor }} --password-stdin <<<"$GITHUB_TOKEN"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Dump Azure connection string
         run: echo -n "$CONNECTION_STRING" > azure-connection-string.txt
         env:
@@ -622,11 +610,9 @@ jobs:
         with:
           version: '>= 363.0.0'
       - name: Login to Github Container Registry
-        uses: docker/login-action@v3
-        with:
-          registry: ghcr.io
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
+        run: docker login ghcr.io -u ${{ github.actor }} --password-stdin <<<"$GITHUB_TOKEN"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Dump Azure connection string
         run: echo -n "$CONNECTION_STRING" > azure-connection-string.txt
         env:
@@ -717,11 +703,9 @@ jobs:
         with:
           version: '>= 363.0.0'
       - name: Login to Github Container Registry
-        uses: docker/login-action@v3
-        with:
-          registry: ghcr.io
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
+        run: docker login ghcr.io -u ${{ github.actor }} --password-stdin <<<"$GITHUB_TOKEN"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Dump Azure connection string
         run: echo -n "$CONNECTION_STRING" > azure-connection-string.txt
         env:
@@ -818,11 +802,9 @@ jobs:
         with:
           version: '>= 363.0.0'
       - name: Login to Github Container Registry
-        uses: docker/login-action@v3
-        with:
-          registry: ghcr.io
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
+        run: docker login ghcr.io -u ${{ github.actor }} --password-stdin <<<"$GITHUB_TOKEN"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Dump Azure connection string
         run: echo -n "$CONNECTION_STRING" > azure-connection-string.txt
         env:
@@ -919,11 +901,9 @@ jobs:
         with:
           version: '>= 363.0.0'
       - name: Login to Github Container Registry
-        uses: docker/login-action@v3
-        with:
-          registry: ghcr.io
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
+        run: docker login ghcr.io -u ${{ github.actor }} --password-stdin <<<"$GITHUB_TOKEN"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Dump Azure connection string
         run: echo -n "$CONNECTION_STRING" > azure-connection-string.txt
         env:
@@ -1014,11 +994,9 @@ jobs:
         with:
           version: '>= 363.0.0'
       - name: Login to Github Container Registry
-        uses: docker/login-action@v3
-        with:
-          registry: ghcr.io
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
+        run: docker login ghcr.io -u ${{ github.actor }} --password-stdin <<<"$GITHUB_TOKEN"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Dump Azure connection string
         run: echo -n "$CONNECTION_STRING" > azure-connection-string.txt
         env:
@@ -1115,11 +1093,9 @@ jobs:
         with:
           version: '>= 363.0.0'
       - name: Login to Github Container Registry
-        uses: docker/login-action@v3
-        with:
-          registry: ghcr.io
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
+        run: docker login ghcr.io -u ${{ github.actor }} --password-stdin <<<"$GITHUB_TOKEN"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Dump Azure connection string
         run: echo -n "$CONNECTION_STRING" > azure-connection-string.txt
         env:
@@ -1216,11 +1192,9 @@ jobs:
         with:
           version: '>= 363.0.0'
       - name: Login to Github Container Registry
-        uses: docker/login-action@v3
-        with:
-          registry: ghcr.io
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
+        run: docker login ghcr.io -u ${{ github.actor }} --password-stdin <<<"$GITHUB_TOKEN"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Dump Azure connection string
         run: echo -n "$CONNECTION_STRING" > azure-connection-string.txt
         env:
