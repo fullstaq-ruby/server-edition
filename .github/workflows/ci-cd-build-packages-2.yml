@@ -39,13 +39,13 @@ jobs:
       id-token: write
       packages: read
     steps:
-      - uses: actions/checkout@v5
-      - uses: google-github-actions/auth@v3
+      - uses: actions/checkout@v4
+      - uses: google-github-actions/auth@v2
         with:
           project_id: ${{ vars.GCLOUD_PROJECT_ID }}
           workload_identity_provider: projects/${{ vars.GCLOUD_PROJECT_NUM }}/locations/global/workloadIdentityPools/github-ci-test/providers/github-ci-test
       - name: Set up Cloud SDK
-        uses: google-github-actions/setup-gcloud@v3
+        uses: google-github-actions/setup-gcloud@v2
         with:
           version: '>= 363.0.0'
       - name: Login to Github Container Registry
@@ -98,13 +98,13 @@ jobs:
       id-token: write
       packages: read
     steps:
-      - uses: actions/checkout@v5
-      - uses: google-github-actions/auth@v3
+      - uses: actions/checkout@v4
+      - uses: google-github-actions/auth@v2
         with:
           project_id: ${{ vars.GCLOUD_PROJECT_ID }}
           workload_identity_provider: projects/${{ vars.GCLOUD_PROJECT_NUM }}/locations/global/workloadIdentityPools/github-ci-test/providers/github-ci-test
       - name: Set up Cloud SDK
-        uses: google-github-actions/setup-gcloud@v3
+        uses: google-github-actions/setup-gcloud@v2
         with:
           version: '>= 363.0.0'
       - name: Login to Github Container Registry
@@ -170,13 +170,13 @@ jobs:
     steps:
       
 
-      - uses: actions/checkout@v5
-      - uses: google-github-actions/auth@v3
+      - uses: actions/checkout@v4
+      - uses: google-github-actions/auth@v2
         with:
           project_id: ${{ vars.GCLOUD_PROJECT_ID }}
           workload_identity_provider: projects/${{ vars.GCLOUD_PROJECT_NUM }}/locations/global/workloadIdentityPools/github-ci-test/providers/github-ci-test
       - name: Set up Cloud SDK
-        uses: google-github-actions/setup-gcloud@v3
+        uses: google-github-actions/setup-gcloud@v2
         with:
           version: '>= 363.0.0'
       - name: Login to Github Container Registry
@@ -269,13 +269,13 @@ jobs:
           needs.build_jemalloc_debian_11.result == 'skipped'
           && contains(inputs.necessary_jobs, ';Build Jemalloc [debian-11];')        
 
-      - uses: actions/checkout@v5
-      - uses: google-github-actions/auth@v3
+      - uses: actions/checkout@v4
+      - uses: google-github-actions/auth@v2
         with:
           project_id: ${{ vars.GCLOUD_PROJECT_ID }}
           workload_identity_provider: projects/${{ vars.GCLOUD_PROJECT_NUM }}/locations/global/workloadIdentityPools/github-ci-test/providers/github-ci-test
       - name: Set up Cloud SDK
-        uses: google-github-actions/setup-gcloud@v3
+        uses: google-github-actions/setup-gcloud@v2
         with:
           version: '>= 363.0.0'
       - name: Login to Github Container Registry
@@ -368,13 +368,13 @@ jobs:
     steps:
       
 
-      - uses: actions/checkout@v5
-      - uses: google-github-actions/auth@v3
+      - uses: actions/checkout@v4
+      - uses: google-github-actions/auth@v2
         with:
           project_id: ${{ vars.GCLOUD_PROJECT_ID }}
           workload_identity_provider: projects/${{ vars.GCLOUD_PROJECT_NUM }}/locations/global/workloadIdentityPools/github-ci-test/providers/github-ci-test
       - name: Set up Cloud SDK
-        uses: google-github-actions/setup-gcloud@v3
+        uses: google-github-actions/setup-gcloud@v2
         with:
           version: '>= 363.0.0'
       - name: Login to Github Container Registry
@@ -461,13 +461,13 @@ jobs:
     steps:
       
 
-      - uses: actions/checkout@v5
-      - uses: google-github-actions/auth@v3
+      - uses: actions/checkout@v4
+      - uses: google-github-actions/auth@v2
         with:
           project_id: ${{ vars.GCLOUD_PROJECT_ID }}
           workload_identity_provider: projects/${{ vars.GCLOUD_PROJECT_NUM }}/locations/global/workloadIdentityPools/github-ci-test/providers/github-ci-test
       - name: Set up Cloud SDK
-        uses: google-github-actions/setup-gcloud@v3
+        uses: google-github-actions/setup-gcloud@v2
         with:
           version: '>= 363.0.0'
       - name: Login to Github Container Registry
@@ -560,13 +560,13 @@ jobs:
           needs.build_jemalloc_debian_11.result == 'skipped'
           && contains(inputs.necessary_jobs, ';Build Jemalloc [debian-11];')        
 
-      - uses: actions/checkout@v5
-      - uses: google-github-actions/auth@v3
+      - uses: actions/checkout@v4
+      - uses: google-github-actions/auth@v2
         with:
           project_id: ${{ vars.GCLOUD_PROJECT_ID }}
           workload_identity_provider: projects/${{ vars.GCLOUD_PROJECT_NUM }}/locations/global/workloadIdentityPools/github-ci-test/providers/github-ci-test
       - name: Set up Cloud SDK
-        uses: google-github-actions/setup-gcloud@v3
+        uses: google-github-actions/setup-gcloud@v2
         with:
           version: '>= 363.0.0'
       - name: Login to Github Container Registry
@@ -659,13 +659,13 @@ jobs:
     steps:
       
 
-      - uses: actions/checkout@v5
-      - uses: google-github-actions/auth@v3
+      - uses: actions/checkout@v4
+      - uses: google-github-actions/auth@v2
         with:
           project_id: ${{ vars.GCLOUD_PROJECT_ID }}
           workload_identity_provider: projects/${{ vars.GCLOUD_PROJECT_NUM }}/locations/global/workloadIdentityPools/github-ci-test/providers/github-ci-test
       - name: Set up Cloud SDK
-        uses: google-github-actions/setup-gcloud@v3
+        uses: google-github-actions/setup-gcloud@v2
         with:
           version: '>= 363.0.0'
       - name: Login to Github Container Registry
@@ -752,13 +752,13 @@ jobs:
     steps:
       
 
-      - uses: actions/checkout@v5
-      - uses: google-github-actions/auth@v3
+      - uses: actions/checkout@v4
+      - uses: google-github-actions/auth@v2
         with:
           project_id: ${{ vars.GCLOUD_PROJECT_ID }}
           workload_identity_provider: projects/${{ vars.GCLOUD_PROJECT_NUM }}/locations/global/workloadIdentityPools/github-ci-test/providers/github-ci-test
       - name: Set up Cloud SDK
-        uses: google-github-actions/setup-gcloud@v3
+        uses: google-github-actions/setup-gcloud@v2
         with:
           version: '>= 363.0.0'
       - name: Login to Github Container Registry
@@ -851,13 +851,13 @@ jobs:
           needs.build_jemalloc_debian_11.result == 'skipped'
           && contains(inputs.necessary_jobs, ';Build Jemalloc [debian-11];')        
 
-      - uses: actions/checkout@v5
-      - uses: google-github-actions/auth@v3
+      - uses: actions/checkout@v4
+      - uses: google-github-actions/auth@v2
         with:
           project_id: ${{ vars.GCLOUD_PROJECT_ID }}
           workload_identity_provider: projects/${{ vars.GCLOUD_PROJECT_NUM }}/locations/global/workloadIdentityPools/github-ci-test/providers/github-ci-test
       - name: Set up Cloud SDK
-        uses: google-github-actions/setup-gcloud@v3
+        uses: google-github-actions/setup-gcloud@v2
         with:
           version: '>= 363.0.0'
       - name: Login to Github Container Registry
@@ -950,13 +950,13 @@ jobs:
     steps:
       
 
-      - uses: actions/checkout@v5
-      - uses: google-github-actions/auth@v3
+      - uses: actions/checkout@v4
+      - uses: google-github-actions/auth@v2
         with:
           project_id: ${{ vars.GCLOUD_PROJECT_ID }}
           workload_identity_provider: projects/${{ vars.GCLOUD_PROJECT_NUM }}/locations/global/workloadIdentityPools/github-ci-test/providers/github-ci-test
       - name: Set up Cloud SDK
-        uses: google-github-actions/setup-gcloud@v3
+        uses: google-github-actions/setup-gcloud@v2
         with:
           version: '>= 363.0.0'
       - name: Login to Github Container Registry
@@ -1043,13 +1043,13 @@ jobs:
     steps:
       
 
-      - uses: actions/checkout@v5
-      - uses: google-github-actions/auth@v3
+      - uses: actions/checkout@v4
+      - uses: google-github-actions/auth@v2
         with:
           project_id: ${{ vars.GCLOUD_PROJECT_ID }}
           workload_identity_provider: projects/${{ vars.GCLOUD_PROJECT_NUM }}/locations/global/workloadIdentityPools/github-ci-test/providers/github-ci-test
       - name: Set up Cloud SDK
-        uses: google-github-actions/setup-gcloud@v3
+        uses: google-github-actions/setup-gcloud@v2
         with:
           version: '>= 363.0.0'
       - name: Login to Github Container Registry
@@ -1142,13 +1142,13 @@ jobs:
           needs.build_jemalloc_debian_11.result == 'skipped'
           && contains(inputs.necessary_jobs, ';Build Jemalloc [debian-11];')        
 
-      - uses: actions/checkout@v5
-      - uses: google-github-actions/auth@v3
+      - uses: actions/checkout@v4
+      - uses: google-github-actions/auth@v2
         with:
           project_id: ${{ vars.GCLOUD_PROJECT_ID }}
           workload_identity_provider: projects/${{ vars.GCLOUD_PROJECT_NUM }}/locations/global/workloadIdentityPools/github-ci-test/providers/github-ci-test
       - name: Set up Cloud SDK
-        uses: google-github-actions/setup-gcloud@v3
+        uses: google-github-actions/setup-gcloud@v2
         with:
           version: '>= 363.0.0'
       - name: Login to Github Container Registry
@@ -1241,13 +1241,13 @@ jobs:
     steps:
       
 
-      - uses: actions/checkout@v5
-      - uses: google-github-actions/auth@v3
+      - uses: actions/checkout@v4
+      - uses: google-github-actions/auth@v2
         with:
           project_id: ${{ vars.GCLOUD_PROJECT_ID }}
           workload_identity_provider: projects/${{ vars.GCLOUD_PROJECT_NUM }}/locations/global/workloadIdentityPools/github-ci-test/providers/github-ci-test
       - name: Set up Cloud SDK
-        uses: google-github-actions/setup-gcloud@v3
+        uses: google-github-actions/setup-gcloud@v2
         with:
           version: '>= 363.0.0'
       - name: Login to Github Container Registry
@@ -1334,13 +1334,13 @@ jobs:
     steps:
       
 
-      - uses: actions/checkout@v5
-      - uses: google-github-actions/auth@v3
+      - uses: actions/checkout@v4
+      - uses: google-github-actions/auth@v2
         with:
           project_id: ${{ vars.GCLOUD_PROJECT_ID }}
           workload_identity_provider: projects/${{ vars.GCLOUD_PROJECT_NUM }}/locations/global/workloadIdentityPools/github-ci-test/providers/github-ci-test
       - name: Set up Cloud SDK
-        uses: google-github-actions/setup-gcloud@v3
+        uses: google-github-actions/setup-gcloud@v2
         with:
           version: '>= 363.0.0'
       - name: Login to Github Container Registry
@@ -1433,13 +1433,13 @@ jobs:
           needs.build_jemalloc_debian_11.result == 'skipped'
           && contains(inputs.necessary_jobs, ';Build Jemalloc [debian-11];')        
 
-      - uses: actions/checkout@v5
-      - uses: google-github-actions/auth@v3
+      - uses: actions/checkout@v4
+      - uses: google-github-actions/auth@v2
         with:
           project_id: ${{ vars.GCLOUD_PROJECT_ID }}
           workload_identity_provider: projects/${{ vars.GCLOUD_PROJECT_NUM }}/locations/global/workloadIdentityPools/github-ci-test/providers/github-ci-test
       - name: Set up Cloud SDK
-        uses: google-github-actions/setup-gcloud@v3
+        uses: google-github-actions/setup-gcloud@v2
         with:
           version: '>= 363.0.0'
       - name: Login to Github Container Registry
@@ -1532,13 +1532,13 @@ jobs:
     steps:
       
 
-      - uses: actions/checkout@v5
-      - uses: google-github-actions/auth@v3
+      - uses: actions/checkout@v4
+      - uses: google-github-actions/auth@v2
         with:
           project_id: ${{ vars.GCLOUD_PROJECT_ID }}
           workload_identity_provider: projects/${{ vars.GCLOUD_PROJECT_NUM }}/locations/global/workloadIdentityPools/github-ci-test/providers/github-ci-test
       - name: Set up Cloud SDK
-        uses: google-github-actions/setup-gcloud@v3
+        uses: google-github-actions/setup-gcloud@v2
         with:
           version: '>= 363.0.0'
       - name: Login to Github Container Registry
@@ -1625,13 +1625,13 @@ jobs:
     steps:
       
 
-      - uses: actions/checkout@v5
-      - uses: google-github-actions/auth@v3
+      - uses: actions/checkout@v4
+      - uses: google-github-actions/auth@v2
         with:
           project_id: ${{ vars.GCLOUD_PROJECT_ID }}
           workload_identity_provider: projects/${{ vars.GCLOUD_PROJECT_NUM }}/locations/global/workloadIdentityPools/github-ci-test/providers/github-ci-test
       - name: Set up Cloud SDK
-        uses: google-github-actions/setup-gcloud@v3
+        uses: google-github-actions/setup-gcloud@v2
         with:
           version: '>= 363.0.0'
       - name: Login to Github Container Registry
@@ -1724,13 +1724,13 @@ jobs:
           needs.build_jemalloc_debian_11.result == 'skipped'
           && contains(inputs.necessary_jobs, ';Build Jemalloc [debian-11];')        
 
-      - uses: actions/checkout@v5
-      - uses: google-github-actions/auth@v3
+      - uses: actions/checkout@v4
+      - uses: google-github-actions/auth@v2
         with:
           project_id: ${{ vars.GCLOUD_PROJECT_ID }}
           workload_identity_provider: projects/${{ vars.GCLOUD_PROJECT_NUM }}/locations/global/workloadIdentityPools/github-ci-test/providers/github-ci-test
       - name: Set up Cloud SDK
-        uses: google-github-actions/setup-gcloud@v3
+        uses: google-github-actions/setup-gcloud@v2
         with:
           version: '>= 363.0.0'
       - name: Login to Github Container Registry
@@ -1823,13 +1823,13 @@ jobs:
     steps:
       
 
-      - uses: actions/checkout@v5
-      - uses: google-github-actions/auth@v3
+      - uses: actions/checkout@v4
+      - uses: google-github-actions/auth@v2
         with:
           project_id: ${{ vars.GCLOUD_PROJECT_ID }}
           workload_identity_provider: projects/${{ vars.GCLOUD_PROJECT_NUM }}/locations/global/workloadIdentityPools/github-ci-test/providers/github-ci-test
       - name: Set up Cloud SDK
-        uses: google-github-actions/setup-gcloud@v3
+        uses: google-github-actions/setup-gcloud@v2
         with:
           version: '>= 363.0.0'
       - name: Login to Github Container Registry
@@ -1916,13 +1916,13 @@ jobs:
     steps:
       
 
-      - uses: actions/checkout@v5
-      - uses: google-github-actions/auth@v3
+      - uses: actions/checkout@v4
+      - uses: google-github-actions/auth@v2
         with:
           project_id: ${{ vars.GCLOUD_PROJECT_ID }}
           workload_identity_provider: projects/${{ vars.GCLOUD_PROJECT_NUM }}/locations/global/workloadIdentityPools/github-ci-test/providers/github-ci-test
       - name: Set up Cloud SDK
-        uses: google-github-actions/setup-gcloud@v3
+        uses: google-github-actions/setup-gcloud@v2
         with:
           version: '>= 363.0.0'
       - name: Login to Github Container Registry
@@ -2015,13 +2015,13 @@ jobs:
           needs.build_jemalloc_debian_11.result == 'skipped'
           && contains(inputs.necessary_jobs, ';Build Jemalloc [debian-11];')        
 
-      - uses: actions/checkout@v5
-      - uses: google-github-actions/auth@v3
+      - uses: actions/checkout@v4
+      - uses: google-github-actions/auth@v2
         with:
           project_id: ${{ vars.GCLOUD_PROJECT_ID }}
           workload_identity_provider: projects/${{ vars.GCLOUD_PROJECT_NUM }}/locations/global/workloadIdentityPools/github-ci-test/providers/github-ci-test
       - name: Set up Cloud SDK
-        uses: google-github-actions/setup-gcloud@v3
+        uses: google-github-actions/setup-gcloud@v2
         with:
           version: '>= 363.0.0'
       - name: Login to Github Container Registry
@@ -2114,13 +2114,13 @@ jobs:
     steps:
       
 
-      - uses: actions/checkout@v5
-      - uses: google-github-actions/auth@v3
+      - uses: actions/checkout@v4
+      - uses: google-github-actions/auth@v2
         with:
           project_id: ${{ vars.GCLOUD_PROJECT_ID }}
           workload_identity_provider: projects/${{ vars.GCLOUD_PROJECT_NUM }}/locations/global/workloadIdentityPools/github-ci-test/providers/github-ci-test
       - name: Set up Cloud SDK
-        uses: google-github-actions/setup-gcloud@v3
+        uses: google-github-actions/setup-gcloud@v2
         with:
           version: '>= 363.0.0'
       - name: Login to Github Container Registry
@@ -2207,13 +2207,13 @@ jobs:
     steps:
       
 
-      - uses: actions/checkout@v5
-      - uses: google-github-actions/auth@v3
+      - uses: actions/checkout@v4
+      - uses: google-github-actions/auth@v2
         with:
           project_id: ${{ vars.GCLOUD_PROJECT_ID }}
           workload_identity_provider: projects/${{ vars.GCLOUD_PROJECT_NUM }}/locations/global/workloadIdentityPools/github-ci-test/providers/github-ci-test
       - name: Set up Cloud SDK
-        uses: google-github-actions/setup-gcloud@v3
+        uses: google-github-actions/setup-gcloud@v2
         with:
           version: '>= 363.0.0'
       - name: Login to Github Container Registry
@@ -2306,13 +2306,13 @@ jobs:
           needs.build_jemalloc_debian_11.result == 'skipped'
           && contains(inputs.necessary_jobs, ';Build Jemalloc [debian-11];')        
 
-      - uses: actions/checkout@v5
-      - uses: google-github-actions/auth@v3
+      - uses: actions/checkout@v4
+      - uses: google-github-actions/auth@v2
         with:
           project_id: ${{ vars.GCLOUD_PROJECT_ID }}
           workload_identity_provider: projects/${{ vars.GCLOUD_PROJECT_NUM }}/locations/global/workloadIdentityPools/github-ci-test/providers/github-ci-test
       - name: Set up Cloud SDK
-        uses: google-github-actions/setup-gcloud@v3
+        uses: google-github-actions/setup-gcloud@v2
         with:
           version: '>= 363.0.0'
       - name: Login to Github Container Registry
@@ -2405,13 +2405,13 @@ jobs:
     steps:
       
 
-      - uses: actions/checkout@v5
-      - uses: google-github-actions/auth@v3
+      - uses: actions/checkout@v4
+      - uses: google-github-actions/auth@v2
         with:
           project_id: ${{ vars.GCLOUD_PROJECT_ID }}
           workload_identity_provider: projects/${{ vars.GCLOUD_PROJECT_NUM }}/locations/global/workloadIdentityPools/github-ci-test/providers/github-ci-test
       - name: Set up Cloud SDK
-        uses: google-github-actions/setup-gcloud@v3
+        uses: google-github-actions/setup-gcloud@v2
         with:
           version: '>= 363.0.0'
       - name: Login to Github Container Registry
@@ -2499,13 +2499,13 @@ jobs:
     steps:
       
 
-      - uses: actions/checkout@v5
-      - uses: google-github-actions/auth@v3
+      - uses: actions/checkout@v4
+      - uses: google-github-actions/auth@v2
         with:
           project_id: ${{ vars.GCLOUD_PROJECT_ID }}
           workload_identity_provider: projects/${{ vars.GCLOUD_PROJECT_NUM }}/locations/global/workloadIdentityPools/github-ci-test/providers/github-ci-test
       - name: Set up Cloud SDK
-        uses: google-github-actions/setup-gcloud@v3
+        uses: google-github-actions/setup-gcloud@v2
         with:
           version: '>= 363.0.0'
       - name: Login to Github Container Registry
@@ -2598,13 +2598,13 @@ jobs:
           needs.build_jemalloc_ubuntu_22_04.result == 'skipped'
           && contains(inputs.necessary_jobs, ';Build Jemalloc [ubuntu-22.04];')        
 
-      - uses: actions/checkout@v5
-      - uses: google-github-actions/auth@v3
+      - uses: actions/checkout@v4
+      - uses: google-github-actions/auth@v2
         with:
           project_id: ${{ vars.GCLOUD_PROJECT_ID }}
           workload_identity_provider: projects/${{ vars.GCLOUD_PROJECT_NUM }}/locations/global/workloadIdentityPools/github-ci-test/providers/github-ci-test
       - name: Set up Cloud SDK
-        uses: google-github-actions/setup-gcloud@v3
+        uses: google-github-actions/setup-gcloud@v2
         with:
           version: '>= 363.0.0'
       - name: Login to Github Container Registry
@@ -2697,13 +2697,13 @@ jobs:
     steps:
       
 
-      - uses: actions/checkout@v5
-      - uses: google-github-actions/auth@v3
+      - uses: actions/checkout@v4
+      - uses: google-github-actions/auth@v2
         with:
           project_id: ${{ vars.GCLOUD_PROJECT_ID }}
           workload_identity_provider: projects/${{ vars.GCLOUD_PROJECT_NUM }}/locations/global/workloadIdentityPools/github-ci-test/providers/github-ci-test
       - name: Set up Cloud SDK
-        uses: google-github-actions/setup-gcloud@v3
+        uses: google-github-actions/setup-gcloud@v2
         with:
           version: '>= 363.0.0'
       - name: Login to Github Container Registry
@@ -2790,13 +2790,13 @@ jobs:
     steps:
       
 
-      - uses: actions/checkout@v5
-      - uses: google-github-actions/auth@v3
+      - uses: actions/checkout@v4
+      - uses: google-github-actions/auth@v2
         with:
           project_id: ${{ vars.GCLOUD_PROJECT_ID }}
           workload_identity_provider: projects/${{ vars.GCLOUD_PROJECT_NUM }}/locations/global/workloadIdentityPools/github-ci-test/providers/github-ci-test
       - name: Set up Cloud SDK
-        uses: google-github-actions/setup-gcloud@v3
+        uses: google-github-actions/setup-gcloud@v2
         with:
           version: '>= 363.0.0'
       - name: Login to Github Container Registry
@@ -2889,13 +2889,13 @@ jobs:
           needs.build_jemalloc_ubuntu_22_04.result == 'skipped'
           && contains(inputs.necessary_jobs, ';Build Jemalloc [ubuntu-22.04];')        
 
-      - uses: actions/checkout@v5
-      - uses: google-github-actions/auth@v3
+      - uses: actions/checkout@v4
+      - uses: google-github-actions/auth@v2
         with:
           project_id: ${{ vars.GCLOUD_PROJECT_ID }}
           workload_identity_provider: projects/${{ vars.GCLOUD_PROJECT_NUM }}/locations/global/workloadIdentityPools/github-ci-test/providers/github-ci-test
       - name: Set up Cloud SDK
-        uses: google-github-actions/setup-gcloud@v3
+        uses: google-github-actions/setup-gcloud@v2
         with:
           version: '>= 363.0.0'
       - name: Login to Github Container Registry
@@ -2988,13 +2988,13 @@ jobs:
     steps:
       
 
-      - uses: actions/checkout@v5
-      - uses: google-github-actions/auth@v3
+      - uses: actions/checkout@v4
+      - uses: google-github-actions/auth@v2
         with:
           project_id: ${{ vars.GCLOUD_PROJECT_ID }}
           workload_identity_provider: projects/${{ vars.GCLOUD_PROJECT_NUM }}/locations/global/workloadIdentityPools/github-ci-test/providers/github-ci-test
       - name: Set up Cloud SDK
-        uses: google-github-actions/setup-gcloud@v3
+        uses: google-github-actions/setup-gcloud@v2
         with:
           version: '>= 363.0.0'
       - name: Login to Github Container Registry
@@ -3081,13 +3081,13 @@ jobs:
     steps:
       
 
-      - uses: actions/checkout@v5
-      - uses: google-github-actions/auth@v3
+      - uses: actions/checkout@v4
+      - uses: google-github-actions/auth@v2
         with:
           project_id: ${{ vars.GCLOUD_PROJECT_ID }}
           workload_identity_provider: projects/${{ vars.GCLOUD_PROJECT_NUM }}/locations/global/workloadIdentityPools/github-ci-test/providers/github-ci-test
       - name: Set up Cloud SDK
-        uses: google-github-actions/setup-gcloud@v3
+        uses: google-github-actions/setup-gcloud@v2
         with:
           version: '>= 363.0.0'
       - name: Login to Github Container Registry
@@ -3180,13 +3180,13 @@ jobs:
           needs.build_jemalloc_ubuntu_22_04.result == 'skipped'
           && contains(inputs.necessary_jobs, ';Build Jemalloc [ubuntu-22.04];')        
 
-      - uses: actions/checkout@v5
-      - uses: google-github-actions/auth@v3
+      - uses: actions/checkout@v4
+      - uses: google-github-actions/auth@v2
         with:
           project_id: ${{ vars.GCLOUD_PROJECT_ID }}
           workload_identity_provider: projects/${{ vars.GCLOUD_PROJECT_NUM }}/locations/global/workloadIdentityPools/github-ci-test/providers/github-ci-test
       - name: Set up Cloud SDK
-        uses: google-github-actions/setup-gcloud@v3
+        uses: google-github-actions/setup-gcloud@v2
         with:
           version: '>= 363.0.0'
       - name: Login to Github Container Registry
@@ -3279,13 +3279,13 @@ jobs:
     steps:
       
 
-      - uses: actions/checkout@v5
-      - uses: google-github-actions/auth@v3
+      - uses: actions/checkout@v4
+      - uses: google-github-actions/auth@v2
         with:
           project_id: ${{ vars.GCLOUD_PROJECT_ID }}
           workload_identity_provider: projects/${{ vars.GCLOUD_PROJECT_NUM }}/locations/global/workloadIdentityPools/github-ci-test/providers/github-ci-test
       - name: Set up Cloud SDK
-        uses: google-github-actions/setup-gcloud@v3
+        uses: google-github-actions/setup-gcloud@v2
         with:
           version: '>= 363.0.0'
       - name: Login to Github Container Registry
@@ -3372,13 +3372,13 @@ jobs:
     steps:
       
 
-      - uses: actions/checkout@v5
-      - uses: google-github-actions/auth@v3
+      - uses: actions/checkout@v4
+      - uses: google-github-actions/auth@v2
         with:
           project_id: ${{ vars.GCLOUD_PROJECT_ID }}
           workload_identity_provider: projects/${{ vars.GCLOUD_PROJECT_NUM }}/locations/global/workloadIdentityPools/github-ci-test/providers/github-ci-test
       - name: Set up Cloud SDK
-        uses: google-github-actions/setup-gcloud@v3
+        uses: google-github-actions/setup-gcloud@v2
         with:
           version: '>= 363.0.0'
       - name: Login to Github Container Registry
@@ -3471,13 +3471,13 @@ jobs:
           needs.build_jemalloc_ubuntu_22_04.result == 'skipped'
           && contains(inputs.necessary_jobs, ';Build Jemalloc [ubuntu-22.04];')        
 
-      - uses: actions/checkout@v5
-      - uses: google-github-actions/auth@v3
+      - uses: actions/checkout@v4
+      - uses: google-github-actions/auth@v2
         with:
           project_id: ${{ vars.GCLOUD_PROJECT_ID }}
           workload_identity_provider: projects/${{ vars.GCLOUD_PROJECT_NUM }}/locations/global/workloadIdentityPools/github-ci-test/providers/github-ci-test
       - name: Set up Cloud SDK
-        uses: google-github-actions/setup-gcloud@v3
+        uses: google-github-actions/setup-gcloud@v2
         with:
           version: '>= 363.0.0'
       - name: Login to Github Container Registry
@@ -3570,13 +3570,13 @@ jobs:
     steps:
       
 
-      - uses: actions/checkout@v5
-      - uses: google-github-actions/auth@v3
+      - uses: actions/checkout@v4
+      - uses: google-github-actions/auth@v2
         with:
           project_id: ${{ vars.GCLOUD_PROJECT_ID }}
           workload_identity_provider: projects/${{ vars.GCLOUD_PROJECT_NUM }}/locations/global/workloadIdentityPools/github-ci-test/providers/github-ci-test
       - name: Set up Cloud SDK
-        uses: google-github-actions/setup-gcloud@v3
+        uses: google-github-actions/setup-gcloud@v2
         with:
           version: '>= 363.0.0'
       - name: Login to Github Container Registry
@@ -3663,13 +3663,13 @@ jobs:
     steps:
       
 
-      - uses: actions/checkout@v5
-      - uses: google-github-actions/auth@v3
+      - uses: actions/checkout@v4
+      - uses: google-github-actions/auth@v2
         with:
           project_id: ${{ vars.GCLOUD_PROJECT_ID }}
           workload_identity_provider: projects/${{ vars.GCLOUD_PROJECT_NUM }}/locations/global/workloadIdentityPools/github-ci-test/providers/github-ci-test
       - name: Set up Cloud SDK
-        uses: google-github-actions/setup-gcloud@v3
+        uses: google-github-actions/setup-gcloud@v2
         with:
           version: '>= 363.0.0'
       - name: Login to Github Container Registry
@@ -3762,13 +3762,13 @@ jobs:
           needs.build_jemalloc_ubuntu_22_04.result == 'skipped'
           && contains(inputs.necessary_jobs, ';Build Jemalloc [ubuntu-22.04];')        
 
-      - uses: actions/checkout@v5
-      - uses: google-github-actions/auth@v3
+      - uses: actions/checkout@v4
+      - uses: google-github-actions/auth@v2
         with:
           project_id: ${{ vars.GCLOUD_PROJECT_ID }}
           workload_identity_provider: projects/${{ vars.GCLOUD_PROJECT_NUM }}/locations/global/workloadIdentityPools/github-ci-test/providers/github-ci-test
       - name: Set up Cloud SDK
-        uses: google-github-actions/setup-gcloud@v3
+        uses: google-github-actions/setup-gcloud@v2
         with:
           version: '>= 363.0.0'
       - name: Login to Github Container Registry
@@ -3861,13 +3861,13 @@ jobs:
     steps:
       
 
-      - uses: actions/checkout@v5
-      - uses: google-github-actions/auth@v3
+      - uses: actions/checkout@v4
+      - uses: google-github-actions/auth@v2
         with:
           project_id: ${{ vars.GCLOUD_PROJECT_ID }}
           workload_identity_provider: projects/${{ vars.GCLOUD_PROJECT_NUM }}/locations/global/workloadIdentityPools/github-ci-test/providers/github-ci-test
       - name: Set up Cloud SDK
-        uses: google-github-actions/setup-gcloud@v3
+        uses: google-github-actions/setup-gcloud@v2
         with:
           version: '>= 363.0.0'
       - name: Login to Github Container Registry
@@ -3954,13 +3954,13 @@ jobs:
     steps:
       
 
-      - uses: actions/checkout@v5
-      - uses: google-github-actions/auth@v3
+      - uses: actions/checkout@v4
+      - uses: google-github-actions/auth@v2
         with:
           project_id: ${{ vars.GCLOUD_PROJECT_ID }}
           workload_identity_provider: projects/${{ vars.GCLOUD_PROJECT_NUM }}/locations/global/workloadIdentityPools/github-ci-test/providers/github-ci-test
       - name: Set up Cloud SDK
-        uses: google-github-actions/setup-gcloud@v3
+        uses: google-github-actions/setup-gcloud@v2
         with:
           version: '>= 363.0.0'
       - name: Login to Github Container Registry
@@ -4053,13 +4053,13 @@ jobs:
           needs.build_jemalloc_ubuntu_22_04.result == 'skipped'
           && contains(inputs.necessary_jobs, ';Build Jemalloc [ubuntu-22.04];')        
 
-      - uses: actions/checkout@v5
-      - uses: google-github-actions/auth@v3
+      - uses: actions/checkout@v4
+      - uses: google-github-actions/auth@v2
         with:
           project_id: ${{ vars.GCLOUD_PROJECT_ID }}
           workload_identity_provider: projects/${{ vars.GCLOUD_PROJECT_NUM }}/locations/global/workloadIdentityPools/github-ci-test/providers/github-ci-test
       - name: Set up Cloud SDK
-        uses: google-github-actions/setup-gcloud@v3
+        uses: google-github-actions/setup-gcloud@v2
         with:
           version: '>= 363.0.0'
       - name: Login to Github Container Registry
@@ -4152,13 +4152,13 @@ jobs:
     steps:
       
 
-      - uses: actions/checkout@v5
-      - uses: google-github-actions/auth@v3
+      - uses: actions/checkout@v4
+      - uses: google-github-actions/auth@v2
         with:
           project_id: ${{ vars.GCLOUD_PROJECT_ID }}
           workload_identity_provider: projects/${{ vars.GCLOUD_PROJECT_NUM }}/locations/global/workloadIdentityPools/github-ci-test/providers/github-ci-test
       - name: Set up Cloud SDK
-        uses: google-github-actions/setup-gcloud@v3
+        uses: google-github-actions/setup-gcloud@v2
         with:
           version: '>= 363.0.0'
       - name: Login to Github Container Registry
@@ -4245,13 +4245,13 @@ jobs:
     steps:
       
 
-      - uses: actions/checkout@v5
-      - uses: google-github-actions/auth@v3
+      - uses: actions/checkout@v4
+      - uses: google-github-actions/auth@v2
         with:
           project_id: ${{ vars.GCLOUD_PROJECT_ID }}
           workload_identity_provider: projects/${{ vars.GCLOUD_PROJECT_NUM }}/locations/global/workloadIdentityPools/github-ci-test/providers/github-ci-test
       - name: Set up Cloud SDK
-        uses: google-github-actions/setup-gcloud@v3
+        uses: google-github-actions/setup-gcloud@v2
         with:
           version: '>= 363.0.0'
       - name: Login to Github Container Registry
@@ -4344,13 +4344,13 @@ jobs:
           needs.build_jemalloc_ubuntu_22_04.result == 'skipped'
           && contains(inputs.necessary_jobs, ';Build Jemalloc [ubuntu-22.04];')        
 
-      - uses: actions/checkout@v5
-      - uses: google-github-actions/auth@v3
+      - uses: actions/checkout@v4
+      - uses: google-github-actions/auth@v2
         with:
           project_id: ${{ vars.GCLOUD_PROJECT_ID }}
           workload_identity_provider: projects/${{ vars.GCLOUD_PROJECT_NUM }}/locations/global/workloadIdentityPools/github-ci-test/providers/github-ci-test
       - name: Set up Cloud SDK
-        uses: google-github-actions/setup-gcloud@v3
+        uses: google-github-actions/setup-gcloud@v2
         with:
           version: '>= 363.0.0'
       - name: Login to Github Container Registry
@@ -4443,13 +4443,13 @@ jobs:
     steps:
       
 
-      - uses: actions/checkout@v5
-      - uses: google-github-actions/auth@v3
+      - uses: actions/checkout@v4
+      - uses: google-github-actions/auth@v2
         with:
           project_id: ${{ vars.GCLOUD_PROJECT_ID }}
           workload_identity_provider: projects/${{ vars.GCLOUD_PROJECT_NUM }}/locations/global/workloadIdentityPools/github-ci-test/providers/github-ci-test
       - name: Set up Cloud SDK
-        uses: google-github-actions/setup-gcloud@v3
+        uses: google-github-actions/setup-gcloud@v2
         with:
           version: '>= 363.0.0'
       - name: Login to Github Container Registry
@@ -4536,13 +4536,13 @@ jobs:
     steps:
       
 
-      - uses: actions/checkout@v5
-      - uses: google-github-actions/auth@v3
+      - uses: actions/checkout@v4
+      - uses: google-github-actions/auth@v2
         with:
           project_id: ${{ vars.GCLOUD_PROJECT_ID }}
           workload_identity_provider: projects/${{ vars.GCLOUD_PROJECT_NUM }}/locations/global/workloadIdentityPools/github-ci-test/providers/github-ci-test
       - name: Set up Cloud SDK
-        uses: google-github-actions/setup-gcloud@v3
+        uses: google-github-actions/setup-gcloud@v2
         with:
           version: '>= 363.0.0'
       - name: Login to Github Container Registry
@@ -4635,13 +4635,13 @@ jobs:
           needs.build_jemalloc_ubuntu_22_04.result == 'skipped'
           && contains(inputs.necessary_jobs, ';Build Jemalloc [ubuntu-22.04];')        
 
-      - uses: actions/checkout@v5
-      - uses: google-github-actions/auth@v3
+      - uses: actions/checkout@v4
+      - uses: google-github-actions/auth@v2
         with:
           project_id: ${{ vars.GCLOUD_PROJECT_ID }}
           workload_identity_provider: projects/${{ vars.GCLOUD_PROJECT_NUM }}/locations/global/workloadIdentityPools/github-ci-test/providers/github-ci-test
       - name: Set up Cloud SDK
-        uses: google-github-actions/setup-gcloud@v3
+        uses: google-github-actions/setup-gcloud@v2
         with:
           version: '>= 363.0.0'
       - name: Login to Github Container Registry
@@ -4734,13 +4734,13 @@ jobs:
     steps:
       
 
-      - uses: actions/checkout@v5
-      - uses: google-github-actions/auth@v3
+      - uses: actions/checkout@v4
+      - uses: google-github-actions/auth@v2
         with:
           project_id: ${{ vars.GCLOUD_PROJECT_ID }}
           workload_identity_provider: projects/${{ vars.GCLOUD_PROJECT_NUM }}/locations/global/workloadIdentityPools/github-ci-test/providers/github-ci-test
       - name: Set up Cloud SDK
-        uses: google-github-actions/setup-gcloud@v3
+        uses: google-github-actions/setup-gcloud@v2
         with:
           version: '>= 363.0.0'
       - name: Login to Github Container Registry
@@ -4893,13 +4893,13 @@ jobs:
     permissions:
       id-token: write
     steps:
-      - uses: actions/checkout@v5
-      - uses: google-github-actions/auth@v3
+      - uses: actions/checkout@v4
+      - uses: google-github-actions/auth@v2
         with:
           project_id: ${{ vars.GCLOUD_PROJECT_ID }}
           workload_identity_provider: projects/${{ vars.GCLOUD_PROJECT_NUM }}/locations/global/workloadIdentityPools/github-ci-test/providers/github-ci-test
       - name: Set up Cloud SDK
-        uses: google-github-actions/setup-gcloud@v3
+        uses: google-github-actions/setup-gcloud@v2
         with:
           version: '>= 363.0.0'
 

@@ -30,13 +30,13 @@ jobs:
         id-token: write
         packages: read
       steps:
-        - uses: actions/checkout@v5
-        - uses: google-github-actions/auth@v3
+        - uses: actions/checkout@v4
+        - uses: google-github-actions/auth@v2
           with:
             project_id: ${{ vars.GCLOUD_PROJECT_ID }}
             workload_identity_provider: projects/${{ vars.GCLOUD_PROJECT_NUM }}/locations/global/workloadIdentityPools/github-ci-test/providers/github-ci-test
         - name: Set up Cloud SDK
-          uses: google-github-actions/setup-gcloud@v3
+          uses: google-github-actions/setup-gcloud@v2
           with:
             version: '>= 363.0.0'
         - name: Login to Github Container Registry
@@ -118,13 +118,13 @@ jobs:
         <%- end -%>
         <% end %>
 
-        - uses: actions/checkout@v5
-        - uses: google-github-actions/auth@v3
+        - uses: actions/checkout@v4
+        - uses: google-github-actions/auth@v2
           with:
             project_id: ${{ vars.GCLOUD_PROJECT_ID }}
             workload_identity_provider: projects/${{ vars.GCLOUD_PROJECT_NUM }}/locations/global/workloadIdentityPools/github-ci-test/providers/github-ci-test
         - name: Set up Cloud SDK
-          uses: google-github-actions/setup-gcloud@v3
+          uses: google-github-actions/setup-gcloud@v2
           with:
             version: '>= 363.0.0'
         - name: Login to Github Container Registry
@@ -231,13 +231,13 @@ jobs:
     permissions:
       id-token: write
     steps:
-      - uses: actions/checkout@v5
-      - uses: google-github-actions/auth@v3
+      - uses: actions/checkout@v4
+      - uses: google-github-actions/auth@v2
         with:
           project_id: ${{ vars.GCLOUD_PROJECT_ID }}
           workload_identity_provider: projects/${{ vars.GCLOUD_PROJECT_NUM }}/locations/global/workloadIdentityPools/github-ci-test/providers/github-ci-test
       - name: Set up Cloud SDK
-        uses: google-github-actions/setup-gcloud@v3
+        uses: google-github-actions/setup-gcloud@v2
         with:
           version: '>= 363.0.0'
 

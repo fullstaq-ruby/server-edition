@@ -43,15 +43,15 @@ jobs:
           needs.download_rbenv_source.result == 'skipped'
           && contains(inputs.necessary_jobs, ';Download Rbenv source;')
 
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v4
         with:
           fetch-depth: 0
-      - uses: google-github-actions/auth@v3
+      - uses: google-github-actions/auth@v2
         with:
           project_id: ${{ vars.GCLOUD_PROJECT_ID }}
           workload_identity_provider: projects/${{ vars.GCLOUD_PROJECT_NUM }}/locations/global/workloadIdentityPools/github-ci-test/providers/github-ci-test
       - name: Set up Cloud SDK
-        uses: google-github-actions/setup-gcloud@v3
+        uses: google-github-actions/setup-gcloud@v2
         with:
           version: '>= 363.0.0'
       - uses: ruby/setup-ruby@v1
@@ -101,13 +101,13 @@ jobs:
     environment: test
     if: contains(inputs.necessary_jobs, ';Install gem bundle;')
     steps:
-      - uses: actions/checkout@v5
-      - uses: google-github-actions/auth@v3
+      - uses: actions/checkout@v4
+      - uses: google-github-actions/auth@v2
         with:
           project_id: ${{ vars.GCLOUD_PROJECT_ID }}
           workload_identity_provider: projects/${{ vars.GCLOUD_PROJECT_NUM }}/locations/global/workloadIdentityPools/github-ci-test/providers/github-ci-test
       - name: Set up Cloud SDK
-        uses: google-github-actions/setup-gcloud@v3
+        uses: google-github-actions/setup-gcloud@v2
         with:
           version: '>= 363.0.0'
       - uses: ruby/setup-ruby@v1
@@ -137,18 +137,18 @@ jobs:
     environment: test
     if: contains(inputs.necessary_jobs, ';Build Docker image centos-8;')
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v4
       - uses: azure/login@v2
         with:
           tenant-id: ${{ vars.AZURE_TENANT_ID }}
           client-id: ${{ vars.AZURE_CLIENT_ID }}
           subscription-id: ${{ vars.AZURE_SUBSCRIPTION_ID }}
-      - uses: google-github-actions/auth@v3
+      - uses: google-github-actions/auth@v2
         with:
           project_id: ${{ vars.GCLOUD_PROJECT_ID }}
           workload_identity_provider: projects/${{ vars.GCLOUD_PROJECT_NUM }}/locations/global/workloadIdentityPools/github-ci-test/providers/github-ci-test
       - name: Set up Cloud SDK
-        uses: google-github-actions/setup-gcloud@v3
+        uses: google-github-actions/setup-gcloud@v2
         with:
           version: '>= 363.0.0'
 
@@ -179,18 +179,18 @@ jobs:
     environment: test
     if: contains(inputs.necessary_jobs, ';Build Docker image debian-11;')
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v4
       - uses: azure/login@v2
         with:
           tenant-id: ${{ vars.AZURE_TENANT_ID }}
           client-id: ${{ vars.AZURE_CLIENT_ID }}
           subscription-id: ${{ vars.AZURE_SUBSCRIPTION_ID }}
-      - uses: google-github-actions/auth@v3
+      - uses: google-github-actions/auth@v2
         with:
           project_id: ${{ vars.GCLOUD_PROJECT_ID }}
           workload_identity_provider: projects/${{ vars.GCLOUD_PROJECT_NUM }}/locations/global/workloadIdentityPools/github-ci-test/providers/github-ci-test
       - name: Set up Cloud SDK
-        uses: google-github-actions/setup-gcloud@v3
+        uses: google-github-actions/setup-gcloud@v2
         with:
           version: '>= 363.0.0'
 
@@ -221,18 +221,18 @@ jobs:
     environment: test
     if: contains(inputs.necessary_jobs, ';Build Docker image debian-12;')
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v4
       - uses: azure/login@v2
         with:
           tenant-id: ${{ vars.AZURE_TENANT_ID }}
           client-id: ${{ vars.AZURE_CLIENT_ID }}
           subscription-id: ${{ vars.AZURE_SUBSCRIPTION_ID }}
-      - uses: google-github-actions/auth@v3
+      - uses: google-github-actions/auth@v2
         with:
           project_id: ${{ vars.GCLOUD_PROJECT_ID }}
           workload_identity_provider: projects/${{ vars.GCLOUD_PROJECT_NUM }}/locations/global/workloadIdentityPools/github-ci-test/providers/github-ci-test
       - name: Set up Cloud SDK
-        uses: google-github-actions/setup-gcloud@v3
+        uses: google-github-actions/setup-gcloud@v2
         with:
           version: '>= 363.0.0'
 
@@ -263,18 +263,18 @@ jobs:
     environment: test
     if: contains(inputs.necessary_jobs, ';Build Docker image debian-13;')
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v4
       - uses: azure/login@v2
         with:
           tenant-id: ${{ vars.AZURE_TENANT_ID }}
           client-id: ${{ vars.AZURE_CLIENT_ID }}
           subscription-id: ${{ vars.AZURE_SUBSCRIPTION_ID }}
-      - uses: google-github-actions/auth@v3
+      - uses: google-github-actions/auth@v2
         with:
           project_id: ${{ vars.GCLOUD_PROJECT_ID }}
           workload_identity_provider: projects/${{ vars.GCLOUD_PROJECT_NUM }}/locations/global/workloadIdentityPools/github-ci-test/providers/github-ci-test
       - name: Set up Cloud SDK
-        uses: google-github-actions/setup-gcloud@v3
+        uses: google-github-actions/setup-gcloud@v2
         with:
           version: '>= 363.0.0'
 
@@ -305,18 +305,18 @@ jobs:
     environment: test
     if: contains(inputs.necessary_jobs, ';Build Docker image el-9;')
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v4
       - uses: azure/login@v2
         with:
           tenant-id: ${{ vars.AZURE_TENANT_ID }}
           client-id: ${{ vars.AZURE_CLIENT_ID }}
           subscription-id: ${{ vars.AZURE_SUBSCRIPTION_ID }}
-      - uses: google-github-actions/auth@v3
+      - uses: google-github-actions/auth@v2
         with:
           project_id: ${{ vars.GCLOUD_PROJECT_ID }}
           workload_identity_provider: projects/${{ vars.GCLOUD_PROJECT_NUM }}/locations/global/workloadIdentityPools/github-ci-test/providers/github-ci-test
       - name: Set up Cloud SDK
-        uses: google-github-actions/setup-gcloud@v3
+        uses: google-github-actions/setup-gcloud@v2
         with:
           version: '>= 363.0.0'
 
@@ -347,18 +347,18 @@ jobs:
     environment: test
     if: contains(inputs.necessary_jobs, ';Build Docker image ubuntu-22.04;')
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v4
       - uses: azure/login@v2
         with:
           tenant-id: ${{ vars.AZURE_TENANT_ID }}
           client-id: ${{ vars.AZURE_CLIENT_ID }}
           subscription-id: ${{ vars.AZURE_SUBSCRIPTION_ID }}
-      - uses: google-github-actions/auth@v3
+      - uses: google-github-actions/auth@v2
         with:
           project_id: ${{ vars.GCLOUD_PROJECT_ID }}
           workload_identity_provider: projects/${{ vars.GCLOUD_PROJECT_NUM }}/locations/global/workloadIdentityPools/github-ci-test/providers/github-ci-test
       - name: Set up Cloud SDK
-        uses: google-github-actions/setup-gcloud@v3
+        uses: google-github-actions/setup-gcloud@v2
         with:
           version: '>= 363.0.0'
 
@@ -389,18 +389,18 @@ jobs:
     environment: test
     if: contains(inputs.necessary_jobs, ';Build Docker image ubuntu-24.04;')
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v4
       - uses: azure/login@v2
         with:
           tenant-id: ${{ vars.AZURE_TENANT_ID }}
           client-id: ${{ vars.AZURE_CLIENT_ID }}
           subscription-id: ${{ vars.AZURE_SUBSCRIPTION_ID }}
-      - uses: google-github-actions/auth@v3
+      - uses: google-github-actions/auth@v2
         with:
           project_id: ${{ vars.GCLOUD_PROJECT_ID }}
           workload_identity_provider: projects/${{ vars.GCLOUD_PROJECT_NUM }}/locations/global/workloadIdentityPools/github-ci-test/providers/github-ci-test
       - name: Set up Cloud SDK
-        uses: google-github-actions/setup-gcloud@v3
+        uses: google-github-actions/setup-gcloud@v2
         with:
           version: '>= 363.0.0'
 
@@ -431,18 +431,18 @@ jobs:
     environment: test
     if: contains(inputs.necessary_jobs, ';Build Docker image utility;')
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v4
       - uses: azure/login@v2
         with:
           tenant-id: ${{ vars.AZURE_TENANT_ID }}
           client-id: ${{ vars.AZURE_CLIENT_ID }}
           subscription-id: ${{ vars.AZURE_SUBSCRIPTION_ID }}
-      - uses: google-github-actions/auth@v3
+      - uses: google-github-actions/auth@v2
         with:
           project_id: ${{ vars.GCLOUD_PROJECT_ID }}
           workload_identity_provider: projects/${{ vars.GCLOUD_PROJECT_NUM }}/locations/global/workloadIdentityPools/github-ci-test/providers/github-ci-test
       - name: Set up Cloud SDK
-        uses: google-github-actions/setup-gcloud@v3
+        uses: google-github-actions/setup-gcloud@v2
         with:
           version: '>= 363.0.0'
 
@@ -478,18 +478,18 @@ jobs:
     environment: test
     if: contains(inputs.necessary_jobs, ';Download Ruby source 3.4.7;')
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v4
       - uses: azure/login@v2
         with:
           tenant-id: ${{ vars.AZURE_TENANT_ID }}
           client-id: ${{ vars.AZURE_CLIENT_ID }}
           subscription-id: ${{ vars.AZURE_SUBSCRIPTION_ID }}
-      - uses: google-github-actions/auth@v3
+      - uses: google-github-actions/auth@v2
         with:
           project_id: ${{ vars.GCLOUD_PROJECT_ID }}
           workload_identity_provider: projects/${{ vars.GCLOUD_PROJECT_NUM }}/locations/global/workloadIdentityPools/github-ci-test/providers/github-ci-test
       - name: Set up Cloud SDK
-        uses: google-github-actions/setup-gcloud@v3
+        uses: google-github-actions/setup-gcloud@v2
         with:
           version: '>= 363.0.0'
 
@@ -512,18 +512,18 @@ jobs:
     environment: test
     if: contains(inputs.necessary_jobs, ';Download Ruby source 3.3.10;')
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v4
       - uses: azure/login@v2
         with:
           tenant-id: ${{ vars.AZURE_TENANT_ID }}
           client-id: ${{ vars.AZURE_CLIENT_ID }}
           subscription-id: ${{ vars.AZURE_SUBSCRIPTION_ID }}
-      - uses: google-github-actions/auth@v3
+      - uses: google-github-actions/auth@v2
         with:
           project_id: ${{ vars.GCLOUD_PROJECT_ID }}
           workload_identity_provider: projects/${{ vars.GCLOUD_PROJECT_NUM }}/locations/global/workloadIdentityPools/github-ci-test/providers/github-ci-test
       - name: Set up Cloud SDK
-        uses: google-github-actions/setup-gcloud@v3
+        uses: google-github-actions/setup-gcloud@v2
         with:
           version: '>= 363.0.0'
 
@@ -546,18 +546,18 @@ jobs:
     environment: test
     if: contains(inputs.necessary_jobs, ';Download Ruby source 3.2.9;')
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v4
       - uses: azure/login@v2
         with:
           tenant-id: ${{ vars.AZURE_TENANT_ID }}
           client-id: ${{ vars.AZURE_CLIENT_ID }}
           subscription-id: ${{ vars.AZURE_SUBSCRIPTION_ID }}
-      - uses: google-github-actions/auth@v3
+      - uses: google-github-actions/auth@v2
         with:
           project_id: ${{ vars.GCLOUD_PROJECT_ID }}
           workload_identity_provider: projects/${{ vars.GCLOUD_PROJECT_NUM }}/locations/global/workloadIdentityPools/github-ci-test/providers/github-ci-test
       - name: Set up Cloud SDK
-        uses: google-github-actions/setup-gcloud@v3
+        uses: google-github-actions/setup-gcloud@v2
         with:
           version: '>= 363.0.0'
 
@@ -580,18 +580,18 @@ jobs:
     environment: test
     if: contains(inputs.necessary_jobs, ';Download Ruby source 3.1.7;')
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v4
       - uses: azure/login@v2
         with:
           tenant-id: ${{ vars.AZURE_TENANT_ID }}
           client-id: ${{ vars.AZURE_CLIENT_ID }}
           subscription-id: ${{ vars.AZURE_SUBSCRIPTION_ID }}
-      - uses: google-github-actions/auth@v3
+      - uses: google-github-actions/auth@v2
         with:
           project_id: ${{ vars.GCLOUD_PROJECT_ID }}
           workload_identity_provider: projects/${{ vars.GCLOUD_PROJECT_NUM }}/locations/global/workloadIdentityPools/github-ci-test/providers/github-ci-test
       - name: Set up Cloud SDK
-        uses: google-github-actions/setup-gcloud@v3
+        uses: google-github-actions/setup-gcloud@v2
         with:
           version: '>= 363.0.0'
 
@@ -616,18 +616,18 @@ jobs:
     environment: test
     if: contains(inputs.necessary_jobs, ';Download Rbenv source;')
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v4
       - uses: azure/login@v2
         with:
           tenant-id: ${{ vars.AZURE_TENANT_ID }}
           client-id: ${{ vars.AZURE_CLIENT_ID }}
           subscription-id: ${{ vars.AZURE_SUBSCRIPTION_ID }}
-      - uses: google-github-actions/auth@v3
+      - uses: google-github-actions/auth@v2
         with:
           project_id: ${{ vars.GCLOUD_PROJECT_ID }}
           workload_identity_provider: projects/${{ vars.GCLOUD_PROJECT_NUM }}/locations/global/workloadIdentityPools/github-ci-test/providers/github-ci-test
       - name: Set up Cloud SDK
-        uses: google-github-actions/setup-gcloud@v3
+        uses: google-github-actions/setup-gcloud@v2
         with:
           version: '>= 363.0.0'
       - name: Prepare
@@ -670,18 +670,18 @@ jobs:
           needs.build_docker_image_utility.result == 'skipped'
           && contains(inputs.necessary_jobs.outputs.necessary_jobs, ';Build Docker image utility;')
 
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v4
       - uses: azure/login@v2
         with:
           tenant-id: ${{ vars.AZURE_TENANT_ID }}
           client-id: ${{ vars.AZURE_CLIENT_ID }}
           subscription-id: ${{ vars.AZURE_SUBSCRIPTION_ID }}
-      - uses: google-github-actions/auth@v3
+      - uses: google-github-actions/auth@v2
         with:
           project_id: ${{ vars.GCLOUD_PROJECT_ID }}
           workload_identity_provider: projects/${{ vars.GCLOUD_PROJECT_NUM }}/locations/global/workloadIdentityPools/github-ci-test/providers/github-ci-test
       - name: Set up Cloud SDK
-        uses: google-github-actions/setup-gcloud@v3
+        uses: google-github-actions/setup-gcloud@v2
         with:
           version: '>= 363.0.0'
       - name: Login to Github Container Registry
@@ -737,18 +737,18 @@ jobs:
           needs.build_docker_image_utility.result == 'skipped'
           && contains(inputs.necessary_jobs, ';Build Docker image utility;')
 
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v4
       - uses: azure/login@v2
         with:
           tenant-id: ${{ vars.AZURE_TENANT_ID }}
           client-id: ${{ vars.AZURE_CLIENT_ID }}
           subscription-id: ${{ vars.AZURE_SUBSCRIPTION_ID }}
-      - uses: google-github-actions/auth@v3
+      - uses: google-github-actions/auth@v2
         with:
           project_id: ${{ vars.GCLOUD_PROJECT_ID }}
           workload_identity_provider: projects/${{ vars.GCLOUD_PROJECT_NUM }}/locations/global/workloadIdentityPools/github-ci-test/providers/github-ci-test
       - name: Set up Cloud SDK
-        uses: google-github-actions/setup-gcloud@v3
+        uses: google-github-actions/setup-gcloud@v2
         with:
           version: '>= 363.0.0'
       - name: Login to Github Container Registry
@@ -812,18 +812,18 @@ jobs:
             && contains(inputs.necessary_jobs, ';Build Docker image utility;')
           )
 
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v4
       - uses: azure/login@v2
         with:
           tenant-id: ${{ vars.AZURE_TENANT_ID }}
           client-id: ${{ vars.AZURE_CLIENT_ID }}
           subscription-id: ${{ vars.AZURE_SUBSCRIPTION_ID }}
-      - uses: google-github-actions/auth@v3
+      - uses: google-github-actions/auth@v2
         with:
           project_id: ${{ vars.GCLOUD_PROJECT_ID }}
           workload_identity_provider: projects/${{ vars.GCLOUD_PROJECT_NUM }}/locations/global/workloadIdentityPools/github-ci-test/providers/github-ci-test
       - name: Set up Cloud SDK
-        uses: google-github-actions/setup-gcloud@v3
+        uses: google-github-actions/setup-gcloud@v2
         with:
           version: '>= 363.0.0'
       - name: Login to Github Container Registry
@@ -892,18 +892,18 @@ jobs:
             && contains(inputs.necessary_jobs, ';Build Docker image utility;')
           )
 
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v4
       - uses: azure/login@v2
         with:
           tenant-id: ${{ vars.AZURE_TENANT_ID }}
           client-id: ${{ vars.AZURE_CLIENT_ID }}
           subscription-id: ${{ vars.AZURE_SUBSCRIPTION_ID }}
-      - uses: google-github-actions/auth@v3
+      - uses: google-github-actions/auth@v2
         with:
           project_id: ${{ vars.GCLOUD_PROJECT_ID }}
           workload_identity_provider: projects/${{ vars.GCLOUD_PROJECT_NUM }}/locations/global/workloadIdentityPools/github-ci-test/providers/github-ci-test
       - name: Set up Cloud SDK
-        uses: google-github-actions/setup-gcloud@v3
+        uses: google-github-actions/setup-gcloud@v2
         with:
           version: '>= 363.0.0'
       - name: Login to Github Container Registry
@@ -976,18 +976,18 @@ jobs:
     environment: test
     if: 'always()'
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v4
       - uses: azure/login@v2
         with:
           tenant-id: ${{ vars.AZURE_TENANT_ID }}
           client-id: ${{ vars.AZURE_CLIENT_ID }}
           subscription-id: ${{ vars.AZURE_SUBSCRIPTION_ID }}
-      - uses: google-github-actions/auth@v3
+      - uses: google-github-actions/auth@v2
         with:
           project_id: ${{ vars.GCLOUD_PROJECT_ID }}
           workload_identity_provider: projects/${{ vars.GCLOUD_PROJECT_NUM }}/locations/global/workloadIdentityPools/github-ci-test/providers/github-ci-test
       - name: Set up Cloud SDK
-        uses: google-github-actions/setup-gcloud@v3
+        uses: google-github-actions/setup-gcloud@v2
         with:
           version: '>= 363.0.0'
 
