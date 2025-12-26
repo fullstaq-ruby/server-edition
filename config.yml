@@ -11,6 +11,9 @@ ruby:
   ## NOTE: if you change an existing `full_version` value,
   ## then be sure to bump the corresponding `package_revision`!
   minor_version_packages:
+    - minor_version: '4.0'
+      full_version: '4.0.0'
+      package_revision: '0'
     - minor_version: '3.4'
       full_version: '3.4.8'
       package_revision: '7'
@@ -24,6 +27,8 @@ ruby:
   ## (Optional)
   ## Which tiny Ruby version packages to build.
   tiny_version_packages:
+    - full_version: '4.0.0'
+      package_revision: '0'
     - full_version: '3.4.8'
       package_revision: '0'
     - full_version: '3.3.10'
