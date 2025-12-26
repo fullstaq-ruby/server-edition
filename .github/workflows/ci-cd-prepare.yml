@@ -572,40 +572,6 @@ jobs:
           ARTIFACT_NAME: ruby-src-3.2.9
           ARTIFACT_PATH: output
           CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
-  download_ruby_source_3_1_7:
-    name: Download Ruby source [3.1.7]
-    runs-on: ubuntu-24.04
-    permissions:
-      id-token: write
-    environment: test
-    if: contains(inputs.necessary_jobs, ';Download Ruby source 3.1.7;')
-    steps:
-      - uses: actions/checkout@v4
-      - uses: azure/login@v2
-        with:
-          tenant-id: ${{ vars.AZURE_TENANT_ID }}
-          client-id: ${{ vars.AZURE_CLIENT_ID }}
-          subscription-id: ${{ vars.AZURE_SUBSCRIPTION_ID }}
-      - uses: google-github-actions/auth@v2
-        with:
-          project_id: ${{ vars.GCLOUD_PROJECT_ID }}
-          workload_identity_provider: projects/${{ vars.GCLOUD_PROJECT_NUM }}/locations/global/workloadIdentityPools/github-ci-test/providers/github-ci-test
-      - name: Set up Cloud SDK
-        uses: google-github-actions/setup-gcloud@v2
-        with:
-          version: '>= 363.0.0'
-
-      - name: Download
-        run: ./internal-scripts/ci-cd/download-ruby-sources/download.sh
-        env:
-          RUBY_VERSION: 3.1.7
-
-      - name: Archive artifact
-        run: ./internal-scripts/ci-cd/upload-artifact.sh
-        env:
-          ARTIFACT_NAME: ruby-src-3.1.7
-          ARTIFACT_PATH: output
-          CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
 
 
   download_rbenv_source:
@@ -967,7 +933,6 @@ jobs:
       - download_ruby_source_3_4_8
       - download_ruby_source_3_3_10
       - download_ruby_source_3_2_9
-      - download_ruby_source_3_1_7
       - build_common_deb
       - build_common_rpm
       - build_rbenv_deb
@@ -1180,19 +1145,6 @@ jobs:
           name: ruby-src-3.2.9
           path: artifacts
           compression-level: 0
-      - name: Download Ruby source artifact [3.1.7] from Google Cloud
-        run: ./internal-scripts/ci-cd/download-artifact.sh
-        env:
-          ARTIFACT_NAME: ruby-src-3.1.7
-          ARTIFACT_PATH: artifacts
-          CLEAR: true
-          CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
-      - name: Archive Ruby source artifact [3.1.7] to Github
-        uses: actions/upload-artifact@v4
-        with:
-          name: ruby-src-3.1.7
-          path: artifacts
-          compression-level: 0
 
       - name: Download common DEB artifact from Google Cloud
         run: ./internal-scripts/ci-cd/download-artifact.sh
@@ -1309,9 +1261,6 @@ jobs:
             || (needs.download_ruby_source_3_2_9.result != 'success'
               && (needs.download_ruby_source_3_2_9.result != 'skipped'
                 || contains(inputs.necessary_jobs, ';Download Ruby source 3.2.9;')))
-            || (needs.download_ruby_source_3_1_7.result != 'success'
-              && (needs.download_ruby_source_3_1_7.result != 'skipped'
-                || contains(inputs.necessary_jobs, ';Download Ruby source 3.1.7;')))
       - name: Check whether 'Build common DEB' did not fail
         run: 'false'
         if: |
