@@ -470,6 +470,40 @@ jobs:
   ### Sources ###
 
 
+  download_ruby_source_4_0_0:
+    name: Download Ruby source [4.0.0]
+    runs-on: ubuntu-24.04
+    permissions:
+      id-token: write
+    environment: test
+    if: contains(inputs.necessary_jobs, ';Download Ruby source 4.0.0;')
+    steps:
+      - uses: actions/checkout@v4
+      - uses: azure/login@v2
+        with:
+          tenant-id: ${{ vars.AZURE_TENANT_ID }}
+          client-id: ${{ vars.AZURE_CLIENT_ID }}
+          subscription-id: ${{ vars.AZURE_SUBSCRIPTION_ID }}
+      - uses: google-github-actions/auth@v2
+        with:
+          project_id: ${{ vars.GCLOUD_PROJECT_ID }}
+          workload_identity_provider: projects/${{ vars.GCLOUD_PROJECT_NUM }}/locations/global/workloadIdentityPools/github-ci-test/providers/github-ci-test
+      - name: Set up Cloud SDK
+        uses: google-github-actions/setup-gcloud@v2
+        with:
+          version: '>= 363.0.0'
+
+      - name: Download
+        run: ./internal-scripts/ci-cd/download-ruby-sources/download.sh
+        env:
+          RUBY_VERSION: 4.0.0
+
+      - name: Archive artifact
+        run: ./internal-scripts/ci-cd/upload-artifact.sh
+        env:
+          ARTIFACT_NAME: ruby-src-4.0.0
+          ARTIFACT_PATH: output
+          CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
   download_ruby_source_3_4_8:
     name: Download Ruby source [3.4.8]
     runs-on: ubuntu-24.04
@@ -930,6 +964,7 @@ jobs:
       - build_docker_image_ubuntu_22_04
       - build_docker_image_ubuntu_24_04
       - build_docker_image_utility
+      - download_ruby_source_4_0_0
       - download_ruby_source_3_4_8
       - download_ruby_source_3_3_10
       - download_ruby_source_3_2_9
@@ -1106,6 +1141,19 @@ jobs:
           path: artifacts
 
 
+      - name: Download Ruby source artifact [4.0.0] from Google Cloud
+        run: ./internal-scripts/ci-cd/download-artifact.sh
+        env:
+          ARTIFACT_NAME: ruby-src-4.0.0
+          ARTIFACT_PATH: artifacts
+          CLEAR: true
+          CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
+      - name: Archive Ruby source artifact [4.0.0] to Github
+        uses: actions/upload-artifact@v4
+        with:
+          name: ruby-src-4.0.0
+          path: artifacts
+          compression-level: 0
       - name: Download Ruby source artifact [3.4.8] from Google Cloud
         run: ./internal-scripts/ci-cd/download-artifact.sh
         env:
@@ -1252,6 +1300,9 @@ jobs:
         run: 'false'
         if: |
           false
+            || (needs.download_ruby_source_4_0_0.result != 'success'
+              && (needs.download_ruby_source_4_0_0.result != 'skipped'
+                || contains(inputs.necessary_jobs, ';Download Ruby source 4.0.0;')))
             || (needs.download_ruby_source_3_4_8.result != 'success'
               && (needs.download_ruby_source_3_4_8.result != 'skipped'
                 || contains(inputs.necessary_jobs, ';Download Ruby source 3.4.8;')))
