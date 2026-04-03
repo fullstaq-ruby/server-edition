@@ -124,7 +124,7 @@ jobs:
 
   <%- distributions.each do |distribution| %>
   <%- ruby_package_versions_for_distro(distribution).each do |ruby_package_version| -%>
-  <%- variants.each do |variant| -%>
+  <%- variants_for_ruby_version(ruby_package_version).each do |variant| -%>
   <%- unindent(2) do %>
     test_<%= slug(distribution[:name]) %>-<%= slug(ruby_package_version[:id]) %>-<%= slug(variant[:name]) %>:
       name: 'Test [<%= distribution[:name] %>/<%= ruby_package_version[:id] %>/<%= variant[:name] %>]'
@@ -187,7 +187,7 @@ jobs:
       - publish
       <%- distributions.each do |distribution| -%>
       <%- ruby_package_versions_for_distro(distribution).each do |ruby_package_version| -%>
-      <%- variants.each do |variant| -%>
+      <%- variants_for_ruby_version(ruby_package_version).each do |variant| -%>
       - test_<%= slug(distribution[:name]) %>-<%= slug(ruby_package_version[:id]) %>-<%= slug(variant[:name]) %>
       <%- end -%>
       <%- end -%>
@@ -208,7 +208,7 @@ jobs:
 
       <%- distributions.each do |distribution| -%>
       <%- ruby_package_versions_for_distro(distribution).each do |ruby_package_version| -%>
-      <%- variants.each do |variant| -%>
+      <%- variants_for_ruby_version(ruby_package_version).each do |variant| -%>
       - name: Check whether 'Test [<%= distribution[:name] %>/<%= ruby_package_version[:id] %>/<%= variant[:name] %>]' did not fail
         run: 'false'
         if: |

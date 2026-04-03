@@ -68,7 +68,7 @@ jobs:
             common-rpm
             rbenv-deb
             rbenv-rpm
-            ruby-pkg_4.0_centos-8_normal ruby-pkg_4.0_centos-8_jemalloc ruby-pkg_4.0_centos-8_malloctrim ruby-pkg_3.4_centos-8_normal ruby-pkg_3.4_centos-8_jemalloc ruby-pkg_3.4_centos-8_malloctrim ruby-pkg_3.3_centos-8_normal ruby-pkg_3.3_centos-8_jemalloc ruby-pkg_3.3_centos-8_malloctrim ruby-pkg_3.2_centos-8_normal ruby-pkg_3.2_centos-8_jemalloc ruby-pkg_3.2_centos-8_malloctrim ruby-pkg_4.0.0_centos-8_normal ruby-pkg_4.0.0_centos-8_jemalloc ruby-pkg_4.0.0_centos-8_malloctrim ruby-pkg_3.4.8_centos-8_normal ruby-pkg_3.4.8_centos-8_jemalloc ruby-pkg_3.4.8_centos-8_malloctrim ruby-pkg_3.3.10_centos-8_normal ruby-pkg_3.3.10_centos-8_jemalloc ruby-pkg_3.3.10_centos-8_malloctrim ruby-pkg_3.2.9_centos-8_normal ruby-pkg_3.2.9_centos-8_jemalloc ruby-pkg_3.2.9_centos-8_malloctrim ruby-pkg_4.0_debian-11_normal ruby-pkg_4.0_debian-11_jemalloc ruby-pkg_4.0_debian-11_malloctrim ruby-pkg_3.4_debian-11_normal ruby-pkg_3.4_debian-11_jemalloc ruby-pkg_3.4_debian-11_malloctrim ruby-pkg_3.3_debian-11_normal ruby-pkg_3.3_debian-11_jemalloc ruby-pkg_3.3_debian-11_malloctrim ruby-pkg_3.2_debian-11_normal ruby-pkg_3.2_debian-11_jemalloc ruby-pkg_3.2_debian-11_malloctrim ruby-pkg_4.0.0_debian-11_normal ruby-pkg_4.0.0_debian-11_jemalloc ruby-pkg_4.0.0_debian-11_malloctrim ruby-pkg_3.4.8_debian-11_normal ruby-pkg_3.4.8_debian-11_jemalloc ruby-pkg_3.4.8_debian-11_malloctrim ruby-pkg_3.3.10_debian-11_normal ruby-pkg_3.3.10_debian-11_jemalloc ruby-pkg_3.3.10_debian-11_malloctrim ruby-pkg_3.2.9_debian-11_normal ruby-pkg_3.2.9_debian-11_jemalloc ruby-pkg_3.2.9_debian-11_malloctrim ruby-pkg_4.0_debian-12_normal ruby-pkg_4.0_debian-12_jemalloc ruby-pkg_4.0_debian-12_malloctrim ruby-pkg_3.4_debian-12_normal ruby-pkg_3.4_debian-12_jemalloc ruby-pkg_3.4_debian-12_malloctrim ruby-pkg_3.3_debian-12_normal ruby-pkg_3.3_debian-12_jemalloc ruby-pkg_3.3_debian-12_malloctrim ruby-pkg_3.2_debian-12_normal ruby-pkg_3.2_debian-12_jemalloc ruby-pkg_3.2_debian-12_malloctrim ruby-pkg_4.0.0_debian-12_normal ruby-pkg_4.0.0_debian-12_jemalloc ruby-pkg_4.0.0_debian-12_malloctrim ruby-pkg_3.4.8_debian-12_normal ruby-pkg_3.4.8_debian-12_jemalloc ruby-pkg_3.4.8_debian-12_malloctrim ruby-pkg_3.3.10_debian-12_normal ruby-pkg_3.3.10_debian-12_jemalloc ruby-pkg_3.3.10_debian-12_malloctrim ruby-pkg_3.2.9_debian-12_normal ruby-pkg_3.2.9_debian-12_jemalloc ruby-pkg_3.2.9_debian-12_malloctrim ruby-pkg_4.0_debian-13_normal ruby-pkg_4.0_debian-13_jemalloc ruby-pkg_4.0_debian-13_malloctrim ruby-pkg_3.4_debian-13_normal ruby-pkg_3.4_debian-13_jemalloc ruby-pkg_3.4_debian-13_malloctrim ruby-pkg_3.3_debian-13_normal ruby-pkg_3.3_debian-13_jemalloc ruby-pkg_3.3_debian-13_malloctrim ruby-pkg_4.0.0_debian-13_normal ruby-pkg_4.0.0_debian-13_jemalloc ruby-pkg_4.0.0_debian-13_malloctrim ruby-pkg_3.4.8_debian-13_normal ruby-pkg_3.4.8_debian-13_jemalloc ruby-pkg_3.4.8_debian-13_malloctrim ruby-pkg_3.3.10_debian-13_normal ruby-pkg_3.3.10_debian-13_jemalloc ruby-pkg_3.3.10_debian-13_malloctrim ruby-pkg_4.0_el-9_normal ruby-pkg_4.0_el-9_jemalloc ruby-pkg_4.0_el-9_malloctrim ruby-pkg_3.4_el-9_normal ruby-pkg_3.4_el-9_jemalloc ruby-pkg_3.4_el-9_malloctrim ruby-pkg_3.3_el-9_normal ruby-pkg_3.3_el-9_jemalloc ruby-pkg_3.3_el-9_malloctrim ruby-pkg_3.2_el-9_normal ruby-pkg_3.2_el-9_jemalloc ruby-pkg_3.2_el-9_malloctrim ruby-pkg_4.0.0_el-9_normal ruby-pkg_4.0.0_el-9_jemalloc ruby-pkg_4.0.0_el-9_malloctrim ruby-pkg_3.4.8_el-9_normal ruby-pkg_3.4.8_el-9_jemalloc ruby-pkg_3.4.8_el-9_malloctrim ruby-pkg_3.3.10_el-9_normal ruby-pkg_3.3.10_el-9_jemalloc ruby-pkg_3.3.10_el-9_malloctrim ruby-pkg_3.2.9_el-9_normal ruby-pkg_3.2.9_el-9_jemalloc ruby-pkg_3.2.9_el-9_malloctrim ruby-pkg_4.0_ubuntu-22.04_normal ruby-pkg_4.0_ubuntu-22.04_jemalloc ruby-pkg_4.0_ubuntu-22.04_malloctrim ruby-pkg_3.4_ubuntu-22.04_normal ruby-pkg_3.4_ubuntu-22.04_jemalloc ruby-pkg_3.4_ubuntu-22.04_malloctrim ruby-pkg_3.3_ubuntu-22.04_normal ruby-pkg_3.3_ubuntu-22.04_jemalloc ruby-pkg_3.3_ubuntu-22.04_malloctrim ruby-pkg_3.2_ubuntu-22.04_normal ruby-pkg_3.2_ubuntu-22.04_jemalloc ruby-pkg_3.2_ubuntu-22.04_malloctrim ruby-pkg_4.0.0_ubuntu-22.04_normal ruby-pkg_4.0.0_ubuntu-22.04_jemalloc ruby-pkg_4.0.0_ubuntu-22.04_malloctrim ruby-pkg_3.4.8_ubuntu-22.04_normal ruby-pkg_3.4.8_ubuntu-22.04_jemalloc ruby-pkg_3.4.8_ubuntu-22.04_malloctrim ruby-pkg_3.3.10_ubuntu-22.04_normal ruby-pkg_3.3.10_ubuntu-22.04_jemalloc ruby-pkg_3.3.10_ubuntu-22.04_malloctrim ruby-pkg_3.2.9_ubuntu-22.04_normal ruby-pkg_3.2.9_ubuntu-22.04_jemalloc ruby-pkg_3.2.9_ubuntu-22.04_malloctrim ruby-pkg_4.0_ubuntu-24.04_normal ruby-pkg_4.0_ubuntu-24.04_jemalloc ruby-pkg_4.0_ubuntu-24.04_malloctrim ruby-pkg_3.4_ubuntu-24.04_normal ruby-pkg_3.4_ubuntu-24.04_jemalloc ruby-pkg_3.4_ubuntu-24.04_malloctrim ruby-pkg_3.3_ubuntu-24.04_normal ruby-pkg_3.3_ubuntu-24.04_jemalloc ruby-pkg_3.3_ubuntu-24.04_malloctrim ruby-pkg_3.2_ubuntu-24.04_normal ruby-pkg_3.2_ubuntu-24.04_jemalloc ruby-pkg_3.2_ubuntu-24.04_malloctrim ruby-pkg_4.0.0_ubuntu-24.04_normal ruby-pkg_4.0.0_ubuntu-24.04_jemalloc ruby-pkg_4.0.0_ubuntu-24.04_malloctrim ruby-pkg_3.4.8_ubuntu-24.04_normal ruby-pkg_3.4.8_ubuntu-24.04_jemalloc ruby-pkg_3.4.8_ubuntu-24.04_malloctrim ruby-pkg_3.3.10_ubuntu-24.04_normal ruby-pkg_3.3.10_ubuntu-24.04_jemalloc ruby-pkg_3.3.10_ubuntu-24.04_malloctrim ruby-pkg_3.2.9_ubuntu-24.04_normal ruby-pkg_3.2.9_ubuntu-24.04_jemalloc ruby-pkg_3.2.9_ubuntu-24.04_malloctrim
+            ruby-pkg_4.0_centos-8_normal ruby-pkg_4.0_centos-8_jemalloc ruby-pkg_3.4_centos-8_normal ruby-pkg_3.4_centos-8_jemalloc ruby-pkg_3.3_centos-8_normal ruby-pkg_3.3_centos-8_jemalloc ruby-pkg_3.2_centos-8_normal ruby-pkg_3.2_centos-8_jemalloc ruby-pkg_3.2_centos-8_malloctrim ruby-pkg_4.0.2_centos-8_normal ruby-pkg_4.0.2_centos-8_jemalloc ruby-pkg_3.4.8_centos-8_normal ruby-pkg_3.4.8_centos-8_jemalloc ruby-pkg_3.3.10_centos-8_normal ruby-pkg_3.3.10_centos-8_jemalloc ruby-pkg_3.2.9_centos-8_normal ruby-pkg_3.2.9_centos-8_jemalloc ruby-pkg_3.2.9_centos-8_malloctrim ruby-pkg_4.0_debian-11_normal ruby-pkg_4.0_debian-11_jemalloc ruby-pkg_3.4_debian-11_normal ruby-pkg_3.4_debian-11_jemalloc ruby-pkg_3.3_debian-11_normal ruby-pkg_3.3_debian-11_jemalloc ruby-pkg_3.2_debian-11_normal ruby-pkg_3.2_debian-11_jemalloc ruby-pkg_3.2_debian-11_malloctrim ruby-pkg_4.0.2_debian-11_normal ruby-pkg_4.0.2_debian-11_jemalloc ruby-pkg_3.4.8_debian-11_normal ruby-pkg_3.4.8_debian-11_jemalloc ruby-pkg_3.3.10_debian-11_normal ruby-pkg_3.3.10_debian-11_jemalloc ruby-pkg_3.2.9_debian-11_normal ruby-pkg_3.2.9_debian-11_jemalloc ruby-pkg_3.2.9_debian-11_malloctrim ruby-pkg_4.0_debian-12_normal ruby-pkg_4.0_debian-12_jemalloc ruby-pkg_3.4_debian-12_normal ruby-pkg_3.4_debian-12_jemalloc ruby-pkg_3.3_debian-12_normal ruby-pkg_3.3_debian-12_jemalloc ruby-pkg_3.2_debian-12_normal ruby-pkg_3.2_debian-12_jemalloc ruby-pkg_3.2_debian-12_malloctrim ruby-pkg_4.0.2_debian-12_normal ruby-pkg_4.0.2_debian-12_jemalloc ruby-pkg_3.4.8_debian-12_normal ruby-pkg_3.4.8_debian-12_jemalloc ruby-pkg_3.3.10_debian-12_normal ruby-pkg_3.3.10_debian-12_jemalloc ruby-pkg_3.2.9_debian-12_normal ruby-pkg_3.2.9_debian-12_jemalloc ruby-pkg_3.2.9_debian-12_malloctrim ruby-pkg_4.0_debian-13_normal ruby-pkg_4.0_debian-13_jemalloc ruby-pkg_3.4_debian-13_normal ruby-pkg_3.4_debian-13_jemalloc ruby-pkg_3.3_debian-13_normal ruby-pkg_3.3_debian-13_jemalloc ruby-pkg_4.0.2_debian-13_normal ruby-pkg_4.0.2_debian-13_jemalloc ruby-pkg_3.4.8_debian-13_normal ruby-pkg_3.4.8_debian-13_jemalloc ruby-pkg_3.3.10_debian-13_normal ruby-pkg_3.3.10_debian-13_jemalloc ruby-pkg_4.0_el-9_normal ruby-pkg_4.0_el-9_jemalloc ruby-pkg_3.4_el-9_normal ruby-pkg_3.4_el-9_jemalloc ruby-pkg_3.3_el-9_normal ruby-pkg_3.3_el-9_jemalloc ruby-pkg_3.2_el-9_normal ruby-pkg_3.2_el-9_jemalloc ruby-pkg_3.2_el-9_malloctrim ruby-pkg_4.0.2_el-9_normal ruby-pkg_4.0.2_el-9_jemalloc ruby-pkg_3.4.8_el-9_normal ruby-pkg_3.4.8_el-9_jemalloc ruby-pkg_3.3.10_el-9_normal ruby-pkg_3.3.10_el-9_jemalloc ruby-pkg_3.2.9_el-9_normal ruby-pkg_3.2.9_el-9_jemalloc ruby-pkg_3.2.9_el-9_malloctrim ruby-pkg_4.0_ubuntu-22.04_normal ruby-pkg_4.0_ubuntu-22.04_jemalloc ruby-pkg_3.4_ubuntu-22.04_normal ruby-pkg_3.4_ubuntu-22.04_jemalloc ruby-pkg_3.3_ubuntu-22.04_normal ruby-pkg_3.3_ubuntu-22.04_jemalloc ruby-pkg_3.2_ubuntu-22.04_normal ruby-pkg_3.2_ubuntu-22.04_jemalloc ruby-pkg_3.2_ubuntu-22.04_malloctrim ruby-pkg_4.0.2_ubuntu-22.04_normal ruby-pkg_4.0.2_ubuntu-22.04_jemalloc ruby-pkg_3.4.8_ubuntu-22.04_normal ruby-pkg_3.4.8_ubuntu-22.04_jemalloc ruby-pkg_3.3.10_ubuntu-22.04_normal ruby-pkg_3.3.10_ubuntu-22.04_jemalloc ruby-pkg_3.2.9_ubuntu-22.04_normal ruby-pkg_3.2.9_ubuntu-22.04_jemalloc ruby-pkg_3.2.9_ubuntu-22.04_malloctrim ruby-pkg_4.0_ubuntu-24.04_normal ruby-pkg_4.0_ubuntu-24.04_jemalloc ruby-pkg_3.4_ubuntu-24.04_normal ruby-pkg_3.4_ubuntu-24.04_jemalloc ruby-pkg_3.3_ubuntu-24.04_normal ruby-pkg_3.3_ubuntu-24.04_jemalloc ruby-pkg_3.2_ubuntu-24.04_normal ruby-pkg_3.2_ubuntu-24.04_jemalloc ruby-pkg_3.2_ubuntu-24.04_malloctrim ruby-pkg_4.0.2_ubuntu-24.04_normal ruby-pkg_4.0.2_ubuntu-24.04_jemalloc ruby-pkg_3.4.8_ubuntu-24.04_normal ruby-pkg_3.4.8_ubuntu-24.04_jemalloc ruby-pkg_3.3.10_ubuntu-24.04_normal ruby-pkg_3.3.10_ubuntu-24.04_jemalloc ruby-pkg_3.2.9_ubuntu-24.04_normal ruby-pkg_3.2.9_ubuntu-24.04_jemalloc ruby-pkg_3.2.9_ubuntu-24.04_malloctrim
           ARTIFACT_PATH: pkgs
           CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
 
@@ -220,49 +220,6 @@ jobs:
           ARTIFACT_NAME: tested-against-production-centos-8_4.0_jemalloc
           ARTIFACT_PATH: mark-jemalloc
           CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
-  test_centos_8-4_0-malloctrim:
-    name: 'Test [centos-8/4.0/malloctrim]'
-    needs:
-      - publish
-    runs-on: ubuntu-22.04
-    environment: test
-    timeout-minutes: 30
-    if: |
-      github.ref == 'refs/heads/main'
-      && contains(inputs.necessary_jobs, ';Test against production repo [centos-8/4.0/malloctrim];')
-    permissions:
-      id-token: write
-    steps:
-      - uses: actions/checkout@v3
-      - uses: google-github-actions/auth@v2
-        with:
-          project_id: ${{ vars.GCLOUD_PROJECT_ID }}
-          workload_identity_provider: projects/${{ vars.GCLOUD_PROJECT_NUM }}/locations/global/workloadIdentityPools/github-ci-test/providers/github-ci-test
-      - name: Set up Cloud SDK
-        uses: google-github-actions/setup-gcloud@v2
-        with:
-          version: '>= 363.0.0'
-
-      - name: Run tests
-        run: ./internal-scripts/ci-cd/test-packages/run-tests.sh
-        env:
-          DISTRIBUTION_NAME: "centos-8"
-          RUBY_PACKAGE_ID: "4.0"
-          PACKAGE_FORMAT: "RPM"
-          VARIANT_NAME: "malloctrim"
-          VARIANT_PACKAGE_SUFFIX: "-malloctrim"
-          TEST_IMAGE_NAME: "rockylinux:8"
-          APT_REPO_URL: https://apt.fullstaqruby.org
-          YUM_REPO_URL: https://yum.fullstaqruby.org
-
-      - name: Create mark file
-        run: mkdir mark-malloctrim && touch mark-malloctrim/done.txt
-      - name: Mark job as done
-        run: ./internal-scripts/ci-cd/upload-artifact.sh
-        env:
-          ARTIFACT_NAME: tested-against-production-centos-8_4.0_malloctrim
-          ARTIFACT_PATH: mark-malloctrim
-          CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
   test_centos_8-3_4-normal:
     name: 'Test [centos-8/3.4/normal]'
     needs:
@@ -349,49 +306,6 @@ jobs:
           ARTIFACT_NAME: tested-against-production-centos-8_3.4_jemalloc
           ARTIFACT_PATH: mark-jemalloc
           CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
-  test_centos_8-3_4-malloctrim:
-    name: 'Test [centos-8/3.4/malloctrim]'
-    needs:
-      - publish
-    runs-on: ubuntu-22.04
-    environment: test
-    timeout-minutes: 30
-    if: |
-      github.ref == 'refs/heads/main'
-      && contains(inputs.necessary_jobs, ';Test against production repo [centos-8/3.4/malloctrim];')
-    permissions:
-      id-token: write
-    steps:
-      - uses: actions/checkout@v3
-      - uses: google-github-actions/auth@v2
-        with:
-          project_id: ${{ vars.GCLOUD_PROJECT_ID }}
-          workload_identity_provider: projects/${{ vars.GCLOUD_PROJECT_NUM }}/locations/global/workloadIdentityPools/github-ci-test/providers/github-ci-test
-      - name: Set up Cloud SDK
-        uses: google-github-actions/setup-gcloud@v2
-        with:
-          version: '>= 363.0.0'
-
-      - name: Run tests
-        run: ./internal-scripts/ci-cd/test-packages/run-tests.sh
-        env:
-          DISTRIBUTION_NAME: "centos-8"
-          RUBY_PACKAGE_ID: "3.4"
-          PACKAGE_FORMAT: "RPM"
-          VARIANT_NAME: "malloctrim"
-          VARIANT_PACKAGE_SUFFIX: "-malloctrim"
-          TEST_IMAGE_NAME: "rockylinux:8"
-          APT_REPO_URL: https://apt.fullstaqruby.org
-          YUM_REPO_URL: https://yum.fullstaqruby.org
-
-      - name: Create mark file
-        run: mkdir mark-malloctrim && touch mark-malloctrim/done.txt
-      - name: Mark job as done
-        run: ./internal-scripts/ci-cd/upload-artifact.sh
-        env:
-          ARTIFACT_NAME: tested-against-production-centos-8_3.4_malloctrim
-          ARTIFACT_PATH: mark-malloctrim
-          CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
   test_centos_8-3_3-normal:
     name: 'Test [centos-8/3.3/normal]'
     needs:
@@ -477,49 +391,6 @@ jobs:
         env:
           ARTIFACT_NAME: tested-against-production-centos-8_3.3_jemalloc
           ARTIFACT_PATH: mark-jemalloc
-          CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
-  test_centos_8-3_3-malloctrim:
-    name: 'Test [centos-8/3.3/malloctrim]'
-    needs:
-      - publish
-    runs-on: ubuntu-22.04
-    environment: test
-    timeout-minutes: 30
-    if: |
-      github.ref == 'refs/heads/main'
-      && contains(inputs.necessary_jobs, ';Test against production repo [centos-8/3.3/malloctrim];')
-    permissions:
-      id-token: write
-    steps:
-      - uses: actions/checkout@v3
-      - uses: google-github-actions/auth@v2
-        with:
-          project_id: ${{ vars.GCLOUD_PROJECT_ID }}
-          workload_identity_provider: projects/${{ vars.GCLOUD_PROJECT_NUM }}/locations/global/workloadIdentityPools/github-ci-test/providers/github-ci-test
-      - name: Set up Cloud SDK
-        uses: google-github-actions/setup-gcloud@v2
-        with:
-          version: '>= 363.0.0'
-
-      - name: Run tests
-        run: ./internal-scripts/ci-cd/test-packages/run-tests.sh
-        env:
-          DISTRIBUTION_NAME: "centos-8"
-          RUBY_PACKAGE_ID: "3.3"
-          PACKAGE_FORMAT: "RPM"
-          VARIANT_NAME: "malloctrim"
-          VARIANT_PACKAGE_SUFFIX: "-malloctrim"
-          TEST_IMAGE_NAME: "rockylinux:8"
-          APT_REPO_URL: https://apt.fullstaqruby.org
-          YUM_REPO_URL: https://yum.fullstaqruby.org
-
-      - name: Create mark file
-        run: mkdir mark-malloctrim && touch mark-malloctrim/done.txt
-      - name: Mark job as done
-        run: ./internal-scripts/ci-cd/upload-artifact.sh
-        env:
-          ARTIFACT_NAME: tested-against-production-centos-8_3.3_malloctrim
-          ARTIFACT_PATH: mark-malloctrim
           CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
   test_centos_8-3_2-normal:
     name: 'Test [centos-8/3.2/normal]'
@@ -650,8 +521,8 @@ jobs:
           ARTIFACT_NAME: tested-against-production-centos-8_3.2_malloctrim
           ARTIFACT_PATH: mark-malloctrim
           CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
-  test_centos_8-4_0_0-normal:
-    name: 'Test [centos-8/4.0.0/normal]'
+  test_centos_8-4_0_2-normal:
+    name: 'Test [centos-8/4.0.2/normal]'
     needs:
       - publish
     runs-on: ubuntu-22.04
@@ -659,7 +530,7 @@ jobs:
     timeout-minutes: 30
     if: |
       github.ref == 'refs/heads/main'
-      && contains(inputs.necessary_jobs, ';Test against production repo [centos-8/4.0.0/normal];')
+      && contains(inputs.necessary_jobs, ';Test against production repo [centos-8/4.0.2/normal];')
     permissions:
       id-token: write
     steps:
@@ -677,7 +548,7 @@ jobs:
         run: ./internal-scripts/ci-cd/test-packages/run-tests.sh
         env:
           DISTRIBUTION_NAME: "centos-8"
-          RUBY_PACKAGE_ID: "4.0.0"
+          RUBY_PACKAGE_ID: "4.0.2"
           PACKAGE_FORMAT: "RPM"
           VARIANT_NAME: "normal"
           VARIANT_PACKAGE_SUFFIX: ""
@@ -690,11 +561,11 @@ jobs:
       - name: Mark job as done
         run: ./internal-scripts/ci-cd/upload-artifact.sh
         env:
-          ARTIFACT_NAME: tested-against-production-centos-8_4.0.0_normal
+          ARTIFACT_NAME: tested-against-production-centos-8_4.0.2_normal
           ARTIFACT_PATH: mark-normal
           CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
-  test_centos_8-4_0_0-jemalloc:
-    name: 'Test [centos-8/4.0.0/jemalloc]'
+  test_centos_8-4_0_2-jemalloc:
+    name: 'Test [centos-8/4.0.2/jemalloc]'
     needs:
       - publish
     runs-on: ubuntu-22.04
@@ -702,7 +573,7 @@ jobs:
     timeout-minutes: 30
     if: |
       github.ref == 'refs/heads/main'
-      && contains(inputs.necessary_jobs, ';Test against production repo [centos-8/4.0.0/jemalloc];')
+      && contains(inputs.necessary_jobs, ';Test against production repo [centos-8/4.0.2/jemalloc];')
     permissions:
       id-token: write
     steps:
@@ -720,7 +591,7 @@ jobs:
         run: ./internal-scripts/ci-cd/test-packages/run-tests.sh
         env:
           DISTRIBUTION_NAME: "centos-8"
-          RUBY_PACKAGE_ID: "4.0.0"
+          RUBY_PACKAGE_ID: "4.0.2"
           PACKAGE_FORMAT: "RPM"
           VARIANT_NAME: "jemalloc"
           VARIANT_PACKAGE_SUFFIX: "-jemalloc"
@@ -733,51 +604,8 @@ jobs:
       - name: Mark job as done
         run: ./internal-scripts/ci-cd/upload-artifact.sh
         env:
-          ARTIFACT_NAME: tested-against-production-centos-8_4.0.0_jemalloc
+          ARTIFACT_NAME: tested-against-production-centos-8_4.0.2_jemalloc
           ARTIFACT_PATH: mark-jemalloc
-          CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
-  test_centos_8-4_0_0-malloctrim:
-    name: 'Test [centos-8/4.0.0/malloctrim]'
-    needs:
-      - publish
-    runs-on: ubuntu-22.04
-    environment: test
-    timeout-minutes: 30
-    if: |
-      github.ref == 'refs/heads/main'
-      && contains(inputs.necessary_jobs, ';Test against production repo [centos-8/4.0.0/malloctrim];')
-    permissions:
-      id-token: write
-    steps:
-      - uses: actions/checkout@v3
-      - uses: google-github-actions/auth@v2
-        with:
-          project_id: ${{ vars.GCLOUD_PROJECT_ID }}
-          workload_identity_provider: projects/${{ vars.GCLOUD_PROJECT_NUM }}/locations/global/workloadIdentityPools/github-ci-test/providers/github-ci-test
-      - name: Set up Cloud SDK
-        uses: google-github-actions/setup-gcloud@v2
-        with:
-          version: '>= 363.0.0'
-
-      - name: Run tests
-        run: ./internal-scripts/ci-cd/test-packages/run-tests.sh
-        env:
-          DISTRIBUTION_NAME: "centos-8"
-          RUBY_PACKAGE_ID: "4.0.0"
-          PACKAGE_FORMAT: "RPM"
-          VARIANT_NAME: "malloctrim"
-          VARIANT_PACKAGE_SUFFIX: "-malloctrim"
-          TEST_IMAGE_NAME: "rockylinux:8"
-          APT_REPO_URL: https://apt.fullstaqruby.org
-          YUM_REPO_URL: https://yum.fullstaqruby.org
-
-      - name: Create mark file
-        run: mkdir mark-malloctrim && touch mark-malloctrim/done.txt
-      - name: Mark job as done
-        run: ./internal-scripts/ci-cd/upload-artifact.sh
-        env:
-          ARTIFACT_NAME: tested-against-production-centos-8_4.0.0_malloctrim
-          ARTIFACT_PATH: mark-malloctrim
           CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
   test_centos_8-3_4_8-normal:
     name: 'Test [centos-8/3.4.8/normal]'
@@ -865,49 +693,6 @@ jobs:
           ARTIFACT_NAME: tested-against-production-centos-8_3.4.8_jemalloc
           ARTIFACT_PATH: mark-jemalloc
           CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
-  test_centos_8-3_4_8-malloctrim:
-    name: 'Test [centos-8/3.4.8/malloctrim]'
-    needs:
-      - publish
-    runs-on: ubuntu-22.04
-    environment: test
-    timeout-minutes: 30
-    if: |
-      github.ref == 'refs/heads/main'
-      && contains(inputs.necessary_jobs, ';Test against production repo [centos-8/3.4.8/malloctrim];')
-    permissions:
-      id-token: write
-    steps:
-      - uses: actions/checkout@v3
-      - uses: google-github-actions/auth@v2
-        with:
-          project_id: ${{ vars.GCLOUD_PROJECT_ID }}
-          workload_identity_provider: projects/${{ vars.GCLOUD_PROJECT_NUM }}/locations/global/workloadIdentityPools/github-ci-test/providers/github-ci-test
-      - name: Set up Cloud SDK
-        uses: google-github-actions/setup-gcloud@v2
-        with:
-          version: '>= 363.0.0'
-
-      - name: Run tests
-        run: ./internal-scripts/ci-cd/test-packages/run-tests.sh
-        env:
-          DISTRIBUTION_NAME: "centos-8"
-          RUBY_PACKAGE_ID: "3.4.8"
-          PACKAGE_FORMAT: "RPM"
-          VARIANT_NAME: "malloctrim"
-          VARIANT_PACKAGE_SUFFIX: "-malloctrim"
-          TEST_IMAGE_NAME: "rockylinux:8"
-          APT_REPO_URL: https://apt.fullstaqruby.org
-          YUM_REPO_URL: https://yum.fullstaqruby.org
-
-      - name: Create mark file
-        run: mkdir mark-malloctrim && touch mark-malloctrim/done.txt
-      - name: Mark job as done
-        run: ./internal-scripts/ci-cd/upload-artifact.sh
-        env:
-          ARTIFACT_NAME: tested-against-production-centos-8_3.4.8_malloctrim
-          ARTIFACT_PATH: mark-malloctrim
-          CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
   test_centos_8-3_3_10-normal:
     name: 'Test [centos-8/3.3.10/normal]'
     needs:
@@ -993,49 +778,6 @@ jobs:
         env:
           ARTIFACT_NAME: tested-against-production-centos-8_3.3.10_jemalloc
           ARTIFACT_PATH: mark-jemalloc
-          CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
-  test_centos_8-3_3_10-malloctrim:
-    name: 'Test [centos-8/3.3.10/malloctrim]'
-    needs:
-      - publish
-    runs-on: ubuntu-22.04
-    environment: test
-    timeout-minutes: 30
-    if: |
-      github.ref == 'refs/heads/main'
-      && contains(inputs.necessary_jobs, ';Test against production repo [centos-8/3.3.10/malloctrim];')
-    permissions:
-      id-token: write
-    steps:
-      - uses: actions/checkout@v3
-      - uses: google-github-actions/auth@v2
-        with:
-          project_id: ${{ vars.GCLOUD_PROJECT_ID }}
-          workload_identity_provider: projects/${{ vars.GCLOUD_PROJECT_NUM }}/locations/global/workloadIdentityPools/github-ci-test/providers/github-ci-test
-      - name: Set up Cloud SDK
-        uses: google-github-actions/setup-gcloud@v2
-        with:
-          version: '>= 363.0.0'
-
-      - name: Run tests
-        run: ./internal-scripts/ci-cd/test-packages/run-tests.sh
-        env:
-          DISTRIBUTION_NAME: "centos-8"
-          RUBY_PACKAGE_ID: "3.3.10"
-          PACKAGE_FORMAT: "RPM"
-          VARIANT_NAME: "malloctrim"
-          VARIANT_PACKAGE_SUFFIX: "-malloctrim"
-          TEST_IMAGE_NAME: "rockylinux:8"
-          APT_REPO_URL: https://apt.fullstaqruby.org
-          YUM_REPO_URL: https://yum.fullstaqruby.org
-
-      - name: Create mark file
-        run: mkdir mark-malloctrim && touch mark-malloctrim/done.txt
-      - name: Mark job as done
-        run: ./internal-scripts/ci-cd/upload-artifact.sh
-        env:
-          ARTIFACT_NAME: tested-against-production-centos-8_3.3.10_malloctrim
-          ARTIFACT_PATH: mark-malloctrim
           CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
   test_centos_8-3_2_9-normal:
     name: 'Test [centos-8/3.2.9/normal]'
@@ -1253,49 +995,6 @@ jobs:
           ARTIFACT_NAME: tested-against-production-debian-11_4.0_jemalloc
           ARTIFACT_PATH: mark-jemalloc
           CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
-  test_debian_11-4_0-malloctrim:
-    name: 'Test [debian-11/4.0/malloctrim]'
-    needs:
-      - publish
-    runs-on: ubuntu-22.04
-    environment: test
-    timeout-minutes: 30
-    if: |
-      github.ref == 'refs/heads/main'
-      && contains(inputs.necessary_jobs, ';Test against production repo [debian-11/4.0/malloctrim];')
-    permissions:
-      id-token: write
-    steps:
-      - uses: actions/checkout@v3
-      - uses: google-github-actions/auth@v2
-        with:
-          project_id: ${{ vars.GCLOUD_PROJECT_ID }}
-          workload_identity_provider: projects/${{ vars.GCLOUD_PROJECT_NUM }}/locations/global/workloadIdentityPools/github-ci-test/providers/github-ci-test
-      - name: Set up Cloud SDK
-        uses: google-github-actions/setup-gcloud@v2
-        with:
-          version: '>= 363.0.0'
-
-      - name: Run tests
-        run: ./internal-scripts/ci-cd/test-packages/run-tests.sh
-        env:
-          DISTRIBUTION_NAME: "debian-11"
-          RUBY_PACKAGE_ID: "4.0"
-          PACKAGE_FORMAT: "DEB"
-          VARIANT_NAME: "malloctrim"
-          VARIANT_PACKAGE_SUFFIX: "-malloctrim"
-          TEST_IMAGE_NAME: "debian:11"
-          APT_REPO_URL: https://apt.fullstaqruby.org
-          YUM_REPO_URL: https://yum.fullstaqruby.org
-
-      - name: Create mark file
-        run: mkdir mark-malloctrim && touch mark-malloctrim/done.txt
-      - name: Mark job as done
-        run: ./internal-scripts/ci-cd/upload-artifact.sh
-        env:
-          ARTIFACT_NAME: tested-against-production-debian-11_4.0_malloctrim
-          ARTIFACT_PATH: mark-malloctrim
-          CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
   test_debian_11-3_4-normal:
     name: 'Test [debian-11/3.4/normal]'
     needs:
@@ -1382,49 +1081,6 @@ jobs:
           ARTIFACT_NAME: tested-against-production-debian-11_3.4_jemalloc
           ARTIFACT_PATH: mark-jemalloc
           CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
-  test_debian_11-3_4-malloctrim:
-    name: 'Test [debian-11/3.4/malloctrim]'
-    needs:
-      - publish
-    runs-on: ubuntu-22.04
-    environment: test
-    timeout-minutes: 30
-    if: |
-      github.ref == 'refs/heads/main'
-      && contains(inputs.necessary_jobs, ';Test against production repo [debian-11/3.4/malloctrim];')
-    permissions:
-      id-token: write
-    steps:
-      - uses: actions/checkout@v3
-      - uses: google-github-actions/auth@v2
-        with:
-          project_id: ${{ vars.GCLOUD_PROJECT_ID }}
-          workload_identity_provider: projects/${{ vars.GCLOUD_PROJECT_NUM }}/locations/global/workloadIdentityPools/github-ci-test/providers/github-ci-test
-      - name: Set up Cloud SDK
-        uses: google-github-actions/setup-gcloud@v2
-        with:
-          version: '>= 363.0.0'
-
-      - name: Run tests
-        run: ./internal-scripts/ci-cd/test-packages/run-tests.sh
-        env:
-          DISTRIBUTION_NAME: "debian-11"
-          RUBY_PACKAGE_ID: "3.4"
-          PACKAGE_FORMAT: "DEB"
-          VARIANT_NAME: "malloctrim"
-          VARIANT_PACKAGE_SUFFIX: "-malloctrim"
-          TEST_IMAGE_NAME: "debian:11"
-          APT_REPO_URL: https://apt.fullstaqruby.org
-          YUM_REPO_URL: https://yum.fullstaqruby.org
-
-      - name: Create mark file
-        run: mkdir mark-malloctrim && touch mark-malloctrim/done.txt
-      - name: Mark job as done
-        run: ./internal-scripts/ci-cd/upload-artifact.sh
-        env:
-          ARTIFACT_NAME: tested-against-production-debian-11_3.4_malloctrim
-          ARTIFACT_PATH: mark-malloctrim
-          CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
   test_debian_11-3_3-normal:
     name: 'Test [debian-11/3.3/normal]'
     needs:
@@ -1510,49 +1166,6 @@ jobs:
         env:
           ARTIFACT_NAME: tested-against-production-debian-11_3.3_jemalloc
           ARTIFACT_PATH: mark-jemalloc
-          CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
-  test_debian_11-3_3-malloctrim:
-    name: 'Test [debian-11/3.3/malloctrim]'
-    needs:
-      - publish
-    runs-on: ubuntu-22.04
-    environment: test
-    timeout-minutes: 30
-    if: |
-      github.ref == 'refs/heads/main'
-      && contains(inputs.necessary_jobs, ';Test against production repo [debian-11/3.3/malloctrim];')
-    permissions:
-      id-token: write
-    steps:
-      - uses: actions/checkout@v3
-      - uses: google-github-actions/auth@v2
-        with:
-          project_id: ${{ vars.GCLOUD_PROJECT_ID }}
-          workload_identity_provider: projects/${{ vars.GCLOUD_PROJECT_NUM }}/locations/global/workloadIdentityPools/github-ci-test/providers/github-ci-test
-      - name: Set up Cloud SDK
-        uses: google-github-actions/setup-gcloud@v2
-        with:
-          version: '>= 363.0.0'
-
-      - name: Run tests
-        run: ./internal-scripts/ci-cd/test-packages/run-tests.sh
-        env:
-          DISTRIBUTION_NAME: "debian-11"
-          RUBY_PACKAGE_ID: "3.3"
-          PACKAGE_FORMAT: "DEB"
-          VARIANT_NAME: "malloctrim"
-          VARIANT_PACKAGE_SUFFIX: "-malloctrim"
-          TEST_IMAGE_NAME: "debian:11"
-          APT_REPO_URL: https://apt.fullstaqruby.org
-          YUM_REPO_URL: https://yum.fullstaqruby.org
-
-      - name: Create mark file
-        run: mkdir mark-malloctrim && touch mark-malloctrim/done.txt
-      - name: Mark job as done
-        run: ./internal-scripts/ci-cd/upload-artifact.sh
-        env:
-          ARTIFACT_NAME: tested-against-production-debian-11_3.3_malloctrim
-          ARTIFACT_PATH: mark-malloctrim
           CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
   test_debian_11-3_2-normal:
     name: 'Test [debian-11/3.2/normal]'
@@ -1683,8 +1296,8 @@ jobs:
           ARTIFACT_NAME: tested-against-production-debian-11_3.2_malloctrim
           ARTIFACT_PATH: mark-malloctrim
           CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
-  test_debian_11-4_0_0-normal:
-    name: 'Test [debian-11/4.0.0/normal]'
+  test_debian_11-4_0_2-normal:
+    name: 'Test [debian-11/4.0.2/normal]'
     needs:
       - publish
     runs-on: ubuntu-22.04
@@ -1692,7 +1305,7 @@ jobs:
     timeout-minutes: 30
     if: |
       github.ref == 'refs/heads/main'
-      && contains(inputs.necessary_jobs, ';Test against production repo [debian-11/4.0.0/normal];')
+      && contains(inputs.necessary_jobs, ';Test against production repo [debian-11/4.0.2/normal];')
     permissions:
       id-token: write
     steps:
@@ -1710,7 +1323,7 @@ jobs:
         run: ./internal-scripts/ci-cd/test-packages/run-tests.sh
         env:
           DISTRIBUTION_NAME: "debian-11"
-          RUBY_PACKAGE_ID: "4.0.0"
+          RUBY_PACKAGE_ID: "4.0.2"
           PACKAGE_FORMAT: "DEB"
           VARIANT_NAME: "normal"
           VARIANT_PACKAGE_SUFFIX: ""
@@ -1723,11 +1336,11 @@ jobs:
       - name: Mark job as done
         run: ./internal-scripts/ci-cd/upload-artifact.sh
         env:
-          ARTIFACT_NAME: tested-against-production-debian-11_4.0.0_normal
+          ARTIFACT_NAME: tested-against-production-debian-11_4.0.2_normal
           ARTIFACT_PATH: mark-normal
           CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
-  test_debian_11-4_0_0-jemalloc:
-    name: 'Test [debian-11/4.0.0/jemalloc]'
+  test_debian_11-4_0_2-jemalloc:
+    name: 'Test [debian-11/4.0.2/jemalloc]'
     needs:
       - publish
     runs-on: ubuntu-22.04
@@ -1735,7 +1348,7 @@ jobs:
     timeout-minutes: 30
     if: |
       github.ref == 'refs/heads/main'
-      && contains(inputs.necessary_jobs, ';Test against production repo [debian-11/4.0.0/jemalloc];')
+      && contains(inputs.necessary_jobs, ';Test against production repo [debian-11/4.0.2/jemalloc];')
     permissions:
       id-token: write
     steps:
@@ -1753,7 +1366,7 @@ jobs:
         run: ./internal-scripts/ci-cd/test-packages/run-tests.sh
         env:
           DISTRIBUTION_NAME: "debian-11"
-          RUBY_PACKAGE_ID: "4.0.0"
+          RUBY_PACKAGE_ID: "4.0.2"
           PACKAGE_FORMAT: "DEB"
           VARIANT_NAME: "jemalloc"
           VARIANT_PACKAGE_SUFFIX: "-jemalloc"
@@ -1766,51 +1379,8 @@ jobs:
       - name: Mark job as done
         run: ./internal-scripts/ci-cd/upload-artifact.sh
         env:
-          ARTIFACT_NAME: tested-against-production-debian-11_4.0.0_jemalloc
+          ARTIFACT_NAME: tested-against-production-debian-11_4.0.2_jemalloc
           ARTIFACT_PATH: mark-jemalloc
-          CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
-  test_debian_11-4_0_0-malloctrim:
-    name: 'Test [debian-11/4.0.0/malloctrim]'
-    needs:
-      - publish
-    runs-on: ubuntu-22.04
-    environment: test
-    timeout-minutes: 30
-    if: |
-      github.ref == 'refs/heads/main'
-      && contains(inputs.necessary_jobs, ';Test against production repo [debian-11/4.0.0/malloctrim];')
-    permissions:
-      id-token: write
-    steps:
-      - uses: actions/checkout@v3
-      - uses: google-github-actions/auth@v2
-        with:
-          project_id: ${{ vars.GCLOUD_PROJECT_ID }}
-          workload_identity_provider: projects/${{ vars.GCLOUD_PROJECT_NUM }}/locations/global/workloadIdentityPools/github-ci-test/providers/github-ci-test
-      - name: Set up Cloud SDK
-        uses: google-github-actions/setup-gcloud@v2
-        with:
-          version: '>= 363.0.0'
-
-      - name: Run tests
-        run: ./internal-scripts/ci-cd/test-packages/run-tests.sh
-        env:
-          DISTRIBUTION_NAME: "debian-11"
-          RUBY_PACKAGE_ID: "4.0.0"
-          PACKAGE_FORMAT: "DEB"
-          VARIANT_NAME: "malloctrim"
-          VARIANT_PACKAGE_SUFFIX: "-malloctrim"
-          TEST_IMAGE_NAME: "debian:11"
-          APT_REPO_URL: https://apt.fullstaqruby.org
-          YUM_REPO_URL: https://yum.fullstaqruby.org
-
-      - name: Create mark file
-        run: mkdir mark-malloctrim && touch mark-malloctrim/done.txt
-      - name: Mark job as done
-        run: ./internal-scripts/ci-cd/upload-artifact.sh
-        env:
-          ARTIFACT_NAME: tested-against-production-debian-11_4.0.0_malloctrim
-          ARTIFACT_PATH: mark-malloctrim
           CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
   test_debian_11-3_4_8-normal:
     name: 'Test [debian-11/3.4.8/normal]'
@@ -1898,49 +1468,6 @@ jobs:
           ARTIFACT_NAME: tested-against-production-debian-11_3.4.8_jemalloc
           ARTIFACT_PATH: mark-jemalloc
           CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
-  test_debian_11-3_4_8-malloctrim:
-    name: 'Test [debian-11/3.4.8/malloctrim]'
-    needs:
-      - publish
-    runs-on: ubuntu-22.04
-    environment: test
-    timeout-minutes: 30
-    if: |
-      github.ref == 'refs/heads/main'
-      && contains(inputs.necessary_jobs, ';Test against production repo [debian-11/3.4.8/malloctrim];')
-    permissions:
-      id-token: write
-    steps:
-      - uses: actions/checkout@v3
-      - uses: google-github-actions/auth@v2
-        with:
-          project_id: ${{ vars.GCLOUD_PROJECT_ID }}
-          workload_identity_provider: projects/${{ vars.GCLOUD_PROJECT_NUM }}/locations/global/workloadIdentityPools/github-ci-test/providers/github-ci-test
-      - name: Set up Cloud SDK
-        uses: google-github-actions/setup-gcloud@v2
-        with:
-          version: '>= 363.0.0'
-
-      - name: Run tests
-        run: ./internal-scripts/ci-cd/test-packages/run-tests.sh
-        env:
-          DISTRIBUTION_NAME: "debian-11"
-          RUBY_PACKAGE_ID: "3.4.8"
-          PACKAGE_FORMAT: "DEB"
-          VARIANT_NAME: "malloctrim"
-          VARIANT_PACKAGE_SUFFIX: "-malloctrim"
-          TEST_IMAGE_NAME: "debian:11"
-          APT_REPO_URL: https://apt.fullstaqruby.org
-          YUM_REPO_URL: https://yum.fullstaqruby.org
-
-      - name: Create mark file
-        run: mkdir mark-malloctrim && touch mark-malloctrim/done.txt
-      - name: Mark job as done
-        run: ./internal-scripts/ci-cd/upload-artifact.sh
-        env:
-          ARTIFACT_NAME: tested-against-production-debian-11_3.4.8_malloctrim
-          ARTIFACT_PATH: mark-malloctrim
-          CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
   test_debian_11-3_3_10-normal:
     name: 'Test [debian-11/3.3.10/normal]'
     needs:
@@ -2026,49 +1553,6 @@ jobs:
         env:
           ARTIFACT_NAME: tested-against-production-debian-11_3.3.10_jemalloc
           ARTIFACT_PATH: mark-jemalloc
-          CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
-  test_debian_11-3_3_10-malloctrim:
-    name: 'Test [debian-11/3.3.10/malloctrim]'
-    needs:
-      - publish
-    runs-on: ubuntu-22.04
-    environment: test
-    timeout-minutes: 30
-    if: |
-      github.ref == 'refs/heads/main'
-      && contains(inputs.necessary_jobs, ';Test against production repo [debian-11/3.3.10/malloctrim];')
-    permissions:
-      id-token: write
-    steps:
-      - uses: actions/checkout@v3
-      - uses: google-github-actions/auth@v2
-        with:
-          project_id: ${{ vars.GCLOUD_PROJECT_ID }}
-          workload_identity_provider: projects/${{ vars.GCLOUD_PROJECT_NUM }}/locations/global/workloadIdentityPools/github-ci-test/providers/github-ci-test
-      - name: Set up Cloud SDK
-        uses: google-github-actions/setup-gcloud@v2
-        with:
-          version: '>= 363.0.0'
-
-      - name: Run tests
-        run: ./internal-scripts/ci-cd/test-packages/run-tests.sh
-        env:
-          DISTRIBUTION_NAME: "debian-11"
-          RUBY_PACKAGE_ID: "3.3.10"
-          PACKAGE_FORMAT: "DEB"
-          VARIANT_NAME: "malloctrim"
-          VARIANT_PACKAGE_SUFFIX: "-malloctrim"
-          TEST_IMAGE_NAME: "debian:11"
-          APT_REPO_URL: https://apt.fullstaqruby.org
-          YUM_REPO_URL: https://yum.fullstaqruby.org
-
-      - name: Create mark file
-        run: mkdir mark-malloctrim && touch mark-malloctrim/done.txt
-      - name: Mark job as done
-        run: ./internal-scripts/ci-cd/upload-artifact.sh
-        env:
-          ARTIFACT_NAME: tested-against-production-debian-11_3.3.10_malloctrim
-          ARTIFACT_PATH: mark-malloctrim
           CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
   test_debian_11-3_2_9-normal:
     name: 'Test [debian-11/3.2.9/normal]'
@@ -2286,49 +1770,6 @@ jobs:
           ARTIFACT_NAME: tested-against-production-debian-12_4.0_jemalloc
           ARTIFACT_PATH: mark-jemalloc
           CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
-  test_debian_12-4_0-malloctrim:
-    name: 'Test [debian-12/4.0/malloctrim]'
-    needs:
-      - publish
-    runs-on: ubuntu-22.04
-    environment: test
-    timeout-minutes: 30
-    if: |
-      github.ref == 'refs/heads/main'
-      && contains(inputs.necessary_jobs, ';Test against production repo [debian-12/4.0/malloctrim];')
-    permissions:
-      id-token: write
-    steps:
-      - uses: actions/checkout@v3
-      - uses: google-github-actions/auth@v2
-        with:
-          project_id: ${{ vars.GCLOUD_PROJECT_ID }}
-          workload_identity_provider: projects/${{ vars.GCLOUD_PROJECT_NUM }}/locations/global/workloadIdentityPools/github-ci-test/providers/github-ci-test
-      - name: Set up Cloud SDK
-        uses: google-github-actions/setup-gcloud@v2
-        with:
-          version: '>= 363.0.0'
-
-      - name: Run tests
-        run: ./internal-scripts/ci-cd/test-packages/run-tests.sh
-        env:
-          DISTRIBUTION_NAME: "debian-12"
-          RUBY_PACKAGE_ID: "4.0"
-          PACKAGE_FORMAT: "DEB"
-          VARIANT_NAME: "malloctrim"
-          VARIANT_PACKAGE_SUFFIX: "-malloctrim"
-          TEST_IMAGE_NAME: "debian:12"
-          APT_REPO_URL: https://apt.fullstaqruby.org
-          YUM_REPO_URL: https://yum.fullstaqruby.org
-
-      - name: Create mark file
-        run: mkdir mark-malloctrim && touch mark-malloctrim/done.txt
-      - name: Mark job as done
-        run: ./internal-scripts/ci-cd/upload-artifact.sh
-        env:
-          ARTIFACT_NAME: tested-against-production-debian-12_4.0_malloctrim
-          ARTIFACT_PATH: mark-malloctrim
-          CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
   test_debian_12-3_4-normal:
     name: 'Test [debian-12/3.4/normal]'
     needs:
@@ -2415,49 +1856,6 @@ jobs:
           ARTIFACT_NAME: tested-against-production-debian-12_3.4_jemalloc
           ARTIFACT_PATH: mark-jemalloc
           CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
-  test_debian_12-3_4-malloctrim:
-    name: 'Test [debian-12/3.4/malloctrim]'
-    needs:
-      - publish
-    runs-on: ubuntu-22.04
-    environment: test
-    timeout-minutes: 30
-    if: |
-      github.ref == 'refs/heads/main'
-      && contains(inputs.necessary_jobs, ';Test against production repo [debian-12/3.4/malloctrim];')
-    permissions:
-      id-token: write
-    steps:
-      - uses: actions/checkout@v3
-      - uses: google-github-actions/auth@v2
-        with:
-          project_id: ${{ vars.GCLOUD_PROJECT_ID }}
-          workload_identity_provider: projects/${{ vars.GCLOUD_PROJECT_NUM }}/locations/global/workloadIdentityPools/github-ci-test/providers/github-ci-test
-      - name: Set up Cloud SDK
-        uses: google-github-actions/setup-gcloud@v2
-        with:
-          version: '>= 363.0.0'
-
-      - name: Run tests
-        run: ./internal-scripts/ci-cd/test-packages/run-tests.sh
-        env:
-          DISTRIBUTION_NAME: "debian-12"
-          RUBY_PACKAGE_ID: "3.4"
-          PACKAGE_FORMAT: "DEB"
-          VARIANT_NAME: "malloctrim"
-          VARIANT_PACKAGE_SUFFIX: "-malloctrim"
-          TEST_IMAGE_NAME: "debian:12"
-          APT_REPO_URL: https://apt.fullstaqruby.org
-          YUM_REPO_URL: https://yum.fullstaqruby.org
-
-      - name: Create mark file
-        run: mkdir mark-malloctrim && touch mark-malloctrim/done.txt
-      - name: Mark job as done
-        run: ./internal-scripts/ci-cd/upload-artifact.sh
-        env:
-          ARTIFACT_NAME: tested-against-production-debian-12_3.4_malloctrim
-          ARTIFACT_PATH: mark-malloctrim
-          CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
   test_debian_12-3_3-normal:
     name: 'Test [debian-12/3.3/normal]'
     needs:
@@ -2543,49 +1941,6 @@ jobs:
         env:
           ARTIFACT_NAME: tested-against-production-debian-12_3.3_jemalloc
           ARTIFACT_PATH: mark-jemalloc
-          CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
-  test_debian_12-3_3-malloctrim:
-    name: 'Test [debian-12/3.3/malloctrim]'
-    needs:
-      - publish
-    runs-on: ubuntu-22.04
-    environment: test
-    timeout-minutes: 30
-    if: |
-      github.ref == 'refs/heads/main'
-      && contains(inputs.necessary_jobs, ';Test against production repo [debian-12/3.3/malloctrim];')
-    permissions:
-      id-token: write
-    steps:
-      - uses: actions/checkout@v3
-      - uses: google-github-actions/auth@v2
-        with:
-          project_id: ${{ vars.GCLOUD_PROJECT_ID }}
-          workload_identity_provider: projects/${{ vars.GCLOUD_PROJECT_NUM }}/locations/global/workloadIdentityPools/github-ci-test/providers/github-ci-test
-      - name: Set up Cloud SDK
-        uses: google-github-actions/setup-gcloud@v2
-        with:
-          version: '>= 363.0.0'
-
-      - name: Run tests
-        run: ./internal-scripts/ci-cd/test-packages/run-tests.sh
-        env:
-          DISTRIBUTION_NAME: "debian-12"
-          RUBY_PACKAGE_ID: "3.3"
-          PACKAGE_FORMAT: "DEB"
-          VARIANT_NAME: "malloctrim"
-          VARIANT_PACKAGE_SUFFIX: "-malloctrim"
-          TEST_IMAGE_NAME: "debian:12"
-          APT_REPO_URL: https://apt.fullstaqruby.org
-          YUM_REPO_URL: https://yum.fullstaqruby.org
-
-      - name: Create mark file
-        run: mkdir mark-malloctrim && touch mark-malloctrim/done.txt
-      - name: Mark job as done
-        run: ./internal-scripts/ci-cd/upload-artifact.sh
-        env:
-          ARTIFACT_NAME: tested-against-production-debian-12_3.3_malloctrim
-          ARTIFACT_PATH: mark-malloctrim
           CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
   test_debian_12-3_2-normal:
     name: 'Test [debian-12/3.2/normal]'
@@ -2716,8 +2071,8 @@ jobs:
           ARTIFACT_NAME: tested-against-production-debian-12_3.2_malloctrim
           ARTIFACT_PATH: mark-malloctrim
           CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
-  test_debian_12-4_0_0-normal:
-    name: 'Test [debian-12/4.0.0/normal]'
+  test_debian_12-4_0_2-normal:
+    name: 'Test [debian-12/4.0.2/normal]'
     needs:
       - publish
     runs-on: ubuntu-22.04
@@ -2725,7 +2080,7 @@ jobs:
     timeout-minutes: 30
     if: |
       github.ref == 'refs/heads/main'
-      && contains(inputs.necessary_jobs, ';Test against production repo [debian-12/4.0.0/normal];')
+      && contains(inputs.necessary_jobs, ';Test against production repo [debian-12/4.0.2/normal];')
     permissions:
       id-token: write
     steps:
@@ -2743,7 +2098,7 @@ jobs:
         run: ./internal-scripts/ci-cd/test-packages/run-tests.sh
         env:
           DISTRIBUTION_NAME: "debian-12"
-          RUBY_PACKAGE_ID: "4.0.0"
+          RUBY_PACKAGE_ID: "4.0.2"
           PACKAGE_FORMAT: "DEB"
           VARIANT_NAME: "normal"
           VARIANT_PACKAGE_SUFFIX: ""
@@ -2756,11 +2111,11 @@ jobs:
       - name: Mark job as done
         run: ./internal-scripts/ci-cd/upload-artifact.sh
         env:
-          ARTIFACT_NAME: tested-against-production-debian-12_4.0.0_normal
+          ARTIFACT_NAME: tested-against-production-debian-12_4.0.2_normal
           ARTIFACT_PATH: mark-normal
           CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
-  test_debian_12-4_0_0-jemalloc:
-    name: 'Test [debian-12/4.0.0/jemalloc]'
+  test_debian_12-4_0_2-jemalloc:
+    name: 'Test [debian-12/4.0.2/jemalloc]'
     needs:
       - publish
     runs-on: ubuntu-22.04
@@ -2768,7 +2123,7 @@ jobs:
     timeout-minutes: 30
     if: |
       github.ref == 'refs/heads/main'
-      && contains(inputs.necessary_jobs, ';Test against production repo [debian-12/4.0.0/jemalloc];')
+      && contains(inputs.necessary_jobs, ';Test against production repo [debian-12/4.0.2/jemalloc];')
     permissions:
       id-token: write
     steps:
@@ -2786,7 +2141,7 @@ jobs:
         run: ./internal-scripts/ci-cd/test-packages/run-tests.sh
         env:
           DISTRIBUTION_NAME: "debian-12"
-          RUBY_PACKAGE_ID: "4.0.0"
+          RUBY_PACKAGE_ID: "4.0.2"
           PACKAGE_FORMAT: "DEB"
           VARIANT_NAME: "jemalloc"
           VARIANT_PACKAGE_SUFFIX: "-jemalloc"
@@ -2799,51 +2154,8 @@ jobs:
       - name: Mark job as done
         run: ./internal-scripts/ci-cd/upload-artifact.sh
         env:
-          ARTIFACT_NAME: tested-against-production-debian-12_4.0.0_jemalloc
+          ARTIFACT_NAME: tested-against-production-debian-12_4.0.2_jemalloc
           ARTIFACT_PATH: mark-jemalloc
-          CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
-  test_debian_12-4_0_0-malloctrim:
-    name: 'Test [debian-12/4.0.0/malloctrim]'
-    needs:
-      - publish
-    runs-on: ubuntu-22.04
-    environment: test
-    timeout-minutes: 30
-    if: |
-      github.ref == 'refs/heads/main'
-      && contains(inputs.necessary_jobs, ';Test against production repo [debian-12/4.0.0/malloctrim];')
-    permissions:
-      id-token: write
-    steps:
-      - uses: actions/checkout@v3
-      - uses: google-github-actions/auth@v2
-        with:
-          project_id: ${{ vars.GCLOUD_PROJECT_ID }}
-          workload_identity_provider: projects/${{ vars.GCLOUD_PROJECT_NUM }}/locations/global/workloadIdentityPools/github-ci-test/providers/github-ci-test
-      - name: Set up Cloud SDK
-        uses: google-github-actions/setup-gcloud@v2
-        with:
-          version: '>= 363.0.0'
-
-      - name: Run tests
-        run: ./internal-scripts/ci-cd/test-packages/run-tests.sh
-        env:
-          DISTRIBUTION_NAME: "debian-12"
-          RUBY_PACKAGE_ID: "4.0.0"
-          PACKAGE_FORMAT: "DEB"
-          VARIANT_NAME: "malloctrim"
-          VARIANT_PACKAGE_SUFFIX: "-malloctrim"
-          TEST_IMAGE_NAME: "debian:12"
-          APT_REPO_URL: https://apt.fullstaqruby.org
-          YUM_REPO_URL: https://yum.fullstaqruby.org
-
-      - name: Create mark file
-        run: mkdir mark-malloctrim && touch mark-malloctrim/done.txt
-      - name: Mark job as done
-        run: ./internal-scripts/ci-cd/upload-artifact.sh
-        env:
-          ARTIFACT_NAME: tested-against-production-debian-12_4.0.0_malloctrim
-          ARTIFACT_PATH: mark-malloctrim
           CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
   test_debian_12-3_4_8-normal:
     name: 'Test [debian-12/3.4.8/normal]'
@@ -2931,49 +2243,6 @@ jobs:
           ARTIFACT_NAME: tested-against-production-debian-12_3.4.8_jemalloc
           ARTIFACT_PATH: mark-jemalloc
           CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
-  test_debian_12-3_4_8-malloctrim:
-    name: 'Test [debian-12/3.4.8/malloctrim]'
-    needs:
-      - publish
-    runs-on: ubuntu-22.04
-    environment: test
-    timeout-minutes: 30
-    if: |
-      github.ref == 'refs/heads/main'
-      && contains(inputs.necessary_jobs, ';Test against production repo [debian-12/3.4.8/malloctrim];')
-    permissions:
-      id-token: write
-    steps:
-      - uses: actions/checkout@v3
-      - uses: google-github-actions/auth@v2
-        with:
-          project_id: ${{ vars.GCLOUD_PROJECT_ID }}
-          workload_identity_provider: projects/${{ vars.GCLOUD_PROJECT_NUM }}/locations/global/workloadIdentityPools/github-ci-test/providers/github-ci-test
-      - name: Set up Cloud SDK
-        uses: google-github-actions/setup-gcloud@v2
-        with:
-          version: '>= 363.0.0'
-
-      - name: Run tests
-        run: ./internal-scripts/ci-cd/test-packages/run-tests.sh
-        env:
-          DISTRIBUTION_NAME: "debian-12"
-          RUBY_PACKAGE_ID: "3.4.8"
-          PACKAGE_FORMAT: "DEB"
-          VARIANT_NAME: "malloctrim"
-          VARIANT_PACKAGE_SUFFIX: "-malloctrim"
-          TEST_IMAGE_NAME: "debian:12"
-          APT_REPO_URL: https://apt.fullstaqruby.org
-          YUM_REPO_URL: https://yum.fullstaqruby.org
-
-      - name: Create mark file
-        run: mkdir mark-malloctrim && touch mark-malloctrim/done.txt
-      - name: Mark job as done
-        run: ./internal-scripts/ci-cd/upload-artifact.sh
-        env:
-          ARTIFACT_NAME: tested-against-production-debian-12_3.4.8_malloctrim
-          ARTIFACT_PATH: mark-malloctrim
-          CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
   test_debian_12-3_3_10-normal:
     name: 'Test [debian-12/3.3.10/normal]'
     needs:
@@ -3059,49 +2328,6 @@ jobs:
         env:
           ARTIFACT_NAME: tested-against-production-debian-12_3.3.10_jemalloc
           ARTIFACT_PATH: mark-jemalloc
-          CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
-  test_debian_12-3_3_10-malloctrim:
-    name: 'Test [debian-12/3.3.10/malloctrim]'
-    needs:
-      - publish
-    runs-on: ubuntu-22.04
-    environment: test
-    timeout-minutes: 30
-    if: |
-      github.ref == 'refs/heads/main'
-      && contains(inputs.necessary_jobs, ';Test against production repo [debian-12/3.3.10/malloctrim];')
-    permissions:
-      id-token: write
-    steps:
-      - uses: actions/checkout@v3
-      - uses: google-github-actions/auth@v2
-        with:
-          project_id: ${{ vars.GCLOUD_PROJECT_ID }}
-          workload_identity_provider: projects/${{ vars.GCLOUD_PROJECT_NUM }}/locations/global/workloadIdentityPools/github-ci-test/providers/github-ci-test
-      - name: Set up Cloud SDK
-        uses: google-github-actions/setup-gcloud@v2
-        with:
-          version: '>= 363.0.0'
-
-      - name: Run tests
-        run: ./internal-scripts/ci-cd/test-packages/run-tests.sh
-        env:
-          DISTRIBUTION_NAME: "debian-12"
-          RUBY_PACKAGE_ID: "3.3.10"
-          PACKAGE_FORMAT: "DEB"
-          VARIANT_NAME: "malloctrim"
-          VARIANT_PACKAGE_SUFFIX: "-malloctrim"
-          TEST_IMAGE_NAME: "debian:12"
-          APT_REPO_URL: https://apt.fullstaqruby.org
-          YUM_REPO_URL: https://yum.fullstaqruby.org
-
-      - name: Create mark file
-        run: mkdir mark-malloctrim && touch mark-malloctrim/done.txt
-      - name: Mark job as done
-        run: ./internal-scripts/ci-cd/upload-artifact.sh
-        env:
-          ARTIFACT_NAME: tested-against-production-debian-12_3.3.10_malloctrim
-          ARTIFACT_PATH: mark-malloctrim
           CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
   test_debian_12-3_2_9-normal:
     name: 'Test [debian-12/3.2.9/normal]'
@@ -3319,49 +2545,6 @@ jobs:
           ARTIFACT_NAME: tested-against-production-debian-13_4.0_jemalloc
           ARTIFACT_PATH: mark-jemalloc
           CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
-  test_debian_13-4_0-malloctrim:
-    name: 'Test [debian-13/4.0/malloctrim]'
-    needs:
-      - publish
-    runs-on: ubuntu-22.04
-    environment: test
-    timeout-minutes: 30
-    if: |
-      github.ref == 'refs/heads/main'
-      && contains(inputs.necessary_jobs, ';Test against production repo [debian-13/4.0/malloctrim];')
-    permissions:
-      id-token: write
-    steps:
-      - uses: actions/checkout@v3
-      - uses: google-github-actions/auth@v2
-        with:
-          project_id: ${{ vars.GCLOUD_PROJECT_ID }}
-          workload_identity_provider: projects/${{ vars.GCLOUD_PROJECT_NUM }}/locations/global/workloadIdentityPools/github-ci-test/providers/github-ci-test
-      - name: Set up Cloud SDK
-        uses: google-github-actions/setup-gcloud@v2
-        with:
-          version: '>= 363.0.0'
-
-      - name: Run tests
-        run: ./internal-scripts/ci-cd/test-packages/run-tests.sh
-        env:
-          DISTRIBUTION_NAME: "debian-13"
-          RUBY_PACKAGE_ID: "4.0"
-          PACKAGE_FORMAT: "DEB"
-          VARIANT_NAME: "malloctrim"
-          VARIANT_PACKAGE_SUFFIX: "-malloctrim"
-          TEST_IMAGE_NAME: "debian:13"
-          APT_REPO_URL: https://apt.fullstaqruby.org
-          YUM_REPO_URL: https://yum.fullstaqruby.org
-
-      - name: Create mark file
-        run: mkdir mark-malloctrim && touch mark-malloctrim/done.txt
-      - name: Mark job as done
-        run: ./internal-scripts/ci-cd/upload-artifact.sh
-        env:
-          ARTIFACT_NAME: tested-against-production-debian-13_4.0_malloctrim
-          ARTIFACT_PATH: mark-malloctrim
-          CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
   test_debian_13-3_4-normal:
     name: 'Test [debian-13/3.4/normal]'
     needs:
@@ -3447,49 +2630,6 @@ jobs:
         env:
           ARTIFACT_NAME: tested-against-production-debian-13_3.4_jemalloc
           ARTIFACT_PATH: mark-jemalloc
-          CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
-  test_debian_13-3_4-malloctrim:
-    name: 'Test [debian-13/3.4/malloctrim]'
-    needs:
-      - publish
-    runs-on: ubuntu-22.04
-    environment: test
-    timeout-minutes: 30
-    if: |
-      github.ref == 'refs/heads/main'
-      && contains(inputs.necessary_jobs, ';Test against production repo [debian-13/3.4/malloctrim];')
-    permissions:
-      id-token: write
-    steps:
-      - uses: actions/checkout@v3
-      - uses: google-github-actions/auth@v2
-        with:
-          project_id: ${{ vars.GCLOUD_PROJECT_ID }}
-          workload_identity_provider: projects/${{ vars.GCLOUD_PROJECT_NUM }}/locations/global/workloadIdentityPools/github-ci-test/providers/github-ci-test
-      - name: Set up Cloud SDK
-        uses: google-github-actions/setup-gcloud@v2
-        with:
-          version: '>= 363.0.0'
-
-      - name: Run tests
-        run: ./internal-scripts/ci-cd/test-packages/run-tests.sh
-        env:
-          DISTRIBUTION_NAME: "debian-13"
-          RUBY_PACKAGE_ID: "3.4"
-          PACKAGE_FORMAT: "DEB"
-          VARIANT_NAME: "malloctrim"
-          VARIANT_PACKAGE_SUFFIX: "-malloctrim"
-          TEST_IMAGE_NAME: "debian:13"
-          APT_REPO_URL: https://apt.fullstaqruby.org
-          YUM_REPO_URL: https://yum.fullstaqruby.org
-
-      - name: Create mark file
-        run: mkdir mark-malloctrim && touch mark-malloctrim/done.txt
-      - name: Mark job as done
-        run: ./internal-scripts/ci-cd/upload-artifact.sh
-        env:
-          ARTIFACT_NAME: tested-against-production-debian-13_3.4_malloctrim
-          ARTIFACT_PATH: mark-malloctrim
           CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
   test_debian_13-3_3-normal:
     name: 'Test [debian-13/3.3/normal]'
@@ -3577,8 +2717,8 @@ jobs:
           ARTIFACT_NAME: tested-against-production-debian-13_3.3_jemalloc
           ARTIFACT_PATH: mark-jemalloc
           CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
-  test_debian_13-3_3-malloctrim:
-    name: 'Test [debian-13/3.3/malloctrim]'
+  test_debian_13-4_0_2-normal:
+    name: 'Test [debian-13/4.0.2/normal]'
     needs:
       - publish
     runs-on: ubuntu-22.04
@@ -3586,7 +2726,7 @@ jobs:
     timeout-minutes: 30
     if: |
       github.ref == 'refs/heads/main'
-      && contains(inputs.necessary_jobs, ';Test against production repo [debian-13/3.3/malloctrim];')
+      && contains(inputs.necessary_jobs, ';Test against production repo [debian-13/4.0.2/normal];')
     permissions:
       id-token: write
     steps:
@@ -3604,50 +2744,7 @@ jobs:
         run: ./internal-scripts/ci-cd/test-packages/run-tests.sh
         env:
           DISTRIBUTION_NAME: "debian-13"
-          RUBY_PACKAGE_ID: "3.3"
-          PACKAGE_FORMAT: "DEB"
-          VARIANT_NAME: "malloctrim"
-          VARIANT_PACKAGE_SUFFIX: "-malloctrim"
-          TEST_IMAGE_NAME: "debian:13"
-          APT_REPO_URL: https://apt.fullstaqruby.org
-          YUM_REPO_URL: https://yum.fullstaqruby.org
-
-      - name: Create mark file
-        run: mkdir mark-malloctrim && touch mark-malloctrim/done.txt
-      - name: Mark job as done
-        run: ./internal-scripts/ci-cd/upload-artifact.sh
-        env:
-          ARTIFACT_NAME: tested-against-production-debian-13_3.3_malloctrim
-          ARTIFACT_PATH: mark-malloctrim
-          CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
-  test_debian_13-4_0_0-normal:
-    name: 'Test [debian-13/4.0.0/normal]'
-    needs:
-      - publish
-    runs-on: ubuntu-22.04
-    environment: test
-    timeout-minutes: 30
-    if: |
-      github.ref == 'refs/heads/main'
-      && contains(inputs.necessary_jobs, ';Test against production repo [debian-13/4.0.0/normal];')
-    permissions:
-      id-token: write
-    steps:
-      - uses: actions/checkout@v3
-      - uses: google-github-actions/auth@v2
-        with:
-          project_id: ${{ vars.GCLOUD_PROJECT_ID }}
-          workload_identity_provider: projects/${{ vars.GCLOUD_PROJECT_NUM }}/locations/global/workloadIdentityPools/github-ci-test/providers/github-ci-test
-      - name: Set up Cloud SDK
-        uses: google-github-actions/setup-gcloud@v2
-        with:
-          version: '>= 363.0.0'
-
-      - name: Run tests
-        run: ./internal-scripts/ci-cd/test-packages/run-tests.sh
-        env:
-          DISTRIBUTION_NAME: "debian-13"
-          RUBY_PACKAGE_ID: "4.0.0"
+          RUBY_PACKAGE_ID: "4.0.2"
           PACKAGE_FORMAT: "DEB"
           VARIANT_NAME: "normal"
           VARIANT_PACKAGE_SUFFIX: ""
@@ -3660,11 +2757,11 @@ jobs:
       - name: Mark job as done
         run: ./internal-scripts/ci-cd/upload-artifact.sh
         env:
-          ARTIFACT_NAME: tested-against-production-debian-13_4.0.0_normal
+          ARTIFACT_NAME: tested-against-production-debian-13_4.0.2_normal
           ARTIFACT_PATH: mark-normal
           CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
-  test_debian_13-4_0_0-jemalloc:
-    name: 'Test [debian-13/4.0.0/jemalloc]'
+  test_debian_13-4_0_2-jemalloc:
+    name: 'Test [debian-13/4.0.2/jemalloc]'
     needs:
       - publish
     runs-on: ubuntu-22.04
@@ -3672,7 +2769,7 @@ jobs:
     timeout-minutes: 30
     if: |
       github.ref == 'refs/heads/main'
-      && contains(inputs.necessary_jobs, ';Test against production repo [debian-13/4.0.0/jemalloc];')
+      && contains(inputs.necessary_jobs, ';Test against production repo [debian-13/4.0.2/jemalloc];')
     permissions:
       id-token: write
     steps:
@@ -3690,7 +2787,7 @@ jobs:
         run: ./internal-scripts/ci-cd/test-packages/run-tests.sh
         env:
           DISTRIBUTION_NAME: "debian-13"
-          RUBY_PACKAGE_ID: "4.0.0"
+          RUBY_PACKAGE_ID: "4.0.2"
           PACKAGE_FORMAT: "DEB"
           VARIANT_NAME: "jemalloc"
           VARIANT_PACKAGE_SUFFIX: "-jemalloc"
@@ -3703,51 +2800,8 @@ jobs:
       - name: Mark job as done
         run: ./internal-scripts/ci-cd/upload-artifact.sh
         env:
-          ARTIFACT_NAME: tested-against-production-debian-13_4.0.0_jemalloc
+          ARTIFACT_NAME: tested-against-production-debian-13_4.0.2_jemalloc
           ARTIFACT_PATH: mark-jemalloc
-          CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
-  test_debian_13-4_0_0-malloctrim:
-    name: 'Test [debian-13/4.0.0/malloctrim]'
-    needs:
-      - publish
-    runs-on: ubuntu-22.04
-    environment: test
-    timeout-minutes: 30
-    if: |
-      github.ref == 'refs/heads/main'
-      && contains(inputs.necessary_jobs, ';Test against production repo [debian-13/4.0.0/malloctrim];')
-    permissions:
-      id-token: write
-    steps:
-      - uses: actions/checkout@v3
-      - uses: google-github-actions/auth@v2
-        with:
-          project_id: ${{ vars.GCLOUD_PROJECT_ID }}
-          workload_identity_provider: projects/${{ vars.GCLOUD_PROJECT_NUM }}/locations/global/workloadIdentityPools/github-ci-test/providers/github-ci-test
-      - name: Set up Cloud SDK
-        uses: google-github-actions/setup-gcloud@v2
-        with:
-          version: '>= 363.0.0'
-
-      - name: Run tests
-        run: ./internal-scripts/ci-cd/test-packages/run-tests.sh
-        env:
-          DISTRIBUTION_NAME: "debian-13"
-          RUBY_PACKAGE_ID: "4.0.0"
-          PACKAGE_FORMAT: "DEB"
-          VARIANT_NAME: "malloctrim"
-          VARIANT_PACKAGE_SUFFIX: "-malloctrim"
-          TEST_IMAGE_NAME: "debian:13"
-          APT_REPO_URL: https://apt.fullstaqruby.org
-          YUM_REPO_URL: https://yum.fullstaqruby.org
-
-      - name: Create mark file
-        run: mkdir mark-malloctrim && touch mark-malloctrim/done.txt
-      - name: Mark job as done
-        run: ./internal-scripts/ci-cd/upload-artifact.sh
-        env:
-          ARTIFACT_NAME: tested-against-production-debian-13_4.0.0_malloctrim
-          ARTIFACT_PATH: mark-malloctrim
           CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
   test_debian_13-3_4_8-normal:
     name: 'Test [debian-13/3.4.8/normal]'
@@ -3835,49 +2889,6 @@ jobs:
           ARTIFACT_NAME: tested-against-production-debian-13_3.4.8_jemalloc
           ARTIFACT_PATH: mark-jemalloc
           CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
-  test_debian_13-3_4_8-malloctrim:
-    name: 'Test [debian-13/3.4.8/malloctrim]'
-    needs:
-      - publish
-    runs-on: ubuntu-22.04
-    environment: test
-    timeout-minutes: 30
-    if: |
-      github.ref == 'refs/heads/main'
-      && contains(inputs.necessary_jobs, ';Test against production repo [debian-13/3.4.8/malloctrim];')
-    permissions:
-      id-token: write
-    steps:
-      - uses: actions/checkout@v3
-      - uses: google-github-actions/auth@v2
-        with:
-          project_id: ${{ vars.GCLOUD_PROJECT_ID }}
-          workload_identity_provider: projects/${{ vars.GCLOUD_PROJECT_NUM }}/locations/global/workloadIdentityPools/github-ci-test/providers/github-ci-test
-      - name: Set up Cloud SDK
-        uses: google-github-actions/setup-gcloud@v2
-        with:
-          version: '>= 363.0.0'
-
-      - name: Run tests
-        run: ./internal-scripts/ci-cd/test-packages/run-tests.sh
-        env:
-          DISTRIBUTION_NAME: "debian-13"
-          RUBY_PACKAGE_ID: "3.4.8"
-          PACKAGE_FORMAT: "DEB"
-          VARIANT_NAME: "malloctrim"
-          VARIANT_PACKAGE_SUFFIX: "-malloctrim"
-          TEST_IMAGE_NAME: "debian:13"
-          APT_REPO_URL: https://apt.fullstaqruby.org
-          YUM_REPO_URL: https://yum.fullstaqruby.org
-
-      - name: Create mark file
-        run: mkdir mark-malloctrim && touch mark-malloctrim/done.txt
-      - name: Mark job as done
-        run: ./internal-scripts/ci-cd/upload-artifact.sh
-        env:
-          ARTIFACT_NAME: tested-against-production-debian-13_3.4.8_malloctrim
-          ARTIFACT_PATH: mark-malloctrim
-          CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
   test_debian_13-3_3_10-normal:
     name: 'Test [debian-13/3.3.10/normal]'
     needs:
@@ -3963,49 +2974,6 @@ jobs:
         env:
           ARTIFACT_NAME: tested-against-production-debian-13_3.3.10_jemalloc
           ARTIFACT_PATH: mark-jemalloc
-          CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
-  test_debian_13-3_3_10-malloctrim:
-    name: 'Test [debian-13/3.3.10/malloctrim]'
-    needs:
-      - publish
-    runs-on: ubuntu-22.04
-    environment: test
-    timeout-minutes: 30
-    if: |
-      github.ref == 'refs/heads/main'
-      && contains(inputs.necessary_jobs, ';Test against production repo [debian-13/3.3.10/malloctrim];')
-    permissions:
-      id-token: write
-    steps:
-      - uses: actions/checkout@v3
-      - uses: google-github-actions/auth@v2
-        with:
-          project_id: ${{ vars.GCLOUD_PROJECT_ID }}
-          workload_identity_provider: projects/${{ vars.GCLOUD_PROJECT_NUM }}/locations/global/workloadIdentityPools/github-ci-test/providers/github-ci-test
-      - name: Set up Cloud SDK
-        uses: google-github-actions/setup-gcloud@v2
-        with:
-          version: '>= 363.0.0'
-
-      - name: Run tests
-        run: ./internal-scripts/ci-cd/test-packages/run-tests.sh
-        env:
-          DISTRIBUTION_NAME: "debian-13"
-          RUBY_PACKAGE_ID: "3.3.10"
-          PACKAGE_FORMAT: "DEB"
-          VARIANT_NAME: "malloctrim"
-          VARIANT_PACKAGE_SUFFIX: "-malloctrim"
-          TEST_IMAGE_NAME: "debian:13"
-          APT_REPO_URL: https://apt.fullstaqruby.org
-          YUM_REPO_URL: https://yum.fullstaqruby.org
-
-      - name: Create mark file
-        run: mkdir mark-malloctrim && touch mark-malloctrim/done.txt
-      - name: Mark job as done
-        run: ./internal-scripts/ci-cd/upload-artifact.sh
-        env:
-          ARTIFACT_NAME: tested-against-production-debian-13_3.3.10_malloctrim
-          ARTIFACT_PATH: mark-malloctrim
           CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
 
   test_el_9-4_0-normal:
@@ -4094,49 +3062,6 @@ jobs:
           ARTIFACT_NAME: tested-against-production-el-9_4.0_jemalloc
           ARTIFACT_PATH: mark-jemalloc
           CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
-  test_el_9-4_0-malloctrim:
-    name: 'Test [el-9/4.0/malloctrim]'
-    needs:
-      - publish
-    runs-on: ubuntu-22.04
-    environment: test
-    timeout-minutes: 30
-    if: |
-      github.ref == 'refs/heads/main'
-      && contains(inputs.necessary_jobs, ';Test against production repo [el-9/4.0/malloctrim];')
-    permissions:
-      id-token: write
-    steps:
-      - uses: actions/checkout@v3
-      - uses: google-github-actions/auth@v2
-        with:
-          project_id: ${{ vars.GCLOUD_PROJECT_ID }}
-          workload_identity_provider: projects/${{ vars.GCLOUD_PROJECT_NUM }}/locations/global/workloadIdentityPools/github-ci-test/providers/github-ci-test
-      - name: Set up Cloud SDK
-        uses: google-github-actions/setup-gcloud@v2
-        with:
-          version: '>= 363.0.0'
-
-      - name: Run tests
-        run: ./internal-scripts/ci-cd/test-packages/run-tests.sh
-        env:
-          DISTRIBUTION_NAME: "el-9"
-          RUBY_PACKAGE_ID: "4.0"
-          PACKAGE_FORMAT: "RPM"
-          VARIANT_NAME: "malloctrim"
-          VARIANT_PACKAGE_SUFFIX: "-malloctrim"
-          TEST_IMAGE_NAME: "rockylinux:9"
-          APT_REPO_URL: https://apt.fullstaqruby.org
-          YUM_REPO_URL: https://yum.fullstaqruby.org
-
-      - name: Create mark file
-        run: mkdir mark-malloctrim && touch mark-malloctrim/done.txt
-      - name: Mark job as done
-        run: ./internal-scripts/ci-cd/upload-artifact.sh
-        env:
-          ARTIFACT_NAME: tested-against-production-el-9_4.0_malloctrim
-          ARTIFACT_PATH: mark-malloctrim
-          CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
   test_el_9-3_4-normal:
     name: 'Test [el-9/3.4/normal]'
     needs:
@@ -4223,49 +3148,6 @@ jobs:
           ARTIFACT_NAME: tested-against-production-el-9_3.4_jemalloc
           ARTIFACT_PATH: mark-jemalloc
           CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
-  test_el_9-3_4-malloctrim:
-    name: 'Test [el-9/3.4/malloctrim]'
-    needs:
-      - publish
-    runs-on: ubuntu-22.04
-    environment: test
-    timeout-minutes: 30
-    if: |
-      github.ref == 'refs/heads/main'
-      && contains(inputs.necessary_jobs, ';Test against production repo [el-9/3.4/malloctrim];')
-    permissions:
-      id-token: write
-    steps:
-      - uses: actions/checkout@v3
-      - uses: google-github-actions/auth@v2
-        with:
-          project_id: ${{ vars.GCLOUD_PROJECT_ID }}
-          workload_identity_provider: projects/${{ vars.GCLOUD_PROJECT_NUM }}/locations/global/workloadIdentityPools/github-ci-test/providers/github-ci-test
-      - name: Set up Cloud SDK
-        uses: google-github-actions/setup-gcloud@v2
-        with:
-          version: '>= 363.0.0'
-
-      - name: Run tests
-        run: ./internal-scripts/ci-cd/test-packages/run-tests.sh
-        env:
-          DISTRIBUTION_NAME: "el-9"
-          RUBY_PACKAGE_ID: "3.4"
-          PACKAGE_FORMAT: "RPM"
-          VARIANT_NAME: "malloctrim"
-          VARIANT_PACKAGE_SUFFIX: "-malloctrim"
-          TEST_IMAGE_NAME: "rockylinux:9"
-          APT_REPO_URL: https://apt.fullstaqruby.org
-          YUM_REPO_URL: https://yum.fullstaqruby.org
-
-      - name: Create mark file
-        run: mkdir mark-malloctrim && touch mark-malloctrim/done.txt
-      - name: Mark job as done
-        run: ./internal-scripts/ci-cd/upload-artifact.sh
-        env:
-          ARTIFACT_NAME: tested-against-production-el-9_3.4_malloctrim
-          ARTIFACT_PATH: mark-malloctrim
-          CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
   test_el_9-3_3-normal:
     name: 'Test [el-9/3.3/normal]'
     needs:
@@ -4351,49 +3233,6 @@ jobs:
         env:
           ARTIFACT_NAME: tested-against-production-el-9_3.3_jemalloc
           ARTIFACT_PATH: mark-jemalloc
-          CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
-  test_el_9-3_3-malloctrim:
-    name: 'Test [el-9/3.3/malloctrim]'
-    needs:
-      - publish
-    runs-on: ubuntu-22.04
-    environment: test
-    timeout-minutes: 30
-    if: |
-      github.ref == 'refs/heads/main'
-      && contains(inputs.necessary_jobs, ';Test against production repo [el-9/3.3/malloctrim];')
-    permissions:
-      id-token: write
-    steps:
-      - uses: actions/checkout@v3
-      - uses: google-github-actions/auth@v2
-        with:
-          project_id: ${{ vars.GCLOUD_PROJECT_ID }}
-          workload_identity_provider: projects/${{ vars.GCLOUD_PROJECT_NUM }}/locations/global/workloadIdentityPools/github-ci-test/providers/github-ci-test
-      - name: Set up Cloud SDK
-        uses: google-github-actions/setup-gcloud@v2
-        with:
-          version: '>= 363.0.0'
-
-      - name: Run tests
-        run: ./internal-scripts/ci-cd/test-packages/run-tests.sh
-        env:
-          DISTRIBUTION_NAME: "el-9"
-          RUBY_PACKAGE_ID: "3.3"
-          PACKAGE_FORMAT: "RPM"
-          VARIANT_NAME: "malloctrim"
-          VARIANT_PACKAGE_SUFFIX: "-malloctrim"
-          TEST_IMAGE_NAME: "rockylinux:9"
-          APT_REPO_URL: https://apt.fullstaqruby.org
-          YUM_REPO_URL: https://yum.fullstaqruby.org
-
-      - name: Create mark file
-        run: mkdir mark-malloctrim && touch mark-malloctrim/done.txt
-      - name: Mark job as done
-        run: ./internal-scripts/ci-cd/upload-artifact.sh
-        env:
-          ARTIFACT_NAME: tested-against-production-el-9_3.3_malloctrim
-          ARTIFACT_PATH: mark-malloctrim
           CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
   test_el_9-3_2-normal:
     name: 'Test [el-9/3.2/normal]'
@@ -4524,8 +3363,8 @@ jobs:
           ARTIFACT_NAME: tested-against-production-el-9_3.2_malloctrim
           ARTIFACT_PATH: mark-malloctrim
           CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
-  test_el_9-4_0_0-normal:
-    name: 'Test [el-9/4.0.0/normal]'
+  test_el_9-4_0_2-normal:
+    name: 'Test [el-9/4.0.2/normal]'
     needs:
       - publish
     runs-on: ubuntu-22.04
@@ -4533,7 +3372,7 @@ jobs:
     timeout-minutes: 30
     if: |
       github.ref == 'refs/heads/main'
-      && contains(inputs.necessary_jobs, ';Test against production repo [el-9/4.0.0/normal];')
+      && contains(inputs.necessary_jobs, ';Test against production repo [el-9/4.0.2/normal];')
     permissions:
       id-token: write
     steps:
@@ -4551,7 +3390,7 @@ jobs:
         run: ./internal-scripts/ci-cd/test-packages/run-tests.sh
         env:
           DISTRIBUTION_NAME: "el-9"
-          RUBY_PACKAGE_ID: "4.0.0"
+          RUBY_PACKAGE_ID: "4.0.2"
           PACKAGE_FORMAT: "RPM"
           VARIANT_NAME: "normal"
           VARIANT_PACKAGE_SUFFIX: ""
@@ -4564,11 +3403,11 @@ jobs:
       - name: Mark job as done
         run: ./internal-scripts/ci-cd/upload-artifact.sh
         env:
-          ARTIFACT_NAME: tested-against-production-el-9_4.0.0_normal
+          ARTIFACT_NAME: tested-against-production-el-9_4.0.2_normal
           ARTIFACT_PATH: mark-normal
           CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
-  test_el_9-4_0_0-jemalloc:
-    name: 'Test [el-9/4.0.0/jemalloc]'
+  test_el_9-4_0_2-jemalloc:
+    name: 'Test [el-9/4.0.2/jemalloc]'
     needs:
       - publish
     runs-on: ubuntu-22.04
@@ -4576,7 +3415,7 @@ jobs:
     timeout-minutes: 30
     if: |
       github.ref == 'refs/heads/main'
-      && contains(inputs.necessary_jobs, ';Test against production repo [el-9/4.0.0/jemalloc];')
+      && contains(inputs.necessary_jobs, ';Test against production repo [el-9/4.0.2/jemalloc];')
     permissions:
       id-token: write
     steps:
@@ -4594,7 +3433,7 @@ jobs:
         run: ./internal-scripts/ci-cd/test-packages/run-tests.sh
         env:
           DISTRIBUTION_NAME: "el-9"
-          RUBY_PACKAGE_ID: "4.0.0"
+          RUBY_PACKAGE_ID: "4.0.2"
           PACKAGE_FORMAT: "RPM"
           VARIANT_NAME: "jemalloc"
           VARIANT_PACKAGE_SUFFIX: "-jemalloc"
@@ -4607,51 +3446,8 @@ jobs:
       - name: Mark job as done
         run: ./internal-scripts/ci-cd/upload-artifact.sh
         env:
-          ARTIFACT_NAME: tested-against-production-el-9_4.0.0_jemalloc
+          ARTIFACT_NAME: tested-against-production-el-9_4.0.2_jemalloc
           ARTIFACT_PATH: mark-jemalloc
-          CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
-  test_el_9-4_0_0-malloctrim:
-    name: 'Test [el-9/4.0.0/malloctrim]'
-    needs:
-      - publish
-    runs-on: ubuntu-22.04
-    environment: test
-    timeout-minutes: 30
-    if: |
-      github.ref == 'refs/heads/main'
-      && contains(inputs.necessary_jobs, ';Test against production repo [el-9/4.0.0/malloctrim];')
-    permissions:
-      id-token: write
-    steps:
-      - uses: actions/checkout@v3
-      - uses: google-github-actions/auth@v2
-        with:
-          project_id: ${{ vars.GCLOUD_PROJECT_ID }}
-          workload_identity_provider: projects/${{ vars.GCLOUD_PROJECT_NUM }}/locations/global/workloadIdentityPools/github-ci-test/providers/github-ci-test
-      - name: Set up Cloud SDK
-        uses: google-github-actions/setup-gcloud@v2
-        with:
-          version: '>= 363.0.0'
-
-      - name: Run tests
-        run: ./internal-scripts/ci-cd/test-packages/run-tests.sh
-        env:
-          DISTRIBUTION_NAME: "el-9"
-          RUBY_PACKAGE_ID: "4.0.0"
-          PACKAGE_FORMAT: "RPM"
-          VARIANT_NAME: "malloctrim"
-          VARIANT_PACKAGE_SUFFIX: "-malloctrim"
-          TEST_IMAGE_NAME: "rockylinux:9"
-          APT_REPO_URL: https://apt.fullstaqruby.org
-          YUM_REPO_URL: https://yum.fullstaqruby.org
-
-      - name: Create mark file
-        run: mkdir mark-malloctrim && touch mark-malloctrim/done.txt
-      - name: Mark job as done
-        run: ./internal-scripts/ci-cd/upload-artifact.sh
-        env:
-          ARTIFACT_NAME: tested-against-production-el-9_4.0.0_malloctrim
-          ARTIFACT_PATH: mark-malloctrim
           CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
   test_el_9-3_4_8-normal:
     name: 'Test [el-9/3.4.8/normal]'
@@ -4739,49 +3535,6 @@ jobs:
           ARTIFACT_NAME: tested-against-production-el-9_3.4.8_jemalloc
           ARTIFACT_PATH: mark-jemalloc
           CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
-  test_el_9-3_4_8-malloctrim:
-    name: 'Test [el-9/3.4.8/malloctrim]'
-    needs:
-      - publish
-    runs-on: ubuntu-22.04
-    environment: test
-    timeout-minutes: 30
-    if: |
-      github.ref == 'refs/heads/main'
-      && contains(inputs.necessary_jobs, ';Test against production repo [el-9/3.4.8/malloctrim];')
-    permissions:
-      id-token: write
-    steps:
-      - uses: actions/checkout@v3
-      - uses: google-github-actions/auth@v2
-        with:
-          project_id: ${{ vars.GCLOUD_PROJECT_ID }}
-          workload_identity_provider: projects/${{ vars.GCLOUD_PROJECT_NUM }}/locations/global/workloadIdentityPools/github-ci-test/providers/github-ci-test
-      - name: Set up Cloud SDK
-        uses: google-github-actions/setup-gcloud@v2
-        with:
-          version: '>= 363.0.0'
-
-      - name: Run tests
-        run: ./internal-scripts/ci-cd/test-packages/run-tests.sh
-        env:
-          DISTRIBUTION_NAME: "el-9"
-          RUBY_PACKAGE_ID: "3.4.8"
-          PACKAGE_FORMAT: "RPM"
-          VARIANT_NAME: "malloctrim"
-          VARIANT_PACKAGE_SUFFIX: "-malloctrim"
-          TEST_IMAGE_NAME: "rockylinux:9"
-          APT_REPO_URL: https://apt.fullstaqruby.org
-          YUM_REPO_URL: https://yum.fullstaqruby.org
-
-      - name: Create mark file
-        run: mkdir mark-malloctrim && touch mark-malloctrim/done.txt
-      - name: Mark job as done
-        run: ./internal-scripts/ci-cd/upload-artifact.sh
-        env:
-          ARTIFACT_NAME: tested-against-production-el-9_3.4.8_malloctrim
-          ARTIFACT_PATH: mark-malloctrim
-          CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
   test_el_9-3_3_10-normal:
     name: 'Test [el-9/3.3.10/normal]'
     needs:
@@ -4867,49 +3620,6 @@ jobs:
         env:
           ARTIFACT_NAME: tested-against-production-el-9_3.3.10_jemalloc
           ARTIFACT_PATH: mark-jemalloc
-          CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
-  test_el_9-3_3_10-malloctrim:
-    name: 'Test [el-9/3.3.10/malloctrim]'
-    needs:
-      - publish
-    runs-on: ubuntu-22.04
-    environment: test
-    timeout-minutes: 30
-    if: |
-      github.ref == 'refs/heads/main'
-      && contains(inputs.necessary_jobs, ';Test against production repo [el-9/3.3.10/malloctrim];')
-    permissions:
-      id-token: write
-    steps:
-      - uses: actions/checkout@v3
-      - uses: google-github-actions/auth@v2
-        with:
-          project_id: ${{ vars.GCLOUD_PROJECT_ID }}
-          workload_identity_provider: projects/${{ vars.GCLOUD_PROJECT_NUM }}/locations/global/workloadIdentityPools/github-ci-test/providers/github-ci-test
-      - name: Set up Cloud SDK
-        uses: google-github-actions/setup-gcloud@v2
-        with:
-          version: '>= 363.0.0'
-
-      - name: Run tests
-        run: ./internal-scripts/ci-cd/test-packages/run-tests.sh
-        env:
-          DISTRIBUTION_NAME: "el-9"
-          RUBY_PACKAGE_ID: "3.3.10"
-          PACKAGE_FORMAT: "RPM"
-          VARIANT_NAME: "malloctrim"
-          VARIANT_PACKAGE_SUFFIX: "-malloctrim"
-          TEST_IMAGE_NAME: "rockylinux:9"
-          APT_REPO_URL: https://apt.fullstaqruby.org
-          YUM_REPO_URL: https://yum.fullstaqruby.org
-
-      - name: Create mark file
-        run: mkdir mark-malloctrim && touch mark-malloctrim/done.txt
-      - name: Mark job as done
-        run: ./internal-scripts/ci-cd/upload-artifact.sh
-        env:
-          ARTIFACT_NAME: tested-against-production-el-9_3.3.10_malloctrim
-          ARTIFACT_PATH: mark-malloctrim
           CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
   test_el_9-3_2_9-normal:
     name: 'Test [el-9/3.2.9/normal]'
@@ -5127,49 +3837,6 @@ jobs:
           ARTIFACT_NAME: tested-against-production-ubuntu-22.04_4.0_jemalloc
           ARTIFACT_PATH: mark-jemalloc
           CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
-  test_ubuntu_22_04-4_0-malloctrim:
-    name: 'Test [ubuntu-22.04/4.0/malloctrim]'
-    needs:
-      - publish
-    runs-on: ubuntu-22.04
-    environment: test
-    timeout-minutes: 30
-    if: |
-      github.ref == 'refs/heads/main'
-      && contains(inputs.necessary_jobs, ';Test against production repo [ubuntu-22.04/4.0/malloctrim];')
-    permissions:
-      id-token: write
-    steps:
-      - uses: actions/checkout@v3
-      - uses: google-github-actions/auth@v2
-        with:
-          project_id: ${{ vars.GCLOUD_PROJECT_ID }}
-          workload_identity_provider: projects/${{ vars.GCLOUD_PROJECT_NUM }}/locations/global/workloadIdentityPools/github-ci-test/providers/github-ci-test
-      - name: Set up Cloud SDK
-        uses: google-github-actions/setup-gcloud@v2
-        with:
-          version: '>= 363.0.0'
-
-      - name: Run tests
-        run: ./internal-scripts/ci-cd/test-packages/run-tests.sh
-        env:
-          DISTRIBUTION_NAME: "ubuntu-22.04"
-          RUBY_PACKAGE_ID: "4.0"
-          PACKAGE_FORMAT: "DEB"
-          VARIANT_NAME: "malloctrim"
-          VARIANT_PACKAGE_SUFFIX: "-malloctrim"
-          TEST_IMAGE_NAME: "ubuntu:22.04"
-          APT_REPO_URL: https://apt.fullstaqruby.org
-          YUM_REPO_URL: https://yum.fullstaqruby.org
-
-      - name: Create mark file
-        run: mkdir mark-malloctrim && touch mark-malloctrim/done.txt
-      - name: Mark job as done
-        run: ./internal-scripts/ci-cd/upload-artifact.sh
-        env:
-          ARTIFACT_NAME: tested-against-production-ubuntu-22.04_4.0_malloctrim
-          ARTIFACT_PATH: mark-malloctrim
-          CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
   test_ubuntu_22_04-3_4-normal:
     name: 'Test [ubuntu-22.04/3.4/normal]'
     needs:
@@ -5256,49 +3923,6 @@ jobs:
           ARTIFACT_NAME: tested-against-production-ubuntu-22.04_3.4_jemalloc
           ARTIFACT_PATH: mark-jemalloc
           CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
-  test_ubuntu_22_04-3_4-malloctrim:
-    name: 'Test [ubuntu-22.04/3.4/malloctrim]'
-    needs:
-      - publish
-    runs-on: ubuntu-22.04
-    environment: test
-    timeout-minutes: 30
-    if: |
-      github.ref == 'refs/heads/main'
-      && contains(inputs.necessary_jobs, ';Test against production repo [ubuntu-22.04/3.4/malloctrim];')
-    permissions:
-      id-token: write
-    steps:
-      - uses: actions/checkout@v3
-      - uses: google-github-actions/auth@v2
-        with:
-          project_id: ${{ vars.GCLOUD_PROJECT_ID }}
-          workload_identity_provider: projects/${{ vars.GCLOUD_PROJECT_NUM }}/locations/global/workloadIdentityPools/github-ci-test/providers/github-ci-test
-      - name: Set up Cloud SDK
-        uses: google-github-actions/setup-gcloud@v2
-        with:
-          version: '>= 363.0.0'
-
-      - name: Run tests
-        run: ./internal-scripts/ci-cd/test-packages/run-tests.sh
-        env:
-          DISTRIBUTION_NAME: "ubuntu-22.04"
-          RUBY_PACKAGE_ID: "3.4"
-          PACKAGE_FORMAT: "DEB"
-          VARIANT_NAME: "malloctrim"
-          VARIANT_PACKAGE_SUFFIX: "-malloctrim"
-          TEST_IMAGE_NAME: "ubuntu:22.04"
-          APT_REPO_URL: https://apt.fullstaqruby.org
-          YUM_REPO_URL: https://yum.fullstaqruby.org
-
-      - name: Create mark file
-        run: mkdir mark-malloctrim && touch mark-malloctrim/done.txt
-      - name: Mark job as done
-        run: ./internal-scripts/ci-cd/upload-artifact.sh
-        env:
-          ARTIFACT_NAME: tested-against-production-ubuntu-22.04_3.4_malloctrim
-          ARTIFACT_PATH: mark-malloctrim
-          CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
   test_ubuntu_22_04-3_3-normal:
     name: 'Test [ubuntu-22.04/3.3/normal]'
     needs:
@@ -5384,49 +4008,6 @@ jobs:
         env:
           ARTIFACT_NAME: tested-against-production-ubuntu-22.04_3.3_jemalloc
           ARTIFACT_PATH: mark-jemalloc
-          CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
-  test_ubuntu_22_04-3_3-malloctrim:
-    name: 'Test [ubuntu-22.04/3.3/malloctrim]'
-    needs:
-      - publish
-    runs-on: ubuntu-22.04
-    environment: test
-    timeout-minutes: 30
-    if: |
-      github.ref == 'refs/heads/main'
-      && contains(inputs.necessary_jobs, ';Test against production repo [ubuntu-22.04/3.3/malloctrim];')
-    permissions:
-      id-token: write
-    steps:
-      - uses: actions/checkout@v3
-      - uses: google-github-actions/auth@v2
-        with:
-          project_id: ${{ vars.GCLOUD_PROJECT_ID }}
-          workload_identity_provider: projects/${{ vars.GCLOUD_PROJECT_NUM }}/locations/global/workloadIdentityPools/github-ci-test/providers/github-ci-test
-      - name: Set up Cloud SDK
-        uses: google-github-actions/setup-gcloud@v2
-        with:
-          version: '>= 363.0.0'
-
-      - name: Run tests
-        run: ./internal-scripts/ci-cd/test-packages/run-tests.sh
-        env:
-          DISTRIBUTION_NAME: "ubuntu-22.04"
-          RUBY_PACKAGE_ID: "3.3"
-          PACKAGE_FORMAT: "DEB"
-          VARIANT_NAME: "malloctrim"
-          VARIANT_PACKAGE_SUFFIX: "-malloctrim"
-          TEST_IMAGE_NAME: "ubuntu:22.04"
-          APT_REPO_URL: https://apt.fullstaqruby.org
-          YUM_REPO_URL: https://yum.fullstaqruby.org
-
-      - name: Create mark file
-        run: mkdir mark-malloctrim && touch mark-malloctrim/done.txt
-      - name: Mark job as done
-        run: ./internal-scripts/ci-cd/upload-artifact.sh
-        env:
-          ARTIFACT_NAME: tested-against-production-ubuntu-22.04_3.3_malloctrim
-          ARTIFACT_PATH: mark-malloctrim
           CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
   test_ubuntu_22_04-3_2-normal:
     name: 'Test [ubuntu-22.04/3.2/normal]'
@@ -5557,8 +4138,8 @@ jobs:
           ARTIFACT_NAME: tested-against-production-ubuntu-22.04_3.2_malloctrim
           ARTIFACT_PATH: mark-malloctrim
           CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
-  test_ubuntu_22_04-4_0_0-normal:
-    name: 'Test [ubuntu-22.04/4.0.0/normal]'
+  test_ubuntu_22_04-4_0_2-normal:
+    name: 'Test [ubuntu-22.04/4.0.2/normal]'
     needs:
       - publish
     runs-on: ubuntu-22.04
@@ -5566,7 +4147,7 @@ jobs:
     timeout-minutes: 30
     if: |
       github.ref == 'refs/heads/main'
-      && contains(inputs.necessary_jobs, ';Test against production repo [ubuntu-22.04/4.0.0/normal];')
+      && contains(inputs.necessary_jobs, ';Test against production repo [ubuntu-22.04/4.0.2/normal];')
     permissions:
       id-token: write
     steps:
@@ -5584,7 +4165,7 @@ jobs:
         run: ./internal-scripts/ci-cd/test-packages/run-tests.sh
         env:
           DISTRIBUTION_NAME: "ubuntu-22.04"
-          RUBY_PACKAGE_ID: "4.0.0"
+          RUBY_PACKAGE_ID: "4.0.2"
           PACKAGE_FORMAT: "DEB"
           VARIANT_NAME: "normal"
           VARIANT_PACKAGE_SUFFIX: ""
@@ -5597,11 +4178,11 @@ jobs:
       - name: Mark job as done
         run: ./internal-scripts/ci-cd/upload-artifact.sh
         env:
-          ARTIFACT_NAME: tested-against-production-ubuntu-22.04_4.0.0_normal
+          ARTIFACT_NAME: tested-against-production-ubuntu-22.04_4.0.2_normal
           ARTIFACT_PATH: mark-normal
           CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
-  test_ubuntu_22_04-4_0_0-jemalloc:
-    name: 'Test [ubuntu-22.04/4.0.0/jemalloc]'
+  test_ubuntu_22_04-4_0_2-jemalloc:
+    name: 'Test [ubuntu-22.04/4.0.2/jemalloc]'
     needs:
       - publish
     runs-on: ubuntu-22.04
@@ -5609,7 +4190,7 @@ jobs:
     timeout-minutes: 30
     if: |
       github.ref == 'refs/heads/main'
-      && contains(inputs.necessary_jobs, ';Test against production repo [ubuntu-22.04/4.0.0/jemalloc];')
+      && contains(inputs.necessary_jobs, ';Test against production repo [ubuntu-22.04/4.0.2/jemalloc];')
     permissions:
       id-token: write
     steps:
@@ -5627,7 +4208,7 @@ jobs:
         run: ./internal-scripts/ci-cd/test-packages/run-tests.sh
         env:
           DISTRIBUTION_NAME: "ubuntu-22.04"
-          RUBY_PACKAGE_ID: "4.0.0"
+          RUBY_PACKAGE_ID: "4.0.2"
           PACKAGE_FORMAT: "DEB"
           VARIANT_NAME: "jemalloc"
           VARIANT_PACKAGE_SUFFIX: "-jemalloc"
@@ -5640,51 +4221,8 @@ jobs:
       - name: Mark job as done
         run: ./internal-scripts/ci-cd/upload-artifact.sh
         env:
-          ARTIFACT_NAME: tested-against-production-ubuntu-22.04_4.0.0_jemalloc
+          ARTIFACT_NAME: tested-against-production-ubuntu-22.04_4.0.2_jemalloc
           ARTIFACT_PATH: mark-jemalloc
-          CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
-  test_ubuntu_22_04-4_0_0-malloctrim:
-    name: 'Test [ubuntu-22.04/4.0.0/malloctrim]'
-    needs:
-      - publish
-    runs-on: ubuntu-22.04
-    environment: test
-    timeout-minutes: 30
-    if: |
-      github.ref == 'refs/heads/main'
-      && contains(inputs.necessary_jobs, ';Test against production repo [ubuntu-22.04/4.0.0/malloctrim];')
-    permissions:
-      id-token: write
-    steps:
-      - uses: actions/checkout@v3
-      - uses: google-github-actions/auth@v2
-        with:
-          project_id: ${{ vars.GCLOUD_PROJECT_ID }}
-          workload_identity_provider: projects/${{ vars.GCLOUD_PROJECT_NUM }}/locations/global/workloadIdentityPools/github-ci-test/providers/github-ci-test
-      - name: Set up Cloud SDK
-        uses: google-github-actions/setup-gcloud@v2
-        with:
-          version: '>= 363.0.0'
-
-      - name: Run tests
-        run: ./internal-scripts/ci-cd/test-packages/run-tests.sh
-        env:
-          DISTRIBUTION_NAME: "ubuntu-22.04"
-          RUBY_PACKAGE_ID: "4.0.0"
-          PACKAGE_FORMAT: "DEB"
-          VARIANT_NAME: "malloctrim"
-          VARIANT_PACKAGE_SUFFIX: "-malloctrim"
-          TEST_IMAGE_NAME: "ubuntu:22.04"
-          APT_REPO_URL: https://apt.fullstaqruby.org
-          YUM_REPO_URL: https://yum.fullstaqruby.org
-
-      - name: Create mark file
-        run: mkdir mark-malloctrim && touch mark-malloctrim/done.txt
-      - name: Mark job as done
-        run: ./internal-scripts/ci-cd/upload-artifact.sh
-        env:
-          ARTIFACT_NAME: tested-against-production-ubuntu-22.04_4.0.0_malloctrim
-          ARTIFACT_PATH: mark-malloctrim
           CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
   test_ubuntu_22_04-3_4_8-normal:
     name: 'Test [ubuntu-22.04/3.4.8/normal]'
@@ -5772,49 +4310,6 @@ jobs:
           ARTIFACT_NAME: tested-against-production-ubuntu-22.04_3.4.8_jemalloc
           ARTIFACT_PATH: mark-jemalloc
           CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
-  test_ubuntu_22_04-3_4_8-malloctrim:
-    name: 'Test [ubuntu-22.04/3.4.8/malloctrim]'
-    needs:
-      - publish
-    runs-on: ubuntu-22.04
-    environment: test
-    timeout-minutes: 30
-    if: |
-      github.ref == 'refs/heads/main'
-      && contains(inputs.necessary_jobs, ';Test against production repo [ubuntu-22.04/3.4.8/malloctrim];')
-    permissions:
-      id-token: write
-    steps:
-      - uses: actions/checkout@v3
-      - uses: google-github-actions/auth@v2
-        with:
-          project_id: ${{ vars.GCLOUD_PROJECT_ID }}
-          workload_identity_provider: projects/${{ vars.GCLOUD_PROJECT_NUM }}/locations/global/workloadIdentityPools/github-ci-test/providers/github-ci-test
-      - name: Set up Cloud SDK
-        uses: google-github-actions/setup-gcloud@v2
-        with:
-          version: '>= 363.0.0'
-
-      - name: Run tests
-        run: ./internal-scripts/ci-cd/test-packages/run-tests.sh
-        env:
-          DISTRIBUTION_NAME: "ubuntu-22.04"
-          RUBY_PACKAGE_ID: "3.4.8"
-          PACKAGE_FORMAT: "DEB"
-          VARIANT_NAME: "malloctrim"
-          VARIANT_PACKAGE_SUFFIX: "-malloctrim"
-          TEST_IMAGE_NAME: "ubuntu:22.04"
-          APT_REPO_URL: https://apt.fullstaqruby.org
-          YUM_REPO_URL: https://yum.fullstaqruby.org
-
-      - name: Create mark file
-        run: mkdir mark-malloctrim && touch mark-malloctrim/done.txt
-      - name: Mark job as done
-        run: ./internal-scripts/ci-cd/upload-artifact.sh
-        env:
-          ARTIFACT_NAME: tested-against-production-ubuntu-22.04_3.4.8_malloctrim
-          ARTIFACT_PATH: mark-malloctrim
-          CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
   test_ubuntu_22_04-3_3_10-normal:
     name: 'Test [ubuntu-22.04/3.3.10/normal]'
     needs:
@@ -5900,49 +4395,6 @@ jobs:
         env:
           ARTIFACT_NAME: tested-against-production-ubuntu-22.04_3.3.10_jemalloc
           ARTIFACT_PATH: mark-jemalloc
-          CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
-  test_ubuntu_22_04-3_3_10-malloctrim:
-    name: 'Test [ubuntu-22.04/3.3.10/malloctrim]'
-    needs:
-      - publish
-    runs-on: ubuntu-22.04
-    environment: test
-    timeout-minutes: 30
-    if: |
-      github.ref == 'refs/heads/main'
-      && contains(inputs.necessary_jobs, ';Test against production repo [ubuntu-22.04/3.3.10/malloctrim];')
-    permissions:
-      id-token: write
-    steps:
-      - uses: actions/checkout@v3
-      - uses: google-github-actions/auth@v2
-        with:
-          project_id: ${{ vars.GCLOUD_PROJECT_ID }}
-          workload_identity_provider: projects/${{ vars.GCLOUD_PROJECT_NUM }}/locations/global/workloadIdentityPools/github-ci-test/providers/github-ci-test
-      - name: Set up Cloud SDK
-        uses: google-github-actions/setup-gcloud@v2
-        with:
-          version: '>= 363.0.0'
-
-      - name: Run tests
-        run: ./internal-scripts/ci-cd/test-packages/run-tests.sh
-        env:
-          DISTRIBUTION_NAME: "ubuntu-22.04"
-          RUBY_PACKAGE_ID: "3.3.10"
-          PACKAGE_FORMAT: "DEB"
-          VARIANT_NAME: "malloctrim"
-          VARIANT_PACKAGE_SUFFIX: "-malloctrim"
-          TEST_IMAGE_NAME: "ubuntu:22.04"
-          APT_REPO_URL: https://apt.fullstaqruby.org
-          YUM_REPO_URL: https://yum.fullstaqruby.org
-
-      - name: Create mark file
-        run: mkdir mark-malloctrim && touch mark-malloctrim/done.txt
-      - name: Mark job as done
-        run: ./internal-scripts/ci-cd/upload-artifact.sh
-        env:
-          ARTIFACT_NAME: tested-against-production-ubuntu-22.04_3.3.10_malloctrim
-          ARTIFACT_PATH: mark-malloctrim
           CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
   test_ubuntu_22_04-3_2_9-normal:
     name: 'Test [ubuntu-22.04/3.2.9/normal]'
@@ -6160,49 +4612,6 @@ jobs:
           ARTIFACT_NAME: tested-against-production-ubuntu-24.04_4.0_jemalloc
           ARTIFACT_PATH: mark-jemalloc
           CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
-  test_ubuntu_24_04-4_0-malloctrim:
-    name: 'Test [ubuntu-24.04/4.0/malloctrim]'
-    needs:
-      - publish
-    runs-on: ubuntu-22.04
-    environment: test
-    timeout-minutes: 30
-    if: |
-      github.ref == 'refs/heads/main'
-      && contains(inputs.necessary_jobs, ';Test against production repo [ubuntu-24.04/4.0/malloctrim];')
-    permissions:
-      id-token: write
-    steps:
-      - uses: actions/checkout@v3
-      - uses: google-github-actions/auth@v2
-        with:
-          project_id: ${{ vars.GCLOUD_PROJECT_ID }}
-          workload_identity_provider: projects/${{ vars.GCLOUD_PROJECT_NUM }}/locations/global/workloadIdentityPools/github-ci-test/providers/github-ci-test
-      - name: Set up Cloud SDK
-        uses: google-github-actions/setup-gcloud@v2
-        with:
-          version: '>= 363.0.0'
-
-      - name: Run tests
-        run: ./internal-scripts/ci-cd/test-packages/run-tests.sh
-        env:
-          DISTRIBUTION_NAME: "ubuntu-24.04"
-          RUBY_PACKAGE_ID: "4.0"
-          PACKAGE_FORMAT: "DEB"
-          VARIANT_NAME: "malloctrim"
-          VARIANT_PACKAGE_SUFFIX: "-malloctrim"
-          TEST_IMAGE_NAME: "ubuntu:24.04"
-          APT_REPO_URL: https://apt.fullstaqruby.org
-          YUM_REPO_URL: https://yum.fullstaqruby.org
-
-      - name: Create mark file
-        run: mkdir mark-malloctrim && touch mark-malloctrim/done.txt
-      - name: Mark job as done
-        run: ./internal-scripts/ci-cd/upload-artifact.sh
-        env:
-          ARTIFACT_NAME: tested-against-production-ubuntu-24.04_4.0_malloctrim
-          ARTIFACT_PATH: mark-malloctrim
-          CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
   test_ubuntu_24_04-3_4-normal:
     name: 'Test [ubuntu-24.04/3.4/normal]'
     needs:
@@ -6289,49 +4698,6 @@ jobs:
           ARTIFACT_NAME: tested-against-production-ubuntu-24.04_3.4_jemalloc
           ARTIFACT_PATH: mark-jemalloc
           CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
-  test_ubuntu_24_04-3_4-malloctrim:
-    name: 'Test [ubuntu-24.04/3.4/malloctrim]'
-    needs:
-      - publish
-    runs-on: ubuntu-22.04
-    environment: test
-    timeout-minutes: 30
-    if: |
-      github.ref == 'refs/heads/main'
-      && contains(inputs.necessary_jobs, ';Test against production repo [ubuntu-24.04/3.4/malloctrim];')
-    permissions:
-      id-token: write
-    steps:
-      - uses: actions/checkout@v3
-      - uses: google-github-actions/auth@v2
-        with:
-          project_id: ${{ vars.GCLOUD_PROJECT_ID }}
-          workload_identity_provider: projects/${{ vars.GCLOUD_PROJECT_NUM }}/locations/global/workloadIdentityPools/github-ci-test/providers/github-ci-test
-      - name: Set up Cloud SDK
-        uses: google-github-actions/setup-gcloud@v2
-        with:
-          version: '>= 363.0.0'
-
-      - name: Run tests
-        run: ./internal-scripts/ci-cd/test-packages/run-tests.sh
-        env:
-          DISTRIBUTION_NAME: "ubuntu-24.04"
-          RUBY_PACKAGE_ID: "3.4"
-          PACKAGE_FORMAT: "DEB"
-          VARIANT_NAME: "malloctrim"
-          VARIANT_PACKAGE_SUFFIX: "-malloctrim"
-          TEST_IMAGE_NAME: "ubuntu:24.04"
-          APT_REPO_URL: https://apt.fullstaqruby.org
-          YUM_REPO_URL: https://yum.fullstaqruby.org
-
-      - name: Create mark file
-        run: mkdir mark-malloctrim && touch mark-malloctrim/done.txt
-      - name: Mark job as done
-        run: ./internal-scripts/ci-cd/upload-artifact.sh
-        env:
-          ARTIFACT_NAME: tested-against-production-ubuntu-24.04_3.4_malloctrim
-          ARTIFACT_PATH: mark-malloctrim
-          CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
   test_ubuntu_24_04-3_3-normal:
     name: 'Test [ubuntu-24.04/3.3/normal]'
     needs:
@@ -6417,49 +4783,6 @@ jobs:
         env:
           ARTIFACT_NAME: tested-against-production-ubuntu-24.04_3.3_jemalloc
           ARTIFACT_PATH: mark-jemalloc
-          CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
-  test_ubuntu_24_04-3_3-malloctrim:
-    name: 'Test [ubuntu-24.04/3.3/malloctrim]'
-    needs:
-      - publish
-    runs-on: ubuntu-22.04
-    environment: test
-    timeout-minutes: 30
-    if: |
-      github.ref == 'refs/heads/main'
-      && contains(inputs.necessary_jobs, ';Test against production repo [ubuntu-24.04/3.3/malloctrim];')
-    permissions:
-      id-token: write
-    steps:
-      - uses: actions/checkout@v3
-      - uses: google-github-actions/auth@v2
-        with:
-          project_id: ${{ vars.GCLOUD_PROJECT_ID }}
-          workload_identity_provider: projects/${{ vars.GCLOUD_PROJECT_NUM }}/locations/global/workloadIdentityPools/github-ci-test/providers/github-ci-test
-      - name: Set up Cloud SDK
-        uses: google-github-actions/setup-gcloud@v2
-        with:
-          version: '>= 363.0.0'
-
-      - name: Run tests
-        run: ./internal-scripts/ci-cd/test-packages/run-tests.sh
-        env:
-          DISTRIBUTION_NAME: "ubuntu-24.04"
-          RUBY_PACKAGE_ID: "3.3"
-          PACKAGE_FORMAT: "DEB"
-          VARIANT_NAME: "malloctrim"
-          VARIANT_PACKAGE_SUFFIX: "-malloctrim"
-          TEST_IMAGE_NAME: "ubuntu:24.04"
-          APT_REPO_URL: https://apt.fullstaqruby.org
-          YUM_REPO_URL: https://yum.fullstaqruby.org
-
-      - name: Create mark file
-        run: mkdir mark-malloctrim && touch mark-malloctrim/done.txt
-      - name: Mark job as done
-        run: ./internal-scripts/ci-cd/upload-artifact.sh
-        env:
-          ARTIFACT_NAME: tested-against-production-ubuntu-24.04_3.3_malloctrim
-          ARTIFACT_PATH: mark-malloctrim
           CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
   test_ubuntu_24_04-3_2-normal:
     name: 'Test [ubuntu-24.04/3.2/normal]'
@@ -6590,8 +4913,8 @@ jobs:
           ARTIFACT_NAME: tested-against-production-ubuntu-24.04_3.2_malloctrim
           ARTIFACT_PATH: mark-malloctrim
           CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
-  test_ubuntu_24_04-4_0_0-normal:
-    name: 'Test [ubuntu-24.04/4.0.0/normal]'
+  test_ubuntu_24_04-4_0_2-normal:
+    name: 'Test [ubuntu-24.04/4.0.2/normal]'
     needs:
       - publish
     runs-on: ubuntu-22.04
@@ -6599,7 +4922,7 @@ jobs:
     timeout-minutes: 30
     if: |
       github.ref == 'refs/heads/main'
-      && contains(inputs.necessary_jobs, ';Test against production repo [ubuntu-24.04/4.0.0/normal];')
+      && contains(inputs.necessary_jobs, ';Test against production repo [ubuntu-24.04/4.0.2/normal];')
     permissions:
       id-token: write
     steps:
@@ -6617,7 +4940,7 @@ jobs:
         run: ./internal-scripts/ci-cd/test-packages/run-tests.sh
         env:
           DISTRIBUTION_NAME: "ubuntu-24.04"
-          RUBY_PACKAGE_ID: "4.0.0"
+          RUBY_PACKAGE_ID: "4.0.2"
           PACKAGE_FORMAT: "DEB"
           VARIANT_NAME: "normal"
           VARIANT_PACKAGE_SUFFIX: ""
@@ -6630,11 +4953,11 @@ jobs:
       - name: Mark job as done
         run: ./internal-scripts/ci-cd/upload-artifact.sh
         env:
-          ARTIFACT_NAME: tested-against-production-ubuntu-24.04_4.0.0_normal
+          ARTIFACT_NAME: tested-against-production-ubuntu-24.04_4.0.2_normal
           ARTIFACT_PATH: mark-normal
           CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
-  test_ubuntu_24_04-4_0_0-jemalloc:
-    name: 'Test [ubuntu-24.04/4.0.0/jemalloc]'
+  test_ubuntu_24_04-4_0_2-jemalloc:
+    name: 'Test [ubuntu-24.04/4.0.2/jemalloc]'
     needs:
       - publish
     runs-on: ubuntu-22.04
@@ -6642,7 +4965,7 @@ jobs:
     timeout-minutes: 30
     if: |
       github.ref == 'refs/heads/main'
-      && contains(inputs.necessary_jobs, ';Test against production repo [ubuntu-24.04/4.0.0/jemalloc];')
+      && contains(inputs.necessary_jobs, ';Test against production repo [ubuntu-24.04/4.0.2/jemalloc];')
     permissions:
       id-token: write
     steps:
@@ -6660,7 +4983,7 @@ jobs:
         run: ./internal-scripts/ci-cd/test-packages/run-tests.sh
         env:
           DISTRIBUTION_NAME: "ubuntu-24.04"
-          RUBY_PACKAGE_ID: "4.0.0"
+          RUBY_PACKAGE_ID: "4.0.2"
           PACKAGE_FORMAT: "DEB"
           VARIANT_NAME: "jemalloc"
           VARIANT_PACKAGE_SUFFIX: "-jemalloc"
@@ -6673,51 +4996,8 @@ jobs:
       - name: Mark job as done
         run: ./internal-scripts/ci-cd/upload-artifact.sh
         env:
-          ARTIFACT_NAME: tested-against-production-ubuntu-24.04_4.0.0_jemalloc
+          ARTIFACT_NAME: tested-against-production-ubuntu-24.04_4.0.2_jemalloc
           ARTIFACT_PATH: mark-jemalloc
-          CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
-  test_ubuntu_24_04-4_0_0-malloctrim:
-    name: 'Test [ubuntu-24.04/4.0.0/malloctrim]'
-    needs:
-      - publish
-    runs-on: ubuntu-22.04
-    environment: test
-    timeout-minutes: 30
-    if: |
-      github.ref == 'refs/heads/main'
-      && contains(inputs.necessary_jobs, ';Test against production repo [ubuntu-24.04/4.0.0/malloctrim];')
-    permissions:
-      id-token: write
-    steps:
-      - uses: actions/checkout@v3
-      - uses: google-github-actions/auth@v2
-        with:
-          project_id: ${{ vars.GCLOUD_PROJECT_ID }}
-          workload_identity_provider: projects/${{ vars.GCLOUD_PROJECT_NUM }}/locations/global/workloadIdentityPools/github-ci-test/providers/github-ci-test
-      - name: Set up Cloud SDK
-        uses: google-github-actions/setup-gcloud@v2
-        with:
-          version: '>= 363.0.0'
-
-      - name: Run tests
-        run: ./internal-scripts/ci-cd/test-packages/run-tests.sh
-        env:
-          DISTRIBUTION_NAME: "ubuntu-24.04"
-          RUBY_PACKAGE_ID: "4.0.0"
-          PACKAGE_FORMAT: "DEB"
-          VARIANT_NAME: "malloctrim"
-          VARIANT_PACKAGE_SUFFIX: "-malloctrim"
-          TEST_IMAGE_NAME: "ubuntu:24.04"
-          APT_REPO_URL: https://apt.fullstaqruby.org
-          YUM_REPO_URL: https://yum.fullstaqruby.org
-
-      - name: Create mark file
-        run: mkdir mark-malloctrim && touch mark-malloctrim/done.txt
-      - name: Mark job as done
-        run: ./internal-scripts/ci-cd/upload-artifact.sh
-        env:
-          ARTIFACT_NAME: tested-against-production-ubuntu-24.04_4.0.0_malloctrim
-          ARTIFACT_PATH: mark-malloctrim
           CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
   test_ubuntu_24_04-3_4_8-normal:
     name: 'Test [ubuntu-24.04/3.4.8/normal]'
@@ -6805,49 +5085,6 @@ jobs:
           ARTIFACT_NAME: tested-against-production-ubuntu-24.04_3.4.8_jemalloc
           ARTIFACT_PATH: mark-jemalloc
           CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
-  test_ubuntu_24_04-3_4_8-malloctrim:
-    name: 'Test [ubuntu-24.04/3.4.8/malloctrim]'
-    needs:
-      - publish
-    runs-on: ubuntu-22.04
-    environment: test
-    timeout-minutes: 30
-    if: |
-      github.ref == 'refs/heads/main'
-      && contains(inputs.necessary_jobs, ';Test against production repo [ubuntu-24.04/3.4.8/malloctrim];')
-    permissions:
-      id-token: write
-    steps:
-      - uses: actions/checkout@v3
-      - uses: google-github-actions/auth@v2
-        with:
-          project_id: ${{ vars.GCLOUD_PROJECT_ID }}
-          workload_identity_provider: projects/${{ vars.GCLOUD_PROJECT_NUM }}/locations/global/workloadIdentityPools/github-ci-test/providers/github-ci-test
-      - name: Set up Cloud SDK
-        uses: google-github-actions/setup-gcloud@v2
-        with:
-          version: '>= 363.0.0'
-
-      - name: Run tests
-        run: ./internal-scripts/ci-cd/test-packages/run-tests.sh
-        env:
-          DISTRIBUTION_NAME: "ubuntu-24.04"
-          RUBY_PACKAGE_ID: "3.4.8"
-          PACKAGE_FORMAT: "DEB"
-          VARIANT_NAME: "malloctrim"
-          VARIANT_PACKAGE_SUFFIX: "-malloctrim"
-          TEST_IMAGE_NAME: "ubuntu:24.04"
-          APT_REPO_URL: https://apt.fullstaqruby.org
-          YUM_REPO_URL: https://yum.fullstaqruby.org
-
-      - name: Create mark file
-        run: mkdir mark-malloctrim && touch mark-malloctrim/done.txt
-      - name: Mark job as done
-        run: ./internal-scripts/ci-cd/upload-artifact.sh
-        env:
-          ARTIFACT_NAME: tested-against-production-ubuntu-24.04_3.4.8_malloctrim
-          ARTIFACT_PATH: mark-malloctrim
-          CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
   test_ubuntu_24_04-3_3_10-normal:
     name: 'Test [ubuntu-24.04/3.3.10/normal]'
     needs:
@@ -6933,49 +5170,6 @@ jobs:
         env:
           ARTIFACT_NAME: tested-against-production-ubuntu-24.04_3.3.10_jemalloc
           ARTIFACT_PATH: mark-jemalloc
-          CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
-  test_ubuntu_24_04-3_3_10-malloctrim:
-    name: 'Test [ubuntu-24.04/3.3.10/malloctrim]'
-    needs:
-      - publish
-    runs-on: ubuntu-22.04
-    environment: test
-    timeout-minutes: 30
-    if: |
-      github.ref == 'refs/heads/main'
-      && contains(inputs.necessary_jobs, ';Test against production repo [ubuntu-24.04/3.3.10/malloctrim];')
-    permissions:
-      id-token: write
-    steps:
-      - uses: actions/checkout@v3
-      - uses: google-github-actions/auth@v2
-        with:
-          project_id: ${{ vars.GCLOUD_PROJECT_ID }}
-          workload_identity_provider: projects/${{ vars.GCLOUD_PROJECT_NUM }}/locations/global/workloadIdentityPools/github-ci-test/providers/github-ci-test
-      - name: Set up Cloud SDK
-        uses: google-github-actions/setup-gcloud@v2
-        with:
-          version: '>= 363.0.0'
-
-      - name: Run tests
-        run: ./internal-scripts/ci-cd/test-packages/run-tests.sh
-        env:
-          DISTRIBUTION_NAME: "ubuntu-24.04"
-          RUBY_PACKAGE_ID: "3.3.10"
-          PACKAGE_FORMAT: "DEB"
-          VARIANT_NAME: "malloctrim"
-          VARIANT_PACKAGE_SUFFIX: "-malloctrim"
-          TEST_IMAGE_NAME: "ubuntu:24.04"
-          APT_REPO_URL: https://apt.fullstaqruby.org
-          YUM_REPO_URL: https://yum.fullstaqruby.org
-
-      - name: Create mark file
-        run: mkdir mark-malloctrim && touch mark-malloctrim/done.txt
-      - name: Mark job as done
-        run: ./internal-scripts/ci-cd/upload-artifact.sh
-        env:
-          ARTIFACT_NAME: tested-against-production-ubuntu-24.04_3.3.10_malloctrim
-          ARTIFACT_PATH: mark-malloctrim
           CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
   test_ubuntu_24_04-3_2_9-normal:
     name: 'Test [ubuntu-24.04/3.2.9/normal]'
@@ -7120,163 +5314,121 @@ jobs:
       - publish
       - test_centos_8-4_0-normal
       - test_centos_8-4_0-jemalloc
-      - test_centos_8-4_0-malloctrim
       - test_centos_8-3_4-normal
       - test_centos_8-3_4-jemalloc
-      - test_centos_8-3_4-malloctrim
       - test_centos_8-3_3-normal
       - test_centos_8-3_3-jemalloc
-      - test_centos_8-3_3-malloctrim
       - test_centos_8-3_2-normal
       - test_centos_8-3_2-jemalloc
       - test_centos_8-3_2-malloctrim
-      - test_centos_8-4_0_0-normal
-      - test_centos_8-4_0_0-jemalloc
-      - test_centos_8-4_0_0-malloctrim
+      - test_centos_8-4_0_2-normal
+      - test_centos_8-4_0_2-jemalloc
       - test_centos_8-3_4_8-normal
       - test_centos_8-3_4_8-jemalloc
-      - test_centos_8-3_4_8-malloctrim
       - test_centos_8-3_3_10-normal
       - test_centos_8-3_3_10-jemalloc
-      - test_centos_8-3_3_10-malloctrim
       - test_centos_8-3_2_9-normal
       - test_centos_8-3_2_9-jemalloc
       - test_centos_8-3_2_9-malloctrim
       - test_debian_11-4_0-normal
       - test_debian_11-4_0-jemalloc
-      - test_debian_11-4_0-malloctrim
       - test_debian_11-3_4-normal
       - test_debian_11-3_4-jemalloc
-      - test_debian_11-3_4-malloctrim
       - test_debian_11-3_3-normal
       - test_debian_11-3_3-jemalloc
-      - test_debian_11-3_3-malloctrim
       - test_debian_11-3_2-normal
       - test_debian_11-3_2-jemalloc
       - test_debian_11-3_2-malloctrim
-      - test_debian_11-4_0_0-normal
-      - test_debian_11-4_0_0-jemalloc
-      - test_debian_11-4_0_0-malloctrim
+      - test_debian_11-4_0_2-normal
+      - test_debian_11-4_0_2-jemalloc
       - test_debian_11-3_4_8-normal
       - test_debian_11-3_4_8-jemalloc
-      - test_debian_11-3_4_8-malloctrim
       - test_debian_11-3_3_10-normal
       - test_debian_11-3_3_10-jemalloc
-      - test_debian_11-3_3_10-malloctrim
       - test_debian_11-3_2_9-normal
       - test_debian_11-3_2_9-jemalloc
       - test_debian_11-3_2_9-malloctrim
       - test_debian_12-4_0-normal
       - test_debian_12-4_0-jemalloc
-      - test_debian_12-4_0-malloctrim
       - test_debian_12-3_4-normal
       - test_debian_12-3_4-jemalloc
-      - test_debian_12-3_4-malloctrim
       - test_debian_12-3_3-normal
       - test_debian_12-3_3-jemalloc
-      - test_debian_12-3_3-malloctrim
       - test_debian_12-3_2-normal
       - test_debian_12-3_2-jemalloc
       - test_debian_12-3_2-malloctrim
-      - test_debian_12-4_0_0-normal
-      - test_debian_12-4_0_0-jemalloc
-      - test_debian_12-4_0_0-malloctrim
+      - test_debian_12-4_0_2-normal
+      - test_debian_12-4_0_2-jemalloc
       - test_debian_12-3_4_8-normal
       - test_debian_12-3_4_8-jemalloc
-      - test_debian_12-3_4_8-malloctrim
       - test_debian_12-3_3_10-normal
       - test_debian_12-3_3_10-jemalloc
-      - test_debian_12-3_3_10-malloctrim
       - test_debian_12-3_2_9-normal
       - test_debian_12-3_2_9-jemalloc
       - test_debian_12-3_2_9-malloctrim
       - test_debian_13-4_0-normal
       - test_debian_13-4_0-jemalloc
-      - test_debian_13-4_0-malloctrim
       - test_debian_13-3_4-normal
       - test_debian_13-3_4-jemalloc
-      - test_debian_13-3_4-malloctrim
       - test_debian_13-3_3-normal
       - test_debian_13-3_3-jemalloc
-      - test_debian_13-3_3-malloctrim
-      - test_debian_13-4_0_0-normal
-      - test_debian_13-4_0_0-jemalloc
-      - test_debian_13-4_0_0-malloctrim
+      - test_debian_13-4_0_2-normal
+      - test_debian_13-4_0_2-jemalloc
       - test_debian_13-3_4_8-normal
       - test_debian_13-3_4_8-jemalloc
-      - test_debian_13-3_4_8-malloctrim
       - test_debian_13-3_3_10-normal
       - test_debian_13-3_3_10-jemalloc
-      - test_debian_13-3_3_10-malloctrim
       - test_el_9-4_0-normal
       - test_el_9-4_0-jemalloc
-      - test_el_9-4_0-malloctrim
       - test_el_9-3_4-normal
       - test_el_9-3_4-jemalloc
-      - test_el_9-3_4-malloctrim
       - test_el_9-3_3-normal
       - test_el_9-3_3-jemalloc
-      - test_el_9-3_3-malloctrim
       - test_el_9-3_2-normal
       - test_el_9-3_2-jemalloc
       - test_el_9-3_2-malloctrim
-      - test_el_9-4_0_0-normal
-      - test_el_9-4_0_0-jemalloc
-      - test_el_9-4_0_0-malloctrim
+      - test_el_9-4_0_2-normal
+      - test_el_9-4_0_2-jemalloc
       - test_el_9-3_4_8-normal
       - test_el_9-3_4_8-jemalloc
-      - test_el_9-3_4_8-malloctrim
       - test_el_9-3_3_10-normal
       - test_el_9-3_3_10-jemalloc
-      - test_el_9-3_3_10-malloctrim
       - test_el_9-3_2_9-normal
       - test_el_9-3_2_9-jemalloc
       - test_el_9-3_2_9-malloctrim
       - test_ubuntu_22_04-4_0-normal
       - test_ubuntu_22_04-4_0-jemalloc
-      - test_ubuntu_22_04-4_0-malloctrim
       - test_ubuntu_22_04-3_4-normal
       - test_ubuntu_22_04-3_4-jemalloc
-      - test_ubuntu_22_04-3_4-malloctrim
       - test_ubuntu_22_04-3_3-normal
       - test_ubuntu_22_04-3_3-jemalloc
-      - test_ubuntu_22_04-3_3-malloctrim
       - test_ubuntu_22_04-3_2-normal
       - test_ubuntu_22_04-3_2-jemalloc
       - test_ubuntu_22_04-3_2-malloctrim
-      - test_ubuntu_22_04-4_0_0-normal
-      - test_ubuntu_22_04-4_0_0-jemalloc
-      - test_ubuntu_22_04-4_0_0-malloctrim
+      - test_ubuntu_22_04-4_0_2-normal
+      - test_ubuntu_22_04-4_0_2-jemalloc
       - test_ubuntu_22_04-3_4_8-normal
       - test_ubuntu_22_04-3_4_8-jemalloc
-      - test_ubuntu_22_04-3_4_8-malloctrim
       - test_ubuntu_22_04-3_3_10-normal
       - test_ubuntu_22_04-3_3_10-jemalloc
-      - test_ubuntu_22_04-3_3_10-malloctrim
       - test_ubuntu_22_04-3_2_9-normal
       - test_ubuntu_22_04-3_2_9-jemalloc
       - test_ubuntu_22_04-3_2_9-malloctrim
       - test_ubuntu_24_04-4_0-normal
       - test_ubuntu_24_04-4_0-jemalloc
-      - test_ubuntu_24_04-4_0-malloctrim
       - test_ubuntu_24_04-3_4-normal
       - test_ubuntu_24_04-3_4-jemalloc
-      - test_ubuntu_24_04-3_4-malloctrim
       - test_ubuntu_24_04-3_3-normal
       - test_ubuntu_24_04-3_3-jemalloc
-      - test_ubuntu_24_04-3_3-malloctrim
       - test_ubuntu_24_04-3_2-normal
       - test_ubuntu_24_04-3_2-jemalloc
       - test_ubuntu_24_04-3_2-malloctrim
-      - test_ubuntu_24_04-4_0_0-normal
-      - test_ubuntu_24_04-4_0_0-jemalloc
-      - test_ubuntu_24_04-4_0_0-malloctrim
+      - test_ubuntu_24_04-4_0_2-normal
+      - test_ubuntu_24_04-4_0_2-jemalloc
       - test_ubuntu_24_04-3_4_8-normal
       - test_ubuntu_24_04-3_4_8-jemalloc
-      - test_ubuntu_24_04-3_4_8-malloctrim
       - test_ubuntu_24_04-3_3_10-normal
       - test_ubuntu_24_04-3_3_10-jemalloc
-      - test_ubuntu_24_04-3_3_10-malloctrim
       - test_ubuntu_24_04-3_2_9-normal
       - test_ubuntu_24_04-3_2_9-jemalloc
       - test_ubuntu_24_04-3_2_9-malloctrim
@@ -7308,13 +5460,6 @@ jobs:
           && needs.test_centos_8-4_0-jemalloc.result != 'success'
           && (needs.test_centos_8-4_0-jemalloc.result != 'skipped'
             || contains(inputs.necessary_jobs, ';Test against production repo [centos-8/4.0/jemalloc];'))
-      - name: Check whether 'Test [centos-8/4.0/malloctrim]' did not fail
-        run: 'false'
-        if: |
-          github.ref == 'refs/heads/main'
-          && needs.test_centos_8-4_0-malloctrim.result != 'success'
-          && (needs.test_centos_8-4_0-malloctrim.result != 'skipped'
-            || contains(inputs.necessary_jobs, ';Test against production repo [centos-8/4.0/malloctrim];'))
       - name: Check whether 'Test [centos-8/3.4/normal]' did not fail
         run: 'false'
         if: |
@@ -7329,13 +5474,6 @@ jobs:
           && needs.test_centos_8-3_4-jemalloc.result != 'success'
           && (needs.test_centos_8-3_4-jemalloc.result != 'skipped'
             || contains(inputs.necessary_jobs, ';Test against production repo [centos-8/3.4/jemalloc];'))
-      - name: Check whether 'Test [centos-8/3.4/malloctrim]' did not fail
-        run: 'false'
-        if: |
-          github.ref == 'refs/heads/main'
-          && needs.test_centos_8-3_4-malloctrim.result != 'success'
-          && (needs.test_centos_8-3_4-malloctrim.result != 'skipped'
-            || contains(inputs.necessary_jobs, ';Test against production repo [centos-8/3.4/malloctrim];'))
       - name: Check whether 'Test [centos-8/3.3/normal]' did not fail
         run: 'false'
         if: |
@@ -7350,13 +5488,6 @@ jobs:
           && needs.test_centos_8-3_3-jemalloc.result != 'success'
           && (needs.test_centos_8-3_3-jemalloc.result != 'skipped'
             || contains(inputs.necessary_jobs, ';Test against production repo [centos-8/3.3/jemalloc];'))
-      - name: Check whether 'Test [centos-8/3.3/malloctrim]' did not fail
-        run: 'false'
-        if: |
-          github.ref == 'refs/heads/main'
-          && needs.test_centos_8-3_3-malloctrim.result != 'success'
-          && (needs.test_centos_8-3_3-malloctrim.result != 'skipped'
-            || contains(inputs.necessary_jobs, ';Test against production repo [centos-8/3.3/malloctrim];'))
       - name: Check whether 'Test [centos-8/3.2/normal]' did not fail
         run: 'false'
         if: |
@@ -7378,27 +5509,20 @@ jobs:
           && needs.test_centos_8-3_2-malloctrim.result != 'success'
           && (needs.test_centos_8-3_2-malloctrim.result != 'skipped'
             || contains(inputs.necessary_jobs, ';Test against production repo [centos-8/3.2/malloctrim];'))
-      - name: Check whether 'Test [centos-8/4.0.0/normal]' did not fail
+      - name: Check whether 'Test [centos-8/4.0.2/normal]' did not fail
         run: 'false'
         if: |
           github.ref == 'refs/heads/main'
-          && needs.test_centos_8-4_0_0-normal.result != 'success'
-          && (needs.test_centos_8-4_0_0-normal.result != 'skipped'
-            || contains(inputs.necessary_jobs, ';Test against production repo [centos-8/4.0.0/normal];'))
-      - name: Check whether 'Test [centos-8/4.0.0/jemalloc]' did not fail
+          && needs.test_centos_8-4_0_2-normal.result != 'success'
+          && (needs.test_centos_8-4_0_2-normal.result != 'skipped'
+            || contains(inputs.necessary_jobs, ';Test against production repo [centos-8/4.0.2/normal];'))
+      - name: Check whether 'Test [centos-8/4.0.2/jemalloc]' did not fail
         run: 'false'
         if: |
           github.ref == 'refs/heads/main'
-          && needs.test_centos_8-4_0_0-jemalloc.result != 'success'
-          && (needs.test_centos_8-4_0_0-jemalloc.result != 'skipped'
-            || contains(inputs.necessary_jobs, ';Test against production repo [centos-8/4.0.0/jemalloc];'))
-      - name: Check whether 'Test [centos-8/4.0.0/malloctrim]' did not fail
-        run: 'false'
-        if: |
-          github.ref == 'refs/heads/main'
-          && needs.test_centos_8-4_0_0-malloctrim.result != 'success'
-          && (needs.test_centos_8-4_0_0-malloctrim.result != 'skipped'
-            || contains(inputs.necessary_jobs, ';Test against production repo [centos-8/4.0.0/malloctrim];'))
+          && needs.test_centos_8-4_0_2-jemalloc.result != 'success'
+          && (needs.test_centos_8-4_0_2-jemalloc.result != 'skipped'
+            || contains(inputs.necessary_jobs, ';Test against production repo [centos-8/4.0.2/jemalloc];'))
       - name: Check whether 'Test [centos-8/3.4.8/normal]' did not fail
         run: 'false'
         if: |
@@ -7413,13 +5537,6 @@ jobs:
           && needs.test_centos_8-3_4_8-jemalloc.result != 'success'
           && (needs.test_centos_8-3_4_8-jemalloc.result != 'skipped'
             || contains(inputs.necessary_jobs, ';Test against production repo [centos-8/3.4.8/jemalloc];'))
-      - name: Check whether 'Test [centos-8/3.4.8/malloctrim]' did not fail
-        run: 'false'
-        if: |
-          github.ref == 'refs/heads/main'
-          && needs.test_centos_8-3_4_8-malloctrim.result != 'success'
-          && (needs.test_centos_8-3_4_8-malloctrim.result != 'skipped'
-            || contains(inputs.necessary_jobs, ';Test against production repo [centos-8/3.4.8/malloctrim];'))
       - name: Check whether 'Test [centos-8/3.3.10/normal]' did not fail
         run: 'false'
         if: |
@@ -7434,13 +5551,6 @@ jobs:
           && needs.test_centos_8-3_3_10-jemalloc.result != 'success'
           && (needs.test_centos_8-3_3_10-jemalloc.result != 'skipped'
             || contains(inputs.necessary_jobs, ';Test against production repo [centos-8/3.3.10/jemalloc];'))
-      - name: Check whether 'Test [centos-8/3.3.10/malloctrim]' did not fail
-        run: 'false'
-        if: |
-          github.ref == 'refs/heads/main'
-          && needs.test_centos_8-3_3_10-malloctrim.result != 'success'
-          && (needs.test_centos_8-3_3_10-malloctrim.result != 'skipped'
-            || contains(inputs.necessary_jobs, ';Test against production repo [centos-8/3.3.10/malloctrim];'))
       - name: Check whether 'Test [centos-8/3.2.9/normal]' did not fail
         run: 'false'
         if: |
@@ -7476,13 +5586,6 @@ jobs:
           && needs.test_debian_11-4_0-jemalloc.result != 'success'
           && (needs.test_debian_11-4_0-jemalloc.result != 'skipped'
             || contains(inputs.necessary_jobs, ';Test against production repo [debian-11/4.0/jemalloc];'))
-      - name: Check whether 'Test [debian-11/4.0/malloctrim]' did not fail
-        run: 'false'
-        if: |
-          github.ref == 'refs/heads/main'
-          && needs.test_debian_11-4_0-malloctrim.result != 'success'
-          && (needs.test_debian_11-4_0-malloctrim.result != 'skipped'
-            || contains(inputs.necessary_jobs, ';Test against production repo [debian-11/4.0/malloctrim];'))
       - name: Check whether 'Test [debian-11/3.4/normal]' did not fail
         run: 'false'
         if: |
@@ -7497,13 +5600,6 @@ jobs:
           && needs.test_debian_11-3_4-jemalloc.result != 'success'
           && (needs.test_debian_11-3_4-jemalloc.result != 'skipped'
             || contains(inputs.necessary_jobs, ';Test against production repo [debian-11/3.4/jemalloc];'))
-      - name: Check whether 'Test [debian-11/3.4/malloctrim]' did not fail
-        run: 'false'
-        if: |
-          github.ref == 'refs/heads/main'
-          && needs.test_debian_11-3_4-malloctrim.result != 'success'
-          && (needs.test_debian_11-3_4-malloctrim.result != 'skipped'
-            || contains(inputs.necessary_jobs, ';Test against production repo [debian-11/3.4/malloctrim];'))
       - name: Check whether 'Test [debian-11/3.3/normal]' did not fail
         run: 'false'
         if: |
@@ -7518,13 +5614,6 @@ jobs:
           && needs.test_debian_11-3_3-jemalloc.result != 'success'
           && (needs.test_debian_11-3_3-jemalloc.result != 'skipped'
             || contains(inputs.necessary_jobs, ';Test against production repo [debian-11/3.3/jemalloc];'))
-      - name: Check whether 'Test [debian-11/3.3/malloctrim]' did not fail
-        run: 'false'
-        if: |
-          github.ref == 'refs/heads/main'
-          && needs.test_debian_11-3_3-malloctrim.result != 'success'
-          && (needs.test_debian_11-3_3-malloctrim.result != 'skipped'
-            || contains(inputs.necessary_jobs, ';Test against production repo [debian-11/3.3/malloctrim];'))
       - name: Check whether 'Test [debian-11/3.2/normal]' did not fail
         run: 'false'
         if: |
@@ -7546,27 +5635,20 @@ jobs:
           && needs.test_debian_11-3_2-malloctrim.result != 'success'
           && (needs.test_debian_11-3_2-malloctrim.result != 'skipped'
             || contains(inputs.necessary_jobs, ';Test against production repo [debian-11/3.2/malloctrim];'))
-      - name: Check whether 'Test [debian-11/4.0.0/normal]' did not fail
+      - name: Check whether 'Test [debian-11/4.0.2/normal]' did not fail
         run: 'false'
         if: |
           github.ref == 'refs/heads/main'
-          && needs.test_debian_11-4_0_0-normal.result != 'success'
-          && (needs.test_debian_11-4_0_0-normal.result != 'skipped'
-            || contains(inputs.necessary_jobs, ';Test against production repo [debian-11/4.0.0/normal];'))
-      - name: Check whether 'Test [debian-11/4.0.0/jemalloc]' did not fail
+          && needs.test_debian_11-4_0_2-normal.result != 'success'
+          && (needs.test_debian_11-4_0_2-normal.result != 'skipped'
+            || contains(inputs.necessary_jobs, ';Test against production repo [debian-11/4.0.2/normal];'))
+      - name: Check whether 'Test [debian-11/4.0.2/jemalloc]' did not fail
         run: 'false'
         if: |
           github.ref == 'refs/heads/main'
-          && needs.test_debian_11-4_0_0-jemalloc.result != 'success'
-          && (needs.test_debian_11-4_0_0-jemalloc.result != 'skipped'
-            || contains(inputs.necessary_jobs, ';Test against production repo [debian-11/4.0.0/jemalloc];'))
-      - name: Check whether 'Test [debian-11/4.0.0/malloctrim]' did not fail
-        run: 'false'
-        if: |
-          github.ref == 'refs/heads/main'
-          && needs.test_debian_11-4_0_0-malloctrim.result != 'success'
-          && (needs.test_debian_11-4_0_0-malloctrim.result != 'skipped'
-            || contains(inputs.necessary_jobs, ';Test against production repo [debian-11/4.0.0/malloctrim];'))
+          && needs.test_debian_11-4_0_2-jemalloc.result != 'success'
+          && (needs.test_debian_11-4_0_2-jemalloc.result != 'skipped'
+            || contains(inputs.necessary_jobs, ';Test against production repo [debian-11/4.0.2/jemalloc];'))
       - name: Check whether 'Test [debian-11/3.4.8/normal]' did not fail
         run: 'false'
         if: |
@@ -7581,13 +5663,6 @@ jobs:
           && needs.test_debian_11-3_4_8-jemalloc.result != 'success'
           && (needs.test_debian_11-3_4_8-jemalloc.result != 'skipped'
             || contains(inputs.necessary_jobs, ';Test against production repo [debian-11/3.4.8/jemalloc];'))
-      - name: Check whether 'Test [debian-11/3.4.8/malloctrim]' did not fail
-        run: 'false'
-        if: |
-          github.ref == 'refs/heads/main'
-          && needs.test_debian_11-3_4_8-malloctrim.result != 'success'
-          && (needs.test_debian_11-3_4_8-malloctrim.result != 'skipped'
-            || contains(inputs.necessary_jobs, ';Test against production repo [debian-11/3.4.8/malloctrim];'))
       - name: Check whether 'Test [debian-11/3.3.10/normal]' did not fail
         run: 'false'
         if: |
@@ -7602,13 +5677,6 @@ jobs:
           && needs.test_debian_11-3_3_10-jemalloc.result != 'success'
           && (needs.test_debian_11-3_3_10-jemalloc.result != 'skipped'
             || contains(inputs.necessary_jobs, ';Test against production repo [debian-11/3.3.10/jemalloc];'))
-      - name: Check whether 'Test [debian-11/3.3.10/malloctrim]' did not fail
-        run: 'false'
-        if: |
-          github.ref == 'refs/heads/main'
-          && needs.test_debian_11-3_3_10-malloctrim.result != 'success'
-          && (needs.test_debian_11-3_3_10-malloctrim.result != 'skipped'
-            || contains(inputs.necessary_jobs, ';Test against production repo [debian-11/3.3.10/malloctrim];'))
       - name: Check whether 'Test [debian-11/3.2.9/normal]' did not fail
         run: 'false'
         if: |
@@ -7644,13 +5712,6 @@ jobs:
           && needs.test_debian_12-4_0-jemalloc.result != 'success'
           && (needs.test_debian_12-4_0-jemalloc.result != 'skipped'
             || contains(inputs.necessary_jobs, ';Test against production repo [debian-12/4.0/jemalloc];'))
-      - name: Check whether 'Test [debian-12/4.0/malloctrim]' did not fail
-        run: 'false'
-        if: |
-          github.ref == 'refs/heads/main'
-          && needs.test_debian_12-4_0-malloctrim.result != 'success'
-          && (needs.test_debian_12-4_0-malloctrim.result != 'skipped'
-            || contains(inputs.necessary_jobs, ';Test against production repo [debian-12/4.0/malloctrim];'))
       - name: Check whether 'Test [debian-12/3.4/normal]' did not fail
         run: 'false'
         if: |
@@ -7665,13 +5726,6 @@ jobs:
           && needs.test_debian_12-3_4-jemalloc.result != 'success'
           && (needs.test_debian_12-3_4-jemalloc.result != 'skipped'
             || contains(inputs.necessary_jobs, ';Test against production repo [debian-12/3.4/jemalloc];'))
-      - name: Check whether 'Test [debian-12/3.4/malloctrim]' did not fail
-        run: 'false'
-        if: |
-          github.ref == 'refs/heads/main'
-          && needs.test_debian_12-3_4-malloctrim.result != 'success'
-          && (needs.test_debian_12-3_4-malloctrim.result != 'skipped'
-            || contains(inputs.necessary_jobs, ';Test against production repo [debian-12/3.4/malloctrim];'))
       - name: Check whether 'Test [debian-12/3.3/normal]' did not fail
         run: 'false'
         if: |
@@ -7686,13 +5740,6 @@ jobs:
           && needs.test_debian_12-3_3-jemalloc.result != 'success'
           && (needs.test_debian_12-3_3-jemalloc.result != 'skipped'
             || contains(inputs.necessary_jobs, ';Test against production repo [debian-12/3.3/jemalloc];'))
-      - name: Check whether 'Test [debian-12/3.3/malloctrim]' did not fail
-        run: 'false'
-        if: |
-          github.ref == 'refs/heads/main'
-          && needs.test_debian_12-3_3-malloctrim.result != 'success'
-          && (needs.test_debian_12-3_3-malloctrim.result != 'skipped'
-            || contains(inputs.necessary_jobs, ';Test against production repo [debian-12/3.3/malloctrim];'))
       - name: Check whether 'Test [debian-12/3.2/normal]' did not fail
         run: 'false'
         if: |
@@ -7714,27 +5761,20 @@ jobs:
           && needs.test_debian_12-3_2-malloctrim.result != 'success'
           && (needs.test_debian_12-3_2-malloctrim.result != 'skipped'
             || contains(inputs.necessary_jobs, ';Test against production repo [debian-12/3.2/malloctrim];'))
-      - name: Check whether 'Test [debian-12/4.0.0/normal]' did not fail
+      - name: Check whether 'Test [debian-12/4.0.2/normal]' did not fail
         run: 'false'
         if: |
           github.ref == 'refs/heads/main'
-          && needs.test_debian_12-4_0_0-normal.result != 'success'
-          && (needs.test_debian_12-4_0_0-normal.result != 'skipped'
-            || contains(inputs.necessary_jobs, ';Test against production repo [debian-12/4.0.0/normal];'))
-      - name: Check whether 'Test [debian-12/4.0.0/jemalloc]' did not fail
+          && needs.test_debian_12-4_0_2-normal.result != 'success'
+          && (needs.test_debian_12-4_0_2-normal.result != 'skipped'
+            || contains(inputs.necessary_jobs, ';Test against production repo [debian-12/4.0.2/normal];'))
+      - name: Check whether 'Test [debian-12/4.0.2/jemalloc]' did not fail
         run: 'false'
         if: |
           github.ref == 'refs/heads/main'
-          && needs.test_debian_12-4_0_0-jemalloc.result != 'success'
-          && (needs.test_debian_12-4_0_0-jemalloc.result != 'skipped'
-            || contains(inputs.necessary_jobs, ';Test against production repo [debian-12/4.0.0/jemalloc];'))
-      - name: Check whether 'Test [debian-12/4.0.0/malloctrim]' did not fail
-        run: 'false'
-        if: |
-          github.ref == 'refs/heads/main'
-          && needs.test_debian_12-4_0_0-malloctrim.result != 'success'
-          && (needs.test_debian_12-4_0_0-malloctrim.result != 'skipped'
-            || contains(inputs.necessary_jobs, ';Test against production repo [debian-12/4.0.0/malloctrim];'))
+          && needs.test_debian_12-4_0_2-jemalloc.result != 'success'
+          && (needs.test_debian_12-4_0_2-jemalloc.result != 'skipped'
+            || contains(inputs.necessary_jobs, ';Test against production repo [debian-12/4.0.2/jemalloc];'))
       - name: Check whether 'Test [debian-12/3.4.8/normal]' did not fail
         run: 'false'
         if: |
@@ -7749,13 +5789,6 @@ jobs:
           && needs.test_debian_12-3_4_8-jemalloc.result != 'success'
           && (needs.test_debian_12-3_4_8-jemalloc.result != 'skipped'
             || contains(inputs.necessary_jobs, ';Test against production repo [debian-12/3.4.8/jemalloc];'))
-      - name: Check whether 'Test [debian-12/3.4.8/malloctrim]' did not fail
-        run: 'false'
-        if: |
-          github.ref == 'refs/heads/main'
-          && needs.test_debian_12-3_4_8-malloctrim.result != 'success'
-          && (needs.test_debian_12-3_4_8-malloctrim.result != 'skipped'
-            || contains(inputs.necessary_jobs, ';Test against production repo [debian-12/3.4.8/malloctrim];'))
       - name: Check whether 'Test [debian-12/3.3.10/normal]' did not fail
         run: 'false'
         if: |
@@ -7770,13 +5803,6 @@ jobs:
           && needs.test_debian_12-3_3_10-jemalloc.result != 'success'
           && (needs.test_debian_12-3_3_10-jemalloc.result != 'skipped'
             || contains(inputs.necessary_jobs, ';Test against production repo [debian-12/3.3.10/jemalloc];'))
-      - name: Check whether 'Test [debian-12/3.3.10/malloctrim]' did not fail
-        run: 'false'
-        if: |
-          github.ref == 'refs/heads/main'
-          && needs.test_debian_12-3_3_10-malloctrim.result != 'success'
-          && (needs.test_debian_12-3_3_10-malloctrim.result != 'skipped'
-            || contains(inputs.necessary_jobs, ';Test against production repo [debian-12/3.3.10/malloctrim];'))
       - name: Check whether 'Test [debian-12/3.2.9/normal]' did not fail
         run: 'false'
         if: |
@@ -7812,13 +5838,6 @@ jobs:
           && needs.test_debian_13-4_0-jemalloc.result != 'success'
           && (needs.test_debian_13-4_0-jemalloc.result != 'skipped'
             || contains(inputs.necessary_jobs, ';Test against production repo [debian-13/4.0/jemalloc];'))
-      - name: Check whether 'Test [debian-13/4.0/malloctrim]' did not fail
-        run: 'false'
-        if: |
-          github.ref == 'refs/heads/main'
-          && needs.test_debian_13-4_0-malloctrim.result != 'success'
-          && (needs.test_debian_13-4_0-malloctrim.result != 'skipped'
-            || contains(inputs.necessary_jobs, ';Test against production repo [debian-13/4.0/malloctrim];'))
       - name: Check whether 'Test [debian-13/3.4/normal]' did not fail
         run: 'false'
         if: |
@@ -7833,13 +5852,6 @@ jobs:
           && needs.test_debian_13-3_4-jemalloc.result != 'success'
           && (needs.test_debian_13-3_4-jemalloc.result != 'skipped'
             || contains(inputs.necessary_jobs, ';Test against production repo [debian-13/3.4/jemalloc];'))
-      - name: Check whether 'Test [debian-13/3.4/malloctrim]' did not fail
-        run: 'false'
-        if: |
-          github.ref == 'refs/heads/main'
-          && needs.test_debian_13-3_4-malloctrim.result != 'success'
-          && (needs.test_debian_13-3_4-malloctrim.result != 'skipped'
-            || contains(inputs.necessary_jobs, ';Test against production repo [debian-13/3.4/malloctrim];'))
       - name: Check whether 'Test [debian-13/3.3/normal]' did not fail
         run: 'false'
         if: |
@@ -7854,34 +5866,20 @@ jobs:
           && needs.test_debian_13-3_3-jemalloc.result != 'success'
           && (needs.test_debian_13-3_3-jemalloc.result != 'skipped'
             || contains(inputs.necessary_jobs, ';Test against production repo [debian-13/3.3/jemalloc];'))
-      - name: Check whether 'Test [debian-13/3.3/malloctrim]' did not fail
+      - name: Check whether 'Test [debian-13/4.0.2/normal]' did not fail
         run: 'false'
         if: |
           github.ref == 'refs/heads/main'
-          && needs.test_debian_13-3_3-malloctrim.result != 'success'
-          && (needs.test_debian_13-3_3-malloctrim.result != 'skipped'
-            || contains(inputs.necessary_jobs, ';Test against production repo [debian-13/3.3/malloctrim];'))
-      - name: Check whether 'Test [debian-13/4.0.0/normal]' did not fail
+          && needs.test_debian_13-4_0_2-normal.result != 'success'
+          && (needs.test_debian_13-4_0_2-normal.result != 'skipped'
+            || contains(inputs.necessary_jobs, ';Test against production repo [debian-13/4.0.2/normal];'))
+      - name: Check whether 'Test [debian-13/4.0.2/jemalloc]' did not fail
         run: 'false'
         if: |
           github.ref == 'refs/heads/main'
-          && needs.test_debian_13-4_0_0-normal.result != 'success'
-          && (needs.test_debian_13-4_0_0-normal.result != 'skipped'
-            || contains(inputs.necessary_jobs, ';Test against production repo [debian-13/4.0.0/normal];'))
-      - name: Check whether 'Test [debian-13/4.0.0/jemalloc]' did not fail
-        run: 'false'
-        if: |
-          github.ref == 'refs/heads/main'
-          && needs.test_debian_13-4_0_0-jemalloc.result != 'success'
-          && (needs.test_debian_13-4_0_0-jemalloc.result != 'skipped'
-            || contains(inputs.necessary_jobs, ';Test against production repo [debian-13/4.0.0/jemalloc];'))
-      - name: Check whether 'Test [debian-13/4.0.0/malloctrim]' did not fail
-        run: 'false'
-        if: |
-          github.ref == 'refs/heads/main'
-          && needs.test_debian_13-4_0_0-malloctrim.result != 'success'
-          && (needs.test_debian_13-4_0_0-malloctrim.result != 'skipped'
-            || contains(inputs.necessary_jobs, ';Test against production repo [debian-13/4.0.0/malloctrim];'))
+          && needs.test_debian_13-4_0_2-jemalloc.result != 'success'
+          && (needs.test_debian_13-4_0_2-jemalloc.result != 'skipped'
+            || contains(inputs.necessary_jobs, ';Test against production repo [debian-13/4.0.2/jemalloc];'))
       - name: Check whether 'Test [debian-13/3.4.8/normal]' did not fail
         run: 'false'
         if: |
@@ -7896,13 +5894,6 @@ jobs:
           && needs.test_debian_13-3_4_8-jemalloc.result != 'success'
           && (needs.test_debian_13-3_4_8-jemalloc.result != 'skipped'
             || contains(inputs.necessary_jobs, ';Test against production repo [debian-13/3.4.8/jemalloc];'))
-      - name: Check whether 'Test [debian-13/3.4.8/malloctrim]' did not fail
-        run: 'false'
-        if: |
-          github.ref == 'refs/heads/main'
-          && needs.test_debian_13-3_4_8-malloctrim.result != 'success'
-          && (needs.test_debian_13-3_4_8-malloctrim.result != 'skipped'
-            || contains(inputs.necessary_jobs, ';Test against production repo [debian-13/3.4.8/malloctrim];'))
       - name: Check whether 'Test [debian-13/3.3.10/normal]' did not fail
         run: 'false'
         if: |
@@ -7917,13 +5908,6 @@ jobs:
           && needs.test_debian_13-3_3_10-jemalloc.result != 'success'
           && (needs.test_debian_13-3_3_10-jemalloc.result != 'skipped'
             || contains(inputs.necessary_jobs, ';Test against production repo [debian-13/3.3.10/jemalloc];'))
-      - name: Check whether 'Test [debian-13/3.3.10/malloctrim]' did not fail
-        run: 'false'
-        if: |
-          github.ref == 'refs/heads/main'
-          && needs.test_debian_13-3_3_10-malloctrim.result != 'success'
-          && (needs.test_debian_13-3_3_10-malloctrim.result != 'skipped'
-            || contains(inputs.necessary_jobs, ';Test against production repo [debian-13/3.3.10/malloctrim];'))
       - name: Check whether 'Test [el-9/4.0/normal]' did not fail
         run: 'false'
         if: |
@@ -7938,13 +5922,6 @@ jobs:
           && needs.test_el_9-4_0-jemalloc.result != 'success'
           && (needs.test_el_9-4_0-jemalloc.result != 'skipped'
             || contains(inputs.necessary_jobs, ';Test against production repo [el-9/4.0/jemalloc];'))
-      - name: Check whether 'Test [el-9/4.0/malloctrim]' did not fail
-        run: 'false'
-        if: |
-          github.ref == 'refs/heads/main'
-          && needs.test_el_9-4_0-malloctrim.result != 'success'
-          && (needs.test_el_9-4_0-malloctrim.result != 'skipped'
-            || contains(inputs.necessary_jobs, ';Test against production repo [el-9/4.0/malloctrim];'))
       - name: Check whether 'Test [el-9/3.4/normal]' did not fail
         run: 'false'
         if: |
@@ -7959,13 +5936,6 @@ jobs:
           && needs.test_el_9-3_4-jemalloc.result != 'success'
           && (needs.test_el_9-3_4-jemalloc.result != 'skipped'
             || contains(inputs.necessary_jobs, ';Test against production repo [el-9/3.4/jemalloc];'))
-      - name: Check whether 'Test [el-9/3.4/malloctrim]' did not fail
-        run: 'false'
-        if: |
-          github.ref == 'refs/heads/main'
-          && needs.test_el_9-3_4-malloctrim.result != 'success'
-          && (needs.test_el_9-3_4-malloctrim.result != 'skipped'
-            || contains(inputs.necessary_jobs, ';Test against production repo [el-9/3.4/malloctrim];'))
       - name: Check whether 'Test [el-9/3.3/normal]' did not fail
         run: 'false'
         if: |
@@ -7980,13 +5950,6 @@ jobs:
           && needs.test_el_9-3_3-jemalloc.result != 'success'
           && (needs.test_el_9-3_3-jemalloc.result != 'skipped'
             || contains(inputs.necessary_jobs, ';Test against production repo [el-9/3.3/jemalloc];'))
-      - name: Check whether 'Test [el-9/3.3/malloctrim]' did not fail
-        run: 'false'
-        if: |
-          github.ref == 'refs/heads/main'
-          && needs.test_el_9-3_3-malloctrim.result != 'success'
-          && (needs.test_el_9-3_3-malloctrim.result != 'skipped'
-            || contains(inputs.necessary_jobs, ';Test against production repo [el-9/3.3/malloctrim];'))
       - name: Check whether 'Test [el-9/3.2/normal]' did not fail
         run: 'false'
         if: |
@@ -8008,27 +5971,20 @@ jobs:
           && needs.test_el_9-3_2-malloctrim.result != 'success'
           && (needs.test_el_9-3_2-malloctrim.result != 'skipped'
             || contains(inputs.necessary_jobs, ';Test against production repo [el-9/3.2/malloctrim];'))
-      - name: Check whether 'Test [el-9/4.0.0/normal]' did not fail
+      - name: Check whether 'Test [el-9/4.0.2/normal]' did not fail
         run: 'false'
         if: |
           github.ref == 'refs/heads/main'
-          && needs.test_el_9-4_0_0-normal.result != 'success'
-          && (needs.test_el_9-4_0_0-normal.result != 'skipped'
-            || contains(inputs.necessary_jobs, ';Test against production repo [el-9/4.0.0/normal];'))
-      - name: Check whether 'Test [el-9/4.0.0/jemalloc]' did not fail
+          && needs.test_el_9-4_0_2-normal.result != 'success'
+          && (needs.test_el_9-4_0_2-normal.result != 'skipped'
+            || contains(inputs.necessary_jobs, ';Test against production repo [el-9/4.0.2/normal];'))
+      - name: Check whether 'Test [el-9/4.0.2/jemalloc]' did not fail
         run: 'false'
         if: |
           github.ref == 'refs/heads/main'
-          && needs.test_el_9-4_0_0-jemalloc.result != 'success'
-          && (needs.test_el_9-4_0_0-jemalloc.result != 'skipped'
-            || contains(inputs.necessary_jobs, ';Test against production repo [el-9/4.0.0/jemalloc];'))
-      - name: Check whether 'Test [el-9/4.0.0/malloctrim]' did not fail
-        run: 'false'
-        if: |
-          github.ref == 'refs/heads/main'
-          && needs.test_el_9-4_0_0-malloctrim.result != 'success'
-          && (needs.test_el_9-4_0_0-malloctrim.result != 'skipped'
-            || contains(inputs.necessary_jobs, ';Test against production repo [el-9/4.0.0/malloctrim];'))
+          && needs.test_el_9-4_0_2-jemalloc.result != 'success'
+          && (needs.test_el_9-4_0_2-jemalloc.result != 'skipped'
+            || contains(inputs.necessary_jobs, ';Test against production repo [el-9/4.0.2/jemalloc];'))
       - name: Check whether 'Test [el-9/3.4.8/normal]' did not fail
         run: 'false'
         if: |
@@ -8043,13 +5999,6 @@ jobs:
           && needs.test_el_9-3_4_8-jemalloc.result != 'success'
           && (needs.test_el_9-3_4_8-jemalloc.result != 'skipped'
             || contains(inputs.necessary_jobs, ';Test against production repo [el-9/3.4.8/jemalloc];'))
-      - name: Check whether 'Test [el-9/3.4.8/malloctrim]' did not fail
-        run: 'false'
-        if: |
-          github.ref == 'refs/heads/main'
-          && needs.test_el_9-3_4_8-malloctrim.result != 'success'
-          && (needs.test_el_9-3_4_8-malloctrim.result != 'skipped'
-            || contains(inputs.necessary_jobs, ';Test against production repo [el-9/3.4.8/malloctrim];'))
       - name: Check whether 'Test [el-9/3.3.10/normal]' did not fail
         run: 'false'
         if: |
@@ -8064,13 +6013,6 @@ jobs:
           && needs.test_el_9-3_3_10-jemalloc.result != 'success'
           && (needs.test_el_9-3_3_10-jemalloc.result != 'skipped'
             || contains(inputs.necessary_jobs, ';Test against production repo [el-9/3.3.10/jemalloc];'))
-      - name: Check whether 'Test [el-9/3.3.10/malloctrim]' did not fail
-        run: 'false'
-        if: |
-          github.ref == 'refs/heads/main'
-          && needs.test_el_9-3_3_10-malloctrim.result != 'success'
-          && (needs.test_el_9-3_3_10-malloctrim.result != 'skipped'
-            || contains(inputs.necessary_jobs, ';Test against production repo [el-9/3.3.10/malloctrim];'))
       - name: Check whether 'Test [el-9/3.2.9/normal]' did not fail
         run: 'false'
         if: |
@@ -8106,13 +6048,6 @@ jobs:
           && needs.test_ubuntu_22_04-4_0-jemalloc.result != 'success'
           && (needs.test_ubuntu_22_04-4_0-jemalloc.result != 'skipped'
             || contains(inputs.necessary_jobs, ';Test against production repo [ubuntu-22.04/4.0/jemalloc];'))
-      - name: Check whether 'Test [ubuntu-22.04/4.0/malloctrim]' did not fail
-        run: 'false'
-        if: |
-          github.ref == 'refs/heads/main'
-          && needs.test_ubuntu_22_04-4_0-malloctrim.result != 'success'
-          && (needs.test_ubuntu_22_04-4_0-malloctrim.result != 'skipped'
-            || contains(inputs.necessary_jobs, ';Test against production repo [ubuntu-22.04/4.0/malloctrim];'))
       - name: Check whether 'Test [ubuntu-22.04/3.4/normal]' did not fail
         run: 'false'
         if: |
@@ -8127,13 +6062,6 @@ jobs:
           && needs.test_ubuntu_22_04-3_4-jemalloc.result != 'success'
           && (needs.test_ubuntu_22_04-3_4-jemalloc.result != 'skipped'
             || contains(inputs.necessary_jobs, ';Test against production repo [ubuntu-22.04/3.4/jemalloc];'))
-      - name: Check whether 'Test [ubuntu-22.04/3.4/malloctrim]' did not fail
-        run: 'false'
-        if: |
-          github.ref == 'refs/heads/main'
-          && needs.test_ubuntu_22_04-3_4-malloctrim.result != 'success'
-          && (needs.test_ubuntu_22_04-3_4-malloctrim.result != 'skipped'
-            || contains(inputs.necessary_jobs, ';Test against production repo [ubuntu-22.04/3.4/malloctrim];'))
       - name: Check whether 'Test [ubuntu-22.04/3.3/normal]' did not fail
         run: 'false'
         if: |
@@ -8148,13 +6076,6 @@ jobs:
           && needs.test_ubuntu_22_04-3_3-jemalloc.result != 'success'
           && (needs.test_ubuntu_22_04-3_3-jemalloc.result != 'skipped'
             || contains(inputs.necessary_jobs, ';Test against production repo [ubuntu-22.04/3.3/jemalloc];'))
-      - name: Check whether 'Test [ubuntu-22.04/3.3/malloctrim]' did not fail
-        run: 'false'
-        if: |
-          github.ref == 'refs/heads/main'
-          && needs.test_ubuntu_22_04-3_3-malloctrim.result != 'success'
-          && (needs.test_ubuntu_22_04-3_3-malloctrim.result != 'skipped'
-            || contains(inputs.necessary_jobs, ';Test against production repo [ubuntu-22.04/3.3/malloctrim];'))
       - name: Check whether 'Test [ubuntu-22.04/3.2/normal]' did not fail
         run: 'false'
         if: |
@@ -8176,27 +6097,20 @@ jobs:
           && needs.test_ubuntu_22_04-3_2-malloctrim.result != 'success'
           && (needs.test_ubuntu_22_04-3_2-malloctrim.result != 'skipped'
             || contains(inputs.necessary_jobs, ';Test against production repo [ubuntu-22.04/3.2/malloctrim];'))
-      - name: Check whether 'Test [ubuntu-22.04/4.0.0/normal]' did not fail
+      - name: Check whether 'Test [ubuntu-22.04/4.0.2/normal]' did not fail
         run: 'false'
         if: |
           github.ref == 'refs/heads/main'
-          && needs.test_ubuntu_22_04-4_0_0-normal.result != 'success'
-          && (needs.test_ubuntu_22_04-4_0_0-normal.result != 'skipped'
-            || contains(inputs.necessary_jobs, ';Test against production repo [ubuntu-22.04/4.0.0/normal];'))
-      - name: Check whether 'Test [ubuntu-22.04/4.0.0/jemalloc]' did not fail
+          && needs.test_ubuntu_22_04-4_0_2-normal.result != 'success'
+          && (needs.test_ubuntu_22_04-4_0_2-normal.result != 'skipped'
+            || contains(inputs.necessary_jobs, ';Test against production repo [ubuntu-22.04/4.0.2/normal];'))
+      - name: Check whether 'Test [ubuntu-22.04/4.0.2/jemalloc]' did not fail
         run: 'false'
         if: |
           github.ref == 'refs/heads/main'
-          && needs.test_ubuntu_22_04-4_0_0-jemalloc.result != 'success'
-          && (needs.test_ubuntu_22_04-4_0_0-jemalloc.result != 'skipped'
-            || contains(inputs.necessary_jobs, ';Test against production repo [ubuntu-22.04/4.0.0/jemalloc];'))
-      - name: Check whether 'Test [ubuntu-22.04/4.0.0/malloctrim]' did not fail
-        run: 'false'
-        if: |
-          github.ref == 'refs/heads/main'
-          && needs.test_ubuntu_22_04-4_0_0-malloctrim.result != 'success'
-          && (needs.test_ubuntu_22_04-4_0_0-malloctrim.result != 'skipped'
-            || contains(inputs.necessary_jobs, ';Test against production repo [ubuntu-22.04/4.0.0/malloctrim];'))
+          && needs.test_ubuntu_22_04-4_0_2-jemalloc.result != 'success'
+          && (needs.test_ubuntu_22_04-4_0_2-jemalloc.result != 'skipped'
+            || contains(inputs.necessary_jobs, ';Test against production repo [ubuntu-22.04/4.0.2/jemalloc];'))
       - name: Check whether 'Test [ubuntu-22.04/3.4.8/normal]' did not fail
         run: 'false'
         if: |
@@ -8211,13 +6125,6 @@ jobs:
           && needs.test_ubuntu_22_04-3_4_8-jemalloc.result != 'success'
           && (needs.test_ubuntu_22_04-3_4_8-jemalloc.result != 'skipped'
             || contains(inputs.necessary_jobs, ';Test against production repo [ubuntu-22.04/3.4.8/jemalloc];'))
-      - name: Check whether 'Test [ubuntu-22.04/3.4.8/malloctrim]' did not fail
-        run: 'false'
-        if: |
-          github.ref == 'refs/heads/main'
-          && needs.test_ubuntu_22_04-3_4_8-malloctrim.result != 'success'
-          && (needs.test_ubuntu_22_04-3_4_8-malloctrim.result != 'skipped'
-            || contains(inputs.necessary_jobs, ';Test against production repo [ubuntu-22.04/3.4.8/malloctrim];'))
       - name: Check whether 'Test [ubuntu-22.04/3.3.10/normal]' did not fail
         run: 'false'
         if: |
@@ -8232,13 +6139,6 @@ jobs:
           && needs.test_ubuntu_22_04-3_3_10-jemalloc.result != 'success'
           && (needs.test_ubuntu_22_04-3_3_10-jemalloc.result != 'skipped'
             || contains(inputs.necessary_jobs, ';Test against production repo [ubuntu-22.04/3.3.10/jemalloc];'))
-      - name: Check whether 'Test [ubuntu-22.04/3.3.10/malloctrim]' did not fail
-        run: 'false'
-        if: |
-          github.ref == 'refs/heads/main'
-          && needs.test_ubuntu_22_04-3_3_10-malloctrim.result != 'success'
-          && (needs.test_ubuntu_22_04-3_3_10-malloctrim.result != 'skipped'
-            || contains(inputs.necessary_jobs, ';Test against production repo [ubuntu-22.04/3.3.10/malloctrim];'))
       - name: Check whether 'Test [ubuntu-22.04/3.2.9/normal]' did not fail
         run: 'false'
         if: |
@@ -8274,13 +6174,6 @@ jobs:
           && needs.test_ubuntu_24_04-4_0-jemalloc.result != 'success'
           && (needs.test_ubuntu_24_04-4_0-jemalloc.result != 'skipped'
             || contains(inputs.necessary_jobs, ';Test against production repo [ubuntu-24.04/4.0/jemalloc];'))
-      - name: Check whether 'Test [ubuntu-24.04/4.0/malloctrim]' did not fail
-        run: 'false'
-        if: |
-          github.ref == 'refs/heads/main'
-          && needs.test_ubuntu_24_04-4_0-malloctrim.result != 'success'
-          && (needs.test_ubuntu_24_04-4_0-malloctrim.result != 'skipped'
-            || contains(inputs.necessary_jobs, ';Test against production repo [ubuntu-24.04/4.0/malloctrim];'))
       - name: Check whether 'Test [ubuntu-24.04/3.4/normal]' did not fail
         run: 'false'
         if: |
@@ -8295,13 +6188,6 @@ jobs:
           && needs.test_ubuntu_24_04-3_4-jemalloc.result != 'success'
           && (needs.test_ubuntu_24_04-3_4-jemalloc.result != 'skipped'
             || contains(inputs.necessary_jobs, ';Test against production repo [ubuntu-24.04/3.4/jemalloc];'))
-      - name: Check whether 'Test [ubuntu-24.04/3.4/malloctrim]' did not fail
-        run: 'false'
-        if: |
-          github.ref == 'refs/heads/main'
-          && needs.test_ubuntu_24_04-3_4-malloctrim.result != 'success'
-          && (needs.test_ubuntu_24_04-3_4-malloctrim.result != 'skipped'
-            || contains(inputs.necessary_jobs, ';Test against production repo [ubuntu-24.04/3.4/malloctrim];'))
       - name: Check whether 'Test [ubuntu-24.04/3.3/normal]' did not fail
         run: 'false'
         if: |
@@ -8316,13 +6202,6 @@ jobs:
           && needs.test_ubuntu_24_04-3_3-jemalloc.result != 'success'
           && (needs.test_ubuntu_24_04-3_3-jemalloc.result != 'skipped'
             || contains(inputs.necessary_jobs, ';Test against production repo [ubuntu-24.04/3.3/jemalloc];'))
-      - name: Check whether 'Test [ubuntu-24.04/3.3/malloctrim]' did not fail
-        run: 'false'
-        if: |
-          github.ref == 'refs/heads/main'
-          && needs.test_ubuntu_24_04-3_3-malloctrim.result != 'success'
-          && (needs.test_ubuntu_24_04-3_3-malloctrim.result != 'skipped'
-            || contains(inputs.necessary_jobs, ';Test against production repo [ubuntu-24.04/3.3/malloctrim];'))
       - name: Check whether 'Test [ubuntu-24.04/3.2/normal]' did not fail
         run: 'false'
         if: |
@@ -8344,27 +6223,20 @@ jobs:
           && needs.test_ubuntu_24_04-3_2-malloctrim.result != 'success'
           && (needs.test_ubuntu_24_04-3_2-malloctrim.result != 'skipped'
             || contains(inputs.necessary_jobs, ';Test against production repo [ubuntu-24.04/3.2/malloctrim];'))
-      - name: Check whether 'Test [ubuntu-24.04/4.0.0/normal]' did not fail
+      - name: Check whether 'Test [ubuntu-24.04/4.0.2/normal]' did not fail
         run: 'false'
         if: |
           github.ref == 'refs/heads/main'
-          && needs.test_ubuntu_24_04-4_0_0-normal.result != 'success'
-          && (needs.test_ubuntu_24_04-4_0_0-normal.result != 'skipped'
-            || contains(inputs.necessary_jobs, ';Test against production repo [ubuntu-24.04/4.0.0/normal];'))
-      - name: Check whether 'Test [ubuntu-24.04/4.0.0/jemalloc]' did not fail
+          && needs.test_ubuntu_24_04-4_0_2-normal.result != 'success'
+          && (needs.test_ubuntu_24_04-4_0_2-normal.result != 'skipped'
+            || contains(inputs.necessary_jobs, ';Test against production repo [ubuntu-24.04/4.0.2/normal];'))
+      - name: Check whether 'Test [ubuntu-24.04/4.0.2/jemalloc]' did not fail
         run: 'false'
         if: |
           github.ref == 'refs/heads/main'
-          && needs.test_ubuntu_24_04-4_0_0-jemalloc.result != 'success'
-          && (needs.test_ubuntu_24_04-4_0_0-jemalloc.result != 'skipped'
-            || contains(inputs.necessary_jobs, ';Test against production repo [ubuntu-24.04/4.0.0/jemalloc];'))
-      - name: Check whether 'Test [ubuntu-24.04/4.0.0/malloctrim]' did not fail
-        run: 'false'
-        if: |
-          github.ref == 'refs/heads/main'
-          && needs.test_ubuntu_24_04-4_0_0-malloctrim.result != 'success'
-          && (needs.test_ubuntu_24_04-4_0_0-malloctrim.result != 'skipped'
-            || contains(inputs.necessary_jobs, ';Test against production repo [ubuntu-24.04/4.0.0/malloctrim];'))
+          && needs.test_ubuntu_24_04-4_0_2-jemalloc.result != 'success'
+          && (needs.test_ubuntu_24_04-4_0_2-jemalloc.result != 'skipped'
+            || contains(inputs.necessary_jobs, ';Test against production repo [ubuntu-24.04/4.0.2/jemalloc];'))
       - name: Check whether 'Test [ubuntu-24.04/3.4.8/normal]' did not fail
         run: 'false'
         if: |
@@ -8379,13 +6251,6 @@ jobs:
           && needs.test_ubuntu_24_04-3_4_8-jemalloc.result != 'success'
           && (needs.test_ubuntu_24_04-3_4_8-jemalloc.result != 'skipped'
             || contains(inputs.necessary_jobs, ';Test against production repo [ubuntu-24.04/3.4.8/jemalloc];'))
-      - name: Check whether 'Test [ubuntu-24.04/3.4.8/malloctrim]' did not fail
-        run: 'false'
-        if: |
-          github.ref == 'refs/heads/main'
-          && needs.test_ubuntu_24_04-3_4_8-malloctrim.result != 'success'
-          && (needs.test_ubuntu_24_04-3_4_8-malloctrim.result != 'skipped'
-            || contains(inputs.necessary_jobs, ';Test against production repo [ubuntu-24.04/3.4.8/malloctrim];'))
       - name: Check whether 'Test [ubuntu-24.04/3.3.10/normal]' did not fail
         run: 'false'
         if: |
@@ -8400,13 +6265,6 @@ jobs:
           && needs.test_ubuntu_24_04-3_3_10-jemalloc.result != 'success'
           && (needs.test_ubuntu_24_04-3_3_10-jemalloc.result != 'skipped'
             || contains(inputs.necessary_jobs, ';Test against production repo [ubuntu-24.04/3.3.10/jemalloc];'))
-      - name: Check whether 'Test [ubuntu-24.04/3.3.10/malloctrim]' did not fail
-        run: 'false'
-        if: |
-          github.ref == 'refs/heads/main'
-          && needs.test_ubuntu_24_04-3_3_10-malloctrim.result != 'success'
-          && (needs.test_ubuntu_24_04-3_3_10-malloctrim.result != 'skipped'
-            || contains(inputs.necessary_jobs, ';Test against production repo [ubuntu-24.04/3.3.10/malloctrim];'))
       - name: Check whether 'Test [ubuntu-24.04/3.2.9/normal]' did not fail
         run: 'false'
         if: |

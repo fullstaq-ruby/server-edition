@@ -224,6 +224,16 @@ module CiWorkflowSupport
   end
 
 
+  def variants_for_ruby_version(ruby_package_version)
+    ruby_minor_version = ruby_package_version[:minor_version] || infer_ruby_minor_version_from_full_version(ruby_package_version[:full_version])
+    exclusions = config[:variant_exclusions] || []
+    variants.reject do |variant|
+      exclusions.any? do |exclusion|
+        exclusion[:variant] == variant[:name] && exclusion[:ruby_minor_versions].include?(ruby_minor_version)
+      end
+    end
+  end
+
   def ruby_source_versions
     @ruby_source_versions ||= begin
       result = []
@@ -302,7 +312,7 @@ module CiWorkflowSupport
     result = []
     distributions.each do |distribution|
       ruby_package_versions_for_distro(distribution).each do |ruby_package_version|
-        variants.each do |variant|
+        variants_for_ruby_version(ruby_package_version).each do |variant|
           result << ruby_package_artifact_name(ruby_package_version, distribution, variant)
         end
       end
