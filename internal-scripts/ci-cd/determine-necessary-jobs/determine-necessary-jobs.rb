@@ -77,7 +77,7 @@ class App
 
     distributions.each do |distribution|
       ruby_package_versions_for_distro(distribution).each do |ruby_package_version|
-        variants.each do |variant|
+        variants_for_ruby_version(ruby_package_version).each do |variant|
           determine_necessary_job("Build Ruby [#{distribution[:name]}/#{ruby_package_version[:id]}/#{variant[:name]}]") do
             artifact_absent?(ruby_package_artifact_name(ruby_package_version, distribution, variant))
           end
@@ -88,7 +88,7 @@ class App
 
     distributions.each do |distribution|
       ruby_package_versions_for_distro(distribution).each do |ruby_package_version|
-        variants.each do |variant|
+        variants_for_ruby_version(ruby_package_version).each do |variant|
           determine_necessary_job("Test against test repo [#{distribution[:name]}/#{ruby_package_version[:id]}/#{variant[:name]}]") do
             artifact_absent?("tested-against-test-#{distribution[:name]}_#{ruby_package_version[:id]}_#{variant[:name]}")
           end
@@ -98,7 +98,7 @@ class App
 
     distributions.each do |distribution|
       ruby_package_versions_for_distro(distribution).each do |ruby_package_version|
-        variants.each do |variant|
+        variants_for_ruby_version(ruby_package_version).each do |variant|
           determine_necessary_job("Test against production repo [#{distribution[:name]}/#{ruby_package_version[:id]}/#{variant[:name]}]") do
             artifact_absent?("tested-against-production-#{distribution[:name]}_#{ruby_package_version[:id]}_#{variant[:name]}")
           end

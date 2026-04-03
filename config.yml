@@ -12,8 +12,8 @@ ruby:
   ## then be sure to bump the corresponding `package_revision`!
   minor_version_packages:
     - minor_version: '4.0'
-      full_version: '4.0.0'
-      package_revision: '0'
+      full_version: '4.0.2'
+      package_revision: '1'
     - minor_version: '3.4'
       full_version: '3.4.8'
       package_revision: '7'
@@ -27,7 +27,7 @@ ruby:
   ## (Optional)
   ## Which tiny Ruby version packages to build.
   tiny_version_packages:
-    - full_version: '4.0.0'
+    - full_version: '4.0.2'
       package_revision: '0'
     - full_version: '3.4.8'
       package_revision: '0'
@@ -87,6 +87,16 @@ variants:
   normal: true
   jemalloc: true
   malloctrim: true
+
+## (Optional)
+## Excludes certain variants from certain Ruby minor versions.
+## Ruby >= 3.3 natively includes malloc_trim, so the malloctrim variant is unnecessary.
+variant_exclusions:
+  - variant: malloctrim
+    ruby_minor_versions:
+      - '3.3'
+      - '3.4'
+      - '4.0'
 
 ## (Required if variants.jemalloc is true)
 ## Version of Jemalloc to compile against.
