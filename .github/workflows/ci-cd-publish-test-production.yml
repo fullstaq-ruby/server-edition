@@ -28,8 +28,59 @@ env:
 jobs:
   ### Publish ###
 
-  publish:
-    name: Publish packages
+  publish_debs:
+    name: Publish DEB packages
+    runs-on: ubuntu-24.04
+    environment: deploy
+    timeout-minutes: 30
+    permissions:
+      id-token: write
+      packages: read
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Clean disk space
+        run: ./internal-scripts/ci-cd/publish/clean-disk-space.sh
+      - uses: azure/login@v2
+        with:
+          tenant-id: ${{ vars.AZURE_TENANT_ID }}
+          client-id: ${{ vars.AZURE_CLIENT_ID }}
+          subscription-id: ${{ vars.AZURE_SUBSCRIPTION_ID }}
+      - uses: google-github-actions/auth@v2
+        with:
+          project_id: ${{ vars.GCLOUD_PROJECT_ID }}
+          workload_identity_provider: projects/${{ vars.GCLOUD_PROJECT_NUM }}/locations/global/workloadIdentityPools/github-ci-deploy/providers/github-ci-deploy
+      - name: Set up Cloud SDK
+        uses: google-github-actions/setup-gcloud@v2
+        with:
+          version: '>= 363.0.0'
+
+      - name: Download artifacts
+        run: ./internal-scripts/ci-cd/download-artifacts.sh
+        env:
+          ARTIFACT_NAMES: |
+            common-deb
+            rbenv-deb
+            ruby-pkg_4.0_debian-11_normal ruby-pkg_4.0_debian-11_jemalloc ruby-pkg_3.4_debian-11_normal ruby-pkg_3.4_debian-11_jemalloc ruby-pkg_3.3_debian-11_normal ruby-pkg_3.3_debian-11_jemalloc ruby-pkg_3.2_debian-11_normal ruby-pkg_3.2_debian-11_jemalloc ruby-pkg_3.2_debian-11_malloctrim ruby-pkg_4.0.3_debian-11_normal ruby-pkg_4.0.3_debian-11_jemalloc ruby-pkg_3.4.9_debian-11_normal ruby-pkg_3.4.9_debian-11_jemalloc ruby-pkg_3.3.11_debian-11_normal ruby-pkg_3.3.11_debian-11_jemalloc ruby-pkg_3.2.11_debian-11_normal ruby-pkg_3.2.11_debian-11_jemalloc ruby-pkg_3.2.11_debian-11_malloctrim ruby-pkg_4.0_debian-12_normal ruby-pkg_4.0_debian-12_jemalloc ruby-pkg_3.4_debian-12_normal ruby-pkg_3.4_debian-12_jemalloc ruby-pkg_3.3_debian-12_normal ruby-pkg_3.3_debian-12_jemalloc ruby-pkg_3.2_debian-12_normal ruby-pkg_3.2_debian-12_jemalloc ruby-pkg_3.2_debian-12_malloctrim ruby-pkg_4.0.3_debian-12_normal ruby-pkg_4.0.3_debian-12_jemalloc ruby-pkg_3.4.9_debian-12_normal ruby-pkg_3.4.9_debian-12_jemalloc ruby-pkg_3.3.11_debian-12_normal ruby-pkg_3.3.11_debian-12_jemalloc ruby-pkg_3.2.11_debian-12_normal ruby-pkg_3.2.11_debian-12_jemalloc ruby-pkg_3.2.11_debian-12_malloctrim ruby-pkg_4.0_debian-13_normal ruby-pkg_4.0_debian-13_jemalloc ruby-pkg_3.4_debian-13_normal ruby-pkg_3.4_debian-13_jemalloc ruby-pkg_3.3_debian-13_normal ruby-pkg_3.3_debian-13_jemalloc ruby-pkg_4.0.3_debian-13_normal ruby-pkg_4.0.3_debian-13_jemalloc ruby-pkg_3.4.9_debian-13_normal ruby-pkg_3.4.9_debian-13_jemalloc ruby-pkg_3.3.11_debian-13_normal ruby-pkg_3.3.11_debian-13_jemalloc ruby-pkg_4.0_ubuntu-22.04_normal ruby-pkg_4.0_ubuntu-22.04_jemalloc ruby-pkg_3.4_ubuntu-22.04_normal ruby-pkg_3.4_ubuntu-22.04_jemalloc ruby-pkg_3.3_ubuntu-22.04_normal ruby-pkg_3.3_ubuntu-22.04_jemalloc ruby-pkg_3.2_ubuntu-22.04_normal ruby-pkg_3.2_ubuntu-22.04_jemalloc ruby-pkg_3.2_ubuntu-22.04_malloctrim ruby-pkg_4.0.3_ubuntu-22.04_normal ruby-pkg_4.0.3_ubuntu-22.04_jemalloc ruby-pkg_3.4.9_ubuntu-22.04_normal ruby-pkg_3.4.9_ubuntu-22.04_jemalloc ruby-pkg_3.3.11_ubuntu-22.04_normal ruby-pkg_3.3.11_ubuntu-22.04_jemalloc ruby-pkg_3.2.11_ubuntu-22.04_normal ruby-pkg_3.2.11_ubuntu-22.04_jemalloc ruby-pkg_3.2.11_ubuntu-22.04_malloctrim ruby-pkg_4.0_ubuntu-24.04_normal ruby-pkg_4.0_ubuntu-24.04_jemalloc ruby-pkg_3.4_ubuntu-24.04_normal ruby-pkg_3.4_ubuntu-24.04_jemalloc ruby-pkg_3.3_ubuntu-24.04_normal ruby-pkg_3.3_ubuntu-24.04_jemalloc ruby-pkg_3.2_ubuntu-24.04_normal ruby-pkg_3.2_ubuntu-24.04_jemalloc ruby-pkg_3.2_ubuntu-24.04_malloctrim ruby-pkg_4.0.3_ubuntu-24.04_normal ruby-pkg_4.0.3_ubuntu-24.04_jemalloc ruby-pkg_3.4.9_ubuntu-24.04_normal ruby-pkg_3.4.9_ubuntu-24.04_jemalloc ruby-pkg_3.3.11_ubuntu-24.04_normal ruby-pkg_3.3.11_ubuntu-24.04_jemalloc ruby-pkg_3.2.11_ubuntu-24.04_normal ruby-pkg_3.2.11_ubuntu-24.04_jemalloc ruby-pkg_3.2.11_ubuntu-24.04_malloctrim
+          ARTIFACT_PATH: pkgs
+          CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
+
+      - name: Install Aptly
+        run: ./internal-scripts/ci-cd/publish/install-aptly.sh
+
+      - name: Upload DEBs to repo
+        run: ./internal-scripts/ci-cd/publish/publish-debs.rb pkgs/*/*.deb
+        env:
+          PRODUCTION_REPO_BUCKET_NAME: fsruby-server-edition-apt-repo
+          CI_ARTIFACTS_BUCKET_NAME: ${{ vars.CI_ARTIFACTS_BUCKET }}
+          TESTING: false
+          OVERWRITE_EXISTING: false
+          DRY_RUN: ${{ github.ref != 'refs/heads/main' }}
+          CLEANUP: true
+
+  publish_rpms:
+    name: Publish RPM packages
     runs-on: ubuntu-24.04
     environment: deploy
     timeout-minutes: 30
@@ -64,11 +115,9 @@ jobs:
         run: ./internal-scripts/ci-cd/download-artifacts.sh
         env:
           ARTIFACT_NAMES: |
-            common-deb
             common-rpm
-            rbenv-deb
             rbenv-rpm
-            ruby-pkg_4.0_centos-8_normal ruby-pkg_4.0_centos-8_jemalloc ruby-pkg_3.4_centos-8_normal ruby-pkg_3.4_centos-8_jemalloc ruby-pkg_3.3_centos-8_normal ruby-pkg_3.3_centos-8_jemalloc ruby-pkg_3.2_centos-8_normal ruby-pkg_3.2_centos-8_jemalloc ruby-pkg_3.2_centos-8_malloctrim ruby-pkg_4.0.3_centos-8_normal ruby-pkg_4.0.3_centos-8_jemalloc ruby-pkg_3.4.9_centos-8_normal ruby-pkg_3.4.9_centos-8_jemalloc ruby-pkg_3.3.11_centos-8_normal ruby-pkg_3.3.11_centos-8_jemalloc ruby-pkg_3.2.11_centos-8_normal ruby-pkg_3.2.11_centos-8_jemalloc ruby-pkg_3.2.11_centos-8_malloctrim ruby-pkg_4.0_debian-11_normal ruby-pkg_4.0_debian-11_jemalloc ruby-pkg_3.4_debian-11_normal ruby-pkg_3.4_debian-11_jemalloc ruby-pkg_3.3_debian-11_normal ruby-pkg_3.3_debian-11_jemalloc ruby-pkg_3.2_debian-11_normal ruby-pkg_3.2_debian-11_jemalloc ruby-pkg_3.2_debian-11_malloctrim ruby-pkg_4.0.3_debian-11_normal ruby-pkg_4.0.3_debian-11_jemalloc ruby-pkg_3.4.9_debian-11_normal ruby-pkg_3.4.9_debian-11_jemalloc ruby-pkg_3.3.11_debian-11_normal ruby-pkg_3.3.11_debian-11_jemalloc ruby-pkg_3.2.11_debian-11_normal ruby-pkg_3.2.11_debian-11_jemalloc ruby-pkg_3.2.11_debian-11_malloctrim ruby-pkg_4.0_debian-12_normal ruby-pkg_4.0_debian-12_jemalloc ruby-pkg_3.4_debian-12_normal ruby-pkg_3.4_debian-12_jemalloc ruby-pkg_3.3_debian-12_normal ruby-pkg_3.3_debian-12_jemalloc ruby-pkg_3.2_debian-12_normal ruby-pkg_3.2_debian-12_jemalloc ruby-pkg_3.2_debian-12_malloctrim ruby-pkg_4.0.3_debian-12_normal ruby-pkg_4.0.3_debian-12_jemalloc ruby-pkg_3.4.9_debian-12_normal ruby-pkg_3.4.9_debian-12_jemalloc ruby-pkg_3.3.11_debian-12_normal ruby-pkg_3.3.11_debian-12_jemalloc ruby-pkg_3.2.11_debian-12_normal ruby-pkg_3.2.11_debian-12_jemalloc ruby-pkg_3.2.11_debian-12_malloctrim ruby-pkg_4.0_debian-13_normal ruby-pkg_4.0_debian-13_jemalloc ruby-pkg_3.4_debian-13_normal ruby-pkg_3.4_debian-13_jemalloc ruby-pkg_3.3_debian-13_normal ruby-pkg_3.3_debian-13_jemalloc ruby-pkg_4.0.3_debian-13_normal ruby-pkg_4.0.3_debian-13_jemalloc ruby-pkg_3.4.9_debian-13_normal ruby-pkg_3.4.9_debian-13_jemalloc ruby-pkg_3.3.11_debian-13_normal ruby-pkg_3.3.11_debian-13_jemalloc ruby-pkg_4.0_el-9_normal ruby-pkg_4.0_el-9_jemalloc ruby-pkg_3.4_el-9_normal ruby-pkg_3.4_el-9_jemalloc ruby-pkg_3.3_el-9_normal ruby-pkg_3.3_el-9_jemalloc ruby-pkg_3.2_el-9_normal ruby-pkg_3.2_el-9_jemalloc ruby-pkg_3.2_el-9_malloctrim ruby-pkg_4.0.3_el-9_normal ruby-pkg_4.0.3_el-9_jemalloc ruby-pkg_3.4.9_el-9_normal ruby-pkg_3.4.9_el-9_jemalloc ruby-pkg_3.3.11_el-9_normal ruby-pkg_3.3.11_el-9_jemalloc ruby-pkg_3.2.11_el-9_normal ruby-pkg_3.2.11_el-9_jemalloc ruby-pkg_3.2.11_el-9_malloctrim ruby-pkg_4.0_ubuntu-22.04_normal ruby-pkg_4.0_ubuntu-22.04_jemalloc ruby-pkg_3.4_ubuntu-22.04_normal ruby-pkg_3.4_ubuntu-22.04_jemalloc ruby-pkg_3.3_ubuntu-22.04_normal ruby-pkg_3.3_ubuntu-22.04_jemalloc ruby-pkg_3.2_ubuntu-22.04_normal ruby-pkg_3.2_ubuntu-22.04_jemalloc ruby-pkg_3.2_ubuntu-22.04_malloctrim ruby-pkg_4.0.3_ubuntu-22.04_normal ruby-pkg_4.0.3_ubuntu-22.04_jemalloc ruby-pkg_3.4.9_ubuntu-22.04_normal ruby-pkg_3.4.9_ubuntu-22.04_jemalloc ruby-pkg_3.3.11_ubuntu-22.04_normal ruby-pkg_3.3.11_ubuntu-22.04_jemalloc ruby-pkg_3.2.11_ubuntu-22.04_normal ruby-pkg_3.2.11_ubuntu-22.04_jemalloc ruby-pkg_3.2.11_ubuntu-22.04_malloctrim ruby-pkg_4.0_ubuntu-24.04_normal ruby-pkg_4.0_ubuntu-24.04_jemalloc ruby-pkg_3.4_ubuntu-24.04_normal ruby-pkg_3.4_ubuntu-24.04_jemalloc ruby-pkg_3.3_ubuntu-24.04_normal ruby-pkg_3.3_ubuntu-24.04_jemalloc ruby-pkg_3.2_ubuntu-24.04_normal ruby-pkg_3.2_ubuntu-24.04_jemalloc ruby-pkg_3.2_ubuntu-24.04_malloctrim ruby-pkg_4.0.3_ubuntu-24.04_normal ruby-pkg_4.0.3_ubuntu-24.04_jemalloc ruby-pkg_3.4.9_ubuntu-24.04_normal ruby-pkg_3.4.9_ubuntu-24.04_jemalloc ruby-pkg_3.3.11_ubuntu-24.04_normal ruby-pkg_3.3.11_ubuntu-24.04_jemalloc ruby-pkg_3.2.11_ubuntu-24.04_normal ruby-pkg_3.2.11_ubuntu-24.04_jemalloc ruby-pkg_3.2.11_ubuntu-24.04_malloctrim
+            ruby-pkg_4.0_centos-8_normal ruby-pkg_4.0_centos-8_jemalloc ruby-pkg_3.4_centos-8_normal ruby-pkg_3.4_centos-8_jemalloc ruby-pkg_3.3_centos-8_normal ruby-pkg_3.3_centos-8_jemalloc ruby-pkg_3.2_centos-8_normal ruby-pkg_3.2_centos-8_jemalloc ruby-pkg_3.2_centos-8_malloctrim ruby-pkg_4.0.3_centos-8_normal ruby-pkg_4.0.3_centos-8_jemalloc ruby-pkg_3.4.9_centos-8_normal ruby-pkg_3.4.9_centos-8_jemalloc ruby-pkg_3.3.11_centos-8_normal ruby-pkg_3.3.11_centos-8_jemalloc ruby-pkg_3.2.11_centos-8_normal ruby-pkg_3.2.11_centos-8_jemalloc ruby-pkg_3.2.11_centos-8_malloctrim ruby-pkg_4.0_el-9_normal ruby-pkg_4.0_el-9_jemalloc ruby-pkg_3.4_el-9_normal ruby-pkg_3.4_el-9_jemalloc ruby-pkg_3.3_el-9_normal ruby-pkg_3.3_el-9_jemalloc ruby-pkg_3.2_el-9_normal ruby-pkg_3.2_el-9_jemalloc ruby-pkg_3.2_el-9_malloctrim ruby-pkg_4.0.3_el-9_normal ruby-pkg_4.0.3_el-9_jemalloc ruby-pkg_3.4.9_el-9_normal ruby-pkg_3.4.9_el-9_jemalloc ruby-pkg_3.3.11_el-9_normal ruby-pkg_3.3.11_el-9_jemalloc ruby-pkg_3.2.11_el-9_normal ruby-pkg_3.2.11_el-9_jemalloc ruby-pkg_3.2.11_el-9_malloctrim
           ARTIFACT_PATH: pkgs
           CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
 
@@ -84,22 +133,6 @@ jobs:
         if: contains(inputs.necessary_jobs, ';Use locally-built Docker image utility;')
         env:
           TARBALL: image.tar.zst
-      - name: Install Aptly
-        run: ./internal-scripts/ci-cd/publish/install-aptly.sh
-
-      - name: Determine latest release tag
-        # Sets environment variable $LATEST_RELEASE_TAG
-        run: ./internal-scripts/ci-cd/check-version-numbers-need-changing/determine-latest-release-tag.sh
-
-      - name: Upload DEBs to repo
-        run: ./internal-scripts/ci-cd/publish/publish-debs.rb pkgs/*/*.deb
-        env:
-          PRODUCTION_REPO_BUCKET_NAME: fsruby-server-edition-apt-repo
-          CI_ARTIFACTS_BUCKET_NAME: ${{ vars.CI_ARTIFACTS_BUCKET }}
-          TESTING: false
-          OVERWRITE_EXISTING: false
-          DRY_RUN: ${{ github.ref != 'refs/heads/main' }}
-          CLEANUP: true
 
       - name: Upload RPMs to repo
         run: ./internal-scripts/ci-cd/publish/publish-rpms.rb pkgs/*/*.rpm
@@ -110,9 +143,21 @@ jobs:
           OVERWRITE_EXISTING: false
           DRY_RUN: ${{ github.ref != 'refs/heads/main' }}
 
+  restart_web_server:
+    name: Restart web server
+    needs:
+      - publish_debs
+      - publish_rpms
+    runs-on: ubuntu-24.04
+    environment: deploy
+    timeout-minutes: 10
+    permissions:
+      id-token: write
+    if: github.ref == 'refs/heads/main'
+    steps:
+      - uses: actions/checkout@v4
       - uses: actions/github-script@v7
         id: get-id-token
-        if: github.ref == 'refs/heads/main'
         with:
           script: |
             const fs = require('fs');
@@ -125,7 +170,6 @@ jobs:
 
       - name: Restart web server
         run: ./internal-scripts/ci-cd/publish/restart-web-server.rb
-        if: github.ref == 'refs/heads/main'
         env:
           ID_TOKEN: ${{ steps.get-id-token.outputs.id_token }}
 
@@ -137,7 +181,7 @@ jobs:
   test_centos_8-4_0-normal:
     name: 'Test [centos-8/4.0/normal]'
     needs:
-      - publish
+      - publish_rpms
     runs-on: ubuntu-22.04
     environment: test
     timeout-minutes: 30
@@ -180,7 +224,7 @@ jobs:
   test_centos_8-4_0-jemalloc:
     name: 'Test [centos-8/4.0/jemalloc]'
     needs:
-      - publish
+      - publish_rpms
     runs-on: ubuntu-22.04
     environment: test
     timeout-minutes: 30
@@ -223,7 +267,7 @@ jobs:
   test_centos_8-3_4-normal:
     name: 'Test [centos-8/3.4/normal]'
     needs:
-      - publish
+      - publish_rpms
     runs-on: ubuntu-22.04
     environment: test
     timeout-minutes: 30
@@ -266,7 +310,7 @@ jobs:
   test_centos_8-3_4-jemalloc:
     name: 'Test [centos-8/3.4/jemalloc]'
     needs:
-      - publish
+      - publish_rpms
     runs-on: ubuntu-22.04
     environment: test
     timeout-minutes: 30
@@ -309,7 +353,7 @@ jobs:
   test_centos_8-3_3-normal:
     name: 'Test [centos-8/3.3/normal]'
     needs:
-      - publish
+      - publish_rpms
     runs-on: ubuntu-22.04
     environment: test
     timeout-minutes: 30
@@ -352,7 +396,7 @@ jobs:
   test_centos_8-3_3-jemalloc:
     name: 'Test [centos-8/3.3/jemalloc]'
     needs:
-      - publish
+      - publish_rpms
     runs-on: ubuntu-22.04
     environment: test
     timeout-minutes: 30
@@ -395,7 +439,7 @@ jobs:
   test_centos_8-3_2-normal:
     name: 'Test [centos-8/3.2/normal]'
     needs:
-      - publish
+      - publish_rpms
     runs-on: ubuntu-22.04
     environment: test
     timeout-minutes: 30
@@ -438,7 +482,7 @@ jobs:
   test_centos_8-3_2-jemalloc:
     name: 'Test [centos-8/3.2/jemalloc]'
     needs:
-      - publish
+      - publish_rpms
     runs-on: ubuntu-22.04
     environment: test
     timeout-minutes: 30
@@ -481,7 +525,7 @@ jobs:
   test_centos_8-3_2-malloctrim:
     name: 'Test [centos-8/3.2/malloctrim]'
     needs:
-      - publish
+      - publish_rpms
     runs-on: ubuntu-22.04
     environment: test
     timeout-minutes: 30
@@ -524,7 +568,7 @@ jobs:
   test_centos_8-4_0_3-normal:
     name: 'Test [centos-8/4.0.3/normal]'
     needs:
-      - publish
+      - publish_rpms
     runs-on: ubuntu-22.04
     environment: test
     timeout-minutes: 30
@@ -567,7 +611,7 @@ jobs:
   test_centos_8-4_0_3-jemalloc:
     name: 'Test [centos-8/4.0.3/jemalloc]'
     needs:
-      - publish
+      - publish_rpms
     runs-on: ubuntu-22.04
     environment: test
     timeout-minutes: 30
@@ -610,7 +654,7 @@ jobs:
   test_centos_8-3_4_9-normal:
     name: 'Test [centos-8/3.4.9/normal]'
     needs:
-      - publish
+      - publish_rpms
     runs-on: ubuntu-22.04
     environment: test
     timeout-minutes: 30
@@ -653,7 +697,7 @@ jobs:
   test_centos_8-3_4_9-jemalloc:
     name: 'Test [centos-8/3.4.9/jemalloc]'
     needs:
-      - publish
+      - publish_rpms
     runs-on: ubuntu-22.04
     environment: test
     timeout-minutes: 30
@@ -696,7 +740,7 @@ jobs:
   test_centos_8-3_3_11-normal:
     name: 'Test [centos-8/3.3.11/normal]'
     needs:
-      - publish
+      - publish_rpms
     runs-on: ubuntu-22.04
     environment: test
     timeout-minutes: 30
@@ -739,7 +783,7 @@ jobs:
   test_centos_8-3_3_11-jemalloc:
     name: 'Test [centos-8/3.3.11/jemalloc]'
     needs:
-      - publish
+      - publish_rpms
     runs-on: ubuntu-22.04
     environment: test
     timeout-minutes: 30
@@ -782,7 +826,7 @@ jobs:
   test_centos_8-3_2_11-normal:
     name: 'Test [centos-8/3.2.11/normal]'
     needs:
-      - publish
+      - publish_rpms
     runs-on: ubuntu-22.04
     environment: test
     timeout-minutes: 30
@@ -825,7 +869,7 @@ jobs:
   test_centos_8-3_2_11-jemalloc:
     name: 'Test [centos-8/3.2.11/jemalloc]'
     needs:
-      - publish
+      - publish_rpms
     runs-on: ubuntu-22.04
     environment: test
     timeout-minutes: 30
@@ -868,7 +912,7 @@ jobs:
   test_centos_8-3_2_11-malloctrim:
     name: 'Test [centos-8/3.2.11/malloctrim]'
     needs:
-      - publish
+      - publish_rpms
     runs-on: ubuntu-22.04
     environment: test
     timeout-minutes: 30
@@ -912,7 +956,7 @@ jobs:
   test_debian_11-4_0-normal:
     name: 'Test [debian-11/4.0/normal]'
     needs:
-      - publish
+      - publish_debs
     runs-on: ubuntu-22.04
     environment: test
     timeout-minutes: 30
@@ -955,7 +999,7 @@ jobs:
   test_debian_11-4_0-jemalloc:
     name: 'Test [debian-11/4.0/jemalloc]'
     needs:
-      - publish
+      - publish_debs
     runs-on: ubuntu-22.04
     environment: test
     timeout-minutes: 30
@@ -998,7 +1042,7 @@ jobs:
   test_debian_11-3_4-normal:
     name: 'Test [debian-11/3.4/normal]'
     needs:
-      - publish
+      - publish_debs
     runs-on: ubuntu-22.04
     environment: test
     timeout-minutes: 30
@@ -1041,7 +1085,7 @@ jobs:
   test_debian_11-3_4-jemalloc:
     name: 'Test [debian-11/3.4/jemalloc]'
     needs:
-      - publish
+      - publish_debs
     runs-on: ubuntu-22.04
     environment: test
     timeout-minutes: 30
@@ -1084,7 +1128,7 @@ jobs:
   test_debian_11-3_3-normal:
     name: 'Test [debian-11/3.3/normal]'
     needs:
-      - publish
+      - publish_debs
     runs-on: ubuntu-22.04
     environment: test
     timeout-minutes: 30
@@ -1127,7 +1171,7 @@ jobs:
   test_debian_11-3_3-jemalloc:
     name: 'Test [debian-11/3.3/jemalloc]'
     needs:
-      - publish
+      - publish_debs
     runs-on: ubuntu-22.04
     environment: test
     timeout-minutes: 30
@@ -1170,7 +1214,7 @@ jobs:
   test_debian_11-3_2-normal:
     name: 'Test [debian-11/3.2/normal]'
     needs:
-      - publish
+      - publish_debs
     runs-on: ubuntu-22.04
     environment: test
     timeout-minutes: 30
@@ -1213,7 +1257,7 @@ jobs:
   test_debian_11-3_2-jemalloc:
     name: 'Test [debian-11/3.2/jemalloc]'
     needs:
-      - publish
+      - publish_debs
     runs-on: ubuntu-22.04
     environment: test
     timeout-minutes: 30
@@ -1256,7 +1300,7 @@ jobs:
   test_debian_11-3_2-malloctrim:
     name: 'Test [debian-11/3.2/malloctrim]'
     needs:
-      - publish
+      - publish_debs
     runs-on: ubuntu-22.04
     environment: test
     timeout-minutes: 30
@@ -1299,7 +1343,7 @@ jobs:
   test_debian_11-4_0_3-normal:
     name: 'Test [debian-11/4.0.3/normal]'
     needs:
-      - publish
+      - publish_debs
     runs-on: ubuntu-22.04
     environment: test
     timeout-minutes: 30
@@ -1342,7 +1386,7 @@ jobs:
   test_debian_11-4_0_3-jemalloc:
     name: 'Test [debian-11/4.0.3/jemalloc]'
     needs:
-      - publish
+      - publish_debs
     runs-on: ubuntu-22.04
     environment: test
     timeout-minutes: 30
@@ -1385,7 +1429,7 @@ jobs:
   test_debian_11-3_4_9-normal:
     name: 'Test [debian-11/3.4.9/normal]'
     needs:
-      - publish
+      - publish_debs
     runs-on: ubuntu-22.04
     environment: test
     timeout-minutes: 30
@@ -1428,7 +1472,7 @@ jobs:
   test_debian_11-3_4_9-jemalloc:
     name: 'Test [debian-11/3.4.9/jemalloc]'
     needs:
-      - publish
+      - publish_debs
     runs-on: ubuntu-22.04
     environment: test
     timeout-minutes: 30
@@ -1471,7 +1515,7 @@ jobs:
   test_debian_11-3_3_11-normal:
     name: 'Test [debian-11/3.3.11/normal]'
     needs:
-      - publish
+      - publish_debs
     runs-on: ubuntu-22.04
     environment: test
     timeout-minutes: 30
@@ -1514,7 +1558,7 @@ jobs:
   test_debian_11-3_3_11-jemalloc:
     name: 'Test [debian-11/3.3.11/jemalloc]'
     needs:
-      - publish
+      - publish_debs
     runs-on: ubuntu-22.04
     environment: test
     timeout-minutes: 30
@@ -1557,7 +1601,7 @@ jobs:
   test_debian_11-3_2_11-normal:
     name: 'Test [debian-11/3.2.11/normal]'
     needs:
-      - publish
+      - publish_debs
     runs-on: ubuntu-22.04
     environment: test
     timeout-minutes: 30
@@ -1600,7 +1644,7 @@ jobs:
   test_debian_11-3_2_11-jemalloc:
     name: 'Test [debian-11/3.2.11/jemalloc]'
     needs:
-      - publish
+      - publish_debs
     runs-on: ubuntu-22.04
     environment: test
     timeout-minutes: 30
@@ -1643,7 +1687,7 @@ jobs:
   test_debian_11-3_2_11-malloctrim:
     name: 'Test [debian-11/3.2.11/malloctrim]'
     needs:
-      - publish
+      - publish_debs
     runs-on: ubuntu-22.04
     environment: test
     timeout-minutes: 30
@@ -1687,7 +1731,7 @@ jobs:
   test_debian_12-4_0-normal:
     name: 'Test [debian-12/4.0/normal]'
     needs:
-      - publish
+      - publish_debs
     runs-on: ubuntu-22.04
     environment: test
     timeout-minutes: 30
@@ -1730,7 +1774,7 @@ jobs:
   test_debian_12-4_0-jemalloc:
     name: 'Test [debian-12/4.0/jemalloc]'
     needs:
-      - publish
+      - publish_debs
     runs-on: ubuntu-22.04
     environment: test
     timeout-minutes: 30
@@ -1773,7 +1817,7 @@ jobs:
   test_debian_12-3_4-normal:
     name: 'Test [debian-12/3.4/normal]'
     needs:
-      - publish
+      - publish_debs
     runs-on: ubuntu-22.04
     environment: test
     timeout-minutes: 30
@@ -1816,7 +1860,7 @@ jobs:
   test_debian_12-3_4-jemalloc:
     name: 'Test [debian-12/3.4/jemalloc]'
     needs:
-      - publish
+      - publish_debs
     runs-on: ubuntu-22.04
     environment: test
     timeout-minutes: 30
@@ -1859,7 +1903,7 @@ jobs:
   test_debian_12-3_3-normal:
     name: 'Test [debian-12/3.3/normal]'
     needs:
-      - publish
+      - publish_debs
     runs-on: ubuntu-22.04
     environment: test
     timeout-minutes: 30
@@ -1902,7 +1946,7 @@ jobs:
   test_debian_12-3_3-jemalloc:
     name: 'Test [debian-12/3.3/jemalloc]'
     needs:
-      - publish
+      - publish_debs
     runs-on: ubuntu-22.04
     environment: test
     timeout-minutes: 30
@@ -1945,7 +1989,7 @@ jobs:
   test_debian_12-3_2-normal:
     name: 'Test [debian-12/3.2/normal]'
     needs:
-      - publish
+      - publish_debs
     runs-on: ubuntu-22.04
     environment: test
     timeout-minutes: 30
@@ -1988,7 +2032,7 @@ jobs:
   test_debian_12-3_2-jemalloc:
     name: 'Test [debian-12/3.2/jemalloc]'
     needs:
-      - publish
+      - publish_debs
     runs-on: ubuntu-22.04
     environment: test
     timeout-minutes: 30
@@ -2031,7 +2075,7 @@ jobs:
   test_debian_12-3_2-malloctrim:
     name: 'Test [debian-12/3.2/malloctrim]'
     needs:
-      - publish
+      - publish_debs
     runs-on: ubuntu-22.04
     environment: test
     timeout-minutes: 30
@@ -2074,7 +2118,7 @@ jobs:
   test_debian_12-4_0_3-normal:
     name: 'Test [debian-12/4.0.3/normal]'
     needs:
-      - publish
+      - publish_debs
     runs-on: ubuntu-22.04
     environment: test
     timeout-minutes: 30
@@ -2117,7 +2161,7 @@ jobs:
   test_debian_12-4_0_3-jemalloc:
     name: 'Test [debian-12/4.0.3/jemalloc]'
     needs:
-      - publish
+      - publish_debs
     runs-on: ubuntu-22.04
     environment: test
     timeout-minutes: 30
@@ -2160,7 +2204,7 @@ jobs:
   test_debian_12-3_4_9-normal:
     name: 'Test [debian-12/3.4.9/normal]'
     needs:
-      - publish
+      - publish_debs
     runs-on: ubuntu-22.04
     environment: test
     timeout-minutes: 30
@@ -2203,7 +2247,7 @@ jobs:
   test_debian_12-3_4_9-jemalloc:
     name: 'Test [debian-12/3.4.9/jemalloc]'
     needs:
-      - publish
+      - publish_debs
     runs-on: ubuntu-22.04
     environment: test
     timeout-minutes: 30
@@ -2246,7 +2290,7 @@ jobs:
   test_debian_12-3_3_11-normal:
     name: 'Test [debian-12/3.3.11/normal]'
     needs:
-      - publish
+      - publish_debs
     runs-on: ubuntu-22.04
     environment: test
     timeout-minutes: 30
@@ -2289,7 +2333,7 @@ jobs:
   test_debian_12-3_3_11-jemalloc:
     name: 'Test [debian-12/3.3.11/jemalloc]'
     needs:
-      - publish
+      - publish_debs
     runs-on: ubuntu-22.04
     environment: test
     timeout-minutes: 30
@@ -2332,7 +2376,7 @@ jobs:
   test_debian_12-3_2_11-normal:
     name: 'Test [debian-12/3.2.11/normal]'
     needs:
-      - publish
+      - publish_debs
     runs-on: ubuntu-22.04
     environment: test
     timeout-minutes: 30
@@ -2375,7 +2419,7 @@ jobs:
   test_debian_12-3_2_11-jemalloc:
     name: 'Test [debian-12/3.2.11/jemalloc]'
     needs:
-      - publish
+      - publish_debs
     runs-on: ubuntu-22.04
     environment: test
     timeout-minutes: 30
@@ -2418,7 +2462,7 @@ jobs:
   test_debian_12-3_2_11-malloctrim:
     name: 'Test [debian-12/3.2.11/malloctrim]'
     needs:
-      - publish
+      - publish_debs
     runs-on: ubuntu-22.04
     environment: test
     timeout-minutes: 30
@@ -2462,7 +2506,7 @@ jobs:
   test_debian_13-4_0-normal:
     name: 'Test [debian-13/4.0/normal]'
     needs:
-      - publish
+      - publish_debs
     runs-on: ubuntu-22.04
     environment: test
     timeout-minutes: 30
@@ -2505,7 +2549,7 @@ jobs:
   test_debian_13-4_0-jemalloc:
     name: 'Test [debian-13/4.0/jemalloc]'
     needs:
-      - publish
+      - publish_debs
     runs-on: ubuntu-22.04
     environment: test
     timeout-minutes: 30
@@ -2548,7 +2592,7 @@ jobs:
   test_debian_13-3_4-normal:
     name: 'Test [debian-13/3.4/normal]'
     needs:
-      - publish
+      - publish_debs
     runs-on: ubuntu-22.04
     environment: test
     timeout-minutes: 30
@@ -2591,7 +2635,7 @@ jobs:
   test_debian_13-3_4-jemalloc:
     name: 'Test [debian-13/3.4/jemalloc]'
     needs:
-      - publish
+      - publish_debs
     runs-on: ubuntu-22.04
     environment: test
     timeout-minutes: 30
@@ -2634,7 +2678,7 @@ jobs:
   test_debian_13-3_3-normal:
     name: 'Test [debian-13/3.3/normal]'
     needs:
-      - publish
+      - publish_debs
     runs-on: ubuntu-22.04
     environment: test
     timeout-minutes: 30
@@ -2677,7 +2721,7 @@ jobs:
   test_debian_13-3_3-jemalloc:
     name: 'Test [debian-13/3.3/jemalloc]'
     needs:
-      - publish
+      - publish_debs
     runs-on: ubuntu-22.04
     environment: test
     timeout-minutes: 30
@@ -2720,7 +2764,7 @@ jobs:
   test_debian_13-4_0_3-normal:
     name: 'Test [debian-13/4.0.3/normal]'
     needs:
-      - publish
+      - publish_debs
     runs-on: ubuntu-22.04
     environment: test
     timeout-minutes: 30
@@ -2763,7 +2807,7 @@ jobs:
   test_debian_13-4_0_3-jemalloc:
     name: 'Test [debian-13/4.0.3/jemalloc]'
     needs:
-      - publish
+      - publish_debs
     runs-on: ubuntu-22.04
     environment: test
     timeout-minutes: 30
@@ -2806,7 +2850,7 @@ jobs:
   test_debian_13-3_4_9-normal:
     name: 'Test [debian-13/3.4.9/normal]'
     needs:
-      - publish
+      - publish_debs
     runs-on: ubuntu-22.04
     environment: test
     timeout-minutes: 30
@@ -2849,7 +2893,7 @@ jobs:
   test_debian_13-3_4_9-jemalloc:
     name: 'Test [debian-13/3.4.9/jemalloc]'
     needs:
-      - publish
+      - publish_debs
     runs-on: ubuntu-22.04
     environment: test
     timeout-minutes: 30
@@ -2892,7 +2936,7 @@ jobs:
   test_debian_13-3_3_11-normal:
     name: 'Test [debian-13/3.3.11/normal]'
     needs:
-      - publish
+      - publish_debs
     runs-on: ubuntu-22.04
     environment: test
     timeout-minutes: 30
@@ -2935,7 +2979,7 @@ jobs:
   test_debian_13-3_3_11-jemalloc:
     name: 'Test [debian-13/3.3.11/jemalloc]'
     needs:
-      - publish
+      - publish_debs
     runs-on: ubuntu-22.04
     environment: test
     timeout-minutes: 30
@@ -2979,7 +3023,7 @@ jobs:
   test_el_9-4_0-normal:
     name: 'Test [el-9/4.0/normal]'
     needs:
-      - publish
+      - publish_rpms
     runs-on: ubuntu-22.04
     environment: test
     timeout-minutes: 30
@@ -3022,7 +3066,7 @@ jobs:
   test_el_9-4_0-jemalloc:
     name: 'Test [el-9/4.0/jemalloc]'
     needs:
-      - publish
+      - publish_rpms
     runs-on: ubuntu-22.04
     environment: test
     timeout-minutes: 30
@@ -3065,7 +3109,7 @@ jobs:
   test_el_9-3_4-normal:
     name: 'Test [el-9/3.4/normal]'
     needs:
-      - publish
+      - publish_rpms
     runs-on: ubuntu-22.04
     environment: test
     timeout-minutes: 30
@@ -3108,7 +3152,7 @@ jobs:
   test_el_9-3_4-jemalloc:
     name: 'Test [el-9/3.4/jemalloc]'
     needs:
-      - publish
+      - publish_rpms
     runs-on: ubuntu-22.04
     environment: test
     timeout-minutes: 30
@@ -3151,7 +3195,7 @@ jobs:
   test_el_9-3_3-normal:
     name: 'Test [el-9/3.3/normal]'
     needs:
-      - publish
+      - publish_rpms
     runs-on: ubuntu-22.04
     environment: test
     timeout-minutes: 30
@@ -3194,7 +3238,7 @@ jobs:
   test_el_9-3_3-jemalloc:
     name: 'Test [el-9/3.3/jemalloc]'
     needs:
-      - publish
+      - publish_rpms
     runs-on: ubuntu-22.04
     environment: test
     timeout-minutes: 30
@@ -3237,7 +3281,7 @@ jobs:
   test_el_9-3_2-normal:
     name: 'Test [el-9/3.2/normal]'
     needs:
-      - publish
+      - publish_rpms
     runs-on: ubuntu-22.04
     environment: test
     timeout-minutes: 30
@@ -3280,7 +3324,7 @@ jobs:
   test_el_9-3_2-jemalloc:
     name: 'Test [el-9/3.2/jemalloc]'
     needs:
-      - publish
+      - publish_rpms
     runs-on: ubuntu-22.04
     environment: test
     timeout-minutes: 30
@@ -3323,7 +3367,7 @@ jobs:
   test_el_9-3_2-malloctrim:
     name: 'Test [el-9/3.2/malloctrim]'
     needs:
-      - publish
+      - publish_rpms
     runs-on: ubuntu-22.04
     environment: test
     timeout-minutes: 30
@@ -3366,7 +3410,7 @@ jobs:
   test_el_9-4_0_3-normal:
     name: 'Test [el-9/4.0.3/normal]'
     needs:
-      - publish
+      - publish_rpms
     runs-on: ubuntu-22.04
     environment: test
     timeout-minutes: 30
@@ -3409,7 +3453,7 @@ jobs:
   test_el_9-4_0_3-jemalloc:
     name: 'Test [el-9/4.0.3/jemalloc]'
     needs:
-      - publish
+      - publish_rpms
     runs-on: ubuntu-22.04
     environment: test
     timeout-minutes: 30
@@ -3452,7 +3496,7 @@ jobs:
   test_el_9-3_4_9-normal:
     name: 'Test [el-9/3.4.9/normal]'
     needs:
-      - publish
+      - publish_rpms
     runs-on: ubuntu-22.04
     environment: test
     timeout-minutes: 30
@@ -3495,7 +3539,7 @@ jobs:
   test_el_9-3_4_9-jemalloc:
     name: 'Test [el-9/3.4.9/jemalloc]'
     needs:
-      - publish
+      - publish_rpms
     runs-on: ubuntu-22.04
     environment: test
     timeout-minutes: 30
@@ -3538,7 +3582,7 @@ jobs:
   test_el_9-3_3_11-normal:
     name: 'Test [el-9/3.3.11/normal]'
     needs:
-      - publish
+      - publish_rpms
     runs-on: ubuntu-22.04
     environment: test
     timeout-minutes: 30
@@ -3581,7 +3625,7 @@ jobs:
   test_el_9-3_3_11-jemalloc:
     name: 'Test [el-9/3.3.11/jemalloc]'
     needs:
-      - publish
+      - publish_rpms
     runs-on: ubuntu-22.04
     environment: test
     timeout-minutes: 30
@@ -3624,7 +3668,7 @@ jobs:
   test_el_9-3_2_11-normal:
     name: 'Test [el-9/3.2.11/normal]'
     needs:
-      - publish
+      - publish_rpms
     runs-on: ubuntu-22.04
     environment: test
     timeout-minutes: 30
@@ -3667,7 +3711,7 @@ jobs:
   test_el_9-3_2_11-jemalloc:
     name: 'Test [el-9/3.2.11/jemalloc]'
     needs:
-      - publish
+      - publish_rpms
     runs-on: ubuntu-22.04
     environment: test
     timeout-minutes: 30
@@ -3710,7 +3754,7 @@ jobs:
   test_el_9-3_2_11-malloctrim:
     name: 'Test [el-9/3.2.11/malloctrim]'
     needs:
-      - publish
+      - publish_rpms
     runs-on: ubuntu-22.04
     environment: test
     timeout-minutes: 30
@@ -3754,7 +3798,7 @@ jobs:
   test_ubuntu_22_04-4_0-normal:
     name: 'Test [ubuntu-22.04/4.0/normal]'
     needs:
-      - publish
+      - publish_debs
     runs-on: ubuntu-22.04
     environment: test
     timeout-minutes: 30
@@ -3797,7 +3841,7 @@ jobs:
   test_ubuntu_22_04-4_0-jemalloc:
     name: 'Test [ubuntu-22.04/4.0/jemalloc]'
     needs:
-      - publish
+      - publish_debs
     runs-on: ubuntu-22.04
     environment: test
     timeout-minutes: 30
@@ -3840,7 +3884,7 @@ jobs:
   test_ubuntu_22_04-3_4-normal:
     name: 'Test [ubuntu-22.04/3.4/normal]'
     needs:
-      - publish
+      - publish_debs
     runs-on: ubuntu-22.04
     environment: test
     timeout-minutes: 30
@@ -3883,7 +3927,7 @@ jobs:
   test_ubuntu_22_04-3_4-jemalloc:
     name: 'Test [ubuntu-22.04/3.4/jemalloc]'
     needs:
-      - publish
+      - publish_debs
     runs-on: ubuntu-22.04
     environment: test
     timeout-minutes: 30
@@ -3926,7 +3970,7 @@ jobs:
   test_ubuntu_22_04-3_3-normal:
     name: 'Test [ubuntu-22.04/3.3/normal]'
     needs:
-      - publish
+      - publish_debs
     runs-on: ubuntu-22.04
     environment: test
     timeout-minutes: 30
@@ -3969,7 +4013,7 @@ jobs:
   test_ubuntu_22_04-3_3-jemalloc:
     name: 'Test [ubuntu-22.04/3.3/jemalloc]'
     needs:
-      - publish
+      - publish_debs
     runs-on: ubuntu-22.04
     environment: test
     timeout-minutes: 30
@@ -4012,7 +4056,7 @@ jobs:
   test_ubuntu_22_04-3_2-normal:
     name: 'Test [ubuntu-22.04/3.2/normal]'
     needs:
-      - publish
+      - publish_debs
     runs-on: ubuntu-22.04
     environment: test
     timeout-minutes: 30
@@ -4055,7 +4099,7 @@ jobs:
   test_ubuntu_22_04-3_2-jemalloc:
     name: 'Test [ubuntu-22.04/3.2/jemalloc]'
     needs:
-      - publish
+      - publish_debs
     runs-on: ubuntu-22.04
     environment: test
     timeout-minutes: 30
@@ -4098,7 +4142,7 @@ jobs:
   test_ubuntu_22_04-3_2-malloctrim:
     name: 'Test [ubuntu-22.04/3.2/malloctrim]'
     needs:
-      - publish
+      - publish_debs
     runs-on: ubuntu-22.04
     environment: test
     timeout-minutes: 30
@@ -4141,7 +4185,7 @@ jobs:
   test_ubuntu_22_04-4_0_3-normal:
     name: 'Test [ubuntu-22.04/4.0.3/normal]'
     needs:
-      - publish
+      - publish_debs
     runs-on: ubuntu-22.04
     environment: test
     timeout-minutes: 30
@@ -4184,7 +4228,7 @@ jobs:
   test_ubuntu_22_04-4_0_3-jemalloc:
     name: 'Test [ubuntu-22.04/4.0.3/jemalloc]'
     needs:
-      - publish
+      - publish_debs
     runs-on: ubuntu-22.04
     environment: test
     timeout-minutes: 30
@@ -4227,7 +4271,7 @@ jobs:
   test_ubuntu_22_04-3_4_9-normal:
     name: 'Test [ubuntu-22.04/3.4.9/normal]'
     needs:
-      - publish
+      - publish_debs
     runs-on: ubuntu-22.04
     environment: test
     timeout-minutes: 30
@@ -4270,7 +4314,7 @@ jobs:
   test_ubuntu_22_04-3_4_9-jemalloc:
     name: 'Test [ubuntu-22.04/3.4.9/jemalloc]'
     needs:
-      - publish
+      - publish_debs
     runs-on: ubuntu-22.04
     environment: test
     timeout-minutes: 30
@@ -4313,7 +4357,7 @@ jobs:
   test_ubuntu_22_04-3_3_11-normal:
     name: 'Test [ubuntu-22.04/3.3.11/normal]'
     needs:
-      - publish
+      - publish_debs
     runs-on: ubuntu-22.04
     environment: test
     timeout-minutes: 30
@@ -4356,7 +4400,7 @@ jobs:
   test_ubuntu_22_04-3_3_11-jemalloc:
     name: 'Test [ubuntu-22.04/3.3.11/jemalloc]'
     needs:
-      - publish
+      - publish_debs
     runs-on: ubuntu-22.04
     environment: test
     timeout-minutes: 30
@@ -4399,7 +4443,7 @@ jobs:
   test_ubuntu_22_04-3_2_11-normal:
     name: 'Test [ubuntu-22.04/3.2.11/normal]'
     needs:
-      - publish
+      - publish_debs
     runs-on: ubuntu-22.04
     environment: test
     timeout-minutes: 30
@@ -4442,7 +4486,7 @@ jobs:
   test_ubuntu_22_04-3_2_11-jemalloc:
     name: 'Test [ubuntu-22.04/3.2.11/jemalloc]'
     needs:
-      - publish
+      - publish_debs
     runs-on: ubuntu-22.04
     environment: test
     timeout-minutes: 30
@@ -4485,7 +4529,7 @@ jobs:
   test_ubuntu_22_04-3_2_11-malloctrim:
     name: 'Test [ubuntu-22.04/3.2.11/malloctrim]'
     needs:
-      - publish
+      - publish_debs
     runs-on: ubuntu-22.04
     environment: test
     timeout-minutes: 30
@@ -4529,7 +4573,7 @@ jobs:
   test_ubuntu_24_04-4_0-normal:
     name: 'Test [ubuntu-24.04/4.0/normal]'
     needs:
-      - publish
+      - publish_debs
     runs-on: ubuntu-22.04
     environment: test
     timeout-minutes: 30
@@ -4572,7 +4616,7 @@ jobs:
   test_ubuntu_24_04-4_0-jemalloc:
     name: 'Test [ubuntu-24.04/4.0/jemalloc]'
     needs:
-      - publish
+      - publish_debs
     runs-on: ubuntu-22.04
     environment: test
     timeout-minutes: 30
@@ -4615,7 +4659,7 @@ jobs:
   test_ubuntu_24_04-3_4-normal:
     name: 'Test [ubuntu-24.04/3.4/normal]'
     needs:
-      - publish
+      - publish_debs
     runs-on: ubuntu-22.04
     environment: test
     timeout-minutes: 30
@@ -4658,7 +4702,7 @@ jobs:
   test_ubuntu_24_04-3_4-jemalloc:
     name: 'Test [ubuntu-24.04/3.4/jemalloc]'
     needs:
-      - publish
+      - publish_debs
     runs-on: ubuntu-22.04
     environment: test
     timeout-minutes: 30
@@ -4701,7 +4745,7 @@ jobs:
   test_ubuntu_24_04-3_3-normal:
     name: 'Test [ubuntu-24.04/3.3/normal]'
     needs:
-      - publish
+      - publish_debs
     runs-on: ubuntu-22.04
     environment: test
     timeout-minutes: 30
@@ -4744,7 +4788,7 @@ jobs:
   test_ubuntu_24_04-3_3-jemalloc:
     name: 'Test [ubuntu-24.04/3.3/jemalloc]'
     needs:
-      - publish
+      - publish_debs
     runs-on: ubuntu-22.04
     environment: test
     timeout-minutes: 30
@@ -4787,7 +4831,7 @@ jobs:
   test_ubuntu_24_04-3_2-normal:
     name: 'Test [ubuntu-24.04/3.2/normal]'
     needs:
-      - publish
+      - publish_debs
     runs-on: ubuntu-22.04
     environment: test
     timeout-minutes: 30
@@ -4830,7 +4874,7 @@ jobs:
   test_ubuntu_24_04-3_2-jemalloc:
     name: 'Test [ubuntu-24.04/3.2/jemalloc]'
     needs:
-      - publish
+      - publish_debs
     runs-on: ubuntu-22.04
     environment: test
     timeout-minutes: 30
@@ -4873,7 +4917,7 @@ jobs:
   test_ubuntu_24_04-3_2-malloctrim:
     name: 'Test [ubuntu-24.04/3.2/malloctrim]'
     needs:
-      - publish
+      - publish_debs
     runs-on: ubuntu-22.04
     environment: test
     timeout-minutes: 30
@@ -4916,7 +4960,7 @@ jobs:
   test_ubuntu_24_04-4_0_3-normal:
     name: 'Test [ubuntu-24.04/4.0.3/normal]'
     needs:
-      - publish
+      - publish_debs
     runs-on: ubuntu-22.04
     environment: test
     timeout-minutes: 30
@@ -4959,7 +5003,7 @@ jobs:
   test_ubuntu_24_04-4_0_3-jemalloc:
     name: 'Test [ubuntu-24.04/4.0.3/jemalloc]'
     needs:
-      - publish
+      - publish_debs
     runs-on: ubuntu-22.04
     environment: test
     timeout-minutes: 30
@@ -5002,7 +5046,7 @@ jobs:
   test_ubuntu_24_04-3_4_9-normal:
     name: 'Test [ubuntu-24.04/3.4.9/normal]'
     needs:
-      - publish
+      - publish_debs
     runs-on: ubuntu-22.04
     environment: test
     timeout-minutes: 30
@@ -5045,7 +5089,7 @@ jobs:
   test_ubuntu_24_04-3_4_9-jemalloc:
     name: 'Test [ubuntu-24.04/3.4.9/jemalloc]'
     needs:
-      - publish
+      - publish_debs
     runs-on: ubuntu-22.04
     environment: test
     timeout-minutes: 30
@@ -5088,7 +5132,7 @@ jobs:
   test_ubuntu_24_04-3_3_11-normal:
     name: 'Test [ubuntu-24.04/3.3.11/normal]'
     needs:
-      - publish
+      - publish_debs
     runs-on: ubuntu-22.04
     environment: test
     timeout-minutes: 30
@@ -5131,7 +5175,7 @@ jobs:
   test_ubuntu_24_04-3_3_11-jemalloc:
     name: 'Test [ubuntu-24.04/3.3.11/jemalloc]'
     needs:
-      - publish
+      - publish_debs
     runs-on: ubuntu-22.04
     environment: test
     timeout-minutes: 30
@@ -5174,7 +5218,7 @@ jobs:
   test_ubuntu_24_04-3_2_11-normal:
     name: 'Test [ubuntu-24.04/3.2.11/normal]'
     needs:
-      - publish
+      - publish_debs
     runs-on: ubuntu-22.04
     environment: test
     timeout-minutes: 30
@@ -5217,7 +5261,7 @@ jobs:
   test_ubuntu_24_04-3_2_11-jemalloc:
     name: 'Test [ubuntu-24.04/3.2.11/jemalloc]'
     needs:
-      - publish
+      - publish_debs
     runs-on: ubuntu-22.04
     environment: test
     timeout-minutes: 30
@@ -5260,7 +5304,7 @@ jobs:
   test_ubuntu_24_04-3_2_11-malloctrim:
     name: 'Test [ubuntu-24.04/3.2.11/malloctrim]'
     needs:
-      - publish
+      - publish_debs
     runs-on: ubuntu-22.04
     environment: test
     timeout-minutes: 30
@@ -5311,7 +5355,9 @@ jobs:
       id-token: write
       contents: write
     needs:
-      - publish
+      - publish_debs
+      - publish_rpms
+      - restart_web_server
       - test_centos_8-4_0-normal
       - test_centos_8-4_0-jemalloc
       - test_centos_8-3_4-normal
@@ -5442,9 +5488,19 @@ jobs:
 
       ### Check whether dependent jobs failed ###
 
-      - name: Check whether 'Publish packages' succeeded
+      - name: Check whether 'Publish DEB packages' succeeded
         run: 'false'
-        if: needs.publish.result != 'success'
+        if: needs.publish_debs.result != 'success'
+
+      - name: Check whether 'Publish RPM packages' succeeded
+        run: 'false'
+        if: needs.publish_rpms.result != 'success'
+
+      - name: Check whether 'Restart web server' did not fail
+        run: 'false'
+        if: |
+          needs.restart_web_server.result != 'success'
+          && needs.restart_web_server.result != 'skipped'
 
       - name: Check whether 'Test [centos-8/4.0/normal]' did not fail
         run: 'false'
