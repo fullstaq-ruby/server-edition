@@ -9,7 +9,7 @@ source "$SELFDIR/../lib/library.sh"
 
 
 header "Installing packages"
-ESSENTIAL_PACKAGES=(perl sudo binutils)
+ESSENTIAL_PACKAGES=(perl sudo binutils adduser)
 
 if [[ "$SERVER" = "" ]]; then
     echo "+ Create /etc/apt/sources.list.d/local.list"

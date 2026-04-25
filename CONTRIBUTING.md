@@ -26,6 +26,27 @@ Have a look at our [issue tracker](https://github.com/fullstaq-ruby/server-editi
 
 To learn how the Fullstaq Ruby Server Edition codebase works and how to develop it, please read our [development handbook](dev-handbook/README.md).
 
+## Testing your changes
+
+### Automated CI on forks
+
+When you push to your fork or open a pull request, a contributor CI workflow runs automatically. It:
+
+ * Validates CI/CD workflow YAML is up-to-date.
+ * Builds Ruby packages for two representative distributions (Ubuntu 24.04 and Enterprise Linux 9) with all three variants (normal, jemalloc, malloctrim).
+ * Runs smoke tests that install the packages and verify Ruby works correctly.
+
+No cloud credentials or special setup are needed — the workflow uses only Docker and GitHub Actions.
+
+If a maintainer wants to run the full CI pipeline against your PR (which tests all distributions and publishes to test repositories), they will add the `ok-to-test` label. This label is automatically removed when you push new commits, so the maintainer must re-review and re-label after each update.
+
+### Local builds and testing
+
+For faster iteration, you can build and test packages on your own machine. You only need Docker and Ruby >= 3.2:
+
+ * **Building packages:** see [Building packages locally](dev-handbook/building-packages-locally.md)
+ * **Testing packages:** see [Testing packages locally](dev-handbook/testing-packages-locally.md)
+
 ## Stuck? Need help?
 
 Please post something on our [discussion forum](https://github.com/fullstaq-ruby/server-edition/discussions).

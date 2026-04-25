@@ -1,5 +1,7 @@
 # Building packages locally
 
+> **Tip:** If you just want to validate that your changes compile and pass tests, the contributor CI workflow does this automatically when you push to your fork. See [CONTRIBUTING.md](../CONTRIBUTING.md#testing-your-changes) for details. The instructions below are for local builds when you want faster iteration or need to debug packaging issues.
+
 This tutorial shows how you can build packages on your own computer.
 
 Because we follow [the "minimal dependencies" principle](minimal-dependencies-principle.md), you can build packages for any distribution, regardless of which OS or distribution you're running on.
