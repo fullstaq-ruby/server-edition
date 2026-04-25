@@ -76,6 +76,20 @@ module CiWorkflowSupport
     end
   end
 
+  def contributor_distributions
+    @contributor_distributions ||= begin
+      names = config[:contributor_distributions]
+      return [] if names.nil?
+      names.map do |name|
+        {
+          name: name,
+          package_format: autodetect_package_format(name),
+          test_image: determine_test_image_for(name),
+        }
+      end
+    end
+  end
+
   def distribution_buckets
     @distribution_buckets ||= GeneralSupport.bucketize(distributions,
       DISTRIBUTIONS_BUCKETS_MAX_NUM)
@@ -259,6 +273,10 @@ module CiWorkflowSupport
         entry
       end
     end
+  end
+
+  def latest_ruby_package_version
+    ruby_package_versions.first
   end
 
   def ruby_package_versions_for_distro(distro)
