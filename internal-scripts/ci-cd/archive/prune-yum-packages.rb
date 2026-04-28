@@ -10,6 +10,7 @@
 #   PRODUCTION_REPO_BUCKET_NAME=fsruby-server-edition-yum-repo \
 #   ./internal-scripts/ci-cd/archive/prune-yum-packages.rb [--dry-run]
 
+require_relative '../../../lib/gcloud_storage_lock'
 require_relative '../../../lib/ci_workflow_support'
 require_relative '../../../lib/shell_scripting_support'
 require_relative '../../../lib/publishing_support'
@@ -33,79 +34,89 @@ class PruneYumPackages
     print_header 'Initializing'
     load_config
     create_temp_dirs
+    initialize_locking
     pull_utility_image_if_not_exists
     fetch_and_import_signing_key
 
-    print_header 'Downloading repository'
-    version = get_latest_production_repo_version
-    if version == 0
-      abort 'ERROR: No production repository exists yet'
-    end
-    fetch_repo(version)
-
-    print_header 'Identifying EOL Ruby versions'
-    active_minors = active_ruby_minor_versions
-    log_info "Active Ruby minor versions: #{active_minors.join(', ')}"
-
-    print_header 'Scanning and pruning packages'
     total_pruned = 0
-    affected_dirs = []
+    version = nil
 
-    Dir.glob("#{@local_repo_path}/*/*").each do |arch_dir|
-      next unless File.directory?(arch_dir)
-      distro = File.basename(File.dirname(arch_dir))
-      arch = File.basename(arch_dir)
-
-      rpms = Dir.glob("#{arch_dir}/fullstaq-ruby-*.rpm")
-      eol_rpms = rpms.select do |rpm|
-        basename = File.basename(rpm)
-        if basename =~ RUBY_RPM_PATTERN
-          !active_minors.include?($1)
-        else
-          false
+    begin
+      synchronize do
+        print_header 'Downloading repository'
+        version = get_latest_production_repo_version
+        if version == 0
+          abort 'ERROR: No production repository exists yet'
         end
+        fetch_repo(version)
+
+        print_header 'Identifying EOL Ruby versions'
+        active_minors = active_ruby_minor_versions
+        log_info "Active Ruby minor versions: #{active_minors.join(', ')}"
+
+        print_header 'Scanning and pruning packages'
+        affected_dirs = []
+
+        Dir.glob("#{@local_repo_path}/*/*").each do |arch_dir|
+          next unless File.directory?(arch_dir)
+          distro = File.basename(File.dirname(arch_dir))
+          arch = File.basename(arch_dir)
+
+          rpms = Dir.glob("#{arch_dir}/fullstaq-ruby-*.rpm")
+          eol_rpms = rpms.select do |rpm|
+            basename = File.basename(rpm)
+            if basename =~ RUBY_RPM_PATTERN
+              !active_minors.include?($1)
+            else
+              false
+            end
+          end
+
+          next if eol_rpms.empty?
+
+          log_notice "[#{distro}/#{arch}] Pruning #{eol_rpms.size} EOL packages (of #{rpms.size} total)"
+          eol_rpms.each { |rpm| log_info "  #{YELLOW}PRUNE#{RESET} #{File.basename(rpm)}" }
+          total_pruned += eol_rpms.size
+
+          if !@dry_run
+            eol_rpms.each { |rpm| File.delete(rpm) }
+            affected_dirs << arch_dir
+          end
+        end
+
+        if total_pruned == 0
+          log_notice 'No EOL Ruby packages found to prune'
+          return
+        end
+
+        log_notice "Total packages pruned: #{total_pruned}"
+
+        if @dry_run
+          log_notice 'DRY RUN — not uploading changes'
+          return
+        end
+
+        print_header 'Regenerating repo metadata'
+        affected_dirs.each do |dir|
+          invoke_createrepo(dir)
+          sign_repo(dir)
+        end
+        check_lock_health
+
+        print_header 'Uploading pruned repository'
+        upload_repo(version + 1, version)
+        create_version_note(version + 1)
+        declare_latest_version(version + 1)
       end
 
-      next if eol_rpms.empty?
-
-      log_notice "[#{distro}/#{arch}] Pruning #{eol_rpms.size} EOL packages (of #{rpms.size} total)"
-      eol_rpms.each { |rpm| log_info "  #{YELLOW}PRUNE#{RESET} #{File.basename(rpm)}" }
-      total_pruned += eol_rpms.size
-
-      if !@dry_run
-        eol_rpms.each { |rpm| File.delete(rpm) }
-        affected_dirs << arch_dir
+      print_header 'Success!'
+      if total_pruned > 0 && !@dry_run
+        log_info "Pruned #{total_pruned} packages"
+        log_info "Main repo: version #{version} -> #{version + 1}"
       end
+    ensure
+      cleanup
     end
-
-    if total_pruned == 0
-      log_notice 'No EOL Ruby packages found to prune'
-      exit
-    end
-
-    log_notice "Total packages pruned: #{total_pruned}"
-
-    if @dry_run
-      log_notice 'DRY RUN — not uploading changes'
-      exit
-    end
-
-    print_header 'Regenerating repo metadata'
-    affected_dirs.each do |dir|
-      invoke_createrepo(dir)
-      sign_repo(dir)
-    end
-
-    print_header 'Uploading pruned repository'
-    upload_repo(version + 1, version)
-    create_version_note(version + 1)
-    declare_latest_version(version + 1)
-
-    print_header 'Success!'
-    log_info "Pruned #{total_pruned} packages"
-    log_info "Main repo: version #{version} -> #{version + 1}"
-
-    cleanup
   end
 
 private
@@ -122,6 +133,22 @@ private
     @local_repo_path = "#{@temp_dir}/repo"
     @signing_key_path = "#{@temp_dir}/key.gpg"
     Dir.mkdir(@local_repo_path)
+  end
+
+  def initialize_locking
+    @lock = GCloudStorageLock.new(url: lock_url)
+  end
+
+  def lock_url
+    "gs://#{ENV['PRODUCTION_REPO_BUCKET_NAME']}/locks/yum"
+  end
+
+  def synchronize(&block)
+    @lock.synchronize(&block)
+  end
+
+  def check_lock_health
+    abort 'ERROR: lock is unhealthy. Aborting operation' if !@lock.healthy?
   end
 
   def fetch_and_import_signing_key

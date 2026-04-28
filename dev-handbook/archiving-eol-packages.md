@@ -69,10 +69,10 @@ ARCHIVE_REPO_BUCKET_NAME=fsruby-server-edition-apt-repo-archive \
 ./internal-scripts/ci-cd/archive/migrate-apt-to-archive.rb --dry-run
 ~~~
 
-The script auto-detects EOL distros by comparing `aptly repo list` output against the distributions defined in `config.yml`. You can also specify distros explicitly:
+The script auto-detects EOL distros by comparing `aptly repo list` output against the DEB distributions defined in `config.yml`. You can also specify distros explicitly (DEB-only — RPM distros belong to the YUM script):
 
 ~~~bash
-./internal-scripts/ci-cd/archive/migrate-apt-to-archive.rb --dry-run --distros centos-8,debian-9
+./internal-scripts/ci-cd/archive/migrate-apt-to-archive.rb --dry-run --distros debian-10,ubuntu-20.04
 ~~~
 
 **Execute the migration** (removes `--dry-run`):

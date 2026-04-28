@@ -45,60 +45,72 @@ class PruneAptPackages
     create_temp_dirs
     ensure_gpg_state_isolated
     activate_wrappers_bin_dir
+    initialize_locking
     initialize_aptly
     fetch_and_import_signing_key
 
-    print_header 'Downloading repository state'
-    version = get_latest_production_repo_version
-    if version == 0
-      abort 'ERROR: No production repository exists yet'
-    end
-    fetch_state(version)
-
-    print_header 'Identifying EOL Ruby versions'
-    active_minors = active_ruby_minor_versions
-    log_info "Active Ruby minor versions: #{active_minors.join(', ')}"
-
-    print_header 'Scanning packages'
     total_pruned = 0
-    repos = list_aptly_repos
-    repos.each do |distro|
-      pruned = prune_eol_packages_from_repo(distro, active_minors)
-      total_pruned += pruned
+    version = nil
+    repos = nil
+
+    begin
+      synchronize do
+        print_header 'Downloading repository state'
+        version = get_latest_production_repo_version
+        if version == 0
+          abort 'ERROR: No production repository exists yet'
+        end
+        fetch_state(version)
+
+        print_header 'Identifying EOL Ruby versions'
+        active_minors = active_ruby_minor_versions
+        log_info "Active Ruby minor versions: #{active_minors.join(', ')}"
+
+        print_header 'Scanning packages'
+        repos = list_aptly_repos
+        repos.each do |distro|
+          pruned = prune_eol_packages_from_repo(distro, active_minors)
+          total_pruned += pruned
+        end
+
+        if total_pruned == 0
+          log_notice 'No EOL Ruby packages found to prune'
+          return
+        end
+
+        log_notice "Total packages to prune: #{total_pruned}"
+
+        if @dry_run
+          log_notice 'DRY RUN — not uploading changes'
+          return
+        end
+
+        print_header 'Compacting state'
+        compact_state
+        check_lock_health
+
+        print_header 'Re-publishing repository'
+        repos.each do |distro|
+          publish_repo(distro)
+        end
+        check_lock_health
+
+        print_header 'Archiving and uploading state'
+        archive_state
+        upload_state(version + 1)
+        upload_repo(version + 1, version)
+        create_version_note(version + 1)
+        declare_latest_version(version + 1)
+      end
+
+      print_header 'Success!'
+      if total_pruned > 0 && !@dry_run
+        log_info "Pruned #{total_pruned} packages across #{repos.size} repos"
+        log_info "Main repo: version #{version} -> #{version + 1}"
+      end
+    ensure
+      cleanup
     end
-
-    if total_pruned == 0
-      log_notice 'No EOL Ruby packages found to prune'
-      exit
-    end
-
-    log_notice "Total packages to prune: #{total_pruned}"
-
-    if @dry_run
-      log_notice 'DRY RUN — not uploading changes'
-      exit
-    end
-
-    print_header 'Compacting state'
-    compact_state
-
-    print_header 'Re-publishing repository'
-    repos.each do |distro|
-      publish_repo(distro)
-    end
-
-    print_header 'Archiving and uploading state'
-    archive_state
-    upload_state(version + 1)
-    upload_repo(version + 1, version)
-    create_version_note(version + 1)
-    declare_latest_version(version + 1)
-
-    print_header 'Success!'
-    log_info "Pruned #{total_pruned} packages across #{repos.size} repos"
-    log_info "Main repo: version #{version} -> #{version + 1}"
-
-    cleanup
   end
 
 private
@@ -148,6 +160,22 @@ private
 
   def activate_wrappers_bin_dir
     ENV['PATH'] = "#{@wrappers_bin_dir}:#{ENV['PATH']}"
+  end
+
+  def initialize_locking
+    @lock = GCloudStorageLock.new(url: lock_url)
+  end
+
+  def lock_url
+    "gs://#{ENV['PRODUCTION_REPO_BUCKET_NAME']}/locks/apt"
+  end
+
+  def synchronize(&block)
+    @lock.synchronize(&block)
+  end
+
+  def check_lock_health
+    abort 'ERROR: lock is unhealthy. Aborting operation' if !@lock.healthy?
   end
 
   def initialize_aptly

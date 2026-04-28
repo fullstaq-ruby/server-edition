@@ -11,8 +11,9 @@
 #   ./internal-scripts/ci-cd/archive/migrate-yum-to-archive.rb [--dry-run] [--distros centos-8]
 #
 # If --distros is not specified, automatically detects EOL distros by comparing
-# the repo contents against the current environments/ directory.
+# the repo contents against the RPM distributions defined in config.yml.
 
+require_relative '../../../lib/gcloud_storage_lock'
 require_relative '../../../lib/ci_workflow_support'
 require_relative '../../../lib/shell_scripting_support'
 require_relative '../../../lib/publishing_support'
@@ -34,50 +35,59 @@ class MigrateYumToArchive
     print_header 'Initializing'
     load_config
     create_temp_dirs
+    initialize_locking
     fetch_and_import_signing_key
 
-    print_header 'Downloading main repository'
-    version = get_latest_production_repo_version
-    if version == 0
-      abort 'ERROR: No production repository exists yet'
+    eol_distros = nil
+    version = nil
+
+    begin
+      synchronize do
+        print_header 'Downloading main repository'
+        version = get_latest_production_repo_version
+        if version == 0
+          abort 'ERROR: No production repository exists yet'
+        end
+        fetch_main_repo(version)
+
+        print_header 'Identifying EOL distributions'
+        eol_distros = identify_eol_distros
+        if eol_distros.empty?
+          log_notice 'No EOL distributions found to archive'
+          return
+        end
+        log_notice "EOL distributions to archive: #{eol_distros.join(', ')}"
+
+        print_header 'Fetching existing archive (if any)'
+        @archive_version = get_latest_archive_version
+        if @archive_version > 0
+          log_notice "Existing archive at version #{@archive_version}, will merge"
+          fetch_archive_repo(@archive_version)
+        else
+          log_notice 'No existing archive — creating fresh'
+          @archive_repo_path = "#{@temp_dir}/archive-repo"
+          Dir.mkdir(@archive_repo_path)
+        end
+
+        if @dry_run
+          log_notice 'DRY RUN — not uploading changes'
+          print_summary(eol_distros, version)
+          return
+        end
+
+        print_header 'Uploading EOL distros to archive'
+        upload_archive(eol_distros)
+        check_lock_health
+
+        print_header 'Removing EOL distros from main repository'
+        remove_from_main(eol_distros, version)
+      end
+
+      print_header 'Success!'
+      print_summary(eol_distros, version) if eol_distros && !eol_distros.empty?
+    ensure
+      cleanup
     end
-    fetch_main_repo(version)
-
-    print_header 'Identifying EOL distributions'
-    eol_distros = identify_eol_distros
-    if eol_distros.empty?
-      log_notice 'No EOL distributions found to archive'
-      exit
-    end
-    log_notice "EOL distributions to archive: #{eol_distros.join(', ')}"
-
-    print_header 'Fetching existing archive (if any)'
-    @archive_version = get_latest_archive_version
-    if @archive_version > 0
-      log_notice "Existing archive at version #{@archive_version}, will merge"
-      fetch_archive_repo(@archive_version)
-    else
-      log_notice 'No existing archive — creating fresh'
-      @archive_repo_path = "#{@temp_dir}/archive-repo"
-      Dir.mkdir(@archive_repo_path)
-    end
-
-    if @dry_run
-      log_notice 'DRY RUN — not uploading changes'
-      print_summary(eol_distros, version)
-      exit
-    end
-
-    print_header 'Uploading EOL distros to archive'
-    upload_archive(eol_distros)
-
-    print_header 'Removing EOL distros from main repository'
-    remove_from_main(eol_distros, version)
-
-    print_header 'Success!'
-    print_summary(eol_distros, version)
-
-    cleanup
   end
 
 private
@@ -99,6 +109,22 @@ private
     @local_repo_path = "#{@temp_dir}/repo"
     @signing_key_path = "#{@temp_dir}/key.gpg"
     Dir.mkdir(@local_repo_path)
+  end
+
+  def initialize_locking
+    @lock = GCloudStorageLock.new(url: lock_url)
+  end
+
+  def lock_url
+    "gs://#{ENV['PRODUCTION_REPO_BUCKET_NAME']}/locks/yum"
+  end
+
+  def synchronize(&block)
+    @lock.synchronize(&block)
+  end
+
+  def check_lock_health
+    abort 'ERROR: lock is unhealthy. Aborting operation' if !@lock.healthy?
   end
 
   def fetch_and_import_signing_key

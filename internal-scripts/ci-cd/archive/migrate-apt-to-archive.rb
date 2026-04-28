@@ -11,7 +11,7 @@
 #   ./internal-scripts/ci-cd/archive/migrate-apt-to-archive.rb [--dry-run] [--distros centos-8,debian-9]
 #
 # If --distros is not specified, automatically detects EOL distros by comparing
-# the Aptly state against the current environments/ directory.
+# the Aptly state against the DEB distributions defined in config.yml.
 
 require_relative '../../../lib/gcloud_storage_lock'
 require_relative '../../../lib/ci_workflow_support'
@@ -42,55 +42,66 @@ class MigrateAptToArchive
     create_temp_dirs
     ensure_gpg_state_isolated
     activate_wrappers_bin_dir
+    initialize_locking
     initialize_aptly(@main_aptly_config_path, @main_state_path, @main_state_repo_path)
     fetch_and_import_signing_key
 
-    print_header 'Downloading main repository state'
-    version = get_latest_production_repo_version
-    if version == 0
-      abort 'ERROR: No production repository exists yet'
+    eol_distros = nil
+    version = nil
+
+    begin
+      synchronize do
+        print_header 'Downloading main repository state'
+        version = get_latest_production_repo_version
+        if version == 0
+          abort 'ERROR: No production repository exists yet'
+        end
+        fetch_main_state(version)
+
+        print_header 'Identifying EOL distributions'
+        eol_distros = identify_eol_distros
+        if eol_distros.empty?
+          log_notice 'No EOL distributions found to archive'
+          return
+        end
+        log_notice "EOL distributions to archive: #{eol_distros.join(', ')}"
+
+        print_header 'Fetching existing archive state (if any)'
+        @archive_version = get_latest_archive_version
+        if @archive_version > 0
+          log_notice "Existing archive at version #{@archive_version}, will merge"
+          fetch_archive_state(@archive_version)
+        else
+          log_notice 'No existing archive — creating fresh'
+        end
+
+        print_header 'Creating archive repository'
+        create_archive_state(eol_distros)
+        check_lock_health
+
+        print_header 'Trimming main repository state'
+        trim_main_state(eol_distros)
+        check_lock_health
+
+        if @dry_run
+          log_notice 'DRY RUN — not uploading changes'
+          print_summary(eol_distros, version)
+          return
+        end
+
+        print_header 'Uploading archive repository'
+        upload_archive
+        check_lock_health
+
+        print_header 'Uploading trimmed main repository'
+        upload_main(version)
+      end
+
+      print_header 'Success!'
+      print_summary(eol_distros, version) if eol_distros && !eol_distros.empty?
+    ensure
+      cleanup
     end
-    fetch_main_state(version)
-
-    print_header 'Identifying EOL distributions'
-    eol_distros = identify_eol_distros
-    if eol_distros.empty?
-      log_notice 'No EOL distributions found to archive'
-      exit
-    end
-    log_notice "EOL distributions to archive: #{eol_distros.join(', ')}"
-
-    print_header 'Fetching existing archive state (if any)'
-    @archive_version = get_latest_archive_version
-    if @archive_version > 0
-      log_notice "Existing archive at version #{@archive_version}, will merge"
-      fetch_archive_state(@archive_version)
-    else
-      log_notice 'No existing archive — creating fresh'
-    end
-
-    print_header 'Creating archive repository'
-    create_archive_state(eol_distros)
-
-    print_header 'Trimming main repository state'
-    trim_main_state(eol_distros)
-
-    if @dry_run
-      log_notice 'DRY RUN — not uploading changes'
-      print_summary(eol_distros, version)
-      exit
-    end
-
-    print_header 'Uploading archive repository'
-    upload_archive
-
-    print_header 'Uploading trimmed main repository'
-    upload_main(version)
-
-    print_header 'Success!'
-    print_summary(eol_distros, version)
-
-    cleanup
   end
 
 private
@@ -159,6 +170,22 @@ private
 
   def activate_wrappers_bin_dir
     ENV['PATH'] = "#{@wrappers_bin_dir}:#{ENV['PATH']}"
+  end
+
+  def initialize_locking
+    @lock = GCloudStorageLock.new(url: lock_url)
+  end
+
+  def lock_url
+    "gs://#{ENV['PRODUCTION_REPO_BUCKET_NAME']}/locks/apt"
+  end
+
+  def synchronize(&block)
+    @lock.synchronize(&block)
+  end
+
+  def check_lock_health
+    abort 'ERROR: lock is unhealthy. Aborting operation' if !@lock.healthy?
   end
 
   def initialize_aptly(config_path, state_path, repo_path)
@@ -297,12 +324,13 @@ private
     archive_pool = "#{@archive_state_path}/pool"
     if File.exist?(main_pool)
       if File.exist?(archive_pool)
-        # Merge: copy new pool files that don't already exist
+        # Merge: copy new pool files that don't already exist (-n: no-clobber).
+        # Real I/O errors must surface — only no-clobber skips are benign.
         run_bash(
-          sprintf('cp -rn %s/* %s/ 2>/dev/null || true',
+          sprintf('cp -rn %s/* %s/',
             Shellwords.escape(main_pool),
             Shellwords.escape(archive_pool)),
-          log_invocation: false, check_error: false, pipefail: false
+          log_invocation: true, check_error: true, pipefail: false
         )
       else
         FileUtils.cp_r(main_pool, @archive_state_path)
