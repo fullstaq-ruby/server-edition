@@ -1,0 +1,34 @@
+name: 'CI/CD: label guard'
+
+on:
+  pull_request_target:
+    types: [synchronize]
+
+jobs:
+  remove_ok_to_test:
+    name: Remove ok-to-test label on new push
+    runs-on: ubuntu-24.04
+    permissions:
+      pull-requests: write
+    steps:
+      - name: Remove ok-to-test label if present
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const { owner, repo } = context.repo;
+            const issue_number = context.payload.pull_request.number;
+            try {
+              await github.rest.issues.removeLabel({
+                owner,
+                repo,
+                issue_number,
+                name: 'ok-to-test'
+              });
+              console.log('Removed ok-to-test label');
+            } catch (e) {
+              if (e.status === 404) {
+                console.log('Label ok-to-test not present, nothing to remove');
+              } else {
+                throw e;
+              }
+            }

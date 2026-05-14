@@ -105,6 +105,13 @@ variant_exclusions:
 ## `package_revision` numbers too!
 jemalloc_version: '3.6.0'
 
+## (Optional)
+## Which distributions to include in the contributor CI workflow.
+## This is a small subset used for fast feedback on forks.
+contributor_distributions:
+  - ubuntu-24.04
+  - el-9
+
 ## (Required)
 ## Specify which distributions to build packages for.
 ## When set to 'all', will build for all supported distributions.

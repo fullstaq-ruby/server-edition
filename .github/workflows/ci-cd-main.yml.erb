@@ -12,6 +12,11 @@ on:
     paths-ignore:
       - '**.md'
       - 'dev-handbook/**'
+  pull_request_target:
+    types: [labeled]
+    paths-ignore:
+      - '**.md'
+      - 'dev-handbook/**'
 
 env:
   ## Set the following variable to a specific number to make the
@@ -29,6 +34,10 @@ jobs:
   determine_necessary_jobs:
     name: Determine necessary jobs
     runs-on: ubuntu-24.04
+    if: >
+      github.repository == 'fullstaq-ruby/server-edition'
+      && (github.event_name != 'pull_request_target'
+      || github.event.label.name == 'ok-to-test')
     environment: test
     permissions:
       id-token: write
@@ -44,6 +53,8 @@ jobs:
         if: github.event_name == 'push' && github.ref == 'refs/heads/fix/cicd-new-workflows'
 
       - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event_name == 'pull_request_target' && github.event.pull_request.head.sha || github.ref }}
       - uses: google-github-actions/auth@v2
         with:
           project_id: ${{ vars.GCLOUD_PROJECT_ID }}
@@ -73,6 +84,7 @@ jobs:
   check_workflow_uptodate:
     name: Check whether workflow is up-to-date
     runs-on: ubuntu-24.04
+    if: github.repository == 'fullstaq-ruby/server-edition'
     steps:
       - uses: actions/checkout@v4
       - name: Check

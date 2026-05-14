@@ -35,6 +35,7 @@ class CiCdYamlGenerationApp
     end
     generate_yaml_file_from_template(template_name: 'ci-cd-publish-test-test')
     generate_yaml_file_from_template(template_name: 'ci-cd-publish-test-production')
+    generate_yaml_file_from_template(template_name: 'ci-cd-contributor')
   end
 
 private
