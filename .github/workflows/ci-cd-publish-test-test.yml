@@ -62,7 +62,7 @@ jobs:
           ARTIFACT_NAMES: |
             common-deb
             rbenv-deb
-            ruby-pkg_4.0_debian-11_normal ruby-pkg_4.0_debian-11_jemalloc ruby-pkg_3.4_debian-11_normal ruby-pkg_3.4_debian-11_jemalloc ruby-pkg_3.3_debian-11_normal ruby-pkg_3.3_debian-11_jemalloc ruby-pkg_3.2_debian-11_normal ruby-pkg_3.2_debian-11_jemalloc ruby-pkg_3.2_debian-11_malloctrim ruby-pkg_4.0.3_debian-11_normal ruby-pkg_4.0.3_debian-11_jemalloc ruby-pkg_3.4.9_debian-11_normal ruby-pkg_3.4.9_debian-11_jemalloc ruby-pkg_3.3.11_debian-11_normal ruby-pkg_3.3.11_debian-11_jemalloc ruby-pkg_3.2.11_debian-11_normal ruby-pkg_3.2.11_debian-11_jemalloc ruby-pkg_3.2.11_debian-11_malloctrim ruby-pkg_4.0_debian-12_normal ruby-pkg_4.0_debian-12_jemalloc ruby-pkg_3.4_debian-12_normal ruby-pkg_3.4_debian-12_jemalloc ruby-pkg_3.3_debian-12_normal ruby-pkg_3.3_debian-12_jemalloc ruby-pkg_3.2_debian-12_normal ruby-pkg_3.2_debian-12_jemalloc ruby-pkg_3.2_debian-12_malloctrim ruby-pkg_4.0.3_debian-12_normal ruby-pkg_4.0.3_debian-12_jemalloc ruby-pkg_3.4.9_debian-12_normal ruby-pkg_3.4.9_debian-12_jemalloc ruby-pkg_3.3.11_debian-12_normal ruby-pkg_3.3.11_debian-12_jemalloc ruby-pkg_3.2.11_debian-12_normal ruby-pkg_3.2.11_debian-12_jemalloc ruby-pkg_3.2.11_debian-12_malloctrim ruby-pkg_4.0_debian-13_normal ruby-pkg_4.0_debian-13_jemalloc ruby-pkg_3.4_debian-13_normal ruby-pkg_3.4_debian-13_jemalloc ruby-pkg_3.3_debian-13_normal ruby-pkg_3.3_debian-13_jemalloc ruby-pkg_4.0.3_debian-13_normal ruby-pkg_4.0.3_debian-13_jemalloc ruby-pkg_3.4.9_debian-13_normal ruby-pkg_3.4.9_debian-13_jemalloc ruby-pkg_3.3.11_debian-13_normal ruby-pkg_3.3.11_debian-13_jemalloc ruby-pkg_4.0_ubuntu-22.04_normal ruby-pkg_4.0_ubuntu-22.04_jemalloc ruby-pkg_3.4_ubuntu-22.04_normal ruby-pkg_3.4_ubuntu-22.04_jemalloc ruby-pkg_3.3_ubuntu-22.04_normal ruby-pkg_3.3_ubuntu-22.04_jemalloc ruby-pkg_3.2_ubuntu-22.04_normal ruby-pkg_3.2_ubuntu-22.04_jemalloc ruby-pkg_3.2_ubuntu-22.04_malloctrim ruby-pkg_4.0.3_ubuntu-22.04_normal ruby-pkg_4.0.3_ubuntu-22.04_jemalloc ruby-pkg_3.4.9_ubuntu-22.04_normal ruby-pkg_3.4.9_ubuntu-22.04_jemalloc ruby-pkg_3.3.11_ubuntu-22.04_normal ruby-pkg_3.3.11_ubuntu-22.04_jemalloc ruby-pkg_3.2.11_ubuntu-22.04_normal ruby-pkg_3.2.11_ubuntu-22.04_jemalloc ruby-pkg_3.2.11_ubuntu-22.04_malloctrim ruby-pkg_4.0_ubuntu-24.04_normal ruby-pkg_4.0_ubuntu-24.04_jemalloc ruby-pkg_3.4_ubuntu-24.04_normal ruby-pkg_3.4_ubuntu-24.04_jemalloc ruby-pkg_3.3_ubuntu-24.04_normal ruby-pkg_3.3_ubuntu-24.04_jemalloc ruby-pkg_3.2_ubuntu-24.04_normal ruby-pkg_3.2_ubuntu-24.04_jemalloc ruby-pkg_3.2_ubuntu-24.04_malloctrim ruby-pkg_4.0.3_ubuntu-24.04_normal ruby-pkg_4.0.3_ubuntu-24.04_jemalloc ruby-pkg_3.4.9_ubuntu-24.04_normal ruby-pkg_3.4.9_ubuntu-24.04_jemalloc ruby-pkg_3.3.11_ubuntu-24.04_normal ruby-pkg_3.3.11_ubuntu-24.04_jemalloc ruby-pkg_3.2.11_ubuntu-24.04_normal ruby-pkg_3.2.11_ubuntu-24.04_jemalloc ruby-pkg_3.2.11_ubuntu-24.04_malloctrim
+            ruby-pkg_4.0_debian-11_normal ruby-pkg_4.0_debian-11_jemalloc ruby-pkg_3.4_debian-11_normal ruby-pkg_3.4_debian-11_jemalloc ruby-pkg_3.3_debian-11_normal ruby-pkg_3.3_debian-11_jemalloc ruby-pkg_3.2_debian-11_normal ruby-pkg_3.2_debian-11_jemalloc ruby-pkg_3.2_debian-11_malloctrim ruby-pkg_4.0.4_debian-11_normal ruby-pkg_4.0.4_debian-11_jemalloc ruby-pkg_3.4.9_debian-11_normal ruby-pkg_3.4.9_debian-11_jemalloc ruby-pkg_3.3.11_debian-11_normal ruby-pkg_3.3.11_debian-11_jemalloc ruby-pkg_3.2.11_debian-11_normal ruby-pkg_3.2.11_debian-11_jemalloc ruby-pkg_3.2.11_debian-11_malloctrim ruby-pkg_4.0_debian-12_normal ruby-pkg_4.0_debian-12_jemalloc ruby-pkg_3.4_debian-12_normal ruby-pkg_3.4_debian-12_jemalloc ruby-pkg_3.3_debian-12_normal ruby-pkg_3.3_debian-12_jemalloc ruby-pkg_3.2_debian-12_normal ruby-pkg_3.2_debian-12_jemalloc ruby-pkg_3.2_debian-12_malloctrim ruby-pkg_4.0.4_debian-12_normal ruby-pkg_4.0.4_debian-12_jemalloc ruby-pkg_3.4.9_debian-12_normal ruby-pkg_3.4.9_debian-12_jemalloc ruby-pkg_3.3.11_debian-12_normal ruby-pkg_3.3.11_debian-12_jemalloc ruby-pkg_3.2.11_debian-12_normal ruby-pkg_3.2.11_debian-12_jemalloc ruby-pkg_3.2.11_debian-12_malloctrim ruby-pkg_4.0_debian-13_normal ruby-pkg_4.0_debian-13_jemalloc ruby-pkg_3.4_debian-13_normal ruby-pkg_3.4_debian-13_jemalloc ruby-pkg_3.3_debian-13_normal ruby-pkg_3.3_debian-13_jemalloc ruby-pkg_4.0.4_debian-13_normal ruby-pkg_4.0.4_debian-13_jemalloc ruby-pkg_3.4.9_debian-13_normal ruby-pkg_3.4.9_debian-13_jemalloc ruby-pkg_3.3.11_debian-13_normal ruby-pkg_3.3.11_debian-13_jemalloc ruby-pkg_4.0_ubuntu-22.04_normal ruby-pkg_4.0_ubuntu-22.04_jemalloc ruby-pkg_3.4_ubuntu-22.04_normal ruby-pkg_3.4_ubuntu-22.04_jemalloc ruby-pkg_3.3_ubuntu-22.04_normal ruby-pkg_3.3_ubuntu-22.04_jemalloc ruby-pkg_3.2_ubuntu-22.04_normal ruby-pkg_3.2_ubuntu-22.04_jemalloc ruby-pkg_3.2_ubuntu-22.04_malloctrim ruby-pkg_4.0.4_ubuntu-22.04_normal ruby-pkg_4.0.4_ubuntu-22.04_jemalloc ruby-pkg_3.4.9_ubuntu-22.04_normal ruby-pkg_3.4.9_ubuntu-22.04_jemalloc ruby-pkg_3.3.11_ubuntu-22.04_normal ruby-pkg_3.3.11_ubuntu-22.04_jemalloc ruby-pkg_3.2.11_ubuntu-22.04_normal ruby-pkg_3.2.11_ubuntu-22.04_jemalloc ruby-pkg_3.2.11_ubuntu-22.04_malloctrim ruby-pkg_4.0_ubuntu-24.04_normal ruby-pkg_4.0_ubuntu-24.04_jemalloc ruby-pkg_3.4_ubuntu-24.04_normal ruby-pkg_3.4_ubuntu-24.04_jemalloc ruby-pkg_3.3_ubuntu-24.04_normal ruby-pkg_3.3_ubuntu-24.04_jemalloc ruby-pkg_3.2_ubuntu-24.04_normal ruby-pkg_3.2_ubuntu-24.04_jemalloc ruby-pkg_3.2_ubuntu-24.04_malloctrim ruby-pkg_4.0.4_ubuntu-24.04_normal ruby-pkg_4.0.4_ubuntu-24.04_jemalloc ruby-pkg_3.4.9_ubuntu-24.04_normal ruby-pkg_3.4.9_ubuntu-24.04_jemalloc ruby-pkg_3.3.11_ubuntu-24.04_normal ruby-pkg_3.3.11_ubuntu-24.04_jemalloc ruby-pkg_3.2.11_ubuntu-24.04_normal ruby-pkg_3.2.11_ubuntu-24.04_jemalloc ruby-pkg_3.2.11_ubuntu-24.04_malloctrim
           ARTIFACT_PATH: pkgs
           CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
 
@@ -116,7 +116,7 @@ jobs:
           ARTIFACT_NAMES: |
             common-rpm
             rbenv-rpm
-            ruby-pkg_4.0_centos-8_normal ruby-pkg_4.0_centos-8_jemalloc ruby-pkg_3.4_centos-8_normal ruby-pkg_3.4_centos-8_jemalloc ruby-pkg_3.3_centos-8_normal ruby-pkg_3.3_centos-8_jemalloc ruby-pkg_3.2_centos-8_normal ruby-pkg_3.2_centos-8_jemalloc ruby-pkg_3.2_centos-8_malloctrim ruby-pkg_4.0.3_centos-8_normal ruby-pkg_4.0.3_centos-8_jemalloc ruby-pkg_3.4.9_centos-8_normal ruby-pkg_3.4.9_centos-8_jemalloc ruby-pkg_3.3.11_centos-8_normal ruby-pkg_3.3.11_centos-8_jemalloc ruby-pkg_3.2.11_centos-8_normal ruby-pkg_3.2.11_centos-8_jemalloc ruby-pkg_3.2.11_centos-8_malloctrim ruby-pkg_4.0_el-9_normal ruby-pkg_4.0_el-9_jemalloc ruby-pkg_3.4_el-9_normal ruby-pkg_3.4_el-9_jemalloc ruby-pkg_3.3_el-9_normal ruby-pkg_3.3_el-9_jemalloc ruby-pkg_3.2_el-9_normal ruby-pkg_3.2_el-9_jemalloc ruby-pkg_3.2_el-9_malloctrim ruby-pkg_4.0.3_el-9_normal ruby-pkg_4.0.3_el-9_jemalloc ruby-pkg_3.4.9_el-9_normal ruby-pkg_3.4.9_el-9_jemalloc ruby-pkg_3.3.11_el-9_normal ruby-pkg_3.3.11_el-9_jemalloc ruby-pkg_3.2.11_el-9_normal ruby-pkg_3.2.11_el-9_jemalloc ruby-pkg_3.2.11_el-9_malloctrim
+            ruby-pkg_4.0_centos-8_normal ruby-pkg_4.0_centos-8_jemalloc ruby-pkg_3.4_centos-8_normal ruby-pkg_3.4_centos-8_jemalloc ruby-pkg_3.3_centos-8_normal ruby-pkg_3.3_centos-8_jemalloc ruby-pkg_3.2_centos-8_normal ruby-pkg_3.2_centos-8_jemalloc ruby-pkg_3.2_centos-8_malloctrim ruby-pkg_4.0.4_centos-8_normal ruby-pkg_4.0.4_centos-8_jemalloc ruby-pkg_3.4.9_centos-8_normal ruby-pkg_3.4.9_centos-8_jemalloc ruby-pkg_3.3.11_centos-8_normal ruby-pkg_3.3.11_centos-8_jemalloc ruby-pkg_3.2.11_centos-8_normal ruby-pkg_3.2.11_centos-8_jemalloc ruby-pkg_3.2.11_centos-8_malloctrim ruby-pkg_4.0_el-9_normal ruby-pkg_4.0_el-9_jemalloc ruby-pkg_3.4_el-9_normal ruby-pkg_3.4_el-9_jemalloc ruby-pkg_3.3_el-9_normal ruby-pkg_3.3_el-9_jemalloc ruby-pkg_3.2_el-9_normal ruby-pkg_3.2_el-9_jemalloc ruby-pkg_3.2_el-9_malloctrim ruby-pkg_4.0.4_el-9_normal ruby-pkg_4.0.4_el-9_jemalloc ruby-pkg_3.4.9_el-9_normal ruby-pkg_3.4.9_el-9_jemalloc ruby-pkg_3.3.11_el-9_normal ruby-pkg_3.3.11_el-9_jemalloc ruby-pkg_3.2.11_el-9_normal ruby-pkg_3.2.11_el-9_jemalloc ruby-pkg_3.2.11_el-9_malloctrim
           ARTIFACT_PATH: pkgs
           CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
 
@@ -524,14 +524,14 @@ jobs:
           ARTIFACT_PATH: mark-malloctrim
           CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
 
-  test_centos_8-4_0_3-normal:
-    name: 'Test [centos-8/4.0.3/normal]'
+  test_centos_8-4_0_4-normal:
+    name: 'Test [centos-8/4.0.4/normal]'
     needs:
       - publish_rpms
     runs-on: ubuntu-24.04
     environment: test
     timeout-minutes: 30
-    if: contains(inputs.necessary_jobs, ';Test against test repo [centos-8/4.0.3/normal];')
+    if: contains(inputs.necessary_jobs, ';Test against test repo [centos-8/4.0.4/normal];')
     permissions:
       id-token: write
     steps:
@@ -549,7 +549,7 @@ jobs:
         run: ./internal-scripts/ci-cd/test-packages/run-tests.sh
         env:
           DISTRIBUTION_NAME: "centos-8"
-          RUBY_PACKAGE_ID: "4.0.3"
+          RUBY_PACKAGE_ID: "4.0.4"
           PACKAGE_FORMAT: "RPM"
           VARIANT_NAME: "normal"
           VARIANT_PACKAGE_SUFFIX: ""
@@ -562,18 +562,18 @@ jobs:
       - name: Mark job as done
         run: ./internal-scripts/ci-cd/upload-artifact.sh
         env:
-          ARTIFACT_NAME: tested-against-test-centos-8_4.0.3_normal
+          ARTIFACT_NAME: tested-against-test-centos-8_4.0.4_normal
           ARTIFACT_PATH: mark-normal
           CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
 
-  test_centos_8-4_0_3-jemalloc:
-    name: 'Test [centos-8/4.0.3/jemalloc]'
+  test_centos_8-4_0_4-jemalloc:
+    name: 'Test [centos-8/4.0.4/jemalloc]'
     needs:
       - publish_rpms
     runs-on: ubuntu-24.04
     environment: test
     timeout-minutes: 30
-    if: contains(inputs.necessary_jobs, ';Test against test repo [centos-8/4.0.3/jemalloc];')
+    if: contains(inputs.necessary_jobs, ';Test against test repo [centos-8/4.0.4/jemalloc];')
     permissions:
       id-token: write
     steps:
@@ -591,7 +591,7 @@ jobs:
         run: ./internal-scripts/ci-cd/test-packages/run-tests.sh
         env:
           DISTRIBUTION_NAME: "centos-8"
-          RUBY_PACKAGE_ID: "4.0.3"
+          RUBY_PACKAGE_ID: "4.0.4"
           PACKAGE_FORMAT: "RPM"
           VARIANT_NAME: "jemalloc"
           VARIANT_PACKAGE_SUFFIX: "-jemalloc"
@@ -604,7 +604,7 @@ jobs:
       - name: Mark job as done
         run: ./internal-scripts/ci-cd/upload-artifact.sh
         env:
-          ARTIFACT_NAME: tested-against-test-centos-8_4.0.3_jemalloc
+          ARTIFACT_NAME: tested-against-test-centos-8_4.0.4_jemalloc
           ARTIFACT_PATH: mark-jemalloc
           CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
 
@@ -1281,14 +1281,14 @@ jobs:
           ARTIFACT_PATH: mark-malloctrim
           CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
 
-  test_debian_11-4_0_3-normal:
-    name: 'Test [debian-11/4.0.3/normal]'
+  test_debian_11-4_0_4-normal:
+    name: 'Test [debian-11/4.0.4/normal]'
     needs:
       - publish_debs
     runs-on: ubuntu-24.04
     environment: test
     timeout-minutes: 30
-    if: contains(inputs.necessary_jobs, ';Test against test repo [debian-11/4.0.3/normal];')
+    if: contains(inputs.necessary_jobs, ';Test against test repo [debian-11/4.0.4/normal];')
     permissions:
       id-token: write
     steps:
@@ -1306,7 +1306,7 @@ jobs:
         run: ./internal-scripts/ci-cd/test-packages/run-tests.sh
         env:
           DISTRIBUTION_NAME: "debian-11"
-          RUBY_PACKAGE_ID: "4.0.3"
+          RUBY_PACKAGE_ID: "4.0.4"
           PACKAGE_FORMAT: "DEB"
           VARIANT_NAME: "normal"
           VARIANT_PACKAGE_SUFFIX: ""
@@ -1319,18 +1319,18 @@ jobs:
       - name: Mark job as done
         run: ./internal-scripts/ci-cd/upload-artifact.sh
         env:
-          ARTIFACT_NAME: tested-against-test-debian-11_4.0.3_normal
+          ARTIFACT_NAME: tested-against-test-debian-11_4.0.4_normal
           ARTIFACT_PATH: mark-normal
           CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
 
-  test_debian_11-4_0_3-jemalloc:
-    name: 'Test [debian-11/4.0.3/jemalloc]'
+  test_debian_11-4_0_4-jemalloc:
+    name: 'Test [debian-11/4.0.4/jemalloc]'
     needs:
       - publish_debs
     runs-on: ubuntu-24.04
     environment: test
     timeout-minutes: 30
-    if: contains(inputs.necessary_jobs, ';Test against test repo [debian-11/4.0.3/jemalloc];')
+    if: contains(inputs.necessary_jobs, ';Test against test repo [debian-11/4.0.4/jemalloc];')
     permissions:
       id-token: write
     steps:
@@ -1348,7 +1348,7 @@ jobs:
         run: ./internal-scripts/ci-cd/test-packages/run-tests.sh
         env:
           DISTRIBUTION_NAME: "debian-11"
-          RUBY_PACKAGE_ID: "4.0.3"
+          RUBY_PACKAGE_ID: "4.0.4"
           PACKAGE_FORMAT: "DEB"
           VARIANT_NAME: "jemalloc"
           VARIANT_PACKAGE_SUFFIX: "-jemalloc"
@@ -1361,7 +1361,7 @@ jobs:
       - name: Mark job as done
         run: ./internal-scripts/ci-cd/upload-artifact.sh
         env:
-          ARTIFACT_NAME: tested-against-test-debian-11_4.0.3_jemalloc
+          ARTIFACT_NAME: tested-against-test-debian-11_4.0.4_jemalloc
           ARTIFACT_PATH: mark-jemalloc
           CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
 
@@ -2038,14 +2038,14 @@ jobs:
           ARTIFACT_PATH: mark-malloctrim
           CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
 
-  test_debian_12-4_0_3-normal:
-    name: 'Test [debian-12/4.0.3/normal]'
+  test_debian_12-4_0_4-normal:
+    name: 'Test [debian-12/4.0.4/normal]'
     needs:
       - publish_debs
     runs-on: ubuntu-24.04
     environment: test
     timeout-minutes: 30
-    if: contains(inputs.necessary_jobs, ';Test against test repo [debian-12/4.0.3/normal];')
+    if: contains(inputs.necessary_jobs, ';Test against test repo [debian-12/4.0.4/normal];')
     permissions:
       id-token: write
     steps:
@@ -2063,7 +2063,7 @@ jobs:
         run: ./internal-scripts/ci-cd/test-packages/run-tests.sh
         env:
           DISTRIBUTION_NAME: "debian-12"
-          RUBY_PACKAGE_ID: "4.0.3"
+          RUBY_PACKAGE_ID: "4.0.4"
           PACKAGE_FORMAT: "DEB"
           VARIANT_NAME: "normal"
           VARIANT_PACKAGE_SUFFIX: ""
@@ -2076,18 +2076,18 @@ jobs:
       - name: Mark job as done
         run: ./internal-scripts/ci-cd/upload-artifact.sh
         env:
-          ARTIFACT_NAME: tested-against-test-debian-12_4.0.3_normal
+          ARTIFACT_NAME: tested-against-test-debian-12_4.0.4_normal
           ARTIFACT_PATH: mark-normal
           CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
 
-  test_debian_12-4_0_3-jemalloc:
-    name: 'Test [debian-12/4.0.3/jemalloc]'
+  test_debian_12-4_0_4-jemalloc:
+    name: 'Test [debian-12/4.0.4/jemalloc]'
     needs:
       - publish_debs
     runs-on: ubuntu-24.04
     environment: test
     timeout-minutes: 30
-    if: contains(inputs.necessary_jobs, ';Test against test repo [debian-12/4.0.3/jemalloc];')
+    if: contains(inputs.necessary_jobs, ';Test against test repo [debian-12/4.0.4/jemalloc];')
     permissions:
       id-token: write
     steps:
@@ -2105,7 +2105,7 @@ jobs:
         run: ./internal-scripts/ci-cd/test-packages/run-tests.sh
         env:
           DISTRIBUTION_NAME: "debian-12"
-          RUBY_PACKAGE_ID: "4.0.3"
+          RUBY_PACKAGE_ID: "4.0.4"
           PACKAGE_FORMAT: "DEB"
           VARIANT_NAME: "jemalloc"
           VARIANT_PACKAGE_SUFFIX: "-jemalloc"
@@ -2118,7 +2118,7 @@ jobs:
       - name: Mark job as done
         run: ./internal-scripts/ci-cd/upload-artifact.sh
         env:
-          ARTIFACT_NAME: tested-against-test-debian-12_4.0.3_jemalloc
+          ARTIFACT_NAME: tested-against-test-debian-12_4.0.4_jemalloc
           ARTIFACT_PATH: mark-jemalloc
           CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
 
@@ -2669,14 +2669,14 @@ jobs:
           ARTIFACT_PATH: mark-jemalloc
           CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
 
-  test_debian_13-4_0_3-normal:
-    name: 'Test [debian-13/4.0.3/normal]'
+  test_debian_13-4_0_4-normal:
+    name: 'Test [debian-13/4.0.4/normal]'
     needs:
       - publish_debs
     runs-on: ubuntu-24.04
     environment: test
     timeout-minutes: 30
-    if: contains(inputs.necessary_jobs, ';Test against test repo [debian-13/4.0.3/normal];')
+    if: contains(inputs.necessary_jobs, ';Test against test repo [debian-13/4.0.4/normal];')
     permissions:
       id-token: write
     steps:
@@ -2694,7 +2694,7 @@ jobs:
         run: ./internal-scripts/ci-cd/test-packages/run-tests.sh
         env:
           DISTRIBUTION_NAME: "debian-13"
-          RUBY_PACKAGE_ID: "4.0.3"
+          RUBY_PACKAGE_ID: "4.0.4"
           PACKAGE_FORMAT: "DEB"
           VARIANT_NAME: "normal"
           VARIANT_PACKAGE_SUFFIX: ""
@@ -2707,18 +2707,18 @@ jobs:
       - name: Mark job as done
         run: ./internal-scripts/ci-cd/upload-artifact.sh
         env:
-          ARTIFACT_NAME: tested-against-test-debian-13_4.0.3_normal
+          ARTIFACT_NAME: tested-against-test-debian-13_4.0.4_normal
           ARTIFACT_PATH: mark-normal
           CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
 
-  test_debian_13-4_0_3-jemalloc:
-    name: 'Test [debian-13/4.0.3/jemalloc]'
+  test_debian_13-4_0_4-jemalloc:
+    name: 'Test [debian-13/4.0.4/jemalloc]'
     needs:
       - publish_debs
     runs-on: ubuntu-24.04
     environment: test
     timeout-minutes: 30
-    if: contains(inputs.necessary_jobs, ';Test against test repo [debian-13/4.0.3/jemalloc];')
+    if: contains(inputs.necessary_jobs, ';Test against test repo [debian-13/4.0.4/jemalloc];')
     permissions:
       id-token: write
     steps:
@@ -2736,7 +2736,7 @@ jobs:
         run: ./internal-scripts/ci-cd/test-packages/run-tests.sh
         env:
           DISTRIBUTION_NAME: "debian-13"
-          RUBY_PACKAGE_ID: "4.0.3"
+          RUBY_PACKAGE_ID: "4.0.4"
           PACKAGE_FORMAT: "DEB"
           VARIANT_NAME: "jemalloc"
           VARIANT_PACKAGE_SUFFIX: "-jemalloc"
@@ -2749,7 +2749,7 @@ jobs:
       - name: Mark job as done
         run: ./internal-scripts/ci-cd/upload-artifact.sh
         env:
-          ARTIFACT_NAME: tested-against-test-debian-13_4.0.3_jemalloc
+          ARTIFACT_NAME: tested-against-test-debian-13_4.0.4_jemalloc
           ARTIFACT_PATH: mark-jemalloc
           CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
 
@@ -3300,14 +3300,14 @@ jobs:
           ARTIFACT_PATH: mark-malloctrim
           CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
 
-  test_el_9-4_0_3-normal:
-    name: 'Test [el-9/4.0.3/normal]'
+  test_el_9-4_0_4-normal:
+    name: 'Test [el-9/4.0.4/normal]'
     needs:
       - publish_rpms
     runs-on: ubuntu-24.04
     environment: test
     timeout-minutes: 30
-    if: contains(inputs.necessary_jobs, ';Test against test repo [el-9/4.0.3/normal];')
+    if: contains(inputs.necessary_jobs, ';Test against test repo [el-9/4.0.4/normal];')
     permissions:
       id-token: write
     steps:
@@ -3325,7 +3325,7 @@ jobs:
         run: ./internal-scripts/ci-cd/test-packages/run-tests.sh
         env:
           DISTRIBUTION_NAME: "el-9"
-          RUBY_PACKAGE_ID: "4.0.3"
+          RUBY_PACKAGE_ID: "4.0.4"
           PACKAGE_FORMAT: "RPM"
           VARIANT_NAME: "normal"
           VARIANT_PACKAGE_SUFFIX: ""
@@ -3338,18 +3338,18 @@ jobs:
       - name: Mark job as done
         run: ./internal-scripts/ci-cd/upload-artifact.sh
         env:
-          ARTIFACT_NAME: tested-against-test-el-9_4.0.3_normal
+          ARTIFACT_NAME: tested-against-test-el-9_4.0.4_normal
           ARTIFACT_PATH: mark-normal
           CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
 
-  test_el_9-4_0_3-jemalloc:
-    name: 'Test [el-9/4.0.3/jemalloc]'
+  test_el_9-4_0_4-jemalloc:
+    name: 'Test [el-9/4.0.4/jemalloc]'
     needs:
       - publish_rpms
     runs-on: ubuntu-24.04
     environment: test
     timeout-minutes: 30
-    if: contains(inputs.necessary_jobs, ';Test against test repo [el-9/4.0.3/jemalloc];')
+    if: contains(inputs.necessary_jobs, ';Test against test repo [el-9/4.0.4/jemalloc];')
     permissions:
       id-token: write
     steps:
@@ -3367,7 +3367,7 @@ jobs:
         run: ./internal-scripts/ci-cd/test-packages/run-tests.sh
         env:
           DISTRIBUTION_NAME: "el-9"
-          RUBY_PACKAGE_ID: "4.0.3"
+          RUBY_PACKAGE_ID: "4.0.4"
           PACKAGE_FORMAT: "RPM"
           VARIANT_NAME: "jemalloc"
           VARIANT_PACKAGE_SUFFIX: "-jemalloc"
@@ -3380,7 +3380,7 @@ jobs:
       - name: Mark job as done
         run: ./internal-scripts/ci-cd/upload-artifact.sh
         env:
-          ARTIFACT_NAME: tested-against-test-el-9_4.0.3_jemalloc
+          ARTIFACT_NAME: tested-against-test-el-9_4.0.4_jemalloc
           ARTIFACT_PATH: mark-jemalloc
           CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
 
@@ -4057,14 +4057,14 @@ jobs:
           ARTIFACT_PATH: mark-malloctrim
           CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
 
-  test_ubuntu_22_04-4_0_3-normal:
-    name: 'Test [ubuntu-22.04/4.0.3/normal]'
+  test_ubuntu_22_04-4_0_4-normal:
+    name: 'Test [ubuntu-22.04/4.0.4/normal]'
     needs:
       - publish_debs
     runs-on: ubuntu-24.04
     environment: test
     timeout-minutes: 30
-    if: contains(inputs.necessary_jobs, ';Test against test repo [ubuntu-22.04/4.0.3/normal];')
+    if: contains(inputs.necessary_jobs, ';Test against test repo [ubuntu-22.04/4.0.4/normal];')
     permissions:
       id-token: write
     steps:
@@ -4082,7 +4082,7 @@ jobs:
         run: ./internal-scripts/ci-cd/test-packages/run-tests.sh
         env:
           DISTRIBUTION_NAME: "ubuntu-22.04"
-          RUBY_PACKAGE_ID: "4.0.3"
+          RUBY_PACKAGE_ID: "4.0.4"
           PACKAGE_FORMAT: "DEB"
           VARIANT_NAME: "normal"
           VARIANT_PACKAGE_SUFFIX: ""
@@ -4095,18 +4095,18 @@ jobs:
       - name: Mark job as done
         run: ./internal-scripts/ci-cd/upload-artifact.sh
         env:
-          ARTIFACT_NAME: tested-against-test-ubuntu-22.04_4.0.3_normal
+          ARTIFACT_NAME: tested-against-test-ubuntu-22.04_4.0.4_normal
           ARTIFACT_PATH: mark-normal
           CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
 
-  test_ubuntu_22_04-4_0_3-jemalloc:
-    name: 'Test [ubuntu-22.04/4.0.3/jemalloc]'
+  test_ubuntu_22_04-4_0_4-jemalloc:
+    name: 'Test [ubuntu-22.04/4.0.4/jemalloc]'
     needs:
       - publish_debs
     runs-on: ubuntu-24.04
     environment: test
     timeout-minutes: 30
-    if: contains(inputs.necessary_jobs, ';Test against test repo [ubuntu-22.04/4.0.3/jemalloc];')
+    if: contains(inputs.necessary_jobs, ';Test against test repo [ubuntu-22.04/4.0.4/jemalloc];')
     permissions:
       id-token: write
     steps:
@@ -4124,7 +4124,7 @@ jobs:
         run: ./internal-scripts/ci-cd/test-packages/run-tests.sh
         env:
           DISTRIBUTION_NAME: "ubuntu-22.04"
-          RUBY_PACKAGE_ID: "4.0.3"
+          RUBY_PACKAGE_ID: "4.0.4"
           PACKAGE_FORMAT: "DEB"
           VARIANT_NAME: "jemalloc"
           VARIANT_PACKAGE_SUFFIX: "-jemalloc"
@@ -4137,7 +4137,7 @@ jobs:
       - name: Mark job as done
         run: ./internal-scripts/ci-cd/upload-artifact.sh
         env:
-          ARTIFACT_NAME: tested-against-test-ubuntu-22.04_4.0.3_jemalloc
+          ARTIFACT_NAME: tested-against-test-ubuntu-22.04_4.0.4_jemalloc
           ARTIFACT_PATH: mark-jemalloc
           CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
 
@@ -4814,14 +4814,14 @@ jobs:
           ARTIFACT_PATH: mark-malloctrim
           CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
 
-  test_ubuntu_24_04-4_0_3-normal:
-    name: 'Test [ubuntu-24.04/4.0.3/normal]'
+  test_ubuntu_24_04-4_0_4-normal:
+    name: 'Test [ubuntu-24.04/4.0.4/normal]'
     needs:
       - publish_debs
     runs-on: ubuntu-24.04
     environment: test
     timeout-minutes: 30
-    if: contains(inputs.necessary_jobs, ';Test against test repo [ubuntu-24.04/4.0.3/normal];')
+    if: contains(inputs.necessary_jobs, ';Test against test repo [ubuntu-24.04/4.0.4/normal];')
     permissions:
       id-token: write
     steps:
@@ -4839,7 +4839,7 @@ jobs:
         run: ./internal-scripts/ci-cd/test-packages/run-tests.sh
         env:
           DISTRIBUTION_NAME: "ubuntu-24.04"
-          RUBY_PACKAGE_ID: "4.0.3"
+          RUBY_PACKAGE_ID: "4.0.4"
           PACKAGE_FORMAT: "DEB"
           VARIANT_NAME: "normal"
           VARIANT_PACKAGE_SUFFIX: ""
@@ -4852,18 +4852,18 @@ jobs:
       - name: Mark job as done
         run: ./internal-scripts/ci-cd/upload-artifact.sh
         env:
-          ARTIFACT_NAME: tested-against-test-ubuntu-24.04_4.0.3_normal
+          ARTIFACT_NAME: tested-against-test-ubuntu-24.04_4.0.4_normal
           ARTIFACT_PATH: mark-normal
           CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
 
-  test_ubuntu_24_04-4_0_3-jemalloc:
-    name: 'Test [ubuntu-24.04/4.0.3/jemalloc]'
+  test_ubuntu_24_04-4_0_4-jemalloc:
+    name: 'Test [ubuntu-24.04/4.0.4/jemalloc]'
     needs:
       - publish_debs
     runs-on: ubuntu-24.04
     environment: test
     timeout-minutes: 30
-    if: contains(inputs.necessary_jobs, ';Test against test repo [ubuntu-24.04/4.0.3/jemalloc];')
+    if: contains(inputs.necessary_jobs, ';Test against test repo [ubuntu-24.04/4.0.4/jemalloc];')
     permissions:
       id-token: write
     steps:
@@ -4881,7 +4881,7 @@ jobs:
         run: ./internal-scripts/ci-cd/test-packages/run-tests.sh
         env:
           DISTRIBUTION_NAME: "ubuntu-24.04"
-          RUBY_PACKAGE_ID: "4.0.3"
+          RUBY_PACKAGE_ID: "4.0.4"
           PACKAGE_FORMAT: "DEB"
           VARIANT_NAME: "jemalloc"
           VARIANT_PACKAGE_SUFFIX: "-jemalloc"
@@ -4894,7 +4894,7 @@ jobs:
       - name: Mark job as done
         run: ./internal-scripts/ci-cd/upload-artifact.sh
         env:
-          ARTIFACT_NAME: tested-against-test-ubuntu-24.04_4.0.3_jemalloc
+          ARTIFACT_NAME: tested-against-test-ubuntu-24.04_4.0.4_jemalloc
           ARTIFACT_PATH: mark-jemalloc
           CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
 
@@ -5213,8 +5213,8 @@ jobs:
       - test_centos_8-3_2-normal
       - test_centos_8-3_2-jemalloc
       - test_centos_8-3_2-malloctrim
-      - test_centos_8-4_0_3-normal
-      - test_centos_8-4_0_3-jemalloc
+      - test_centos_8-4_0_4-normal
+      - test_centos_8-4_0_4-jemalloc
       - test_centos_8-3_4_9-normal
       - test_centos_8-3_4_9-jemalloc
       - test_centos_8-3_3_11-normal
@@ -5231,8 +5231,8 @@ jobs:
       - test_debian_11-3_2-normal
       - test_debian_11-3_2-jemalloc
       - test_debian_11-3_2-malloctrim
-      - test_debian_11-4_0_3-normal
-      - test_debian_11-4_0_3-jemalloc
+      - test_debian_11-4_0_4-normal
+      - test_debian_11-4_0_4-jemalloc
       - test_debian_11-3_4_9-normal
       - test_debian_11-3_4_9-jemalloc
       - test_debian_11-3_3_11-normal
@@ -5249,8 +5249,8 @@ jobs:
       - test_debian_12-3_2-normal
       - test_debian_12-3_2-jemalloc
       - test_debian_12-3_2-malloctrim
-      - test_debian_12-4_0_3-normal
-      - test_debian_12-4_0_3-jemalloc
+      - test_debian_12-4_0_4-normal
+      - test_debian_12-4_0_4-jemalloc
       - test_debian_12-3_4_9-normal
       - test_debian_12-3_4_9-jemalloc
       - test_debian_12-3_3_11-normal
@@ -5264,8 +5264,8 @@ jobs:
       - test_debian_13-3_4-jemalloc
       - test_debian_13-3_3-normal
       - test_debian_13-3_3-jemalloc
-      - test_debian_13-4_0_3-normal
-      - test_debian_13-4_0_3-jemalloc
+      - test_debian_13-4_0_4-normal
+      - test_debian_13-4_0_4-jemalloc
       - test_debian_13-3_4_9-normal
       - test_debian_13-3_4_9-jemalloc
       - test_debian_13-3_3_11-normal
@@ -5279,8 +5279,8 @@ jobs:
       - test_el_9-3_2-normal
       - test_el_9-3_2-jemalloc
       - test_el_9-3_2-malloctrim
-      - test_el_9-4_0_3-normal
-      - test_el_9-4_0_3-jemalloc
+      - test_el_9-4_0_4-normal
+      - test_el_9-4_0_4-jemalloc
       - test_el_9-3_4_9-normal
       - test_el_9-3_4_9-jemalloc
       - test_el_9-3_3_11-normal
@@ -5297,8 +5297,8 @@ jobs:
       - test_ubuntu_22_04-3_2-normal
       - test_ubuntu_22_04-3_2-jemalloc
       - test_ubuntu_22_04-3_2-malloctrim
-      - test_ubuntu_22_04-4_0_3-normal
-      - test_ubuntu_22_04-4_0_3-jemalloc
+      - test_ubuntu_22_04-4_0_4-normal
+      - test_ubuntu_22_04-4_0_4-jemalloc
       - test_ubuntu_22_04-3_4_9-normal
       - test_ubuntu_22_04-3_4_9-jemalloc
       - test_ubuntu_22_04-3_3_11-normal
@@ -5315,8 +5315,8 @@ jobs:
       - test_ubuntu_24_04-3_2-normal
       - test_ubuntu_24_04-3_2-jemalloc
       - test_ubuntu_24_04-3_2-malloctrim
-      - test_ubuntu_24_04-4_0_3-normal
-      - test_ubuntu_24_04-4_0_3-jemalloc
+      - test_ubuntu_24_04-4_0_4-normal
+      - test_ubuntu_24_04-4_0_4-jemalloc
       - test_ubuntu_24_04-3_4_9-normal
       - test_ubuntu_24_04-3_4_9-jemalloc
       - test_ubuntu_24_04-3_3_11-normal
@@ -5394,18 +5394,18 @@ jobs:
           needs.test_centos_8-3_2-malloctrim.result != 'success'
           && (needs.test_centos_8-3_2-malloctrim.result != 'skipped'
             || contains(inputs.necessary_jobs, ';Test against test repo [centos-8/3.2/malloctrim];'))
-      - name: Check whether 'Test [centos-8/4.0.3/normal]' did not fail
+      - name: Check whether 'Test [centos-8/4.0.4/normal]' did not fail
         run: 'false'
         if: |
-          needs.test_centos_8-4_0_3-normal.result != 'success'
-          && (needs.test_centos_8-4_0_3-normal.result != 'skipped'
-            || contains(inputs.necessary_jobs, ';Test against test repo [centos-8/4.0.3/normal];'))
-      - name: Check whether 'Test [centos-8/4.0.3/jemalloc]' did not fail
+          needs.test_centos_8-4_0_4-normal.result != 'success'
+          && (needs.test_centos_8-4_0_4-normal.result != 'skipped'
+            || contains(inputs.necessary_jobs, ';Test against test repo [centos-8/4.0.4/normal];'))
+      - name: Check whether 'Test [centos-8/4.0.4/jemalloc]' did not fail
         run: 'false'
         if: |
-          needs.test_centos_8-4_0_3-jemalloc.result != 'success'
-          && (needs.test_centos_8-4_0_3-jemalloc.result != 'skipped'
-            || contains(inputs.necessary_jobs, ';Test against test repo [centos-8/4.0.3/jemalloc];'))
+          needs.test_centos_8-4_0_4-jemalloc.result != 'success'
+          && (needs.test_centos_8-4_0_4-jemalloc.result != 'skipped'
+            || contains(inputs.necessary_jobs, ';Test against test repo [centos-8/4.0.4/jemalloc];'))
       - name: Check whether 'Test [centos-8/3.4.9/normal]' did not fail
         run: 'false'
         if: |
@@ -5502,18 +5502,18 @@ jobs:
           needs.test_debian_11-3_2-malloctrim.result != 'success'
           && (needs.test_debian_11-3_2-malloctrim.result != 'skipped'
             || contains(inputs.necessary_jobs, ';Test against test repo [debian-11/3.2/malloctrim];'))
-      - name: Check whether 'Test [debian-11/4.0.3/normal]' did not fail
+      - name: Check whether 'Test [debian-11/4.0.4/normal]' did not fail
         run: 'false'
         if: |
-          needs.test_debian_11-4_0_3-normal.result != 'success'
-          && (needs.test_debian_11-4_0_3-normal.result != 'skipped'
-            || contains(inputs.necessary_jobs, ';Test against test repo [debian-11/4.0.3/normal];'))
-      - name: Check whether 'Test [debian-11/4.0.3/jemalloc]' did not fail
+          needs.test_debian_11-4_0_4-normal.result != 'success'
+          && (needs.test_debian_11-4_0_4-normal.result != 'skipped'
+            || contains(inputs.necessary_jobs, ';Test against test repo [debian-11/4.0.4/normal];'))
+      - name: Check whether 'Test [debian-11/4.0.4/jemalloc]' did not fail
         run: 'false'
         if: |
-          needs.test_debian_11-4_0_3-jemalloc.result != 'success'
-          && (needs.test_debian_11-4_0_3-jemalloc.result != 'skipped'
-            || contains(inputs.necessary_jobs, ';Test against test repo [debian-11/4.0.3/jemalloc];'))
+          needs.test_debian_11-4_0_4-jemalloc.result != 'success'
+          && (needs.test_debian_11-4_0_4-jemalloc.result != 'skipped'
+            || contains(inputs.necessary_jobs, ';Test against test repo [debian-11/4.0.4/jemalloc];'))
       - name: Check whether 'Test [debian-11/3.4.9/normal]' did not fail
         run: 'false'
         if: |
@@ -5610,18 +5610,18 @@ jobs:
           needs.test_debian_12-3_2-malloctrim.result != 'success'
           && (needs.test_debian_12-3_2-malloctrim.result != 'skipped'
             || contains(inputs.necessary_jobs, ';Test against test repo [debian-12/3.2/malloctrim];'))
-      - name: Check whether 'Test [debian-12/4.0.3/normal]' did not fail
+      - name: Check whether 'Test [debian-12/4.0.4/normal]' did not fail
         run: 'false'
         if: |
-          needs.test_debian_12-4_0_3-normal.result != 'success'
-          && (needs.test_debian_12-4_0_3-normal.result != 'skipped'
-            || contains(inputs.necessary_jobs, ';Test against test repo [debian-12/4.0.3/normal];'))
-      - name: Check whether 'Test [debian-12/4.0.3/jemalloc]' did not fail
+          needs.test_debian_12-4_0_4-normal.result != 'success'
+          && (needs.test_debian_12-4_0_4-normal.result != 'skipped'
+            || contains(inputs.necessary_jobs, ';Test against test repo [debian-12/4.0.4/normal];'))
+      - name: Check whether 'Test [debian-12/4.0.4/jemalloc]' did not fail
         run: 'false'
         if: |
-          needs.test_debian_12-4_0_3-jemalloc.result != 'success'
-          && (needs.test_debian_12-4_0_3-jemalloc.result != 'skipped'
-            || contains(inputs.necessary_jobs, ';Test against test repo [debian-12/4.0.3/jemalloc];'))
+          needs.test_debian_12-4_0_4-jemalloc.result != 'success'
+          && (needs.test_debian_12-4_0_4-jemalloc.result != 'skipped'
+            || contains(inputs.necessary_jobs, ';Test against test repo [debian-12/4.0.4/jemalloc];'))
       - name: Check whether 'Test [debian-12/3.4.9/normal]' did not fail
         run: 'false'
         if: |
@@ -5700,18 +5700,18 @@ jobs:
           needs.test_debian_13-3_3-jemalloc.result != 'success'
           && (needs.test_debian_13-3_3-jemalloc.result != 'skipped'
             || contains(inputs.necessary_jobs, ';Test against test repo [debian-13/3.3/jemalloc];'))
-      - name: Check whether 'Test [debian-13/4.0.3/normal]' did not fail
+      - name: Check whether 'Test [debian-13/4.0.4/normal]' did not fail
         run: 'false'
         if: |
-          needs.test_debian_13-4_0_3-normal.result != 'success'
-          && (needs.test_debian_13-4_0_3-normal.result != 'skipped'
-            || contains(inputs.necessary_jobs, ';Test against test repo [debian-13/4.0.3/normal];'))
-      - name: Check whether 'Test [debian-13/4.0.3/jemalloc]' did not fail
+          needs.test_debian_13-4_0_4-normal.result != 'success'
+          && (needs.test_debian_13-4_0_4-normal.result != 'skipped'
+            || contains(inputs.necessary_jobs, ';Test against test repo [debian-13/4.0.4/normal];'))
+      - name: Check whether 'Test [debian-13/4.0.4/jemalloc]' did not fail
         run: 'false'
         if: |
-          needs.test_debian_13-4_0_3-jemalloc.result != 'success'
-          && (needs.test_debian_13-4_0_3-jemalloc.result != 'skipped'
-            || contains(inputs.necessary_jobs, ';Test against test repo [debian-13/4.0.3/jemalloc];'))
+          needs.test_debian_13-4_0_4-jemalloc.result != 'success'
+          && (needs.test_debian_13-4_0_4-jemalloc.result != 'skipped'
+            || contains(inputs.necessary_jobs, ';Test against test repo [debian-13/4.0.4/jemalloc];'))
       - name: Check whether 'Test [debian-13/3.4.9/normal]' did not fail
         run: 'false'
         if: |
@@ -5790,18 +5790,18 @@ jobs:
           needs.test_el_9-3_2-malloctrim.result != 'success'
           && (needs.test_el_9-3_2-malloctrim.result != 'skipped'
             || contains(inputs.necessary_jobs, ';Test against test repo [el-9/3.2/malloctrim];'))
-      - name: Check whether 'Test [el-9/4.0.3/normal]' did not fail
+      - name: Check whether 'Test [el-9/4.0.4/normal]' did not fail
         run: 'false'
         if: |
-          needs.test_el_9-4_0_3-normal.result != 'success'
-          && (needs.test_el_9-4_0_3-normal.result != 'skipped'
-            || contains(inputs.necessary_jobs, ';Test against test repo [el-9/4.0.3/normal];'))
-      - name: Check whether 'Test [el-9/4.0.3/jemalloc]' did not fail
+          needs.test_el_9-4_0_4-normal.result != 'success'
+          && (needs.test_el_9-4_0_4-normal.result != 'skipped'
+            || contains(inputs.necessary_jobs, ';Test against test repo [el-9/4.0.4/normal];'))
+      - name: Check whether 'Test [el-9/4.0.4/jemalloc]' did not fail
         run: 'false'
         if: |
-          needs.test_el_9-4_0_3-jemalloc.result != 'success'
-          && (needs.test_el_9-4_0_3-jemalloc.result != 'skipped'
-            || contains(inputs.necessary_jobs, ';Test against test repo [el-9/4.0.3/jemalloc];'))
+          needs.test_el_9-4_0_4-jemalloc.result != 'success'
+          && (needs.test_el_9-4_0_4-jemalloc.result != 'skipped'
+            || contains(inputs.necessary_jobs, ';Test against test repo [el-9/4.0.4/jemalloc];'))
       - name: Check whether 'Test [el-9/3.4.9/normal]' did not fail
         run: 'false'
         if: |
@@ -5898,18 +5898,18 @@ jobs:
           needs.test_ubuntu_22_04-3_2-malloctrim.result != 'success'
           && (needs.test_ubuntu_22_04-3_2-malloctrim.result != 'skipped'
             || contains(inputs.necessary_jobs, ';Test against test repo [ubuntu-22.04/3.2/malloctrim];'))
-      - name: Check whether 'Test [ubuntu-22.04/4.0.3/normal]' did not fail
+      - name: Check whether 'Test [ubuntu-22.04/4.0.4/normal]' did not fail
         run: 'false'
         if: |
-          needs.test_ubuntu_22_04-4_0_3-normal.result != 'success'
-          && (needs.test_ubuntu_22_04-4_0_3-normal.result != 'skipped'
-            || contains(inputs.necessary_jobs, ';Test against test repo [ubuntu-22.04/4.0.3/normal];'))
-      - name: Check whether 'Test [ubuntu-22.04/4.0.3/jemalloc]' did not fail
+          needs.test_ubuntu_22_04-4_0_4-normal.result != 'success'
+          && (needs.test_ubuntu_22_04-4_0_4-normal.result != 'skipped'
+            || contains(inputs.necessary_jobs, ';Test against test repo [ubuntu-22.04/4.0.4/normal];'))
+      - name: Check whether 'Test [ubuntu-22.04/4.0.4/jemalloc]' did not fail
         run: 'false'
         if: |
-          needs.test_ubuntu_22_04-4_0_3-jemalloc.result != 'success'
-          && (needs.test_ubuntu_22_04-4_0_3-jemalloc.result != 'skipped'
-            || contains(inputs.necessary_jobs, ';Test against test repo [ubuntu-22.04/4.0.3/jemalloc];'))
+          needs.test_ubuntu_22_04-4_0_4-jemalloc.result != 'success'
+          && (needs.test_ubuntu_22_04-4_0_4-jemalloc.result != 'skipped'
+            || contains(inputs.necessary_jobs, ';Test against test repo [ubuntu-22.04/4.0.4/jemalloc];'))
       - name: Check whether 'Test [ubuntu-22.04/3.4.9/normal]' did not fail
         run: 'false'
         if: |
@@ -6006,18 +6006,18 @@ jobs:
           needs.test_ubuntu_24_04-3_2-malloctrim.result != 'success'
           && (needs.test_ubuntu_24_04-3_2-malloctrim.result != 'skipped'
             || contains(inputs.necessary_jobs, ';Test against test repo [ubuntu-24.04/3.2/malloctrim];'))
-      - name: Check whether 'Test [ubuntu-24.04/4.0.3/normal]' did not fail
+      - name: Check whether 'Test [ubuntu-24.04/4.0.4/normal]' did not fail
         run: 'false'
         if: |
-          needs.test_ubuntu_24_04-4_0_3-normal.result != 'success'
-          && (needs.test_ubuntu_24_04-4_0_3-normal.result != 'skipped'
-            || contains(inputs.necessary_jobs, ';Test against test repo [ubuntu-24.04/4.0.3/normal];'))
-      - name: Check whether 'Test [ubuntu-24.04/4.0.3/jemalloc]' did not fail
+          needs.test_ubuntu_24_04-4_0_4-normal.result != 'success'
+          && (needs.test_ubuntu_24_04-4_0_4-normal.result != 'skipped'
+            || contains(inputs.necessary_jobs, ';Test against test repo [ubuntu-24.04/4.0.4/normal];'))
+      - name: Check whether 'Test [ubuntu-24.04/4.0.4/jemalloc]' did not fail
         run: 'false'
         if: |
-          needs.test_ubuntu_24_04-4_0_3-jemalloc.result != 'success'
-          && (needs.test_ubuntu_24_04-4_0_3-jemalloc.result != 'skipped'
-            || contains(inputs.necessary_jobs, ';Test against test repo [ubuntu-24.04/4.0.3/jemalloc];'))
+          needs.test_ubuntu_24_04-4_0_4-jemalloc.result != 'success'
+          && (needs.test_ubuntu_24_04-4_0_4-jemalloc.result != 'skipped'
+            || contains(inputs.necessary_jobs, ';Test against test repo [ubuntu-24.04/4.0.4/jemalloc];'))
       - name: Check whether 'Test [ubuntu-24.04/3.4.9/normal]' did not fail
         run: 'false'
         if: |
