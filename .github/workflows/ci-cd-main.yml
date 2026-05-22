@@ -94,9 +94,14 @@ jobs:
   check_workflow_uptodate:
     name: Check whether workflow is up-to-date
     runs-on: ubuntu-24.04
-    if: github.repository == 'fullstaq-ruby/server-edition'
+    if: >
+      github.repository == 'fullstaq-ruby/server-edition'
+      && (github.event_name != 'pull_request_target'
+      || github.event.label.name == 'ok-to-test')
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event_name == 'pull_request_target' && github.event.pull_request.head.sha || github.ref }}
       - name: Check
         run: ./internal-scripts/ci-cd/check-workflow-uptodate/check.sh
 
