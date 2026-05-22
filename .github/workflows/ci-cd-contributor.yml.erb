@@ -33,7 +33,7 @@ jobs:
 
 
   build_images:
-    name: Build Docker images
+    name: 'Build Docker image [${{ matrix.distro }}]'
     needs: lint
     runs-on: ubuntu-24.04
     if: >
@@ -41,54 +41,47 @@ jobs:
       || (github.event_name == 'pull_request'
       && github.event.pull_request.head.repo.full_name != github.repository)
     timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          <%- contributor_distributions.each do |distro| -%>
+          <%- image = docker_images.find { |img| img[:id] == distro[:name] } -%>
+          - distro: '<%= distro[:name] %>'
+            image_name: '<%= image[:name] %>'
+            image_tag: '<%= image[:tag] %>'
+            source_dir: 'environments/<%= image[:id] %>'
+            artifact_name: '<%= docker_image_artifact_name(distro[:name]) %>'
+          <%- end -%>
+          <%- utility_image = docker_images.find { |img| img[:id] == 'utility' } -%>
+          - distro: 'utility'
+            image_name: '<%= utility_image[:name] %>'
+            image_tag: '<%= utility_image[:tag] %>'
+            source_dir: 'environments/utility'
+            artifact_name: '<%= docker_image_artifact_name('utility') %>'
     steps:
       - uses: actions/checkout@v4
-
-      <%- contributor_distributions.each do |distro| -%>
-      <%- image = docker_images.find { |img| img[:id] == distro[:name] } -%>
-      - name: 'Build Docker image [<%= distro[:name] %>]'
+      - name: Build Docker image
         run: ./internal-scripts/ci-cd/build-docker-images/build.sh
         env:
-          IMAGE_NAME: '<%= image[:name] %>'
-          IMAGE_TAG: '<%= image[:tag] %>'
-          SOURCE_DIR: 'environments/<%= image[:id] %>'
-      - name: 'Dump Docker image [<%= distro[:name] %>]'
+          IMAGE_NAME: '${{ matrix.image_name }}'
+          IMAGE_TAG: '${{ matrix.image_tag }}'
+          SOURCE_DIR: '${{ matrix.source_dir }}'
+      - name: Dump Docker image
         run: ./internal-scripts/ci-cd/build-docker-images/dump-image.sh
         env:
-          IMAGE_NAME: '<%= image[:name] %>'
-          IMAGE_TAG: '<%= image[:tag] %>'
-      - name: 'Upload Docker image artifact [<%= distro[:name] %>]'
+          IMAGE_NAME: '${{ matrix.image_name }}'
+          IMAGE_TAG: '${{ matrix.image_tag }}'
+      - name: Upload Docker image artifact
         uses: actions/upload-artifact@v4
         with:
-          name: '<%= docker_image_artifact_name(distro[:name]) %>'
+          name: '${{ matrix.artifact_name }}'
           path: output
-      - name: Clean up Docker image output
-        run: rm -rf output
-
-      <%- end -%>
-      <%- utility_image = docker_images.find { |img| img[:id] == 'utility' } -%>
-      - name: 'Build Docker image [utility]'
-        run: ./internal-scripts/ci-cd/build-docker-images/build.sh
-        env:
-          IMAGE_NAME: '<%= utility_image[:name] %>'
-          IMAGE_TAG: '<%= utility_image[:tag] %>'
-          SOURCE_DIR: 'environments/utility'
-      - name: 'Dump Docker image [utility]'
-        run: ./internal-scripts/ci-cd/build-docker-images/dump-image.sh
-        env:
-          IMAGE_NAME: '<%= utility_image[:name] %>'
-          IMAGE_TAG: '<%= utility_image[:tag] %>'
-      - name: 'Upload Docker image artifact [utility]'
-        uses: actions/upload-artifact@v4
-        with:
-          name: '<%= docker_image_artifact_name('utility') %>'
-          path: output
-      - name: Clean up Docker image output
-        run: rm -rf output
+          retention-days: 1
 
 
   build_packages:
-    name: Build packages
+    name: 'Build packages [${{ matrix.distro }}]'
     needs: build_images
     runs-on: ubuntu-24.04
     if: >
@@ -96,29 +89,35 @@ jobs:
       || (github.event_name == 'pull_request'
       && github.event.pull_request.head.repo.full_name != github.repository)
     timeout-minutes: 60
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          <%- contributor_distributions.each do |distro| -%>
+          - distro: '<%= distro[:name] %>'
+            package_format: '<%= distro[:package_format] %>'
+            image_artifact_name: '<%= docker_image_artifact_name(distro[:name]) %>'
+          <%- end -%>
     steps:
       - uses: actions/checkout@v4
 
       ### Download and load Docker images ###
 
-      <%- contributor_distributions.each do |distro| -%>
-      - name: 'Download Docker image artifact [<%= distro[:name] %>]'
+      - name: Download distro Docker image
         uses: actions/download-artifact@v4
         with:
-          name: '<%= docker_image_artifact_name(distro[:name]) %>'
-          path: docker-image-<%= distro[:name] %>
-      - name: 'Load Docker image [<%= distro[:name] %>]'
+          name: '${{ matrix.image_artifact_name }}'
+          path: docker-image-distro
+      - name: Load distro Docker image
         run: ./internal-scripts/ci-cd/load-docker-image.sh
         env:
-          TARBALL: docker-image-<%= distro[:name] %>/image.tar.zst
-
-      <%- end -%>
-      - name: 'Download Docker image artifact [utility]'
+          TARBALL: docker-image-distro/image.tar.zst
+      - name: Download utility Docker image
         uses: actions/download-artifact@v4
         with:
           name: '<%= docker_image_artifact_name('utility') %>'
           path: docker-image-utility
-      - name: 'Load Docker image [utility]'
+      - name: Load utility Docker image
         run: ./internal-scripts/ci-cd/load-docker-image.sh
         env:
           TARBALL: docker-image-utility/image.tar.zst
@@ -129,66 +128,98 @@ jobs:
         run: curl -fsSL -o ruby-src.tar.gz '<%= ruby_source_url(rpv[:full_version]) %>'
       - name: Download Jemalloc source
         run: curl -fsSL -o jemalloc-src.tar.bz2 '<%= jemalloc_source_url %>'
-      - name: Clone Rbenv source
-        run: |
-          git clone '<%= config[:rbenv][:repo] %>' rbenv-src
-          cd rbenv-src
-          git checkout '<%= config[:rbenv][:ref] %>'
 
       ### Build Jemalloc ###
 
-      <%- contributor_distributions.each do |distro| -%>
-      - name: 'Build Jemalloc [<%= distro[:name] %>]'
+      - name: Build Jemalloc
         run: |
           ./build-jemalloc \
-            -n '<%= distro[:name] %>' \
+            -n '${{ matrix.distro }}' \
             -s "$(pwd)/jemalloc-src.tar.bz2" \
-            -o "$(pwd)/jemalloc-bin-<%= distro[:name] %>.tar.gz" \
+            -o "$(pwd)/jemalloc-bin.tar.gz" \
             -j 2
 
-      <%- end -%>
       ### Build Ruby binaries ###
 
-      <%- contributor_distributions.each do |distro| -%>
       <%- variants_for_ruby_version(rpv).each do |variant| -%>
-      - name: 'Build Ruby binaries [<%= distro[:name] %>/<%= variant[:name] %>]'
+      - name: 'Build Ruby binaries [${{ matrix.distro }}/<%= variant[:name] %>]'
         run: |
           ./build-ruby \
-            -n '<%= distro[:name] %>' \
+            -n '${{ matrix.distro }}' \
             -s "$(pwd)/ruby-src.tar.gz" \
             -v '<%= rpv[:id] %>' \
-            -o "$(pwd)/ruby-bin-<%= distro[:name] %>-<%= variant[:name] %>.tar.gz" \
+            -o "$(pwd)/ruby-bin-<%= variant[:name] %>.tar.gz" \
       <%- if variant[:name] == 'jemalloc' -%>
-            -m "$(pwd)/jemalloc-bin-<%= distro[:name] %>.tar.gz" \
+            -m "$(pwd)/jemalloc-bin.tar.gz" \
       <%- elsif variant[:name] == 'malloctrim' -%>
             -t \
       <%- end -%>
             -j 2
 
       <%- end -%>
-      <%- end -%>
       - name: Create packages directory
         run: mkdir -p packages
 
       ### Build Ruby packages ###
 
-      <%- contributor_distributions.each do |distro| -%>
       <%- variants_for_ruby_version(rpv).each do |variant| -%>
-      <%- pkg_basename = ruby_package_basename(rpv, distro, variant) -%>
-      - name: 'Build Ruby package [<%= distro[:name] %>/<%= variant[:name] %>]'
+      - name: 'Build Ruby DEB [${{ matrix.distro }}/<%= variant[:name] %>]'
+        if: matrix.package_format == 'DEB'
         run: |
-      <%- if distro[:package_format] == :DEB -%>
           ./build-ruby-deb \
-      <%- else -%>
+            -b "$(pwd)/ruby-bin-<%= variant[:name] %>.tar.gz" \
+            -o "$(pwd)/packages/fullstaq-ruby-<%= rpv[:id] %><%= variant[:package_suffix] %>_<%= rpv[:package_revision] %>-${{ matrix.distro }}_amd64.deb" \
+            -r '<%= rpv[:package_revision] %>'
+      - name: 'Build Ruby RPM [${{ matrix.distro }}/<%= variant[:name] %>]'
+        if: matrix.package_format == 'RPM'
+        run: |
+          SANITIZED_DISTRO=$(echo '${{ matrix.distro }}' | tr -d '-')
           ./build-ruby-rpm \
-      <%- end -%>
-            -b "$(pwd)/ruby-bin-<%= distro[:name] %>-<%= variant[:name] %>.tar.gz" \
-            -o "$(pwd)/packages/<%= pkg_basename %>" \
+            -b "$(pwd)/ruby-bin-<%= variant[:name] %>.tar.gz" \
+            -o "$(pwd)/packages/fullstaq-ruby-<%= rpv[:id] %><%= variant[:package_suffix] %>-rev<%= rpv[:package_revision] %>-${SANITIZED_DISTRO}.x86_64.rpm" \
             -r '<%= rpv[:package_revision] %>'
 
       <%- end -%>
-      <%- end -%>
-      ### Build Rbenv packages ###
+      ### Upload packages ###
+
+      - name: Upload packages
+        uses: actions/upload-artifact@v4
+        with:
+          name: 'contributor-packages-${{ matrix.distro }}'
+          path: packages
+          retention-days: 1
+
+
+  build_common_packages:
+    name: Build common and rbenv packages
+    needs: build_images
+    runs-on: ubuntu-24.04
+    if: >
+      github.repository != 'fullstaq-ruby/server-edition'
+      || (github.event_name == 'pull_request'
+      && github.event.pull_request.head.repo.full_name != github.repository)
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Download utility Docker image
+        uses: actions/download-artifact@v4
+        with:
+          name: '<%= docker_image_artifact_name('utility') %>'
+          path: docker-image-utility
+      - name: Load utility Docker image
+        run: ./internal-scripts/ci-cd/load-docker-image.sh
+        env:
+          TARBALL: docker-image-utility/image.tar.zst
+
+      - name: Clone Rbenv source
+        run: |
+          git clone '<%= config[:rbenv][:repo] %>' rbenv-src
+          cd rbenv-src
+          git checkout '<%= config[:rbenv][:ref] %>'
+
+      - name: Create packages directory
+        run: mkdir -p packages
 
       - name: Build Rbenv DEB
         run: |
@@ -204,9 +235,6 @@ jobs:
             -o "$(pwd)/packages/<%= rbenv_package_basename(:RPM) %>" \
             -n '<%= rbenv_version %>' \
             -r '<%= rbenv_package_revision %>'
-
-      ### Build common packages ###
-
       - name: Build common DEB
         run: |
           ./build-common-deb \
@@ -216,18 +244,19 @@ jobs:
           ./build-common-rpm \
             -o "$(pwd)/packages/<%= common_package_basename(:RPM) %>"
 
-      ### Upload all packages ###
-
       - name: Upload packages
         uses: actions/upload-artifact@v4
         with:
-          name: contributor-packages
+          name: contributor-packages-common
           path: packages
+          retention-days: 1
 
 
   test_packages:
     name: 'Test [${{ matrix.distro }}/${{ matrix.variant }}]'
-    needs: build_packages
+    needs:
+      - build_packages
+      - build_common_packages
     runs-on: ubuntu-24.04
     if: >
       github.repository != 'fullstaq-ruby/server-edition'
@@ -249,10 +278,15 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Download packages
+      - name: Download distro packages
         uses: actions/download-artifact@v4
         with:
-          name: contributor-packages
+          name: 'contributor-packages-${{ matrix.distro }}'
+          path: packages
+      - name: Download common packages
+        uses: actions/download-artifact@v4
+        with:
+          name: contributor-packages-common
           path: packages
 
       - name: Download utility Docker image

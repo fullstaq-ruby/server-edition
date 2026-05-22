@@ -42,7 +42,7 @@ jobs:
 
 
   build_images:
-    name: Build Docker images
+    name: 'Build Docker image [${{ matrix.distro }}]'
     needs: lint
     runs-on: ubuntu-24.04
     if: >
@@ -50,69 +50,48 @@ jobs:
       || (github.event_name == 'pull_request'
       && github.event.pull_request.head.repo.full_name != github.repository)
     timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - distro: 'ubuntu-24.04'
+            image_name: 'ghcr.io/fullstaq-ruby/server-edition-ci-images'
+            image_tag: 'ubuntu-24.04-v2'
+            source_dir: 'environments/ubuntu-24.04'
+            artifact_name: 'docker-image-ubuntu-24.04'
+          - distro: 'el-9'
+            image_name: 'ghcr.io/fullstaq-ruby/server-edition-ci-images'
+            image_tag: 'el-9-v2'
+            source_dir: 'environments/el-9'
+            artifact_name: 'docker-image-el-9'
+          - distro: 'utility'
+            image_name: 'ghcr.io/fullstaq-ruby/server-edition-ci-images'
+            image_tag: 'utility-v3'
+            source_dir: 'environments/utility'
+            artifact_name: 'docker-image-utility'
     steps:
       - uses: actions/checkout@v4
-
-      - name: 'Build Docker image [ubuntu-24.04]'
+      - name: Build Docker image
         run: ./internal-scripts/ci-cd/build-docker-images/build.sh
         env:
-          IMAGE_NAME: 'ghcr.io/fullstaq-ruby/server-edition-ci-images'
-          IMAGE_TAG: 'ubuntu-24.04-v2'
-          SOURCE_DIR: 'environments/ubuntu-24.04'
-      - name: 'Dump Docker image [ubuntu-24.04]'
+          IMAGE_NAME: '${{ matrix.image_name }}'
+          IMAGE_TAG: '${{ matrix.image_tag }}'
+          SOURCE_DIR: '${{ matrix.source_dir }}'
+      - name: Dump Docker image
         run: ./internal-scripts/ci-cd/build-docker-images/dump-image.sh
         env:
-          IMAGE_NAME: 'ghcr.io/fullstaq-ruby/server-edition-ci-images'
-          IMAGE_TAG: 'ubuntu-24.04-v2'
-      - name: 'Upload Docker image artifact [ubuntu-24.04]'
+          IMAGE_NAME: '${{ matrix.image_name }}'
+          IMAGE_TAG: '${{ matrix.image_tag }}'
+      - name: Upload Docker image artifact
         uses: actions/upload-artifact@v4
         with:
-          name: 'docker-image-ubuntu-24.04'
+          name: '${{ matrix.artifact_name }}'
           path: output
-      - name: Clean up Docker image output
-        run: rm -rf output
-
-      - name: 'Build Docker image [el-9]'
-        run: ./internal-scripts/ci-cd/build-docker-images/build.sh
-        env:
-          IMAGE_NAME: 'ghcr.io/fullstaq-ruby/server-edition-ci-images'
-          IMAGE_TAG: 'el-9-v2'
-          SOURCE_DIR: 'environments/el-9'
-      - name: 'Dump Docker image [el-9]'
-        run: ./internal-scripts/ci-cd/build-docker-images/dump-image.sh
-        env:
-          IMAGE_NAME: 'ghcr.io/fullstaq-ruby/server-edition-ci-images'
-          IMAGE_TAG: 'el-9-v2'
-      - name: 'Upload Docker image artifact [el-9]'
-        uses: actions/upload-artifact@v4
-        with:
-          name: 'docker-image-el-9'
-          path: output
-      - name: Clean up Docker image output
-        run: rm -rf output
-
-      - name: 'Build Docker image [utility]'
-        run: ./internal-scripts/ci-cd/build-docker-images/build.sh
-        env:
-          IMAGE_NAME: 'ghcr.io/fullstaq-ruby/server-edition-ci-images'
-          IMAGE_TAG: 'utility-v3'
-          SOURCE_DIR: 'environments/utility'
-      - name: 'Dump Docker image [utility]'
-        run: ./internal-scripts/ci-cd/build-docker-images/dump-image.sh
-        env:
-          IMAGE_NAME: 'ghcr.io/fullstaq-ruby/server-edition-ci-images'
-          IMAGE_TAG: 'utility-v3'
-      - name: 'Upload Docker image artifact [utility]'
-        uses: actions/upload-artifact@v4
-        with:
-          name: 'docker-image-utility'
-          path: output
-      - name: Clean up Docker image output
-        run: rm -rf output
+          retention-days: 1
 
 
   build_packages:
-    name: Build packages
+    name: 'Build packages [${{ matrix.distro }}]'
     needs: build_images
     runs-on: ubuntu-24.04
     if: >
@@ -120,37 +99,36 @@ jobs:
       || (github.event_name == 'pull_request'
       && github.event.pull_request.head.repo.full_name != github.repository)
     timeout-minutes: 60
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - distro: 'ubuntu-24.04'
+            package_format: 'DEB'
+            image_artifact_name: 'docker-image-ubuntu-24.04'
+          - distro: 'el-9'
+            package_format: 'RPM'
+            image_artifact_name: 'docker-image-el-9'
     steps:
       - uses: actions/checkout@v4
 
       ### Download and load Docker images ###
 
-      - name: 'Download Docker image artifact [ubuntu-24.04]'
+      - name: Download distro Docker image
         uses: actions/download-artifact@v4
         with:
-          name: 'docker-image-ubuntu-24.04'
-          path: docker-image-ubuntu-24.04
-      - name: 'Load Docker image [ubuntu-24.04]'
+          name: '${{ matrix.image_artifact_name }}'
+          path: docker-image-distro
+      - name: Load distro Docker image
         run: ./internal-scripts/ci-cd/load-docker-image.sh
         env:
-          TARBALL: docker-image-ubuntu-24.04/image.tar.zst
-
-      - name: 'Download Docker image artifact [el-9]'
-        uses: actions/download-artifact@v4
-        with:
-          name: 'docker-image-el-9'
-          path: docker-image-el-9
-      - name: 'Load Docker image [el-9]'
-        run: ./internal-scripts/ci-cd/load-docker-image.sh
-        env:
-          TARBALL: docker-image-el-9/image.tar.zst
-
-      - name: 'Download Docker image artifact [utility]'
+          TARBALL: docker-image-distro/image.tar.zst
+      - name: Download utility Docker image
         uses: actions/download-artifact@v4
         with:
           name: 'docker-image-utility'
           path: docker-image-utility
-      - name: 'Load Docker image [utility]'
+      - name: Load utility Docker image
         run: ./internal-scripts/ci-cd/load-docker-image.sh
         env:
           TARBALL: docker-image-utility/image.tar.zst
@@ -161,68 +139,36 @@ jobs:
         run: curl -fsSL -o ruby-src.tar.gz 'https://cache.ruby-lang.org/pub/ruby/4.0/ruby-4.0.3.tar.gz'
       - name: Download Jemalloc source
         run: curl -fsSL -o jemalloc-src.tar.bz2 'https://github.com/jemalloc/jemalloc/releases/download/3.6.0/jemalloc-3.6.0.tar.bz2'
-      - name: Clone Rbenv source
-        run: |
-          git clone 'https://github.com/fullstaq-ruby/rbenv.git' rbenv-src
-          cd rbenv-src
-          git checkout 'fbaa15993171bf'
 
       ### Build Jemalloc ###
 
-      - name: 'Build Jemalloc [ubuntu-24.04]'
+      - name: Build Jemalloc
         run: |
           ./build-jemalloc \
-            -n 'ubuntu-24.04' \
+            -n '${{ matrix.distro }}' \
             -s "$(pwd)/jemalloc-src.tar.bz2" \
-            -o "$(pwd)/jemalloc-bin-ubuntu-24.04.tar.gz" \
-            -j 2
-
-      - name: 'Build Jemalloc [el-9]'
-        run: |
-          ./build-jemalloc \
-            -n 'el-9' \
-            -s "$(pwd)/jemalloc-src.tar.bz2" \
-            -o "$(pwd)/jemalloc-bin-el-9.tar.gz" \
+            -o "$(pwd)/jemalloc-bin.tar.gz" \
             -j 2
 
       ### Build Ruby binaries ###
 
-      - name: 'Build Ruby binaries [ubuntu-24.04/normal]'
+      - name: 'Build Ruby binaries [${{ matrix.distro }}/normal]'
         run: |
           ./build-ruby \
-            -n 'ubuntu-24.04' \
+            -n '${{ matrix.distro }}' \
             -s "$(pwd)/ruby-src.tar.gz" \
             -v '4.0' \
-            -o "$(pwd)/ruby-bin-ubuntu-24.04-normal.tar.gz" \
+            -o "$(pwd)/ruby-bin-normal.tar.gz" \
             -j 2
 
-      - name: 'Build Ruby binaries [ubuntu-24.04/jemalloc]'
+      - name: 'Build Ruby binaries [${{ matrix.distro }}/jemalloc]'
         run: |
           ./build-ruby \
-            -n 'ubuntu-24.04' \
+            -n '${{ matrix.distro }}' \
             -s "$(pwd)/ruby-src.tar.gz" \
             -v '4.0' \
-            -o "$(pwd)/ruby-bin-ubuntu-24.04-jemalloc.tar.gz" \
-            -m "$(pwd)/jemalloc-bin-ubuntu-24.04.tar.gz" \
-            -j 2
-
-      - name: 'Build Ruby binaries [el-9/normal]'
-        run: |
-          ./build-ruby \
-            -n 'el-9' \
-            -s "$(pwd)/ruby-src.tar.gz" \
-            -v '4.0' \
-            -o "$(pwd)/ruby-bin-el-9-normal.tar.gz" \
-            -j 2
-
-      - name: 'Build Ruby binaries [el-9/jemalloc]'
-        run: |
-          ./build-ruby \
-            -n 'el-9' \
-            -s "$(pwd)/ruby-src.tar.gz" \
-            -v '4.0' \
-            -o "$(pwd)/ruby-bin-el-9-jemalloc.tar.gz" \
-            -m "$(pwd)/jemalloc-bin-el-9.tar.gz" \
+            -o "$(pwd)/ruby-bin-jemalloc.tar.gz" \
+            -m "$(pwd)/jemalloc-bin.tar.gz" \
             -j 2
 
       - name: Create packages directory
@@ -230,35 +176,78 @@ jobs:
 
       ### Build Ruby packages ###
 
-      - name: 'Build Ruby package [ubuntu-24.04/normal]'
+      - name: 'Build Ruby DEB [${{ matrix.distro }}/normal]'
+        if: matrix.package_format == 'DEB'
         run: |
           ./build-ruby-deb \
-            -b "$(pwd)/ruby-bin-ubuntu-24.04-normal.tar.gz" \
-            -o "$(pwd)/packages/fullstaq-ruby-4.0_2-ubuntu-24.04_amd64.deb" \
+            -b "$(pwd)/ruby-bin-normal.tar.gz" \
+            -o "$(pwd)/packages/fullstaq-ruby-4.0_2-${{ matrix.distro }}_amd64.deb" \
+            -r '2'
+      - name: 'Build Ruby RPM [${{ matrix.distro }}/normal]'
+        if: matrix.package_format == 'RPM'
+        run: |
+          SANITIZED_DISTRO=$(echo '${{ matrix.distro }}' | tr -d '-')
+          ./build-ruby-rpm \
+            -b "$(pwd)/ruby-bin-normal.tar.gz" \
+            -o "$(pwd)/packages/fullstaq-ruby-4.0-rev2-${SANITIZED_DISTRO}.x86_64.rpm" \
             -r '2'
 
-      - name: 'Build Ruby package [ubuntu-24.04/jemalloc]'
+      - name: 'Build Ruby DEB [${{ matrix.distro }}/jemalloc]'
+        if: matrix.package_format == 'DEB'
         run: |
           ./build-ruby-deb \
-            -b "$(pwd)/ruby-bin-ubuntu-24.04-jemalloc.tar.gz" \
-            -o "$(pwd)/packages/fullstaq-ruby-4.0-jemalloc_2-ubuntu-24.04_amd64.deb" \
+            -b "$(pwd)/ruby-bin-jemalloc.tar.gz" \
+            -o "$(pwd)/packages/fullstaq-ruby-4.0-jemalloc_2-${{ matrix.distro }}_amd64.deb" \
             -r '2'
-
-      - name: 'Build Ruby package [el-9/normal]'
+      - name: 'Build Ruby RPM [${{ matrix.distro }}/jemalloc]'
+        if: matrix.package_format == 'RPM'
         run: |
+          SANITIZED_DISTRO=$(echo '${{ matrix.distro }}' | tr -d '-')
           ./build-ruby-rpm \
-            -b "$(pwd)/ruby-bin-el-9-normal.tar.gz" \
-            -o "$(pwd)/packages/fullstaq-ruby-4.0-rev2-el9.x86_64.rpm" \
+            -b "$(pwd)/ruby-bin-jemalloc.tar.gz" \
+            -o "$(pwd)/packages/fullstaq-ruby-4.0-jemalloc-rev2-${SANITIZED_DISTRO}.x86_64.rpm" \
             -r '2'
 
-      - name: 'Build Ruby package [el-9/jemalloc]'
+      ### Upload packages ###
+
+      - name: Upload packages
+        uses: actions/upload-artifact@v4
+        with:
+          name: 'contributor-packages-${{ matrix.distro }}'
+          path: packages
+          retention-days: 1
+
+
+  build_common_packages:
+    name: Build common and rbenv packages
+    needs: build_images
+    runs-on: ubuntu-24.04
+    if: >
+      github.repository != 'fullstaq-ruby/server-edition'
+      || (github.event_name == 'pull_request'
+      && github.event.pull_request.head.repo.full_name != github.repository)
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Download utility Docker image
+        uses: actions/download-artifact@v4
+        with:
+          name: 'docker-image-utility'
+          path: docker-image-utility
+      - name: Load utility Docker image
+        run: ./internal-scripts/ci-cd/load-docker-image.sh
+        env:
+          TARBALL: docker-image-utility/image.tar.zst
+
+      - name: Clone Rbenv source
         run: |
-          ./build-ruby-rpm \
-            -b "$(pwd)/ruby-bin-el-9-jemalloc.tar.gz" \
-            -o "$(pwd)/packages/fullstaq-ruby-4.0-jemalloc-rev2-el9.x86_64.rpm" \
-            -r '2'
+          git clone 'https://github.com/fullstaq-ruby/rbenv.git' rbenv-src
+          cd rbenv-src
+          git checkout 'fbaa15993171bf'
 
-      ### Build Rbenv packages ###
+      - name: Create packages directory
+        run: mkdir -p packages
 
       - name: Build Rbenv DEB
         run: |
@@ -274,9 +263,6 @@ jobs:
             -o "$(pwd)/packages/fullstaq-rbenv-1.1.2_16-1.noarch.rpm" \
             -n '1.1.2-16' \
             -r '1'
-
-      ### Build common packages ###
-
       - name: Build common DEB
         run: |
           ./build-common-deb \
@@ -286,18 +272,19 @@ jobs:
           ./build-common-rpm \
             -o "$(pwd)/packages/fullstaq-ruby-common-1.0-1.noarch.rpm"
 
-      ### Upload all packages ###
-
       - name: Upload packages
         uses: actions/upload-artifact@v4
         with:
-          name: contributor-packages
+          name: contributor-packages-common
           path: packages
+          retention-days: 1
 
 
   test_packages:
     name: 'Test [${{ matrix.distro }}/${{ matrix.variant }}]'
-    needs: build_packages
+    needs:
+      - build_packages
+      - build_common_packages
     runs-on: ubuntu-24.04
     if: >
       github.repository != 'fullstaq-ruby/server-edition'
@@ -327,10 +314,15 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Download packages
+      - name: Download distro packages
         uses: actions/download-artifact@v4
         with:
-          name: contributor-packages
+          name: 'contributor-packages-${{ matrix.distro }}'
+          path: packages
+      - name: Download common packages
+        uses: actions/download-artifact@v4
+        with:
+          name: contributor-packages-common
           path: packages
 
       - name: Download utility Docker image
