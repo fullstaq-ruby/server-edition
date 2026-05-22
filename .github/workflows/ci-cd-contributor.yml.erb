@@ -1,6 +1,23 @@
 <%= editing_warning_comment('ci-cd-contributor') %>
 <%- rpv = latest_ruby_package_version -%>
 
+# Security invariant: the contributor pipeline is split across three workflows.
+#
+#   ci-cd-main         - Privileged (secrets, OIDC, write tokens). Runs on
+#                        push to upstream branches, and on pull_request_target
+#                        when a maintainer applies the ok-to-test label.
+#                        Checks out PR head only when label-gated.
+#   ci-cd-contributor  - Unprivileged. Runs on pull_request for fork PRs and
+#                        on push in forks. No secrets. Safe on arbitrary
+#                        contributor commits.
+#   ci-cd-label-guard  - Strips ok-to-test on every push to a labeled PR
+#                        (pull_request_target: synchronize), forcing
+#                        maintainer re-review before the privileged
+#                        pipeline re-runs.
+#
+# Changing triggers, if-guards, or the label name in any of these files
+# without considering the others can break the security model.
+
 name: 'CI/CD: contributor'
 
 on:
