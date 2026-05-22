@@ -18,7 +18,10 @@ jobs:
   lint:
     name: Check whether workflow is up-to-date
     runs-on: ubuntu-24.04
-    if: github.event_name == 'pull_request' || github.repository != 'fullstaq-ruby/server-edition'
+    if: >
+      github.repository != 'fullstaq-ruby/server-edition'
+      || (github.event_name == 'pull_request'
+      && github.event.pull_request.head.repo.full_name != github.repository)
     steps:
       - uses: actions/checkout@v4
       - uses: ruby/setup-ruby@v1
@@ -32,7 +35,10 @@ jobs:
     name: Build Docker images
     needs: lint
     runs-on: ubuntu-24.04
-    if: github.event_name == 'pull_request' || github.repository != 'fullstaq-ruby/server-edition'
+    if: >
+      github.repository != 'fullstaq-ruby/server-edition'
+      || (github.event_name == 'pull_request'
+      && github.event.pull_request.head.repo.full_name != github.repository)
     steps:
       - uses: actions/checkout@v4
 
@@ -83,7 +89,10 @@ jobs:
     name: Build packages
     needs: build_images
     runs-on: ubuntu-24.04
-    if: github.event_name == 'pull_request' || github.repository != 'fullstaq-ruby/server-edition'
+    if: >
+      github.repository != 'fullstaq-ruby/server-edition'
+      || (github.event_name == 'pull_request'
+      && github.event.pull_request.head.repo.full_name != github.repository)
     timeout-minutes: 60
     steps:
       - uses: actions/checkout@v4
@@ -218,7 +227,10 @@ jobs:
     name: 'Test [${{ matrix.distro }}/${{ matrix.variant }}]'
     needs: build_packages
     runs-on: ubuntu-24.04
-    if: github.event_name == 'pull_request' || github.repository != 'fullstaq-ruby/server-edition'
+    if: >
+      github.repository != 'fullstaq-ruby/server-edition'
+      || (github.event_name == 'pull_request'
+      && github.event.pull_request.head.repo.full_name != github.repository)
     timeout-minutes: 30
     strategy:
       fail-fast: false
