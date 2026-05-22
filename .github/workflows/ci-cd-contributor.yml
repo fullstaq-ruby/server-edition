@@ -33,8 +33,8 @@ jobs:
       && github.event.pull_request.head.repo.full_name != github.repository)
     timeout-minutes: 10
     steps:
-      - uses: actions/checkout@v4
-      - uses: ruby/setup-ruby@v1
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
+      - uses: ruby/setup-ruby@afeafc3d1ab54a631816aba4c914a0081c12ff2f # v1
         with:
           ruby-version: '3.3'
       - name: Check
@@ -70,7 +70,7 @@ jobs:
             source_dir: 'environments/utility'
             artifact_name: 'docker-image-utility'
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
       - name: Build Docker image
         run: ./internal-scripts/ci-cd/build-docker-images/build.sh
         env:
@@ -83,7 +83,7 @@ jobs:
           IMAGE_NAME: '${{ matrix.image_name }}'
           IMAGE_TAG: '${{ matrix.image_tag }}'
       - name: Upload Docker image artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         with:
           name: '${{ matrix.artifact_name }}'
           path: output
@@ -110,12 +110,12 @@ jobs:
             package_format: 'RPM'
             image_artifact_name: 'docker-image-el-9'
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
 
       ### Download and load Docker images ###
 
       - name: Download distro Docker image
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4
         with:
           name: '${{ matrix.image_artifact_name }}'
           path: docker-image-distro
@@ -124,7 +124,7 @@ jobs:
         env:
           TARBALL: docker-image-distro/image.tar.zst
       - name: Download utility Docker image
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4
         with:
           name: 'docker-image-utility'
           path: docker-image-utility
@@ -211,7 +211,7 @@ jobs:
       ### Upload packages ###
 
       - name: Upload packages
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         with:
           name: 'contributor-packages-${{ matrix.distro }}'
           path: packages
@@ -228,10 +228,10 @@ jobs:
       && github.event.pull_request.head.repo.full_name != github.repository)
     timeout-minutes: 30
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
 
       - name: Download utility Docker image
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4
         with:
           name: 'docker-image-utility'
           path: docker-image-utility
@@ -273,7 +273,7 @@ jobs:
             -o "$(pwd)/packages/fullstaq-ruby-common-1.0-1.noarch.rpm"
 
       - name: Upload packages
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         with:
           name: contributor-packages-common
           path: packages
@@ -312,21 +312,21 @@ jobs:
             test_image: 'rockylinux:9'
             package_format: 'RPM'
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
 
       - name: Download distro packages
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4
         with:
           name: 'contributor-packages-${{ matrix.distro }}'
           path: packages
       - name: Download common packages
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4
         with:
           name: contributor-packages-common
           path: packages
 
       - name: Download utility Docker image
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4
         with:
           name: 'docker-image-utility'
           path: docker-image-utility
