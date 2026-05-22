@@ -1,0 +1,51 @@
+# Security invariant: the contributor pipeline is split across three workflows.
+#
+#   ci-cd-main         - Privileged (secrets, OIDC, write tokens). Runs on
+#                        push to upstream branches, and on pull_request_target
+#                        when a maintainer applies the ok-to-test label.
+#                        Checks out PR head only when label-gated.
+#   ci-cd-contributor  - Unprivileged. Runs on pull_request for fork PRs and
+#                        on push in forks. No secrets. Safe on arbitrary
+#                        contributor commits.
+#   ci-cd-label-guard  - This file. Strips ok-to-test on every push to a
+#                        labeled PR (pull_request_target: synchronize),
+#                        forcing maintainer re-review before the privileged
+#                        pipeline re-runs.
+#
+# Changing triggers, if-guards, or the label name in any of these files
+# without considering the others can break the security model.
+
+name: 'CI/CD: label guard'
+
+on:
+  pull_request_target:
+    types: [synchronize]
+
+jobs:
+  remove_ok_to_test:
+    name: Remove ok-to-test label on new push
+    runs-on: ubuntu-24.04
+    permissions:
+      pull-requests: write
+    steps:
+      - name: Remove ok-to-test label if present
+        uses: actions/github-script@f28e40c7f34bde8b3046d885e986cb6290c5673b # v7
+        with:
+          script: |
+            const { owner, repo } = context.repo;
+            const issue_number = context.payload.pull_request.number;
+            try {
+              await github.rest.issues.removeLabel({
+                owner,
+                repo,
+                issue_number,
+                name: 'ok-to-test'
+              });
+              console.log('Removed ok-to-test label');
+            } catch (e) {
+              if (e.status === 404) {
+                console.log('Label ok-to-test not present, nothing to remove');
+              } else {
+                throw e;
+              }
+            }

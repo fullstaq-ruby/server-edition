@@ -1,0 +1,355 @@
+<%= editing_warning_comment('ci-cd-contributor') %>
+<%- rpv = latest_ruby_package_version -%>
+
+# Security invariant: the contributor pipeline is split across three workflows.
+#
+#   ci-cd-main         - Privileged (secrets, OIDC, write tokens). Runs on
+#                        push to upstream branches, and on pull_request_target
+#                        when a maintainer applies the ok-to-test label.
+#                        Checks out PR head only when label-gated.
+#   ci-cd-contributor  - Unprivileged. Runs on pull_request for fork PRs and
+#                        on push in forks. No secrets. Safe on arbitrary
+#                        contributor commits.
+#   ci-cd-label-guard  - Strips ok-to-test on every push to a labeled PR
+#                        (pull_request_target: synchronize), forcing
+#                        maintainer re-review before the privileged
+#                        pipeline re-runs.
+#
+# Changing triggers, if-guards, or the label name in any of these files
+# without considering the others can break the security model.
+
+name: 'CI/CD: contributor'
+
+on:
+  push:
+    paths-ignore:
+      - '**.md'
+      - 'dev-handbook/**'
+  pull_request:
+    paths-ignore:
+      - '**.md'
+      - 'dev-handbook/**'
+  workflow_dispatch:
+
+jobs:
+  lint:
+    name: Check whether workflow is up-to-date
+    runs-on: ubuntu-24.04
+    if: >
+      github.repository != 'fullstaq-ruby/server-edition'
+      || (github.event_name == 'pull_request'
+      && github.event.pull_request.head.repo.full_name != github.repository)
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
+      - uses: ruby/setup-ruby@afeafc3d1ab54a631816aba4c914a0081c12ff2f # v1
+        with:
+          ruby-version: '3.3'
+      - name: Check
+        run: ./internal-scripts/ci-cd/check-workflow-uptodate/check.sh
+
+
+  build_images:
+    name: 'Build Docker image [${{ matrix.distro }}]'
+    needs: lint
+    runs-on: ubuntu-24.04
+    if: >
+      github.repository != 'fullstaq-ruby/server-edition'
+      || (github.event_name == 'pull_request'
+      && github.event.pull_request.head.repo.full_name != github.repository)
+    timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          <%- contributor_distributions.each do |distro| -%>
+          <%- image = docker_images.find { |img| img[:id] == distro[:name] } -%>
+          - distro: '<%= distro[:name] %>'
+            image_name: '<%= image[:name] %>'
+            image_tag: '<%= image[:tag] %>'
+            source_dir: 'environments/<%= image[:id] %>'
+            artifact_name: '<%= docker_image_artifact_name(distro[:name]) %>'
+          <%- end -%>
+          <%- utility_image = docker_images.find { |img| img[:id] == 'utility' } -%>
+          - distro: 'utility'
+            image_name: '<%= utility_image[:name] %>'
+            image_tag: '<%= utility_image[:tag] %>'
+            source_dir: 'environments/utility'
+            artifact_name: '<%= docker_image_artifact_name('utility') %>'
+    steps:
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
+      - name: Build Docker image
+        run: ./internal-scripts/ci-cd/build-docker-images/build.sh
+        env:
+          IMAGE_NAME: '${{ matrix.image_name }}'
+          IMAGE_TAG: '${{ matrix.image_tag }}'
+          SOURCE_DIR: '${{ matrix.source_dir }}'
+      - name: Dump Docker image
+        run: ./internal-scripts/ci-cd/build-docker-images/dump-image.sh
+        env:
+          IMAGE_NAME: '${{ matrix.image_name }}'
+          IMAGE_TAG: '${{ matrix.image_tag }}'
+      - name: Upload Docker image artifact
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: '${{ matrix.artifact_name }}'
+          path: output
+          retention-days: 1
+
+
+  build_packages:
+    name: 'Build packages [${{ matrix.distro }}]'
+    needs: build_images
+    runs-on: ubuntu-24.04
+    if: >
+      github.repository != 'fullstaq-ruby/server-edition'
+      || (github.event_name == 'pull_request'
+      && github.event.pull_request.head.repo.full_name != github.repository)
+    timeout-minutes: 60
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          <%- contributor_distributions.each do |distro| -%>
+          - distro: '<%= distro[:name] %>'
+            package_format: '<%= distro[:package_format] %>'
+            image_artifact_name: '<%= docker_image_artifact_name(distro[:name]) %>'
+          <%- end -%>
+    steps:
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
+
+      ### Download and load Docker images ###
+
+      - name: Download distro Docker image
+        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4
+        with:
+          name: '${{ matrix.image_artifact_name }}'
+          path: docker-image-distro
+      - name: Load distro Docker image
+        run: ./internal-scripts/ci-cd/load-docker-image.sh
+        env:
+          TARBALL: docker-image-distro/image.tar.zst
+      - name: Download utility Docker image
+        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4
+        with:
+          name: '<%= docker_image_artifact_name('utility') %>'
+          path: docker-image-utility
+      - name: Load utility Docker image
+        run: ./internal-scripts/ci-cd/load-docker-image.sh
+        env:
+          TARBALL: docker-image-utility/image.tar.zst
+
+      ### Download sources ###
+
+      - name: Download Ruby source
+        run: curl -fsSL -o ruby-src.tar.gz '<%= ruby_source_url(rpv[:full_version]) %>'
+      - name: Download Jemalloc source
+        run: curl -fsSL -o jemalloc-src.tar.bz2 '<%= jemalloc_source_url %>'
+
+      ### Build Jemalloc ###
+
+      - name: Build Jemalloc
+        run: |
+          ./build-jemalloc \
+            -n '${{ matrix.distro }}' \
+            -s "$(pwd)/jemalloc-src.tar.bz2" \
+            -o "$(pwd)/jemalloc-bin.tar.gz" \
+            -j 2
+
+      ### Build Ruby binaries ###
+
+      <%- variants_for_ruby_version(rpv).each do |variant| -%>
+      - name: 'Build Ruby binaries [${{ matrix.distro }}/<%= variant[:name] %>]'
+        run: |
+          ./build-ruby \
+            -n '${{ matrix.distro }}' \
+            -s "$(pwd)/ruby-src.tar.gz" \
+            -v '<%= rpv[:id] %>' \
+            -o "$(pwd)/ruby-bin-<%= variant[:name] %>.tar.gz" \
+      <%- if variant[:name] == 'jemalloc' -%>
+            -m "$(pwd)/jemalloc-bin.tar.gz" \
+      <%- elsif variant[:name] == 'malloctrim' -%>
+            -t \
+      <%- end -%>
+            -j 2
+
+      <%- end -%>
+      - name: Create packages directory
+        run: mkdir -p packages
+
+      ### Build Ruby packages ###
+
+      <%- variants_for_ruby_version(rpv).each do |variant| -%>
+      - name: 'Build Ruby DEB [${{ matrix.distro }}/<%= variant[:name] %>]'
+        if: matrix.package_format == 'DEB'
+        run: |
+          ./build-ruby-deb \
+            -b "$(pwd)/ruby-bin-<%= variant[:name] %>.tar.gz" \
+            -o "$(pwd)/packages/fullstaq-ruby-<%= rpv[:id] %><%= variant[:package_suffix] %>_<%= rpv[:package_revision] %>-${{ matrix.distro }}_amd64.deb" \
+            -r '<%= rpv[:package_revision] %>'
+      - name: 'Build Ruby RPM [${{ matrix.distro }}/<%= variant[:name] %>]'
+        if: matrix.package_format == 'RPM'
+        run: |
+          SANITIZED_DISTRO=$(echo '${{ matrix.distro }}' | tr -d '-')
+          ./build-ruby-rpm \
+            -b "$(pwd)/ruby-bin-<%= variant[:name] %>.tar.gz" \
+            -o "$(pwd)/packages/fullstaq-ruby-<%= rpv[:id] %><%= variant[:package_suffix] %>-rev<%= rpv[:package_revision] %>-${SANITIZED_DISTRO}.x86_64.rpm" \
+            -r '<%= rpv[:package_revision] %>'
+
+      <%- end -%>
+      ### Upload packages ###
+
+      - name: Upload packages
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: 'contributor-packages-${{ matrix.distro }}'
+          path: packages
+          retention-days: 1
+
+
+  build_common_packages:
+    name: Build common and rbenv packages
+    needs: build_images
+    runs-on: ubuntu-24.04
+    if: >
+      github.repository != 'fullstaq-ruby/server-edition'
+      || (github.event_name == 'pull_request'
+      && github.event.pull_request.head.repo.full_name != github.repository)
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
+
+      - name: Download utility Docker image
+        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4
+        with:
+          name: '<%= docker_image_artifact_name('utility') %>'
+          path: docker-image-utility
+      - name: Load utility Docker image
+        run: ./internal-scripts/ci-cd/load-docker-image.sh
+        env:
+          TARBALL: docker-image-utility/image.tar.zst
+
+      - name: Clone Rbenv source
+        run: |
+          git clone '<%= config[:rbenv][:repo] %>' rbenv-src
+          cd rbenv-src
+          git checkout '<%= config[:rbenv][:ref] %>'
+
+      - name: Create packages directory
+        run: mkdir -p packages
+
+      - name: Build Rbenv DEB
+        run: |
+          ./build-rbenv-deb \
+            -s "$(pwd)/rbenv-src" \
+            -o "$(pwd)/packages/<%= rbenv_package_basename(:DEB) %>" \
+            -n '<%= rbenv_version %>' \
+            -r '<%= rbenv_package_revision %>'
+      - name: Build Rbenv RPM
+        run: |
+          ./build-rbenv-rpm \
+            -s "$(pwd)/rbenv-src" \
+            -o "$(pwd)/packages/<%= rbenv_package_basename(:RPM) %>" \
+            -n '<%= rbenv_version %>' \
+            -r '<%= rbenv_package_revision %>'
+      - name: Build common DEB
+        run: |
+          ./build-common-deb \
+            -o "$(pwd)/packages/<%= common_package_basename(:DEB) %>"
+      - name: Build common RPM
+        run: |
+          ./build-common-rpm \
+            -o "$(pwd)/packages/<%= common_package_basename(:RPM) %>"
+
+      - name: Upload packages
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: contributor-packages-common
+          path: packages
+          retention-days: 1
+
+
+  test_packages:
+    name: 'Test [${{ matrix.distro }}/${{ matrix.variant }}]'
+    needs:
+      - build_packages
+      - build_common_packages
+    runs-on: ubuntu-24.04
+    if: >
+      github.repository != 'fullstaq-ruby/server-edition'
+      || (github.event_name == 'pull_request'
+      && github.event.pull_request.head.repo.full_name != github.repository)
+    timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          <%- contributor_distributions.each do |distro| -%>
+          <%- variants_for_ruby_version(rpv).each do |variant| -%>
+          - distro: '<%= distro[:name] %>'
+            variant: '<%= variant[:name] %>'
+            test_image: '<%= distro[:test_image] %>'
+            package_format: '<%= distro[:package_format] %>'
+          <%- end -%>
+          <%- end -%>
+    steps:
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
+
+      - name: Download distro packages
+        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4
+        with:
+          name: 'contributor-packages-${{ matrix.distro }}'
+          path: packages
+      - name: Download common packages
+        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4
+        with:
+          name: contributor-packages-common
+          path: packages
+
+      - name: Download utility Docker image
+        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4
+        with:
+          name: '<%= docker_image_artifact_name('utility') %>'
+          path: docker-image-utility
+      - name: Load utility Docker image
+        run: ./internal-scripts/ci-cd/load-docker-image.sh
+        env:
+          TARBALL: docker-image-utility/image.tar.zst
+
+      - name: Determine Ruby package filename
+        id: ruby_pkg
+        run: |
+          VARIANT="${{ matrix.variant }}"
+          DISTRO="${{ matrix.distro }}"
+          FORMAT="${{ matrix.package_format }}"
+          if [ "$VARIANT" = "normal" ]; then
+            VARIANT_SUFFIX=""
+          else
+            VARIANT_SUFFIX="-${VARIANT}"
+          fi
+          if [ "$FORMAT" = "DEB" ]; then
+            FILENAME="fullstaq-ruby-<%= rpv[:id] %>${VARIANT_SUFFIX}_<%= rpv[:package_revision] %>-${DISTRO}_amd64.deb"
+          else
+            SANITIZED_DISTRO=$(echo "$DISTRO" | tr -d '-')
+            FILENAME="fullstaq-ruby-<%= rpv[:id] %>${VARIANT_SUFFIX}-rev<%= rpv[:package_revision] %>-${SANITIZED_DISTRO}.x86_64.rpm"
+          fi
+          echo "filename=${FILENAME}" >> "$GITHUB_OUTPUT"
+
+      - name: Test DEBs
+        if: matrix.package_format == 'DEB'
+        run: |
+          ./test-debs \
+            -i '${{ matrix.test_image }}' \
+            -v '${{ matrix.variant }}' \
+            -r "$(pwd)/packages/${{ steps.ruby_pkg.outputs.filename }}" \
+            -b "$(pwd)/packages/<%= rbenv_package_basename(:DEB) %>" \
+            -c "$(pwd)/packages/<%= common_package_basename(:DEB) %>"
+      - name: Test RPMs
+        if: matrix.package_format == 'RPM'
+        run: |
+          ./test-rpms \
+            -i '${{ matrix.test_image }}' \
+            -v '${{ matrix.variant }}' \
+            -r "$(pwd)/packages/${{ steps.ruby_pkg.outputs.filename }}" \
+            -b "$(pwd)/packages/<%= rbenv_package_basename(:RPM) %>" \
+            -c "$(pwd)/packages/<%= common_package_basename(:RPM) %>"

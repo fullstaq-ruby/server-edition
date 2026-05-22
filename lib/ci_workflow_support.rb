@@ -66,13 +66,21 @@ module CiWorkflowSupport
         abort "Config error: 'distributions' must be set to 'all' or to a list"
       end
 
-      names.map do |name|
-        {
-          name: name,
-          package_format: autodetect_package_format(name),
-          test_image: determine_test_image_for(name),
-        }
-      end
+      build_distribution_entries(names)
+    end
+  end
+
+  def contributor_distributions
+    @contributor_distributions ||= build_distribution_entries(config[:contributor_distributions] || [])
+  end
+
+  def build_distribution_entries(names)
+    names.map do |name|
+      {
+        name: name,
+        package_format: autodetect_package_format(name),
+        test_image: determine_test_image_for(name),
+      }
     end
   end
 
@@ -259,6 +267,10 @@ module CiWorkflowSupport
         entry
       end
     end
+  end
+
+  def latest_ruby_package_version
+    ruby_package_versions.max_by { |entry| Gem::Version.new(entry[:full_version]) }
   end
 
   def ruby_package_versions_for_distro(distro)

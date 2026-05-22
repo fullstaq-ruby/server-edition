@@ -10,6 +10,23 @@
 #
 #   git config core.hooksPath .githooks
 
+# Security invariant: the contributor pipeline is split across three workflows.
+#
+#   ci-cd-main         - Privileged (secrets, OIDC, write tokens). Runs on
+#                        push to upstream branches, and on pull_request_target
+#                        when a maintainer applies the ok-to-test label.
+#                        Checks out PR head only when label-gated.
+#   ci-cd-contributor  - Unprivileged. Runs on pull_request for fork PRs and
+#                        on push in forks. No secrets. Safe on arbitrary
+#                        contributor commits.
+#   ci-cd-label-guard  - Strips ok-to-test on every push to a labeled PR
+#                        (pull_request_target: synchronize), forcing
+#                        maintainer re-review before the privileged
+#                        pipeline re-runs.
+#
+# Changing triggers, if-guards, or the label name in any of these files
+# without considering the others can break the security model.
+
 name: 'CI/CD: main'
 
 on:
@@ -19,6 +36,11 @@ on:
         required: false
         description: Run number for CI artifacts
   push:
+    paths-ignore:
+      - '**.md'
+      - 'dev-handbook/**'
+  pull_request_target:
+    types: [labeled]
     paths-ignore:
       - '**.md'
       - 'dev-handbook/**'
@@ -39,6 +61,10 @@ jobs:
   determine_necessary_jobs:
     name: Determine necessary jobs
     runs-on: ubuntu-24.04
+    if: >
+      github.repository == 'fullstaq-ruby/server-edition'
+      && (github.event_name != 'pull_request_target'
+      || github.event.label.name == 'ok-to-test')
     environment: test
     permissions:
       id-token: write
@@ -54,6 +80,8 @@ jobs:
         if: github.event_name == 'push' && github.ref == 'refs/heads/fix/cicd-new-workflows'
 
       - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event_name == 'pull_request_target' && github.event.pull_request.head.sha || github.ref }}
       - uses: google-github-actions/auth@v2
         with:
           project_id: ${{ vars.GCLOUD_PROJECT_ID }}
@@ -83,8 +111,14 @@ jobs:
   check_workflow_uptodate:
     name: Check whether workflow is up-to-date
     runs-on: ubuntu-24.04
+    if: >
+      github.repository == 'fullstaq-ruby/server-edition'
+      && (github.event_name != 'pull_request_target'
+      || github.event.label.name == 'ok-to-test')
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event_name == 'pull_request_target' && github.event.pull_request.head.sha || github.ref }}
       - name: Check
         run: ./internal-scripts/ci-cd/check-workflow-uptodate/check.sh
 

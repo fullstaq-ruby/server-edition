@@ -14,4 +14,4 @@ require_container_mount "$OUTPUT_PATH"
 
 
 run cp /input/* /output/
-run createrepo /output
+run createrepo_c /output
