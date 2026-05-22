@@ -270,7 +270,7 @@ module CiWorkflowSupport
   end
 
   def latest_ruby_package_version
-    ruby_package_versions.first
+    ruby_package_versions.max_by { |entry| Gem::Version.new(entry[:full_version]) }
   end
 
   def ruby_package_versions_for_distro(distro)
