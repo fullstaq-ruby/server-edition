@@ -7,7 +7,7 @@
 #
 # Usage:
 #   PRODUCTION_REPO_BUCKET_NAME=fsruby-server-edition-apt-repo \
-#   ARCHIVE_REPO_BUCKET_NAME=fsruby-server-edition-apt-repo-archive \
+#   ARCHIVE_REPO_BUCKET_NAME=fsruby-server-edition-apt-archive-repo \
 #   ./internal-scripts/ci-cd/archive/migrate-apt-to-archive.rb [--dry-run] [--distros centos-8,debian-9]
 #
 # If --distros is not specified, automatically detects EOL distros by comparing

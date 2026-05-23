@@ -52,8 +52,8 @@ There are five buckets:
 
  - `fsruby-server-edition-apt-repo` stores the production APT repository.
  - `fsruby-server-edition-yum-repo` stores the production YUM repository.
- - `fsruby-server-edition-apt-repo-archive` stores packages for EOL distributions (APT).
- - `fsruby-server-edition-yum-repo-archive` stores packages for EOL distributions (YUM).
+ - `fsruby-server-edition-apt-archive-repo` stores packages for EOL distributions (APT).
+ - `fsruby-server-edition-yum-archive-repo` stores packages for EOL distributions (YUM).
  - `fsruby-server-edition-ci-artifacts` stores the temporary repositories created during CI runs.
 
 The archive buckets are only updated during [EOL migration](archiving-eol-packages.md) — CI never writes to them. Each migration creates a new version that merges newly-archived distros with the existing archive contents. They are served at `apt-archive.fullstaqruby.org` and `yum-archive.fullstaqruby.org`.

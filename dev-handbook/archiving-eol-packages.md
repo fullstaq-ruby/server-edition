@@ -11,9 +11,9 @@ To address this, we maintain **archive repositories** alongside the main reposit
 | Repository | Bucket | Domain | Purpose |
 |------------|--------|--------|---------|
 | APT (main) | `fsruby-server-edition-apt-repo` | `apt.fullstaqruby.org` | Current, supported packages |
-| APT (archive) | `fsruby-server-edition-apt-repo-archive` | `apt-archive.fullstaqruby.org` | Frozen packages for EOL distributions |
+| APT (archive) | `fsruby-server-edition-apt-archive-repo` | `apt-archive.fullstaqruby.org` | Frozen packages for EOL distributions |
 | YUM (main) | `fsruby-server-edition-yum-repo` | `yum.fullstaqruby.org` | Current, supported packages |
-| YUM (archive) | `fsruby-server-edition-yum-repo-archive` | `yum-archive.fullstaqruby.org` | Frozen packages for EOL distributions |
+| YUM (archive) | `fsruby-server-edition-yum-archive-repo` | `yum-archive.fullstaqruby.org` | Frozen packages for EOL distributions |
 
 Archive repositories are static — CI never writes to them. They use the same versioned bucket structure as the main repos. Each migration creates a new version that merges newly-archived distros with the existing archive contents, so the archive grows incrementally over time.
 
@@ -65,7 +65,7 @@ When a Ruby version reaches EOL, we stop building it (by removing it from `confi
 
 ~~~bash
 PRODUCTION_REPO_BUCKET_NAME=fsruby-server-edition-apt-repo \
-ARCHIVE_REPO_BUCKET_NAME=fsruby-server-edition-apt-repo-archive \
+ARCHIVE_REPO_BUCKET_NAME=fsruby-server-edition-apt-archive-repo \
 ./internal-scripts/ci-cd/archive/migrate-apt-to-archive.rb --dry-run
 ~~~
 
@@ -79,7 +79,7 @@ The script auto-detects EOL distros by comparing `aptly repo list` output agains
 
 ~~~bash
 PRODUCTION_REPO_BUCKET_NAME=fsruby-server-edition-apt-repo \
-ARCHIVE_REPO_BUCKET_NAME=fsruby-server-edition-apt-repo-archive \
+ARCHIVE_REPO_BUCKET_NAME=fsruby-server-edition-apt-archive-repo \
 ./internal-scripts/ci-cd/archive/migrate-apt-to-archive.rb
 ~~~
 
@@ -87,11 +87,11 @@ ARCHIVE_REPO_BUCKET_NAME=fsruby-server-edition-apt-repo-archive \
 
 ~~~bash
 PRODUCTION_REPO_BUCKET_NAME=fsruby-server-edition-yum-repo \
-ARCHIVE_REPO_BUCKET_NAME=fsruby-server-edition-yum-repo-archive \
+ARCHIVE_REPO_BUCKET_NAME=fsruby-server-edition-yum-archive-repo \
 ./internal-scripts/ci-cd/archive/migrate-yum-to-archive.rb --dry-run
 
 PRODUCTION_REPO_BUCKET_NAME=fsruby-server-edition-yum-repo \
-ARCHIVE_REPO_BUCKET_NAME=fsruby-server-edition-yum-repo-archive \
+ARCHIVE_REPO_BUCKET_NAME=fsruby-server-edition-yum-archive-repo \
 ./internal-scripts/ci-cd/archive/migrate-yum-to-archive.rb
 ~~~
 
@@ -178,15 +178,15 @@ echo -n "OLD_VERSION" | gsutil -h Content-Type:text/plain -h Cache-Control:no-st
 **Revert the archive to a previous version:**
 
 ~~~bash
-gsutil cat gs://fsruby-server-edition-apt-repo-archive/versions/latest_version.txt
+gsutil cat gs://fsruby-server-edition-apt-archive-repo/versions/latest_version.txt
 
-echo -n "OLD_VERSION" | gsutil -h Content-Type:text/plain -h Cache-Control:no-store cp - gs://fsruby-server-edition-apt-repo-archive/versions/latest_version.txt
+echo -n "OLD_VERSION" | gsutil -h Content-Type:text/plain -h Cache-Control:no-store cp - gs://fsruby-server-edition-apt-archive-repo/versions/latest_version.txt
 ~~~
 
 **Delete all archive contents** (if no users depend on it yet):
 
 ~~~bash
-gsutil -m rm -r gs://fsruby-server-edition-apt-repo-archive/versions/
+gsutil -m rm -r gs://fsruby-server-edition-apt-archive-repo/versions/
 ~~~
 
 ## How the migration scripts work
