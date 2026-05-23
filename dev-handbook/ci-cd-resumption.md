@@ -8,12 +8,12 @@ In order to aleviate this problem, we implement the ability to re-run only faile
 
 Resumption support works by checking, for each CI job, whether the artifact that that job should produce, already exists. If so, then that job can be skipped.
 
-When you re-run a CI run, Github Actions wipes all previous state (including artifacts). Therefore, we store artifacts primarily in a Google Cloud Storage bucket ([fullstaq-ruby-server-edition-ci-artifacts](https://storage.googleapis.com/fullstaq-ruby-server-edition-ci-artifacts), part of the [infrastructure](https://github.com/fullstaq-labs/fullstaq-ruby-infra)), which isn't wiped before a re-run.
+When you re-run a CI run, Github Actions wipes all previous state (including artifacts). Therefore, we store artifacts primarily in a Google Cloud Storage bucket ([fsruby-server-edition-ci-artifacts](https://storage.googleapis.com/fsruby-server-edition-ci-artifacts), part of the [infrastructure](https://github.com/fullstaq-labs/fullstaq-ruby-infra)), which isn't wiped before a re-run.
 
 Here's an example artifact URL:
 
 ~~~
-gs://fullstaq-ruby-server-edition-ci-artifacts/249/rbenv-deb.tar.zst
+gs://fsruby-server-edition-ci-artifacts/249/rbenv-deb.tar.zst
 ~~~
 
 Artifacts are stored on a per-CI-run basis. Thus, they always contains the CI run's number. Note that the CI run number does not change even for re-runs.
@@ -23,7 +23,7 @@ At the beginning of a CI run, a job named `determine_necessary_jobs` checks whic
 ~~~
 ##### Determine whether Rbenv DEB needs to be built #####
 --> Run ./.github/actions/check-artifact-exists
-    Checking gs://fullstaq-ruby-server-edition-ci-artifacts/249/rbenv-deb.tar.zst
+    Checking gs://fsruby-server-edition-ci-artifacts/249/rbenv-deb.tar.zst
     Artifact exists
 ~~~
 
