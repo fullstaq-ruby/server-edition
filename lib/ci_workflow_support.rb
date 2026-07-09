@@ -308,9 +308,10 @@ module CiWorkflowSupport
     "ruby-pkg_#{ruby_package_version[:id]}_#{distribution[:name]}_#{variant[:name]}"
   end
 
-  def ruby_package_artifact_names
+  def ruby_package_artifact_names(package_format = nil)
     result = []
     distributions.each do |distribution|
+      next if package_format && distribution[:package_format] != package_format
       ruby_package_versions_for_distro(distribution).each do |ruby_package_version|
         variants_for_ruby_version(ruby_package_version).each do |variant|
           result << ruby_package_artifact_name(ruby_package_version, distribution, variant)

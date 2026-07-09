@@ -16,7 +16,7 @@ CI_ARTIFACTS_RUN_NUMBER=${CI_ARTIFACTS_RUN_NUMBER:-$GITHUB_RUN_NUMBER}
 CLEAR=${CLEAR:-false}
 TMPDIR=${TMPDIR:-/tmp}
 
-function cleanup()
+function _cleanup()
 {
     if [[ -n "$WORK_DIR" ]]; then
         rm -rf "$WORK_DIR"
@@ -48,4 +48,5 @@ echo "--> Extracting artifacts"
 for ARTIFACT_NAME in $ARTIFACT_NAMES; do
     mkdir -p "$ARTIFACT_PATH/$ARTIFACT_NAME"
     zstd -d < "$WORK_DIR/$ARTIFACT_NAME.tar.zst" | tar -C "$ARTIFACT_PATH/$ARTIFACT_NAME" -xf -
+    rm -f "$WORK_DIR/$ARTIFACT_NAME.tar.zst"
 done

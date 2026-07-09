@@ -18,8 +18,58 @@ env:
 jobs:
   ### Publish ###
 
-  publish:
-    name: Publish packages
+  publish_debs:
+    name: Publish DEB packages
+    runs-on: ubuntu-24.04
+    environment: test
+    timeout-minutes: 30
+    permissions:
+      id-token: write
+      packages: read
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Clean disk space
+        run: ./internal-scripts/ci-cd/publish/clean-disk-space.sh
+      - uses: azure/login@v2
+        with:
+          tenant-id: ${{ vars.AZURE_TENANT_ID }}
+          client-id: ${{ vars.AZURE_CLIENT_ID }}
+          subscription-id: ${{ vars.AZURE_SUBSCRIPTION_ID }}
+      - uses: google-github-actions/auth@v2
+        with:
+          project_id: ${{ vars.GCLOUD_PROJECT_ID }}
+          workload_identity_provider: projects/${{ vars.GCLOUD_PROJECT_NUM }}/locations/global/workloadIdentityPools/github-ci-test/providers/github-ci-test
+      - name: Set up Cloud SDK
+        uses: google-github-actions/setup-gcloud@v2
+        with:
+          version: '>= 363.0.0'
+
+      - name: Download artifacts
+        run: ./internal-scripts/ci-cd/download-artifacts.sh
+        env:
+          ARTIFACT_NAMES: |
+            <%= common_deb_artifact_name %>
+            <%= rbenv_deb_artifact_name %>
+            <%= ruby_package_artifact_names(:DEB).join(' ') %>
+          ARTIFACT_PATH: pkgs
+          CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
+
+      - name: Install Aptly
+        run: ./internal-scripts/ci-cd/publish/install-aptly.sh
+
+      - name: Upload DEBs to repo
+        run: ./internal-scripts/ci-cd/publish/publish-debs.rb pkgs/*/*.deb
+        env:
+          PRODUCTION_REPO_BUCKET_NAME: fsruby-server-edition-apt-repo
+          CI_ARTIFACTS_BUCKET_NAME: ${{ vars.CI_ARTIFACTS_BUCKET }}
+          TESTING: true
+          OVERWRITE_EXISTING: false
+          CLEANUP: true
+
+  publish_rpms:
+    name: Publish RPM packages
     runs-on: ubuntu-24.04
     environment: test
     timeout-minutes: 30
@@ -54,11 +104,9 @@ jobs:
         run: ./internal-scripts/ci-cd/download-artifacts.sh
         env:
           ARTIFACT_NAMES: |
-            <%= common_deb_artifact_name %>
             <%= common_rpm_artifact_name %>
-            <%= rbenv_deb_artifact_name %>
             <%= rbenv_rpm_artifact_name %>
-            <%= ruby_package_artifact_names.join(' ') %>
+            <%= ruby_package_artifact_names(:RPM).join(' ') %>
           ARTIFACT_PATH: pkgs
           CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
 
@@ -74,21 +122,6 @@ jobs:
         if: contains(inputs.necessary_jobs, ';Use locally-built Docker image utility;')
         env:
           TARBALL: image.tar.zst
-      - name: Install Aptly
-        run: ./internal-scripts/ci-cd/publish/install-aptly.sh
-
-      - name: Determine latest release tag
-        # Sets environment variable $LATEST_RELEASE_TAG
-        run: ./internal-scripts/ci-cd/check-version-numbers-need-changing/determine-latest-release-tag.sh
-
-      - name: Upload DEBs to repo
-        run: ./internal-scripts/ci-cd/publish/publish-debs.rb pkgs/*/*.deb
-        env:
-          PRODUCTION_REPO_BUCKET_NAME: fsruby-server-edition-apt-repo
-          CI_ARTIFACTS_BUCKET_NAME: ${{ vars.CI_ARTIFACTS_BUCKET }}
-          TESTING: true
-          OVERWRITE_EXISTING: false
-          CLEANUP: true
 
       - name: Upload RPMs to repo
         run: ./internal-scripts/ci-cd/publish/publish-rpms.rb pkgs/*/*.rpm
@@ -108,7 +141,7 @@ jobs:
     test_<%= slug(distribution[:name]) %>-<%= slug(ruby_package_version[:id]) %>-<%= slug(variant[:name]) %>:
       name: 'Test [<%= distribution[:name] %>/<%= ruby_package_version[:id] %>/<%= variant[:name] %>]'
       needs:
-        - publish
+        - <%= distribution[:package_format] == :DEB ? 'publish_debs' : 'publish_rpms' %>
       runs-on: ubuntu-24.04
       environment: test
       timeout-minutes: 30
@@ -160,7 +193,8 @@ jobs:
     permissions:
       id-token: write
     needs:
-      - publish
+      - publish_debs
+      - publish_rpms
       <%- distributions.each do |distribution| -%>
       <%- ruby_package_versions_for_distro(distribution).each do |ruby_package_version| -%>
       <%- variants_for_ruby_version(ruby_package_version).each do |variant| -%>
@@ -176,9 +210,13 @@ jobs:
 
       ### Check whether dependent jobs failed ###
 
-      - name: Check whether 'Publish packages' succeeded
+      - name: Check whether 'Publish DEB packages' succeeded
         run: 'false'
-        if: needs.publish.result != 'success'
+        if: needs.publish_debs.result != 'success'
+
+      - name: Check whether 'Publish RPM packages' succeeded
+        run: 'false'
+        if: needs.publish_rpms.result != 'success'
 
       <%- distributions.each do |distribution| -%>
       <%- ruby_package_versions_for_distro(distribution).each do |ruby_package_version| -%>
