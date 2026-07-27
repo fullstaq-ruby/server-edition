@@ -190,7 +190,7 @@ jobs:
       - name: Fetch Ruby source
         run: ./internal-scripts/ci-cd/download-artifact.sh
         env:
-          ARTIFACT_NAME: ruby-src-4.0.4
+          ARTIFACT_NAME: ruby-src-4.0.6
           ARTIFACT_PATH: .
           CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
 
@@ -238,7 +238,7 @@ jobs:
           VARIANT_PACKAGE_SUFFIX: ""
           PACKAGE_FORMAT: "DEB"
           RUBY_PACKAGE_VERSION_ID: "4.0"
-          RUBY_PACKAGE_REVISION: "3"
+          RUBY_PACKAGE_REVISION: "4"
 
       - name: Archive package artifact to Google Cloud
         run: ./internal-scripts/ci-cd/upload-artifact.sh
@@ -289,7 +289,7 @@ jobs:
       - name: Fetch Ruby source
         run: ./internal-scripts/ci-cd/download-artifact.sh
         env:
-          ARTIFACT_NAME: ruby-src-4.0.4
+          ARTIFACT_NAME: ruby-src-4.0.6
           ARTIFACT_PATH: .
           CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
 
@@ -343,7 +343,7 @@ jobs:
           VARIANT_PACKAGE_SUFFIX: "-jemalloc"
           PACKAGE_FORMAT: "DEB"
           RUBY_PACKAGE_VERSION_ID: "4.0"
-          RUBY_PACKAGE_REVISION: "3"
+          RUBY_PACKAGE_REVISION: "4"
 
       - name: Archive package artifact to Google Cloud
         run: ./internal-scripts/ci-cd/upload-artifact.sh
@@ -388,7 +388,7 @@ jobs:
       - name: Fetch Ruby source
         run: ./internal-scripts/ci-cd/download-artifact.sh
         env:
-          ARTIFACT_NAME: ruby-src-3.4.9
+          ARTIFACT_NAME: ruby-src-3.4.10
           ARTIFACT_PATH: .
           CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
 
@@ -436,7 +436,7 @@ jobs:
           VARIANT_PACKAGE_SUFFIX: ""
           PACKAGE_FORMAT: "DEB"
           RUBY_PACKAGE_VERSION_ID: "3.4"
-          RUBY_PACKAGE_REVISION: "8"
+          RUBY_PACKAGE_REVISION: "9"
 
       - name: Archive package artifact to Google Cloud
         run: ./internal-scripts/ci-cd/upload-artifact.sh
@@ -487,7 +487,7 @@ jobs:
       - name: Fetch Ruby source
         run: ./internal-scripts/ci-cd/download-artifact.sh
         env:
-          ARTIFACT_NAME: ruby-src-3.4.9
+          ARTIFACT_NAME: ruby-src-3.4.10
           ARTIFACT_PATH: .
           CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
 
@@ -541,7 +541,7 @@ jobs:
           VARIANT_PACKAGE_SUFFIX: "-jemalloc"
           PACKAGE_FORMAT: "DEB"
           RUBY_PACKAGE_VERSION_ID: "3.4"
-          RUBY_PACKAGE_REVISION: "8"
+          RUBY_PACKAGE_REVISION: "9"
 
       - name: Archive package artifact to Google Cloud
         run: ./internal-scripts/ci-cd/upload-artifact.sh
@@ -586,7 +586,7 @@ jobs:
       - name: Fetch Ruby source
         run: ./internal-scripts/ci-cd/download-artifact.sh
         env:
-          ARTIFACT_NAME: ruby-src-3.3.11
+          ARTIFACT_NAME: ruby-src-3.3.12
           ARTIFACT_PATH: .
           CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
 
@@ -634,7 +634,7 @@ jobs:
           VARIANT_PACKAGE_SUFFIX: ""
           PACKAGE_FORMAT: "DEB"
           RUBY_PACKAGE_VERSION_ID: "3.3"
-          RUBY_PACKAGE_REVISION: "11"
+          RUBY_PACKAGE_REVISION: "12"
 
       - name: Archive package artifact to Google Cloud
         run: ./internal-scripts/ci-cd/upload-artifact.sh
@@ -685,7 +685,7 @@ jobs:
       - name: Fetch Ruby source
         run: ./internal-scripts/ci-cd/download-artifact.sh
         env:
-          ARTIFACT_NAME: ruby-src-3.3.11
+          ARTIFACT_NAME: ruby-src-3.3.12
           ARTIFACT_PATH: .
           CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
 
@@ -739,7 +739,7 @@ jobs:
           VARIANT_PACKAGE_SUFFIX: "-jemalloc"
           PACKAGE_FORMAT: "DEB"
           RUBY_PACKAGE_VERSION_ID: "3.3"
-          RUBY_PACKAGE_REVISION: "11"
+          RUBY_PACKAGE_REVISION: "12"
 
       - name: Archive package artifact to Google Cloud
         run: ./internal-scripts/ci-cd/upload-artifact.sh
@@ -1039,8 +1039,8 @@ jobs:
           ARTIFACT_PATH: output-malloctrim
           CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
 
-  build_ruby_debian_12-4_0_4-normal:
-    name: 'Ruby [debian-12/4.0.4/normal]'
+  build_ruby_debian_12-4_0_6-normal:
+    name: 'Ruby [debian-12/4.0.6/normal]'
 
     runs-on: ubuntu-24.04
     environment: test
@@ -1050,7 +1050,7 @@ jobs:
       packages: read
     # Run even if a dependent job has been skipped
     if: |
-      contains(inputs.necessary_jobs, ';Build Ruby [debian-12/4.0.4/normal];')
+      contains(inputs.necessary_jobs, ';Build Ruby [debian-12/4.0.6/normal];')
       && !failure() && !cancelled()
     steps:
       
@@ -1075,7 +1075,7 @@ jobs:
       - name: Fetch Ruby source
         run: ./internal-scripts/ci-cd/download-artifact.sh
         env:
-          ARTIFACT_NAME: ruby-src-4.0.4
+          ARTIFACT_NAME: ruby-src-4.0.6
           ARTIFACT_PATH: .
           CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
 
@@ -1112,7 +1112,7 @@ jobs:
         env:
           ENVIRONMENT_NAME: "debian-12"
           VARIANT_NAME: "normal"
-          RUBY_PACKAGE_VERSION_ID: "4.0.4"
+          RUBY_PACKAGE_VERSION_ID: "4.0.6"
           CACHE_KEY_PREFIX: "sccache/debian-12"
 
       - name: Build package
@@ -1122,18 +1122,18 @@ jobs:
           VARIANT_NAME: "normal"
           VARIANT_PACKAGE_SUFFIX: ""
           PACKAGE_FORMAT: "DEB"
-          RUBY_PACKAGE_VERSION_ID: "4.0.4"
+          RUBY_PACKAGE_VERSION_ID: "4.0.6"
           RUBY_PACKAGE_REVISION: "0"
 
       - name: Archive package artifact to Google Cloud
         run: ./internal-scripts/ci-cd/upload-artifact.sh
         env:
-          ARTIFACT_NAME: "ruby-pkg_4.0.4_debian-12_normal"
+          ARTIFACT_NAME: "ruby-pkg_4.0.6_debian-12_normal"
           ARTIFACT_PATH: output-normal
           CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
 
-  build_ruby_debian_12-4_0_4-jemalloc:
-    name: 'Ruby [debian-12/4.0.4/jemalloc]'
+  build_ruby_debian_12-4_0_6-jemalloc:
+    name: 'Ruby [debian-12/4.0.6/jemalloc]'
 
     needs: build_jemalloc_debian_12
     runs-on: ubuntu-24.04
@@ -1144,7 +1144,7 @@ jobs:
       packages: read
     # Run even if a dependent job has been skipped
     if: |
-      contains(inputs.necessary_jobs, ';Build Ruby [debian-12/4.0.4/jemalloc];')
+      contains(inputs.necessary_jobs, ';Build Ruby [debian-12/4.0.6/jemalloc];')
       && !failure() && !cancelled()
     steps:
       
@@ -1174,7 +1174,7 @@ jobs:
       - name: Fetch Ruby source
         run: ./internal-scripts/ci-cd/download-artifact.sh
         env:
-          ARTIFACT_NAME: ruby-src-4.0.4
+          ARTIFACT_NAME: ruby-src-4.0.6
           ARTIFACT_PATH: .
           CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
 
@@ -1217,7 +1217,7 @@ jobs:
         env:
           ENVIRONMENT_NAME: "debian-12"
           VARIANT_NAME: "jemalloc"
-          RUBY_PACKAGE_VERSION_ID: "4.0.4"
+          RUBY_PACKAGE_VERSION_ID: "4.0.6"
           CACHE_KEY_PREFIX: "sccache/debian-12"
 
       - name: Build package
@@ -1227,18 +1227,18 @@ jobs:
           VARIANT_NAME: "jemalloc"
           VARIANT_PACKAGE_SUFFIX: "-jemalloc"
           PACKAGE_FORMAT: "DEB"
-          RUBY_PACKAGE_VERSION_ID: "4.0.4"
+          RUBY_PACKAGE_VERSION_ID: "4.0.6"
           RUBY_PACKAGE_REVISION: "0"
 
       - name: Archive package artifact to Google Cloud
         run: ./internal-scripts/ci-cd/upload-artifact.sh
         env:
-          ARTIFACT_NAME: "ruby-pkg_4.0.4_debian-12_jemalloc"
+          ARTIFACT_NAME: "ruby-pkg_4.0.6_debian-12_jemalloc"
           ARTIFACT_PATH: output-jemalloc
           CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
 
-  build_ruby_debian_12-3_4_9-normal:
-    name: 'Ruby [debian-12/3.4.9/normal]'
+  build_ruby_debian_12-3_4_10-normal:
+    name: 'Ruby [debian-12/3.4.10/normal]'
 
     runs-on: ubuntu-24.04
     environment: test
@@ -1248,7 +1248,7 @@ jobs:
       packages: read
     # Run even if a dependent job has been skipped
     if: |
-      contains(inputs.necessary_jobs, ';Build Ruby [debian-12/3.4.9/normal];')
+      contains(inputs.necessary_jobs, ';Build Ruby [debian-12/3.4.10/normal];')
       && !failure() && !cancelled()
     steps:
       
@@ -1273,7 +1273,7 @@ jobs:
       - name: Fetch Ruby source
         run: ./internal-scripts/ci-cd/download-artifact.sh
         env:
-          ARTIFACT_NAME: ruby-src-3.4.9
+          ARTIFACT_NAME: ruby-src-3.4.10
           ARTIFACT_PATH: .
           CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
 
@@ -1310,7 +1310,7 @@ jobs:
         env:
           ENVIRONMENT_NAME: "debian-12"
           VARIANT_NAME: "normal"
-          RUBY_PACKAGE_VERSION_ID: "3.4.9"
+          RUBY_PACKAGE_VERSION_ID: "3.4.10"
           CACHE_KEY_PREFIX: "sccache/debian-12"
 
       - name: Build package
@@ -1320,18 +1320,18 @@ jobs:
           VARIANT_NAME: "normal"
           VARIANT_PACKAGE_SUFFIX: ""
           PACKAGE_FORMAT: "DEB"
-          RUBY_PACKAGE_VERSION_ID: "3.4.9"
+          RUBY_PACKAGE_VERSION_ID: "3.4.10"
           RUBY_PACKAGE_REVISION: "0"
 
       - name: Archive package artifact to Google Cloud
         run: ./internal-scripts/ci-cd/upload-artifact.sh
         env:
-          ARTIFACT_NAME: "ruby-pkg_3.4.9_debian-12_normal"
+          ARTIFACT_NAME: "ruby-pkg_3.4.10_debian-12_normal"
           ARTIFACT_PATH: output-normal
           CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
 
-  build_ruby_debian_12-3_4_9-jemalloc:
-    name: 'Ruby [debian-12/3.4.9/jemalloc]'
+  build_ruby_debian_12-3_4_10-jemalloc:
+    name: 'Ruby [debian-12/3.4.10/jemalloc]'
 
     needs: build_jemalloc_debian_12
     runs-on: ubuntu-24.04
@@ -1342,7 +1342,7 @@ jobs:
       packages: read
     # Run even if a dependent job has been skipped
     if: |
-      contains(inputs.necessary_jobs, ';Build Ruby [debian-12/3.4.9/jemalloc];')
+      contains(inputs.necessary_jobs, ';Build Ruby [debian-12/3.4.10/jemalloc];')
       && !failure() && !cancelled()
     steps:
       
@@ -1372,7 +1372,7 @@ jobs:
       - name: Fetch Ruby source
         run: ./internal-scripts/ci-cd/download-artifact.sh
         env:
-          ARTIFACT_NAME: ruby-src-3.4.9
+          ARTIFACT_NAME: ruby-src-3.4.10
           ARTIFACT_PATH: .
           CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
 
@@ -1415,7 +1415,7 @@ jobs:
         env:
           ENVIRONMENT_NAME: "debian-12"
           VARIANT_NAME: "jemalloc"
-          RUBY_PACKAGE_VERSION_ID: "3.4.9"
+          RUBY_PACKAGE_VERSION_ID: "3.4.10"
           CACHE_KEY_PREFIX: "sccache/debian-12"
 
       - name: Build package
@@ -1425,18 +1425,18 @@ jobs:
           VARIANT_NAME: "jemalloc"
           VARIANT_PACKAGE_SUFFIX: "-jemalloc"
           PACKAGE_FORMAT: "DEB"
-          RUBY_PACKAGE_VERSION_ID: "3.4.9"
+          RUBY_PACKAGE_VERSION_ID: "3.4.10"
           RUBY_PACKAGE_REVISION: "0"
 
       - name: Archive package artifact to Google Cloud
         run: ./internal-scripts/ci-cd/upload-artifact.sh
         env:
-          ARTIFACT_NAME: "ruby-pkg_3.4.9_debian-12_jemalloc"
+          ARTIFACT_NAME: "ruby-pkg_3.4.10_debian-12_jemalloc"
           ARTIFACT_PATH: output-jemalloc
           CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
 
-  build_ruby_debian_12-3_3_11-normal:
-    name: 'Ruby [debian-12/3.3.11/normal]'
+  build_ruby_debian_12-3_3_12-normal:
+    name: 'Ruby [debian-12/3.3.12/normal]'
 
     runs-on: ubuntu-24.04
     environment: test
@@ -1446,7 +1446,7 @@ jobs:
       packages: read
     # Run even if a dependent job has been skipped
     if: |
-      contains(inputs.necessary_jobs, ';Build Ruby [debian-12/3.3.11/normal];')
+      contains(inputs.necessary_jobs, ';Build Ruby [debian-12/3.3.12/normal];')
       && !failure() && !cancelled()
     steps:
       
@@ -1471,7 +1471,7 @@ jobs:
       - name: Fetch Ruby source
         run: ./internal-scripts/ci-cd/download-artifact.sh
         env:
-          ARTIFACT_NAME: ruby-src-3.3.11
+          ARTIFACT_NAME: ruby-src-3.3.12
           ARTIFACT_PATH: .
           CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
 
@@ -1508,7 +1508,7 @@ jobs:
         env:
           ENVIRONMENT_NAME: "debian-12"
           VARIANT_NAME: "normal"
-          RUBY_PACKAGE_VERSION_ID: "3.3.11"
+          RUBY_PACKAGE_VERSION_ID: "3.3.12"
           CACHE_KEY_PREFIX: "sccache/debian-12"
 
       - name: Build package
@@ -1518,18 +1518,18 @@ jobs:
           VARIANT_NAME: "normal"
           VARIANT_PACKAGE_SUFFIX: ""
           PACKAGE_FORMAT: "DEB"
-          RUBY_PACKAGE_VERSION_ID: "3.3.11"
+          RUBY_PACKAGE_VERSION_ID: "3.3.12"
           RUBY_PACKAGE_REVISION: "0"
 
       - name: Archive package artifact to Google Cloud
         run: ./internal-scripts/ci-cd/upload-artifact.sh
         env:
-          ARTIFACT_NAME: "ruby-pkg_3.3.11_debian-12_normal"
+          ARTIFACT_NAME: "ruby-pkg_3.3.12_debian-12_normal"
           ARTIFACT_PATH: output-normal
           CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
 
-  build_ruby_debian_12-3_3_11-jemalloc:
-    name: 'Ruby [debian-12/3.3.11/jemalloc]'
+  build_ruby_debian_12-3_3_12-jemalloc:
+    name: 'Ruby [debian-12/3.3.12/jemalloc]'
 
     needs: build_jemalloc_debian_12
     runs-on: ubuntu-24.04
@@ -1540,7 +1540,7 @@ jobs:
       packages: read
     # Run even if a dependent job has been skipped
     if: |
-      contains(inputs.necessary_jobs, ';Build Ruby [debian-12/3.3.11/jemalloc];')
+      contains(inputs.necessary_jobs, ';Build Ruby [debian-12/3.3.12/jemalloc];')
       && !failure() && !cancelled()
     steps:
       
@@ -1570,7 +1570,7 @@ jobs:
       - name: Fetch Ruby source
         run: ./internal-scripts/ci-cd/download-artifact.sh
         env:
-          ARTIFACT_NAME: ruby-src-3.3.11
+          ARTIFACT_NAME: ruby-src-3.3.12
           ARTIFACT_PATH: .
           CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
 
@@ -1613,7 +1613,7 @@ jobs:
         env:
           ENVIRONMENT_NAME: "debian-12"
           VARIANT_NAME: "jemalloc"
-          RUBY_PACKAGE_VERSION_ID: "3.3.11"
+          RUBY_PACKAGE_VERSION_ID: "3.3.12"
           CACHE_KEY_PREFIX: "sccache/debian-12"
 
       - name: Build package
@@ -1623,13 +1623,13 @@ jobs:
           VARIANT_NAME: "jemalloc"
           VARIANT_PACKAGE_SUFFIX: "-jemalloc"
           PACKAGE_FORMAT: "DEB"
-          RUBY_PACKAGE_VERSION_ID: "3.3.11"
+          RUBY_PACKAGE_VERSION_ID: "3.3.12"
           RUBY_PACKAGE_REVISION: "0"
 
       - name: Archive package artifact to Google Cloud
         run: ./internal-scripts/ci-cd/upload-artifact.sh
         env:
-          ARTIFACT_NAME: "ruby-pkg_3.3.11_debian-12_jemalloc"
+          ARTIFACT_NAME: "ruby-pkg_3.3.12_debian-12_jemalloc"
           ARTIFACT_PATH: output-jemalloc
           CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
 
@@ -1961,7 +1961,7 @@ jobs:
       - name: Fetch Ruby source
         run: ./internal-scripts/ci-cd/download-artifact.sh
         env:
-          ARTIFACT_NAME: ruby-src-4.0.4
+          ARTIFACT_NAME: ruby-src-4.0.6
           ARTIFACT_PATH: .
           CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
 
@@ -2009,7 +2009,7 @@ jobs:
           VARIANT_PACKAGE_SUFFIX: ""
           PACKAGE_FORMAT: "DEB"
           RUBY_PACKAGE_VERSION_ID: "4.0"
-          RUBY_PACKAGE_REVISION: "3"
+          RUBY_PACKAGE_REVISION: "4"
 
       - name: Archive package artifact to Google Cloud
         run: ./internal-scripts/ci-cd/upload-artifact.sh
@@ -2060,7 +2060,7 @@ jobs:
       - name: Fetch Ruby source
         run: ./internal-scripts/ci-cd/download-artifact.sh
         env:
-          ARTIFACT_NAME: ruby-src-4.0.4
+          ARTIFACT_NAME: ruby-src-4.0.6
           ARTIFACT_PATH: .
           CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
 
@@ -2114,7 +2114,7 @@ jobs:
           VARIANT_PACKAGE_SUFFIX: "-jemalloc"
           PACKAGE_FORMAT: "DEB"
           RUBY_PACKAGE_VERSION_ID: "4.0"
-          RUBY_PACKAGE_REVISION: "3"
+          RUBY_PACKAGE_REVISION: "4"
 
       - name: Archive package artifact to Google Cloud
         run: ./internal-scripts/ci-cd/upload-artifact.sh
@@ -2159,7 +2159,7 @@ jobs:
       - name: Fetch Ruby source
         run: ./internal-scripts/ci-cd/download-artifact.sh
         env:
-          ARTIFACT_NAME: ruby-src-3.4.9
+          ARTIFACT_NAME: ruby-src-3.4.10
           ARTIFACT_PATH: .
           CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
 
@@ -2207,7 +2207,7 @@ jobs:
           VARIANT_PACKAGE_SUFFIX: ""
           PACKAGE_FORMAT: "DEB"
           RUBY_PACKAGE_VERSION_ID: "3.4"
-          RUBY_PACKAGE_REVISION: "8"
+          RUBY_PACKAGE_REVISION: "9"
 
       - name: Archive package artifact to Google Cloud
         run: ./internal-scripts/ci-cd/upload-artifact.sh
@@ -2258,7 +2258,7 @@ jobs:
       - name: Fetch Ruby source
         run: ./internal-scripts/ci-cd/download-artifact.sh
         env:
-          ARTIFACT_NAME: ruby-src-3.4.9
+          ARTIFACT_NAME: ruby-src-3.4.10
           ARTIFACT_PATH: .
           CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
 
@@ -2312,7 +2312,7 @@ jobs:
           VARIANT_PACKAGE_SUFFIX: "-jemalloc"
           PACKAGE_FORMAT: "DEB"
           RUBY_PACKAGE_VERSION_ID: "3.4"
-          RUBY_PACKAGE_REVISION: "8"
+          RUBY_PACKAGE_REVISION: "9"
 
       - name: Archive package artifact to Google Cloud
         run: ./internal-scripts/ci-cd/upload-artifact.sh
@@ -2357,7 +2357,7 @@ jobs:
       - name: Fetch Ruby source
         run: ./internal-scripts/ci-cd/download-artifact.sh
         env:
-          ARTIFACT_NAME: ruby-src-3.3.11
+          ARTIFACT_NAME: ruby-src-3.3.12
           ARTIFACT_PATH: .
           CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
 
@@ -2405,7 +2405,7 @@ jobs:
           VARIANT_PACKAGE_SUFFIX: ""
           PACKAGE_FORMAT: "DEB"
           RUBY_PACKAGE_VERSION_ID: "3.3"
-          RUBY_PACKAGE_REVISION: "11"
+          RUBY_PACKAGE_REVISION: "12"
 
       - name: Archive package artifact to Google Cloud
         run: ./internal-scripts/ci-cd/upload-artifact.sh
@@ -2456,7 +2456,7 @@ jobs:
       - name: Fetch Ruby source
         run: ./internal-scripts/ci-cd/download-artifact.sh
         env:
-          ARTIFACT_NAME: ruby-src-3.3.11
+          ARTIFACT_NAME: ruby-src-3.3.12
           ARTIFACT_PATH: .
           CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
 
@@ -2510,7 +2510,7 @@ jobs:
           VARIANT_PACKAGE_SUFFIX: "-jemalloc"
           PACKAGE_FORMAT: "DEB"
           RUBY_PACKAGE_VERSION_ID: "3.3"
-          RUBY_PACKAGE_REVISION: "11"
+          RUBY_PACKAGE_REVISION: "12"
 
       - name: Archive package artifact to Google Cloud
         run: ./internal-scripts/ci-cd/upload-artifact.sh
@@ -2810,8 +2810,8 @@ jobs:
           ARTIFACT_PATH: output-malloctrim
           CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
 
-  build_ruby_ubuntu_24_04-4_0_4-normal:
-    name: 'Ruby [ubuntu-24.04/4.0.4/normal]'
+  build_ruby_ubuntu_24_04-4_0_6-normal:
+    name: 'Ruby [ubuntu-24.04/4.0.6/normal]'
 
     runs-on: ubuntu-24.04
     environment: test
@@ -2821,7 +2821,7 @@ jobs:
       packages: read
     # Run even if a dependent job has been skipped
     if: |
-      contains(inputs.necessary_jobs, ';Build Ruby [ubuntu-24.04/4.0.4/normal];')
+      contains(inputs.necessary_jobs, ';Build Ruby [ubuntu-24.04/4.0.6/normal];')
       && !failure() && !cancelled()
     steps:
       
@@ -2846,7 +2846,7 @@ jobs:
       - name: Fetch Ruby source
         run: ./internal-scripts/ci-cd/download-artifact.sh
         env:
-          ARTIFACT_NAME: ruby-src-4.0.4
+          ARTIFACT_NAME: ruby-src-4.0.6
           ARTIFACT_PATH: .
           CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
 
@@ -2883,7 +2883,7 @@ jobs:
         env:
           ENVIRONMENT_NAME: "ubuntu-24.04"
           VARIANT_NAME: "normal"
-          RUBY_PACKAGE_VERSION_ID: "4.0.4"
+          RUBY_PACKAGE_VERSION_ID: "4.0.6"
           CACHE_KEY_PREFIX: "sccache/ubuntu-24.04"
 
       - name: Build package
@@ -2893,18 +2893,18 @@ jobs:
           VARIANT_NAME: "normal"
           VARIANT_PACKAGE_SUFFIX: ""
           PACKAGE_FORMAT: "DEB"
-          RUBY_PACKAGE_VERSION_ID: "4.0.4"
+          RUBY_PACKAGE_VERSION_ID: "4.0.6"
           RUBY_PACKAGE_REVISION: "0"
 
       - name: Archive package artifact to Google Cloud
         run: ./internal-scripts/ci-cd/upload-artifact.sh
         env:
-          ARTIFACT_NAME: "ruby-pkg_4.0.4_ubuntu-24.04_normal"
+          ARTIFACT_NAME: "ruby-pkg_4.0.6_ubuntu-24.04_normal"
           ARTIFACT_PATH: output-normal
           CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
 
-  build_ruby_ubuntu_24_04-4_0_4-jemalloc:
-    name: 'Ruby [ubuntu-24.04/4.0.4/jemalloc]'
+  build_ruby_ubuntu_24_04-4_0_6-jemalloc:
+    name: 'Ruby [ubuntu-24.04/4.0.6/jemalloc]'
 
     needs: build_jemalloc_ubuntu_24_04
     runs-on: ubuntu-24.04
@@ -2915,7 +2915,7 @@ jobs:
       packages: read
     # Run even if a dependent job has been skipped
     if: |
-      contains(inputs.necessary_jobs, ';Build Ruby [ubuntu-24.04/4.0.4/jemalloc];')
+      contains(inputs.necessary_jobs, ';Build Ruby [ubuntu-24.04/4.0.6/jemalloc];')
       && !failure() && !cancelled()
     steps:
       
@@ -2945,7 +2945,7 @@ jobs:
       - name: Fetch Ruby source
         run: ./internal-scripts/ci-cd/download-artifact.sh
         env:
-          ARTIFACT_NAME: ruby-src-4.0.4
+          ARTIFACT_NAME: ruby-src-4.0.6
           ARTIFACT_PATH: .
           CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
 
@@ -2988,7 +2988,7 @@ jobs:
         env:
           ENVIRONMENT_NAME: "ubuntu-24.04"
           VARIANT_NAME: "jemalloc"
-          RUBY_PACKAGE_VERSION_ID: "4.0.4"
+          RUBY_PACKAGE_VERSION_ID: "4.0.6"
           CACHE_KEY_PREFIX: "sccache/ubuntu-24.04"
 
       - name: Build package
@@ -2998,18 +2998,18 @@ jobs:
           VARIANT_NAME: "jemalloc"
           VARIANT_PACKAGE_SUFFIX: "-jemalloc"
           PACKAGE_FORMAT: "DEB"
-          RUBY_PACKAGE_VERSION_ID: "4.0.4"
+          RUBY_PACKAGE_VERSION_ID: "4.0.6"
           RUBY_PACKAGE_REVISION: "0"
 
       - name: Archive package artifact to Google Cloud
         run: ./internal-scripts/ci-cd/upload-artifact.sh
         env:
-          ARTIFACT_NAME: "ruby-pkg_4.0.4_ubuntu-24.04_jemalloc"
+          ARTIFACT_NAME: "ruby-pkg_4.0.6_ubuntu-24.04_jemalloc"
           ARTIFACT_PATH: output-jemalloc
           CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
 
-  build_ruby_ubuntu_24_04-3_4_9-normal:
-    name: 'Ruby [ubuntu-24.04/3.4.9/normal]'
+  build_ruby_ubuntu_24_04-3_4_10-normal:
+    name: 'Ruby [ubuntu-24.04/3.4.10/normal]'
 
     runs-on: ubuntu-24.04
     environment: test
@@ -3019,7 +3019,7 @@ jobs:
       packages: read
     # Run even if a dependent job has been skipped
     if: |
-      contains(inputs.necessary_jobs, ';Build Ruby [ubuntu-24.04/3.4.9/normal];')
+      contains(inputs.necessary_jobs, ';Build Ruby [ubuntu-24.04/3.4.10/normal];')
       && !failure() && !cancelled()
     steps:
       
@@ -3044,7 +3044,7 @@ jobs:
       - name: Fetch Ruby source
         run: ./internal-scripts/ci-cd/download-artifact.sh
         env:
-          ARTIFACT_NAME: ruby-src-3.4.9
+          ARTIFACT_NAME: ruby-src-3.4.10
           ARTIFACT_PATH: .
           CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
 
@@ -3081,7 +3081,7 @@ jobs:
         env:
           ENVIRONMENT_NAME: "ubuntu-24.04"
           VARIANT_NAME: "normal"
-          RUBY_PACKAGE_VERSION_ID: "3.4.9"
+          RUBY_PACKAGE_VERSION_ID: "3.4.10"
           CACHE_KEY_PREFIX: "sccache/ubuntu-24.04"
 
       - name: Build package
@@ -3091,18 +3091,18 @@ jobs:
           VARIANT_NAME: "normal"
           VARIANT_PACKAGE_SUFFIX: ""
           PACKAGE_FORMAT: "DEB"
-          RUBY_PACKAGE_VERSION_ID: "3.4.9"
+          RUBY_PACKAGE_VERSION_ID: "3.4.10"
           RUBY_PACKAGE_REVISION: "0"
 
       - name: Archive package artifact to Google Cloud
         run: ./internal-scripts/ci-cd/upload-artifact.sh
         env:
-          ARTIFACT_NAME: "ruby-pkg_3.4.9_ubuntu-24.04_normal"
+          ARTIFACT_NAME: "ruby-pkg_3.4.10_ubuntu-24.04_normal"
           ARTIFACT_PATH: output-normal
           CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
 
-  build_ruby_ubuntu_24_04-3_4_9-jemalloc:
-    name: 'Ruby [ubuntu-24.04/3.4.9/jemalloc]'
+  build_ruby_ubuntu_24_04-3_4_10-jemalloc:
+    name: 'Ruby [ubuntu-24.04/3.4.10/jemalloc]'
 
     needs: build_jemalloc_ubuntu_24_04
     runs-on: ubuntu-24.04
@@ -3113,7 +3113,7 @@ jobs:
       packages: read
     # Run even if a dependent job has been skipped
     if: |
-      contains(inputs.necessary_jobs, ';Build Ruby [ubuntu-24.04/3.4.9/jemalloc];')
+      contains(inputs.necessary_jobs, ';Build Ruby [ubuntu-24.04/3.4.10/jemalloc];')
       && !failure() && !cancelled()
     steps:
       
@@ -3143,7 +3143,7 @@ jobs:
       - name: Fetch Ruby source
         run: ./internal-scripts/ci-cd/download-artifact.sh
         env:
-          ARTIFACT_NAME: ruby-src-3.4.9
+          ARTIFACT_NAME: ruby-src-3.4.10
           ARTIFACT_PATH: .
           CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
 
@@ -3186,7 +3186,7 @@ jobs:
         env:
           ENVIRONMENT_NAME: "ubuntu-24.04"
           VARIANT_NAME: "jemalloc"
-          RUBY_PACKAGE_VERSION_ID: "3.4.9"
+          RUBY_PACKAGE_VERSION_ID: "3.4.10"
           CACHE_KEY_PREFIX: "sccache/ubuntu-24.04"
 
       - name: Build package
@@ -3196,18 +3196,18 @@ jobs:
           VARIANT_NAME: "jemalloc"
           VARIANT_PACKAGE_SUFFIX: "-jemalloc"
           PACKAGE_FORMAT: "DEB"
-          RUBY_PACKAGE_VERSION_ID: "3.4.9"
+          RUBY_PACKAGE_VERSION_ID: "3.4.10"
           RUBY_PACKAGE_REVISION: "0"
 
       - name: Archive package artifact to Google Cloud
         run: ./internal-scripts/ci-cd/upload-artifact.sh
         env:
-          ARTIFACT_NAME: "ruby-pkg_3.4.9_ubuntu-24.04_jemalloc"
+          ARTIFACT_NAME: "ruby-pkg_3.4.10_ubuntu-24.04_jemalloc"
           ARTIFACT_PATH: output-jemalloc
           CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
 
-  build_ruby_ubuntu_24_04-3_3_11-normal:
-    name: 'Ruby [ubuntu-24.04/3.3.11/normal]'
+  build_ruby_ubuntu_24_04-3_3_12-normal:
+    name: 'Ruby [ubuntu-24.04/3.3.12/normal]'
 
     runs-on: ubuntu-24.04
     environment: test
@@ -3217,7 +3217,7 @@ jobs:
       packages: read
     # Run even if a dependent job has been skipped
     if: |
-      contains(inputs.necessary_jobs, ';Build Ruby [ubuntu-24.04/3.3.11/normal];')
+      contains(inputs.necessary_jobs, ';Build Ruby [ubuntu-24.04/3.3.12/normal];')
       && !failure() && !cancelled()
     steps:
       
@@ -3242,7 +3242,7 @@ jobs:
       - name: Fetch Ruby source
         run: ./internal-scripts/ci-cd/download-artifact.sh
         env:
-          ARTIFACT_NAME: ruby-src-3.3.11
+          ARTIFACT_NAME: ruby-src-3.3.12
           ARTIFACT_PATH: .
           CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
 
@@ -3279,7 +3279,7 @@ jobs:
         env:
           ENVIRONMENT_NAME: "ubuntu-24.04"
           VARIANT_NAME: "normal"
-          RUBY_PACKAGE_VERSION_ID: "3.3.11"
+          RUBY_PACKAGE_VERSION_ID: "3.3.12"
           CACHE_KEY_PREFIX: "sccache/ubuntu-24.04"
 
       - name: Build package
@@ -3289,18 +3289,18 @@ jobs:
           VARIANT_NAME: "normal"
           VARIANT_PACKAGE_SUFFIX: ""
           PACKAGE_FORMAT: "DEB"
-          RUBY_PACKAGE_VERSION_ID: "3.3.11"
+          RUBY_PACKAGE_VERSION_ID: "3.3.12"
           RUBY_PACKAGE_REVISION: "0"
 
       - name: Archive package artifact to Google Cloud
         run: ./internal-scripts/ci-cd/upload-artifact.sh
         env:
-          ARTIFACT_NAME: "ruby-pkg_3.3.11_ubuntu-24.04_normal"
+          ARTIFACT_NAME: "ruby-pkg_3.3.12_ubuntu-24.04_normal"
           ARTIFACT_PATH: output-normal
           CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
 
-  build_ruby_ubuntu_24_04-3_3_11-jemalloc:
-    name: 'Ruby [ubuntu-24.04/3.3.11/jemalloc]'
+  build_ruby_ubuntu_24_04-3_3_12-jemalloc:
+    name: 'Ruby [ubuntu-24.04/3.3.12/jemalloc]'
 
     needs: build_jemalloc_ubuntu_24_04
     runs-on: ubuntu-24.04
@@ -3311,7 +3311,7 @@ jobs:
       packages: read
     # Run even if a dependent job has been skipped
     if: |
-      contains(inputs.necessary_jobs, ';Build Ruby [ubuntu-24.04/3.3.11/jemalloc];')
+      contains(inputs.necessary_jobs, ';Build Ruby [ubuntu-24.04/3.3.12/jemalloc];')
       && !failure() && !cancelled()
     steps:
       
@@ -3341,7 +3341,7 @@ jobs:
       - name: Fetch Ruby source
         run: ./internal-scripts/ci-cd/download-artifact.sh
         env:
-          ARTIFACT_NAME: ruby-src-3.3.11
+          ARTIFACT_NAME: ruby-src-3.3.12
           ARTIFACT_PATH: .
           CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
 
@@ -3384,7 +3384,7 @@ jobs:
         env:
           ENVIRONMENT_NAME: "ubuntu-24.04"
           VARIANT_NAME: "jemalloc"
-          RUBY_PACKAGE_VERSION_ID: "3.3.11"
+          RUBY_PACKAGE_VERSION_ID: "3.3.12"
           CACHE_KEY_PREFIX: "sccache/ubuntu-24.04"
 
       - name: Build package
@@ -3394,13 +3394,13 @@ jobs:
           VARIANT_NAME: "jemalloc"
           VARIANT_PACKAGE_SUFFIX: "-jemalloc"
           PACKAGE_FORMAT: "DEB"
-          RUBY_PACKAGE_VERSION_ID: "3.3.11"
+          RUBY_PACKAGE_VERSION_ID: "3.3.12"
           RUBY_PACKAGE_REVISION: "0"
 
       - name: Archive package artifact to Google Cloud
         run: ./internal-scripts/ci-cd/upload-artifact.sh
         env:
-          ARTIFACT_NAME: "ruby-pkg_3.3.11_ubuntu-24.04_jemalloc"
+          ARTIFACT_NAME: "ruby-pkg_3.3.12_ubuntu-24.04_jemalloc"
           ARTIFACT_PATH: output-jemalloc
           CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
 
@@ -3718,14 +3718,14 @@ jobs:
       - build_ruby_debian_12-3_2-jemalloc
       - build_ruby_debian_12-3_2-malloctrim
 
-      - build_ruby_debian_12-4_0_4-normal
-      - build_ruby_debian_12-4_0_4-jemalloc
+      - build_ruby_debian_12-4_0_6-normal
+      - build_ruby_debian_12-4_0_6-jemalloc
 
-      - build_ruby_debian_12-3_4_9-normal
-      - build_ruby_debian_12-3_4_9-jemalloc
+      - build_ruby_debian_12-3_4_10-normal
+      - build_ruby_debian_12-3_4_10-jemalloc
 
-      - build_ruby_debian_12-3_3_11-normal
-      - build_ruby_debian_12-3_3_11-jemalloc
+      - build_ruby_debian_12-3_3_12-normal
+      - build_ruby_debian_12-3_3_12-jemalloc
 
       - build_ruby_debian_12-3_2_11-normal
       - build_ruby_debian_12-3_2_11-jemalloc
@@ -3746,14 +3746,14 @@ jobs:
       - build_ruby_ubuntu_24_04-3_2-jemalloc
       - build_ruby_ubuntu_24_04-3_2-malloctrim
 
-      - build_ruby_ubuntu_24_04-4_0_4-normal
-      - build_ruby_ubuntu_24_04-4_0_4-jemalloc
+      - build_ruby_ubuntu_24_04-4_0_6-normal
+      - build_ruby_ubuntu_24_04-4_0_6-jemalloc
 
-      - build_ruby_ubuntu_24_04-3_4_9-normal
-      - build_ruby_ubuntu_24_04-3_4_9-jemalloc
+      - build_ruby_ubuntu_24_04-3_4_10-normal
+      - build_ruby_ubuntu_24_04-3_4_10-jemalloc
 
-      - build_ruby_ubuntu_24_04-3_3_11-normal
-      - build_ruby_ubuntu_24_04-3_3_11-jemalloc
+      - build_ruby_ubuntu_24_04-3_3_12-normal
+      - build_ruby_ubuntu_24_04-3_3_12-jemalloc
 
       - build_ruby_ubuntu_24_04-3_2_11-normal
       - build_ruby_ubuntu_24_04-3_2_11-jemalloc
@@ -3806,7 +3806,7 @@ jobs:
       - name: Download Ruby package artifacts from Google Cloud
         run: ./internal-scripts/ci-cd/download-artifacts.sh
         env:
-          ARTIFACT_NAMES: 'ruby-pkg_4.0_debian-12_normal ruby-pkg_4.0_debian-12_jemalloc ruby-pkg_3.4_debian-12_normal ruby-pkg_3.4_debian-12_jemalloc ruby-pkg_3.3_debian-12_normal ruby-pkg_3.3_debian-12_jemalloc ruby-pkg_3.2_debian-12_normal ruby-pkg_3.2_debian-12_jemalloc ruby-pkg_3.2_debian-12_malloctrim ruby-pkg_4.0.4_debian-12_normal ruby-pkg_4.0.4_debian-12_jemalloc ruby-pkg_3.4.9_debian-12_normal ruby-pkg_3.4.9_debian-12_jemalloc ruby-pkg_3.3.11_debian-12_normal ruby-pkg_3.3.11_debian-12_jemalloc ruby-pkg_3.2.11_debian-12_normal ruby-pkg_3.2.11_debian-12_jemalloc ruby-pkg_3.2.11_debian-12_malloctrim ruby-pkg_4.0_ubuntu-24.04_normal ruby-pkg_4.0_ubuntu-24.04_jemalloc ruby-pkg_3.4_ubuntu-24.04_normal ruby-pkg_3.4_ubuntu-24.04_jemalloc ruby-pkg_3.3_ubuntu-24.04_normal ruby-pkg_3.3_ubuntu-24.04_jemalloc ruby-pkg_3.2_ubuntu-24.04_normal ruby-pkg_3.2_ubuntu-24.04_jemalloc ruby-pkg_3.2_ubuntu-24.04_malloctrim ruby-pkg_4.0.4_ubuntu-24.04_normal ruby-pkg_4.0.4_ubuntu-24.04_jemalloc ruby-pkg_3.4.9_ubuntu-24.04_normal ruby-pkg_3.4.9_ubuntu-24.04_jemalloc ruby-pkg_3.3.11_ubuntu-24.04_normal ruby-pkg_3.3.11_ubuntu-24.04_jemalloc ruby-pkg_3.2.11_ubuntu-24.04_normal ruby-pkg_3.2.11_ubuntu-24.04_jemalloc ruby-pkg_3.2.11_ubuntu-24.04_malloctrim'
+          ARTIFACT_NAMES: 'ruby-pkg_4.0_debian-12_normal ruby-pkg_4.0_debian-12_jemalloc ruby-pkg_3.4_debian-12_normal ruby-pkg_3.4_debian-12_jemalloc ruby-pkg_3.3_debian-12_normal ruby-pkg_3.3_debian-12_jemalloc ruby-pkg_3.2_debian-12_normal ruby-pkg_3.2_debian-12_jemalloc ruby-pkg_3.2_debian-12_malloctrim ruby-pkg_4.0.6_debian-12_normal ruby-pkg_4.0.6_debian-12_jemalloc ruby-pkg_3.4.10_debian-12_normal ruby-pkg_3.4.10_debian-12_jemalloc ruby-pkg_3.3.12_debian-12_normal ruby-pkg_3.3.12_debian-12_jemalloc ruby-pkg_3.2.11_debian-12_normal ruby-pkg_3.2.11_debian-12_jemalloc ruby-pkg_3.2.11_debian-12_malloctrim ruby-pkg_4.0_ubuntu-24.04_normal ruby-pkg_4.0_ubuntu-24.04_jemalloc ruby-pkg_3.4_ubuntu-24.04_normal ruby-pkg_3.4_ubuntu-24.04_jemalloc ruby-pkg_3.3_ubuntu-24.04_normal ruby-pkg_3.3_ubuntu-24.04_jemalloc ruby-pkg_3.2_ubuntu-24.04_normal ruby-pkg_3.2_ubuntu-24.04_jemalloc ruby-pkg_3.2_ubuntu-24.04_malloctrim ruby-pkg_4.0.6_ubuntu-24.04_normal ruby-pkg_4.0.6_ubuntu-24.04_jemalloc ruby-pkg_3.4.10_ubuntu-24.04_normal ruby-pkg_3.4.10_ubuntu-24.04_jemalloc ruby-pkg_3.3.12_ubuntu-24.04_normal ruby-pkg_3.3.12_ubuntu-24.04_jemalloc ruby-pkg_3.2.11_ubuntu-24.04_normal ruby-pkg_3.2.11_ubuntu-24.04_jemalloc ruby-pkg_3.2.11_ubuntu-24.04_malloctrim'
           ARTIFACT_PATH: artifacts
           CLEAR: true
           CI_ARTIFACTS_BUCKET: ${{ vars.CI_ARTIFACTS_BUCKET }}
@@ -3864,41 +3864,41 @@ jobs:
           name: ruby-pkg_3.2_debian-12_malloctrim
           path: artifacts/ruby-pkg_3.2_debian-12_malloctrim
           compression-level: 0
-      - name: Archive Ruby package artifact [ruby-pkg_4.0.4_debian-12_normal] to Github
+      - name: Archive Ruby package artifact [ruby-pkg_4.0.6_debian-12_normal] to Github
         uses: actions/upload-artifact@v4
         with:
-          name: ruby-pkg_4.0.4_debian-12_normal
-          path: artifacts/ruby-pkg_4.0.4_debian-12_normal
+          name: ruby-pkg_4.0.6_debian-12_normal
+          path: artifacts/ruby-pkg_4.0.6_debian-12_normal
           compression-level: 0
-      - name: Archive Ruby package artifact [ruby-pkg_4.0.4_debian-12_jemalloc] to Github
+      - name: Archive Ruby package artifact [ruby-pkg_4.0.6_debian-12_jemalloc] to Github
         uses: actions/upload-artifact@v4
         with:
-          name: ruby-pkg_4.0.4_debian-12_jemalloc
-          path: artifacts/ruby-pkg_4.0.4_debian-12_jemalloc
+          name: ruby-pkg_4.0.6_debian-12_jemalloc
+          path: artifacts/ruby-pkg_4.0.6_debian-12_jemalloc
           compression-level: 0
-      - name: Archive Ruby package artifact [ruby-pkg_3.4.9_debian-12_normal] to Github
+      - name: Archive Ruby package artifact [ruby-pkg_3.4.10_debian-12_normal] to Github
         uses: actions/upload-artifact@v4
         with:
-          name: ruby-pkg_3.4.9_debian-12_normal
-          path: artifacts/ruby-pkg_3.4.9_debian-12_normal
+          name: ruby-pkg_3.4.10_debian-12_normal
+          path: artifacts/ruby-pkg_3.4.10_debian-12_normal
           compression-level: 0
-      - name: Archive Ruby package artifact [ruby-pkg_3.4.9_debian-12_jemalloc] to Github
+      - name: Archive Ruby package artifact [ruby-pkg_3.4.10_debian-12_jemalloc] to Github
         uses: actions/upload-artifact@v4
         with:
-          name: ruby-pkg_3.4.9_debian-12_jemalloc
-          path: artifacts/ruby-pkg_3.4.9_debian-12_jemalloc
+          name: ruby-pkg_3.4.10_debian-12_jemalloc
+          path: artifacts/ruby-pkg_3.4.10_debian-12_jemalloc
           compression-level: 0
-      - name: Archive Ruby package artifact [ruby-pkg_3.3.11_debian-12_normal] to Github
+      - name: Archive Ruby package artifact [ruby-pkg_3.3.12_debian-12_normal] to Github
         uses: actions/upload-artifact@v4
         with:
-          name: ruby-pkg_3.3.11_debian-12_normal
-          path: artifacts/ruby-pkg_3.3.11_debian-12_normal
+          name: ruby-pkg_3.3.12_debian-12_normal
+          path: artifacts/ruby-pkg_3.3.12_debian-12_normal
           compression-level: 0
-      - name: Archive Ruby package artifact [ruby-pkg_3.3.11_debian-12_jemalloc] to Github
+      - name: Archive Ruby package artifact [ruby-pkg_3.3.12_debian-12_jemalloc] to Github
         uses: actions/upload-artifact@v4
         with:
-          name: ruby-pkg_3.3.11_debian-12_jemalloc
-          path: artifacts/ruby-pkg_3.3.11_debian-12_jemalloc
+          name: ruby-pkg_3.3.12_debian-12_jemalloc
+          path: artifacts/ruby-pkg_3.3.12_debian-12_jemalloc
           compression-level: 0
       - name: Archive Ruby package artifact [ruby-pkg_3.2.11_debian-12_normal] to Github
         uses: actions/upload-artifact@v4
@@ -3972,41 +3972,41 @@ jobs:
           name: ruby-pkg_3.2_ubuntu-24.04_malloctrim
           path: artifacts/ruby-pkg_3.2_ubuntu-24.04_malloctrim
           compression-level: 0
-      - name: Archive Ruby package artifact [ruby-pkg_4.0.4_ubuntu-24.04_normal] to Github
+      - name: Archive Ruby package artifact [ruby-pkg_4.0.6_ubuntu-24.04_normal] to Github
         uses: actions/upload-artifact@v4
         with:
-          name: ruby-pkg_4.0.4_ubuntu-24.04_normal
-          path: artifacts/ruby-pkg_4.0.4_ubuntu-24.04_normal
+          name: ruby-pkg_4.0.6_ubuntu-24.04_normal
+          path: artifacts/ruby-pkg_4.0.6_ubuntu-24.04_normal
           compression-level: 0
-      - name: Archive Ruby package artifact [ruby-pkg_4.0.4_ubuntu-24.04_jemalloc] to Github
+      - name: Archive Ruby package artifact [ruby-pkg_4.0.6_ubuntu-24.04_jemalloc] to Github
         uses: actions/upload-artifact@v4
         with:
-          name: ruby-pkg_4.0.4_ubuntu-24.04_jemalloc
-          path: artifacts/ruby-pkg_4.0.4_ubuntu-24.04_jemalloc
+          name: ruby-pkg_4.0.6_ubuntu-24.04_jemalloc
+          path: artifacts/ruby-pkg_4.0.6_ubuntu-24.04_jemalloc
           compression-level: 0
-      - name: Archive Ruby package artifact [ruby-pkg_3.4.9_ubuntu-24.04_normal] to Github
+      - name: Archive Ruby package artifact [ruby-pkg_3.4.10_ubuntu-24.04_normal] to Github
         uses: actions/upload-artifact@v4
         with:
-          name: ruby-pkg_3.4.9_ubuntu-24.04_normal
-          path: artifacts/ruby-pkg_3.4.9_ubuntu-24.04_normal
+          name: ruby-pkg_3.4.10_ubuntu-24.04_normal
+          path: artifacts/ruby-pkg_3.4.10_ubuntu-24.04_normal
           compression-level: 0
-      - name: Archive Ruby package artifact [ruby-pkg_3.4.9_ubuntu-24.04_jemalloc] to Github
+      - name: Archive Ruby package artifact [ruby-pkg_3.4.10_ubuntu-24.04_jemalloc] to Github
         uses: actions/upload-artifact@v4
         with:
-          name: ruby-pkg_3.4.9_ubuntu-24.04_jemalloc
-          path: artifacts/ruby-pkg_3.4.9_ubuntu-24.04_jemalloc
+          name: ruby-pkg_3.4.10_ubuntu-24.04_jemalloc
+          path: artifacts/ruby-pkg_3.4.10_ubuntu-24.04_jemalloc
           compression-level: 0
-      - name: Archive Ruby package artifact [ruby-pkg_3.3.11_ubuntu-24.04_normal] to Github
+      - name: Archive Ruby package artifact [ruby-pkg_3.3.12_ubuntu-24.04_normal] to Github
         uses: actions/upload-artifact@v4
         with:
-          name: ruby-pkg_3.3.11_ubuntu-24.04_normal
-          path: artifacts/ruby-pkg_3.3.11_ubuntu-24.04_normal
+          name: ruby-pkg_3.3.12_ubuntu-24.04_normal
+          path: artifacts/ruby-pkg_3.3.12_ubuntu-24.04_normal
           compression-level: 0
-      - name: Archive Ruby package artifact [ruby-pkg_3.3.11_ubuntu-24.04_jemalloc] to Github
+      - name: Archive Ruby package artifact [ruby-pkg_3.3.12_ubuntu-24.04_jemalloc] to Github
         uses: actions/upload-artifact@v4
         with:
-          name: ruby-pkg_3.3.11_ubuntu-24.04_jemalloc
-          path: artifacts/ruby-pkg_3.3.11_ubuntu-24.04_jemalloc
+          name: ruby-pkg_3.3.12_ubuntu-24.04_jemalloc
+          path: artifacts/ruby-pkg_3.3.12_ubuntu-24.04_jemalloc
           compression-level: 0
       - name: Archive Ruby package artifact [ruby-pkg_3.2.11_ubuntu-24.04_normal] to Github
         uses: actions/upload-artifact@v4
@@ -4071,24 +4071,24 @@ jobs:
             || (needs.build_ruby_debian_12-3_2-malloctrim.result != 'success'
               && (needs.build_ruby_debian_12-3_2-malloctrim.result != 'skipped'
                 || contains(inputs.necessary_jobs, ';Build Ruby [debian-12/3.2/malloctrim];')))
-            || (needs.build_ruby_debian_12-4_0_4-normal.result != 'success'
-              && (needs.build_ruby_debian_12-4_0_4-normal.result != 'skipped'
-                || contains(inputs.necessary_jobs, ';Build Ruby [debian-12/4.0.4/normal];')))
-            || (needs.build_ruby_debian_12-4_0_4-jemalloc.result != 'success'
-              && (needs.build_ruby_debian_12-4_0_4-jemalloc.result != 'skipped'
-                || contains(inputs.necessary_jobs, ';Build Ruby [debian-12/4.0.4/jemalloc];')))
-            || (needs.build_ruby_debian_12-3_4_9-normal.result != 'success'
-              && (needs.build_ruby_debian_12-3_4_9-normal.result != 'skipped'
-                || contains(inputs.necessary_jobs, ';Build Ruby [debian-12/3.4.9/normal];')))
-            || (needs.build_ruby_debian_12-3_4_9-jemalloc.result != 'success'
-              && (needs.build_ruby_debian_12-3_4_9-jemalloc.result != 'skipped'
-                || contains(inputs.necessary_jobs, ';Build Ruby [debian-12/3.4.9/jemalloc];')))
-            || (needs.build_ruby_debian_12-3_3_11-normal.result != 'success'
-              && (needs.build_ruby_debian_12-3_3_11-normal.result != 'skipped'
-                || contains(inputs.necessary_jobs, ';Build Ruby [debian-12/3.3.11/normal];')))
-            || (needs.build_ruby_debian_12-3_3_11-jemalloc.result != 'success'
-              && (needs.build_ruby_debian_12-3_3_11-jemalloc.result != 'skipped'
-                || contains(inputs.necessary_jobs, ';Build Ruby [debian-12/3.3.11/jemalloc];')))
+            || (needs.build_ruby_debian_12-4_0_6-normal.result != 'success'
+              && (needs.build_ruby_debian_12-4_0_6-normal.result != 'skipped'
+                || contains(inputs.necessary_jobs, ';Build Ruby [debian-12/4.0.6/normal];')))
+            || (needs.build_ruby_debian_12-4_0_6-jemalloc.result != 'success'
+              && (needs.build_ruby_debian_12-4_0_6-jemalloc.result != 'skipped'
+                || contains(inputs.necessary_jobs, ';Build Ruby [debian-12/4.0.6/jemalloc];')))
+            || (needs.build_ruby_debian_12-3_4_10-normal.result != 'success'
+              && (needs.build_ruby_debian_12-3_4_10-normal.result != 'skipped'
+                || contains(inputs.necessary_jobs, ';Build Ruby [debian-12/3.4.10/normal];')))
+            || (needs.build_ruby_debian_12-3_4_10-jemalloc.result != 'success'
+              && (needs.build_ruby_debian_12-3_4_10-jemalloc.result != 'skipped'
+                || contains(inputs.necessary_jobs, ';Build Ruby [debian-12/3.4.10/jemalloc];')))
+            || (needs.build_ruby_debian_12-3_3_12-normal.result != 'success'
+              && (needs.build_ruby_debian_12-3_3_12-normal.result != 'skipped'
+                || contains(inputs.necessary_jobs, ';Build Ruby [debian-12/3.3.12/normal];')))
+            || (needs.build_ruby_debian_12-3_3_12-jemalloc.result != 'success'
+              && (needs.build_ruby_debian_12-3_3_12-jemalloc.result != 'skipped'
+                || contains(inputs.necessary_jobs, ';Build Ruby [debian-12/3.3.12/jemalloc];')))
             || (needs.build_ruby_debian_12-3_2_11-normal.result != 'success'
               && (needs.build_ruby_debian_12-3_2_11-normal.result != 'skipped'
                 || contains(inputs.necessary_jobs, ';Build Ruby [debian-12/3.2.11/normal];')))
@@ -4129,24 +4129,24 @@ jobs:
             || (needs.build_ruby_ubuntu_24_04-3_2-malloctrim.result != 'success'
               && (needs.build_ruby_ubuntu_24_04-3_2-malloctrim.result != 'skipped'
                 || contains(inputs.necessary_jobs, ';Build Ruby [ubuntu-24.04/3.2/malloctrim];')))
-            || (needs.build_ruby_ubuntu_24_04-4_0_4-normal.result != 'success'
-              && (needs.build_ruby_ubuntu_24_04-4_0_4-normal.result != 'skipped'
-                || contains(inputs.necessary_jobs, ';Build Ruby [ubuntu-24.04/4.0.4/normal];')))
-            || (needs.build_ruby_ubuntu_24_04-4_0_4-jemalloc.result != 'success'
-              && (needs.build_ruby_ubuntu_24_04-4_0_4-jemalloc.result != 'skipped'
-                || contains(inputs.necessary_jobs, ';Build Ruby [ubuntu-24.04/4.0.4/jemalloc];')))
-            || (needs.build_ruby_ubuntu_24_04-3_4_9-normal.result != 'success'
-              && (needs.build_ruby_ubuntu_24_04-3_4_9-normal.result != 'skipped'
-                || contains(inputs.necessary_jobs, ';Build Ruby [ubuntu-24.04/3.4.9/normal];')))
-            || (needs.build_ruby_ubuntu_24_04-3_4_9-jemalloc.result != 'success'
-              && (needs.build_ruby_ubuntu_24_04-3_4_9-jemalloc.result != 'skipped'
-                || contains(inputs.necessary_jobs, ';Build Ruby [ubuntu-24.04/3.4.9/jemalloc];')))
-            || (needs.build_ruby_ubuntu_24_04-3_3_11-normal.result != 'success'
-              && (needs.build_ruby_ubuntu_24_04-3_3_11-normal.result != 'skipped'
-                || contains(inputs.necessary_jobs, ';Build Ruby [ubuntu-24.04/3.3.11/normal];')))
-            || (needs.build_ruby_ubuntu_24_04-3_3_11-jemalloc.result != 'success'
-              && (needs.build_ruby_ubuntu_24_04-3_3_11-jemalloc.result != 'skipped'
-                || contains(inputs.necessary_jobs, ';Build Ruby [ubuntu-24.04/3.3.11/jemalloc];')))
+            || (needs.build_ruby_ubuntu_24_04-4_0_6-normal.result != 'success'
+              && (needs.build_ruby_ubuntu_24_04-4_0_6-normal.result != 'skipped'
+                || contains(inputs.necessary_jobs, ';Build Ruby [ubuntu-24.04/4.0.6/normal];')))
+            || (needs.build_ruby_ubuntu_24_04-4_0_6-jemalloc.result != 'success'
+              && (needs.build_ruby_ubuntu_24_04-4_0_6-jemalloc.result != 'skipped'
+                || contains(inputs.necessary_jobs, ';Build Ruby [ubuntu-24.04/4.0.6/jemalloc];')))
+            || (needs.build_ruby_ubuntu_24_04-3_4_10-normal.result != 'success'
+              && (needs.build_ruby_ubuntu_24_04-3_4_10-normal.result != 'skipped'
+                || contains(inputs.necessary_jobs, ';Build Ruby [ubuntu-24.04/3.4.10/normal];')))
+            || (needs.build_ruby_ubuntu_24_04-3_4_10-jemalloc.result != 'success'
+              && (needs.build_ruby_ubuntu_24_04-3_4_10-jemalloc.result != 'skipped'
+                || contains(inputs.necessary_jobs, ';Build Ruby [ubuntu-24.04/3.4.10/jemalloc];')))
+            || (needs.build_ruby_ubuntu_24_04-3_3_12-normal.result != 'success'
+              && (needs.build_ruby_ubuntu_24_04-3_3_12-normal.result != 'skipped'
+                || contains(inputs.necessary_jobs, ';Build Ruby [ubuntu-24.04/3.3.12/normal];')))
+            || (needs.build_ruby_ubuntu_24_04-3_3_12-jemalloc.result != 'success'
+              && (needs.build_ruby_ubuntu_24_04-3_3_12-jemalloc.result != 'skipped'
+                || contains(inputs.necessary_jobs, ';Build Ruby [ubuntu-24.04/3.3.12/jemalloc];')))
             || (needs.build_ruby_ubuntu_24_04-3_2_11-normal.result != 'success'
               && (needs.build_ruby_ubuntu_24_04-3_2_11-normal.result != 'skipped'
                 || contains(inputs.necessary_jobs, ';Build Ruby [ubuntu-24.04/3.2.11/normal];')))
