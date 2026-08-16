@@ -160,24 +160,6 @@ jobs:
     #   needs.prepare.result == 'success'
     #   && !failure() && !cancelled()
 
-  build_packages_4:
-    name: Build [4]
-    needs:
-      - determine_necessary_jobs
-      - prepare
-    permissions:
-      id-token: write
-      packages: read
-    secrets: inherit
-    uses: ./.github/workflows/ci-cd-build-packages-4.yml
-    with:
-      ci_artifacts_run_number: ${{ needs.determine_necessary_jobs.outputs.ci_artifacts_run_number }}
-      necessary_jobs: ${{ needs.determine_necessary_jobs.outputs.necessary_jobs }}
-    # # Run even if a transitively dependent job has been skipped
-    # if: |
-    #   needs.prepare.result == 'success'
-    #   && !failure() && !cancelled()
-
 
   publish_test:
     name: Publish & test against test repos
@@ -190,8 +172,6 @@ jobs:
       - build_packages_2
 
       - build_packages_3
-
-      - build_packages_4
 
     permissions:
       id-token: write

@@ -14,26 +14,11 @@ ruby:
     - minor_version: '4.0'
       full_version: '4.0.6'
       package_revision: '4'
-    - minor_version: '3.4'
-      full_version: '3.4.10'
-      package_revision: '9'
-    - minor_version: '3.3'
-      full_version: '3.3.12'
-      package_revision: '12'
-    - minor_version: '3.2'
-      full_version: '3.2.11'
-      package_revision: '13'
 
   ## (Optional)
   ## Which tiny Ruby version packages to build.
   tiny_version_packages:
     - full_version: '4.0.6'
-      package_revision: '0'
-    - full_version: '3.4.10'
-      package_revision: '0'
-    - full_version: '3.3.12'
-      package_revision: '0'
-    - full_version: '3.2.11'
       package_revision: '0'
 
 ## (Required)
@@ -112,13 +97,10 @@ distributions: all
 ## You can also set it to a list of distribution names.
 ## The names must match the folder names found in the environments/
 ## directory in this project.
-# distributions:
-#   - centos-8
-#   - el-9
-#   - debian-11
-#   - debian-12
-#   - ubuntu-22.04
-#   - ubuntu-24.04
+distributions:
+  - el-9
+  - debian-12
+  - ubuntu-24.04
 
 ## (Optional)
 ## Excludes certain Ruby minor versions from certain distributions.
