@@ -1,0 +1,79 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+
+# Minimal gsutil replacement for tests. Maps gs://bucket/path to
+# $FAKE_GCS_ROOT/bucket/path. Supports only the invocations used by the
+# archive scripts and GCloudStorageLock.
+
+require 'fileutils'
+require 'time'
+
+ROOT = ENV.fetch('FAKE_GCS_ROOT')
+
+def local_path(url)
+  raise "not a gs:// URL: #{url}" if url !~ %r{\Ags://(.+)\z}
+  File.join(ROOT, $1)
+end
+
+def gs?(arg)
+  arg.start_with?('gs://')
+end
+
+def no_match(url)
+  warn "CommandException: No URLs matched: #{url}"
+  exit 1
+end
+
+args = ARGV.dup
+# Drop global options: -m, -q, and -h <header>.
+headers = []
+while (arg = args.first) && arg.start_with?('-')
+  args.shift
+  headers << args.shift if arg == '-h'
+end
+
+command = args.shift
+case command
+when 'cp'
+  src, dst = args
+  if src == '-'
+    path = local_path(dst)
+    precondition = headers.find { |h| h.start_with?('x-goog-if-generation-match:') }
+    if precondition && precondition.split(':', 2)[1] == '0' && File.exist?(path)
+      warn 'PreconditionException: 412 Precondition Failed'
+      exit 1
+    end
+    FileUtils.mkdir_p(File.dirname(path))
+    File.binwrite(path, $stdin.read)
+  elsif dst == '-'
+    path = local_path(src)
+    no_match(src) if !File.file?(path)
+    $stdout.write(File.binread(path))
+  else
+    path = local_path(dst)
+    FileUtils.mkdir_p(File.dirname(path))
+    FileUtils.cp(src, path)
+  end
+when 'rsync'
+  delete = args.delete('-d')
+  args.delete('-r')
+  src, dst = args.map { |arg| gs?(arg) ? local_path(arg) : arg }
+  FileUtils.mkdir_p(dst)
+  FileUtils.rm_rf(Dir.glob("#{dst}/*", File::FNM_DOTMATCH).reject { |p| p.end_with?('/.', '/..') }) if delete
+  # cp -a would copy symlinks as symlinks; real gsutil uploads their targets.
+  system('cp', '-rL', "#{src}/.", dst, exception: true) if File.exist?(src)
+when 'stat'
+  path = local_path(args[0])
+  no_match(args[0]) if !File.exist?(path)
+  stat = File.stat(path)
+  puts args[0]
+  puts "    Update time:            #{stat.mtime.utc.httpdate}"
+  puts "    Generation:             #{stat.mtime.to_f.to_s.delete('.')}#{stat.ino}"
+when 'rm'
+  path = local_path(args[0])
+  no_match(args[0]) if !File.exist?(path)
+  File.delete(path)
+else
+  warn "fake gsutil: unsupported command: #{ARGV.join(' ')}"
+  exit 2
+end

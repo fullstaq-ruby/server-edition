@@ -1,0 +1,38 @@
+#!/bin/bash
+# Fake docker for tests. 'docker inspect' succeeds, so the utility image
+# is never pulled. 'docker run ... -v DIR:/input... IMAGE createrepo_c ARGS'
+# runs createrepo_c locally against DIR.
+set -euo pipefail
+
+case "$1" in
+    inspect)
+        exit 0
+        ;;
+    run)
+        shift
+        input_dir=
+        while [[ $# -gt 0 ]]; do
+            case "$1" in
+                --rm) shift ;;
+                --user) shift 2 ;;
+                -v) input_dir="${2%%:*}"; shift 2 ;;
+                createrepo_c) break ;;
+                *) shift ;;
+            esac
+        done
+        shift
+        args=()
+        for arg in "$@"; do
+            if [[ "${arg}" == /input ]]; then
+                args+=("${input_dir}")
+            else
+                args+=("${arg}")
+            fi
+        done
+        exec createrepo_c "${args[@]}"
+        ;;
+    *)
+        echo "fake docker: unsupported command: $*" >&2
+        exit 2
+        ;;
+esac

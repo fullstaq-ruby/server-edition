@@ -40,6 +40,7 @@
 
  * [Adding support for a new distribution](add-new-distro.md)
  * [Adding support for a new Ruby version](add-new-ruby-version.md)
+ * [Archiving EOL packages](archiving-eol-packages.md)
 
 ## Organizational (for team members)
 
