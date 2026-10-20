@@ -60,6 +60,7 @@ jobs:
       id-token: write
       packages: read
     outputs:
+      git_commit: ${{ steps.checkout.outputs.commit }}
       ci_artifacts_run_number: ${{ steps.get_ci_artifacts_run_number.outputs.number }}
       necessary_jobs: ${{ steps.check.outputs.necessary_jobs }}
     steps:
@@ -69,7 +70,8 @@ jobs:
           exit 1
         if: github.event_name == 'push' && github.ref == 'refs/heads/fix/cicd-new-workflows'
 
-      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - id: checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           ref: ${{ github.event_name == 'pull_request_target' && github.event.pull_request.head.sha || github.ref }}
       - uses: google-github-actions/auth@7c6bc770dae815cd3e89ee6cdf493a5fab2cc093 # v3
@@ -124,8 +126,9 @@ jobs:
     secrets: inherit
     uses: ./.github/workflows/ci-cd-prepare.yml
     with:
-        ci_artifacts_run_number: ${{ needs.determine_necessary_jobs.outputs.ci_artifacts_run_number }}
-        necessary_jobs: ${{ needs.determine_necessary_jobs.outputs.necessary_jobs }}
+      git_commit: ${{ needs.determine_necessary_jobs.outputs.git_commit }}
+      ci_artifacts_run_number: ${{ needs.determine_necessary_jobs.outputs.ci_artifacts_run_number }}
+      necessary_jobs: ${{ needs.determine_necessary_jobs.outputs.necessary_jobs }}
 
 
   <%- distribution_buckets.each_with_index do |distributions, i| %>
@@ -141,12 +144,9 @@ jobs:
       secrets: inherit
       uses: ./.github/workflows/ci-cd-build-packages-<%= i + 1 %>.yml
       with:
+        git_commit: ${{ needs.determine_necessary_jobs.outputs.git_commit }}
         ci_artifacts_run_number: ${{ needs.determine_necessary_jobs.outputs.ci_artifacts_run_number }}
         necessary_jobs: ${{ needs.determine_necessary_jobs.outputs.necessary_jobs }}
-      # # Run even if a transitively dependent job has been skipped
-      # if: |
-      #   needs.prepare.result == 'success'
-      #   && !failure() && !cancelled()
   <%- end -%>
   <%- end %>
 
@@ -165,8 +165,9 @@ jobs:
     secrets: inherit
     uses: ./.github/workflows/ci-cd-publish-test-test.yml
     with:
-        ci_artifacts_run_number: ${{ needs.determine_necessary_jobs.outputs.ci_artifacts_run_number }}
-        necessary_jobs: ${{ needs.determine_necessary_jobs.outputs.necessary_jobs }}
+      git_commit: ${{ needs.determine_necessary_jobs.outputs.git_commit }}
+      ci_artifacts_run_number: ${{ needs.determine_necessary_jobs.outputs.ci_artifacts_run_number }}
+      necessary_jobs: ${{ needs.determine_necessary_jobs.outputs.necessary_jobs }}
 
 
   publish_production:
@@ -182,5 +183,6 @@ jobs:
     secrets: inherit
     uses: ./.github/workflows/ci-cd-publish-test-production.yml
     with:
-        ci_artifacts_run_number: ${{ needs.determine_necessary_jobs.outputs.ci_artifacts_run_number }}
-        necessary_jobs: ${{ needs.determine_necessary_jobs.outputs.necessary_jobs }}
+      git_commit: ${{ needs.determine_necessary_jobs.outputs.git_commit }}
+      ci_artifacts_run_number: ${{ needs.determine_necessary_jobs.outputs.ci_artifacts_run_number }}
+      necessary_jobs: ${{ needs.determine_necessary_jobs.outputs.necessary_jobs }}
