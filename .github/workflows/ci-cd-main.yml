@@ -245,3 +245,6 @@ jobs:
       git_commit: ${{ needs.determine_necessary_jobs.outputs.git_commit }}
       ci_artifacts_run_number: ${{ needs.determine_necessary_jobs.outputs.ci_artifacts_run_number }}
       necessary_jobs: ${{ needs.determine_necessary_jobs.outputs.necessary_jobs }}
+      # For pull_request_target events, github.ref refers to the base branch, not the contributor branch,
+      # so we can't check for `github.ref == 'refs/heads/main'` to determine whether to release to production.
+      release: ${{ (github.event_name == 'push' || github.event_name == 'workflow_dispatch') && github.ref == 'refs/heads/main' }}

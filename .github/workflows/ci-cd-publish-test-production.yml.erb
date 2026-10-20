@@ -14,6 +14,9 @@ on:
       necessary_jobs:
         type: string
         required: true
+      release:
+        type: boolean
+        required: true
 
 env:
   CI_ARTIFACTS_RUN_NUMBER: ${{ inputs.ci_artifacts_run_number || github.run_number }}
@@ -92,7 +95,7 @@ jobs:
           CI_ARTIFACTS_BUCKET_NAME: ${{ vars.CI_ARTIFACTS_BUCKET }}
           TESTING: false
           OVERWRITE_EXISTING: false
-          DRY_RUN: ${{ github.ref != 'refs/heads/main' }}
+          DRY_RUN: ${{ !inputs.release }}
           CLEANUP: true
 
       - name: Upload RPMs to repo
@@ -102,11 +105,11 @@ jobs:
           CI_ARTIFACTS_BUCKET_NAME: ${{ vars.CI_ARTIFACTS_BUCKET }}
           TESTING: false
           OVERWRITE_EXISTING: false
-          DRY_RUN: ${{ github.ref != 'refs/heads/main' }}
+          DRY_RUN: ${{ !inputs.release }}
 
       - uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9.0.0
         id: get-id-token
-        if: github.ref == 'refs/heads/main'
+        if: inputs.release
         with:
           script: |
             const fs = require('fs');
@@ -119,7 +122,7 @@ jobs:
 
       - name: Restart web server
         run: ./internal-scripts/ci-cd/publish/restart-web-server.rb
-        if: github.ref == 'refs/heads/main'
+        if: inputs.release
         env:
           ID_TOKEN: ${{ steps.get-id-token.outputs.id_token }}
 
@@ -138,7 +141,7 @@ jobs:
       environment: test
       timeout-minutes: 30
       if: |
-        github.ref == 'refs/heads/main'
+        inputs.release
         && contains(inputs.necessary_jobs, ';Test against production repo [<%= distribution[:name] %>/<%= ruby_package_version[:id] %>/<%= variant[:name] %>];')
       permissions:
         id-token: write
@@ -219,7 +222,7 @@ jobs:
       - name: Check whether 'Test [<%= distribution[:name] %>/<%= ruby_package_version[:id] %>/<%= variant[:name] %>]' did not fail
         run: 'false'
         if: |
-          github.ref == 'refs/heads/main'
+          inputs.release
           && needs.test_<%= slug(distribution[:name]) %>-<%= slug(ruby_package_version[:id]) %>-<%= slug(variant[:name]) %>.result != 'success'
           && (needs.test_<%= slug(distribution[:name]) %>-<%= slug(ruby_package_version[:id]) %>-<%= slug(variant[:name]) %>.result != 'skipped'
             || contains(inputs.necessary_jobs, ';Test against production repo [<%= distribution[:name] %>/<%= ruby_package_version[:id] %>/<%= variant[:name] %>];'))
@@ -242,5 +245,5 @@ jobs:
         run: git tag epic-${{ env.NEXT_RELEASE_VERSION }}
 
       - name: Push Git tag
-        if: github.ref == 'refs/heads/main'
+        if: inputs.release
         run: git push origin epic-${{ env.NEXT_RELEASE_VERSION }}
