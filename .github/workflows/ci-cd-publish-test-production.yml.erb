@@ -5,12 +5,21 @@ name: 'CI/CD: publish & test against production repos'
 on:
   workflow_call:
     inputs:
+      git_commit:
+        type: string
+        required: false
+      allow_unsafe_pr_checkout:
+        type: boolean
+        required: false
       ci_artifacts_run_number:
-        required: true
         type: string
+        required: true
       necessary_jobs:
-        required: true
         type: string
+        required: true
+      release:
+        type: boolean
+        required: true
 
 env:
   CI_ARTIFACTS_RUN_NUMBER: ${{ inputs.ci_artifacts_run_number || github.run_number }}
@@ -30,6 +39,8 @@ jobs:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           fetch-depth: 0
+          ref: ${{ inputs.git_commit }}
+          allow-unsafe-pr-checkout: ${{ inputs.allow_unsafe_pr_checkout }}
       - name: Clean disk space
         run: ./internal-scripts/ci-cd/publish/clean-disk-space.sh
       - uses: azure/login@f5d393ae46f8fde4be8b75f32e3fc50e654ad0ca # v3.0.1
@@ -88,7 +99,7 @@ jobs:
           CI_ARTIFACTS_BUCKET_NAME: ${{ vars.CI_ARTIFACTS_BUCKET }}
           TESTING: false
           OVERWRITE_EXISTING: false
-          DRY_RUN: ${{ github.ref != 'refs/heads/main' }}
+          DRY_RUN: ${{ !inputs.release }}
           CLEANUP: true
 
       - name: Upload RPMs to repo
@@ -98,11 +109,11 @@ jobs:
           CI_ARTIFACTS_BUCKET_NAME: ${{ vars.CI_ARTIFACTS_BUCKET }}
           TESTING: false
           OVERWRITE_EXISTING: false
-          DRY_RUN: ${{ github.ref != 'refs/heads/main' }}
+          DRY_RUN: ${{ !inputs.release }}
 
       - uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9.0.0
         id: get-id-token
-        if: github.ref == 'refs/heads/main'
+        if: inputs.release
         with:
           script: |
             const fs = require('fs');
@@ -115,7 +126,7 @@ jobs:
 
       - name: Restart web server
         run: ./internal-scripts/ci-cd/publish/restart-web-server.rb
-        if: github.ref == 'refs/heads/main'
+        if: inputs.release
         env:
           ID_TOKEN: ${{ steps.get-id-token.outputs.id_token }}
 
@@ -134,12 +145,15 @@ jobs:
       environment: test
       timeout-minutes: 30
       if: |
-        github.ref == 'refs/heads/main'
+        inputs.release
         && contains(inputs.necessary_jobs, ';Test against production repo [<%= distribution[:name] %>/<%= ruby_package_version[:id] %>/<%= variant[:name] %>];')
       permissions:
         id-token: write
       steps:
         - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+          with:
+            ref: ${{ inputs.git_commit }}
+            allow-unsafe-pr-checkout: ${{ inputs.allow_unsafe_pr_checkout }}
         - uses: google-github-actions/auth@7c6bc770dae815cd3e89ee6cdf493a5fab2cc093 # v3
           with:
             project_id: ${{ vars.GCLOUD_PROJECT_ID }}
@@ -198,6 +212,8 @@ jobs:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           fetch-depth: 0
+          ref: ${{ inputs.git_commit }}
+          allow-unsafe-pr-checkout: ${{ inputs.allow_unsafe_pr_checkout }}
 
 
       ### Check whether dependent jobs failed ###
@@ -212,7 +228,7 @@ jobs:
       - name: Check whether 'Test [<%= distribution[:name] %>/<%= ruby_package_version[:id] %>/<%= variant[:name] %>]' did not fail
         run: 'false'
         if: |
-          github.ref == 'refs/heads/main'
+          inputs.release
           && needs.test_<%= slug(distribution[:name]) %>-<%= slug(ruby_package_version[:id]) %>-<%= slug(variant[:name]) %>.result != 'success'
           && (needs.test_<%= slug(distribution[:name]) %>-<%= slug(ruby_package_version[:id]) %>-<%= slug(variant[:name]) %>.result != 'skipped'
             || contains(inputs.necessary_jobs, ';Test against production repo [<%= distribution[:name] %>/<%= ruby_package_version[:id] %>/<%= variant[:name] %>];'))
@@ -235,5 +251,5 @@ jobs:
         run: git tag epic-${{ env.NEXT_RELEASE_VERSION }}
 
       - name: Push Git tag
-        if: github.ref == 'refs/heads/main'
+        if: inputs.release
         run: git push origin epic-${{ env.NEXT_RELEASE_VERSION }}

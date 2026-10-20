@@ -15,12 +15,21 @@ name: 'CI/CD: publish & test against production repos'
 on:
   workflow_call:
     inputs:
+      git_commit:
+        type: string
+        required: false
+      allow_unsafe_pr_checkout:
+        type: boolean
+        required: false
       ci_artifacts_run_number:
-        required: true
         type: string
+        required: true
       necessary_jobs:
-        required: true
         type: string
+        required: true
+      release:
+        type: boolean
+        required: true
 
 env:
   CI_ARTIFACTS_RUN_NUMBER: ${{ inputs.ci_artifacts_run_number || github.run_number }}
@@ -40,6 +49,8 @@ jobs:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           fetch-depth: 0
+          ref: ${{ inputs.git_commit }}
+          allow-unsafe-pr-checkout: ${{ inputs.allow_unsafe_pr_checkout }}
       - name: Clean disk space
         run: ./internal-scripts/ci-cd/publish/clean-disk-space.sh
       - uses: azure/login@f5d393ae46f8fde4be8b75f32e3fc50e654ad0ca # v3.0.1
@@ -98,7 +109,7 @@ jobs:
           CI_ARTIFACTS_BUCKET_NAME: ${{ vars.CI_ARTIFACTS_BUCKET }}
           TESTING: false
           OVERWRITE_EXISTING: false
-          DRY_RUN: ${{ github.ref != 'refs/heads/main' }}
+          DRY_RUN: ${{ !inputs.release }}
           CLEANUP: true
 
       - name: Upload RPMs to repo
@@ -108,11 +119,11 @@ jobs:
           CI_ARTIFACTS_BUCKET_NAME: ${{ vars.CI_ARTIFACTS_BUCKET }}
           TESTING: false
           OVERWRITE_EXISTING: false
-          DRY_RUN: ${{ github.ref != 'refs/heads/main' }}
+          DRY_RUN: ${{ !inputs.release }}
 
       - uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9.0.0
         id: get-id-token
-        if: github.ref == 'refs/heads/main'
+        if: inputs.release
         with:
           script: |
             const fs = require('fs');
@@ -125,7 +136,7 @@ jobs:
 
       - name: Restart web server
         run: ./internal-scripts/ci-cd/publish/restart-web-server.rb
-        if: github.ref == 'refs/heads/main'
+        if: inputs.release
         env:
           ID_TOKEN: ${{ steps.get-id-token.outputs.id_token }}
 
@@ -142,12 +153,15 @@ jobs:
     environment: test
     timeout-minutes: 30
     if: |
-      github.ref == 'refs/heads/main'
+      inputs.release
       && contains(inputs.necessary_jobs, ';Test against production repo [centos-8/4.0/normal];')
     permissions:
       id-token: write
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ inputs.git_commit }}
+          allow-unsafe-pr-checkout: ${{ inputs.allow_unsafe_pr_checkout }}
       - uses: google-github-actions/auth@7c6bc770dae815cd3e89ee6cdf493a5fab2cc093 # v3
         with:
           project_id: ${{ vars.GCLOUD_PROJECT_ID }}
@@ -185,12 +199,15 @@ jobs:
     environment: test
     timeout-minutes: 30
     if: |
-      github.ref == 'refs/heads/main'
+      inputs.release
       && contains(inputs.necessary_jobs, ';Test against production repo [centos-8/4.0/jemalloc];')
     permissions:
       id-token: write
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ inputs.git_commit }}
+          allow-unsafe-pr-checkout: ${{ inputs.allow_unsafe_pr_checkout }}
       - uses: google-github-actions/auth@7c6bc770dae815cd3e89ee6cdf493a5fab2cc093 # v3
         with:
           project_id: ${{ vars.GCLOUD_PROJECT_ID }}
@@ -228,12 +245,15 @@ jobs:
     environment: test
     timeout-minutes: 30
     if: |
-      github.ref == 'refs/heads/main'
+      inputs.release
       && contains(inputs.necessary_jobs, ';Test against production repo [centos-8/3.4/normal];')
     permissions:
       id-token: write
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ inputs.git_commit }}
+          allow-unsafe-pr-checkout: ${{ inputs.allow_unsafe_pr_checkout }}
       - uses: google-github-actions/auth@7c6bc770dae815cd3e89ee6cdf493a5fab2cc093 # v3
         with:
           project_id: ${{ vars.GCLOUD_PROJECT_ID }}
@@ -271,12 +291,15 @@ jobs:
     environment: test
     timeout-minutes: 30
     if: |
-      github.ref == 'refs/heads/main'
+      inputs.release
       && contains(inputs.necessary_jobs, ';Test against production repo [centos-8/3.4/jemalloc];')
     permissions:
       id-token: write
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ inputs.git_commit }}
+          allow-unsafe-pr-checkout: ${{ inputs.allow_unsafe_pr_checkout }}
       - uses: google-github-actions/auth@7c6bc770dae815cd3e89ee6cdf493a5fab2cc093 # v3
         with:
           project_id: ${{ vars.GCLOUD_PROJECT_ID }}
@@ -314,12 +337,15 @@ jobs:
     environment: test
     timeout-minutes: 30
     if: |
-      github.ref == 'refs/heads/main'
+      inputs.release
       && contains(inputs.necessary_jobs, ';Test against production repo [centos-8/3.3/normal];')
     permissions:
       id-token: write
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ inputs.git_commit }}
+          allow-unsafe-pr-checkout: ${{ inputs.allow_unsafe_pr_checkout }}
       - uses: google-github-actions/auth@7c6bc770dae815cd3e89ee6cdf493a5fab2cc093 # v3
         with:
           project_id: ${{ vars.GCLOUD_PROJECT_ID }}
@@ -357,12 +383,15 @@ jobs:
     environment: test
     timeout-minutes: 30
     if: |
-      github.ref == 'refs/heads/main'
+      inputs.release
       && contains(inputs.necessary_jobs, ';Test against production repo [centos-8/3.3/jemalloc];')
     permissions:
       id-token: write
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ inputs.git_commit }}
+          allow-unsafe-pr-checkout: ${{ inputs.allow_unsafe_pr_checkout }}
       - uses: google-github-actions/auth@7c6bc770dae815cd3e89ee6cdf493a5fab2cc093 # v3
         with:
           project_id: ${{ vars.GCLOUD_PROJECT_ID }}
@@ -400,12 +429,15 @@ jobs:
     environment: test
     timeout-minutes: 30
     if: |
-      github.ref == 'refs/heads/main'
+      inputs.release
       && contains(inputs.necessary_jobs, ';Test against production repo [centos-8/3.2/normal];')
     permissions:
       id-token: write
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ inputs.git_commit }}
+          allow-unsafe-pr-checkout: ${{ inputs.allow_unsafe_pr_checkout }}
       - uses: google-github-actions/auth@7c6bc770dae815cd3e89ee6cdf493a5fab2cc093 # v3
         with:
           project_id: ${{ vars.GCLOUD_PROJECT_ID }}
@@ -443,12 +475,15 @@ jobs:
     environment: test
     timeout-minutes: 30
     if: |
-      github.ref == 'refs/heads/main'
+      inputs.release
       && contains(inputs.necessary_jobs, ';Test against production repo [centos-8/3.2/jemalloc];')
     permissions:
       id-token: write
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ inputs.git_commit }}
+          allow-unsafe-pr-checkout: ${{ inputs.allow_unsafe_pr_checkout }}
       - uses: google-github-actions/auth@7c6bc770dae815cd3e89ee6cdf493a5fab2cc093 # v3
         with:
           project_id: ${{ vars.GCLOUD_PROJECT_ID }}
@@ -486,12 +521,15 @@ jobs:
     environment: test
     timeout-minutes: 30
     if: |
-      github.ref == 'refs/heads/main'
+      inputs.release
       && contains(inputs.necessary_jobs, ';Test against production repo [centos-8/3.2/malloctrim];')
     permissions:
       id-token: write
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ inputs.git_commit }}
+          allow-unsafe-pr-checkout: ${{ inputs.allow_unsafe_pr_checkout }}
       - uses: google-github-actions/auth@7c6bc770dae815cd3e89ee6cdf493a5fab2cc093 # v3
         with:
           project_id: ${{ vars.GCLOUD_PROJECT_ID }}
@@ -529,12 +567,15 @@ jobs:
     environment: test
     timeout-minutes: 30
     if: |
-      github.ref == 'refs/heads/main'
+      inputs.release
       && contains(inputs.necessary_jobs, ';Test against production repo [centos-8/4.0.6/normal];')
     permissions:
       id-token: write
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ inputs.git_commit }}
+          allow-unsafe-pr-checkout: ${{ inputs.allow_unsafe_pr_checkout }}
       - uses: google-github-actions/auth@7c6bc770dae815cd3e89ee6cdf493a5fab2cc093 # v3
         with:
           project_id: ${{ vars.GCLOUD_PROJECT_ID }}
@@ -572,12 +613,15 @@ jobs:
     environment: test
     timeout-minutes: 30
     if: |
-      github.ref == 'refs/heads/main'
+      inputs.release
       && contains(inputs.necessary_jobs, ';Test against production repo [centos-8/4.0.6/jemalloc];')
     permissions:
       id-token: write
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ inputs.git_commit }}
+          allow-unsafe-pr-checkout: ${{ inputs.allow_unsafe_pr_checkout }}
       - uses: google-github-actions/auth@7c6bc770dae815cd3e89ee6cdf493a5fab2cc093 # v3
         with:
           project_id: ${{ vars.GCLOUD_PROJECT_ID }}
@@ -615,12 +659,15 @@ jobs:
     environment: test
     timeout-minutes: 30
     if: |
-      github.ref == 'refs/heads/main'
+      inputs.release
       && contains(inputs.necessary_jobs, ';Test against production repo [centos-8/3.4.10/normal];')
     permissions:
       id-token: write
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ inputs.git_commit }}
+          allow-unsafe-pr-checkout: ${{ inputs.allow_unsafe_pr_checkout }}
       - uses: google-github-actions/auth@7c6bc770dae815cd3e89ee6cdf493a5fab2cc093 # v3
         with:
           project_id: ${{ vars.GCLOUD_PROJECT_ID }}
@@ -658,12 +705,15 @@ jobs:
     environment: test
     timeout-minutes: 30
     if: |
-      github.ref == 'refs/heads/main'
+      inputs.release
       && contains(inputs.necessary_jobs, ';Test against production repo [centos-8/3.4.10/jemalloc];')
     permissions:
       id-token: write
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ inputs.git_commit }}
+          allow-unsafe-pr-checkout: ${{ inputs.allow_unsafe_pr_checkout }}
       - uses: google-github-actions/auth@7c6bc770dae815cd3e89ee6cdf493a5fab2cc093 # v3
         with:
           project_id: ${{ vars.GCLOUD_PROJECT_ID }}
@@ -701,12 +751,15 @@ jobs:
     environment: test
     timeout-minutes: 30
     if: |
-      github.ref == 'refs/heads/main'
+      inputs.release
       && contains(inputs.necessary_jobs, ';Test against production repo [centos-8/3.3.12/normal];')
     permissions:
       id-token: write
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ inputs.git_commit }}
+          allow-unsafe-pr-checkout: ${{ inputs.allow_unsafe_pr_checkout }}
       - uses: google-github-actions/auth@7c6bc770dae815cd3e89ee6cdf493a5fab2cc093 # v3
         with:
           project_id: ${{ vars.GCLOUD_PROJECT_ID }}
@@ -744,12 +797,15 @@ jobs:
     environment: test
     timeout-minutes: 30
     if: |
-      github.ref == 'refs/heads/main'
+      inputs.release
       && contains(inputs.necessary_jobs, ';Test against production repo [centos-8/3.3.12/jemalloc];')
     permissions:
       id-token: write
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ inputs.git_commit }}
+          allow-unsafe-pr-checkout: ${{ inputs.allow_unsafe_pr_checkout }}
       - uses: google-github-actions/auth@7c6bc770dae815cd3e89ee6cdf493a5fab2cc093 # v3
         with:
           project_id: ${{ vars.GCLOUD_PROJECT_ID }}
@@ -787,12 +843,15 @@ jobs:
     environment: test
     timeout-minutes: 30
     if: |
-      github.ref == 'refs/heads/main'
+      inputs.release
       && contains(inputs.necessary_jobs, ';Test against production repo [centos-8/3.2.11/normal];')
     permissions:
       id-token: write
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ inputs.git_commit }}
+          allow-unsafe-pr-checkout: ${{ inputs.allow_unsafe_pr_checkout }}
       - uses: google-github-actions/auth@7c6bc770dae815cd3e89ee6cdf493a5fab2cc093 # v3
         with:
           project_id: ${{ vars.GCLOUD_PROJECT_ID }}
@@ -830,12 +889,15 @@ jobs:
     environment: test
     timeout-minutes: 30
     if: |
-      github.ref == 'refs/heads/main'
+      inputs.release
       && contains(inputs.necessary_jobs, ';Test against production repo [centos-8/3.2.11/jemalloc];')
     permissions:
       id-token: write
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ inputs.git_commit }}
+          allow-unsafe-pr-checkout: ${{ inputs.allow_unsafe_pr_checkout }}
       - uses: google-github-actions/auth@7c6bc770dae815cd3e89ee6cdf493a5fab2cc093 # v3
         with:
           project_id: ${{ vars.GCLOUD_PROJECT_ID }}
@@ -873,12 +935,15 @@ jobs:
     environment: test
     timeout-minutes: 30
     if: |
-      github.ref == 'refs/heads/main'
+      inputs.release
       && contains(inputs.necessary_jobs, ';Test against production repo [centos-8/3.2.11/malloctrim];')
     permissions:
       id-token: write
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ inputs.git_commit }}
+          allow-unsafe-pr-checkout: ${{ inputs.allow_unsafe_pr_checkout }}
       - uses: google-github-actions/auth@7c6bc770dae815cd3e89ee6cdf493a5fab2cc093 # v3
         with:
           project_id: ${{ vars.GCLOUD_PROJECT_ID }}
@@ -917,12 +982,15 @@ jobs:
     environment: test
     timeout-minutes: 30
     if: |
-      github.ref == 'refs/heads/main'
+      inputs.release
       && contains(inputs.necessary_jobs, ';Test against production repo [debian-11/4.0/normal];')
     permissions:
       id-token: write
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ inputs.git_commit }}
+          allow-unsafe-pr-checkout: ${{ inputs.allow_unsafe_pr_checkout }}
       - uses: google-github-actions/auth@7c6bc770dae815cd3e89ee6cdf493a5fab2cc093 # v3
         with:
           project_id: ${{ vars.GCLOUD_PROJECT_ID }}
@@ -960,12 +1028,15 @@ jobs:
     environment: test
     timeout-minutes: 30
     if: |
-      github.ref == 'refs/heads/main'
+      inputs.release
       && contains(inputs.necessary_jobs, ';Test against production repo [debian-11/4.0/jemalloc];')
     permissions:
       id-token: write
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ inputs.git_commit }}
+          allow-unsafe-pr-checkout: ${{ inputs.allow_unsafe_pr_checkout }}
       - uses: google-github-actions/auth@7c6bc770dae815cd3e89ee6cdf493a5fab2cc093 # v3
         with:
           project_id: ${{ vars.GCLOUD_PROJECT_ID }}
@@ -1003,12 +1074,15 @@ jobs:
     environment: test
     timeout-minutes: 30
     if: |
-      github.ref == 'refs/heads/main'
+      inputs.release
       && contains(inputs.necessary_jobs, ';Test against production repo [debian-11/3.4/normal];')
     permissions:
       id-token: write
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ inputs.git_commit }}
+          allow-unsafe-pr-checkout: ${{ inputs.allow_unsafe_pr_checkout }}
       - uses: google-github-actions/auth@7c6bc770dae815cd3e89ee6cdf493a5fab2cc093 # v3
         with:
           project_id: ${{ vars.GCLOUD_PROJECT_ID }}
@@ -1046,12 +1120,15 @@ jobs:
     environment: test
     timeout-minutes: 30
     if: |
-      github.ref == 'refs/heads/main'
+      inputs.release
       && contains(inputs.necessary_jobs, ';Test against production repo [debian-11/3.4/jemalloc];')
     permissions:
       id-token: write
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ inputs.git_commit }}
+          allow-unsafe-pr-checkout: ${{ inputs.allow_unsafe_pr_checkout }}
       - uses: google-github-actions/auth@7c6bc770dae815cd3e89ee6cdf493a5fab2cc093 # v3
         with:
           project_id: ${{ vars.GCLOUD_PROJECT_ID }}
@@ -1089,12 +1166,15 @@ jobs:
     environment: test
     timeout-minutes: 30
     if: |
-      github.ref == 'refs/heads/main'
+      inputs.release
       && contains(inputs.necessary_jobs, ';Test against production repo [debian-11/3.3/normal];')
     permissions:
       id-token: write
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ inputs.git_commit }}
+          allow-unsafe-pr-checkout: ${{ inputs.allow_unsafe_pr_checkout }}
       - uses: google-github-actions/auth@7c6bc770dae815cd3e89ee6cdf493a5fab2cc093 # v3
         with:
           project_id: ${{ vars.GCLOUD_PROJECT_ID }}
@@ -1132,12 +1212,15 @@ jobs:
     environment: test
     timeout-minutes: 30
     if: |
-      github.ref == 'refs/heads/main'
+      inputs.release
       && contains(inputs.necessary_jobs, ';Test against production repo [debian-11/3.3/jemalloc];')
     permissions:
       id-token: write
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ inputs.git_commit }}
+          allow-unsafe-pr-checkout: ${{ inputs.allow_unsafe_pr_checkout }}
       - uses: google-github-actions/auth@7c6bc770dae815cd3e89ee6cdf493a5fab2cc093 # v3
         with:
           project_id: ${{ vars.GCLOUD_PROJECT_ID }}
@@ -1175,12 +1258,15 @@ jobs:
     environment: test
     timeout-minutes: 30
     if: |
-      github.ref == 'refs/heads/main'
+      inputs.release
       && contains(inputs.necessary_jobs, ';Test against production repo [debian-11/3.2/normal];')
     permissions:
       id-token: write
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ inputs.git_commit }}
+          allow-unsafe-pr-checkout: ${{ inputs.allow_unsafe_pr_checkout }}
       - uses: google-github-actions/auth@7c6bc770dae815cd3e89ee6cdf493a5fab2cc093 # v3
         with:
           project_id: ${{ vars.GCLOUD_PROJECT_ID }}
@@ -1218,12 +1304,15 @@ jobs:
     environment: test
     timeout-minutes: 30
     if: |
-      github.ref == 'refs/heads/main'
+      inputs.release
       && contains(inputs.necessary_jobs, ';Test against production repo [debian-11/3.2/jemalloc];')
     permissions:
       id-token: write
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ inputs.git_commit }}
+          allow-unsafe-pr-checkout: ${{ inputs.allow_unsafe_pr_checkout }}
       - uses: google-github-actions/auth@7c6bc770dae815cd3e89ee6cdf493a5fab2cc093 # v3
         with:
           project_id: ${{ vars.GCLOUD_PROJECT_ID }}
@@ -1261,12 +1350,15 @@ jobs:
     environment: test
     timeout-minutes: 30
     if: |
-      github.ref == 'refs/heads/main'
+      inputs.release
       && contains(inputs.necessary_jobs, ';Test against production repo [debian-11/3.2/malloctrim];')
     permissions:
       id-token: write
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ inputs.git_commit }}
+          allow-unsafe-pr-checkout: ${{ inputs.allow_unsafe_pr_checkout }}
       - uses: google-github-actions/auth@7c6bc770dae815cd3e89ee6cdf493a5fab2cc093 # v3
         with:
           project_id: ${{ vars.GCLOUD_PROJECT_ID }}
@@ -1304,12 +1396,15 @@ jobs:
     environment: test
     timeout-minutes: 30
     if: |
-      github.ref == 'refs/heads/main'
+      inputs.release
       && contains(inputs.necessary_jobs, ';Test against production repo [debian-11/4.0.6/normal];')
     permissions:
       id-token: write
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ inputs.git_commit }}
+          allow-unsafe-pr-checkout: ${{ inputs.allow_unsafe_pr_checkout }}
       - uses: google-github-actions/auth@7c6bc770dae815cd3e89ee6cdf493a5fab2cc093 # v3
         with:
           project_id: ${{ vars.GCLOUD_PROJECT_ID }}
@@ -1347,12 +1442,15 @@ jobs:
     environment: test
     timeout-minutes: 30
     if: |
-      github.ref == 'refs/heads/main'
+      inputs.release
       && contains(inputs.necessary_jobs, ';Test against production repo [debian-11/4.0.6/jemalloc];')
     permissions:
       id-token: write
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ inputs.git_commit }}
+          allow-unsafe-pr-checkout: ${{ inputs.allow_unsafe_pr_checkout }}
       - uses: google-github-actions/auth@7c6bc770dae815cd3e89ee6cdf493a5fab2cc093 # v3
         with:
           project_id: ${{ vars.GCLOUD_PROJECT_ID }}
@@ -1390,12 +1488,15 @@ jobs:
     environment: test
     timeout-minutes: 30
     if: |
-      github.ref == 'refs/heads/main'
+      inputs.release
       && contains(inputs.necessary_jobs, ';Test against production repo [debian-11/3.4.10/normal];')
     permissions:
       id-token: write
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ inputs.git_commit }}
+          allow-unsafe-pr-checkout: ${{ inputs.allow_unsafe_pr_checkout }}
       - uses: google-github-actions/auth@7c6bc770dae815cd3e89ee6cdf493a5fab2cc093 # v3
         with:
           project_id: ${{ vars.GCLOUD_PROJECT_ID }}
@@ -1433,12 +1534,15 @@ jobs:
     environment: test
     timeout-minutes: 30
     if: |
-      github.ref == 'refs/heads/main'
+      inputs.release
       && contains(inputs.necessary_jobs, ';Test against production repo [debian-11/3.4.10/jemalloc];')
     permissions:
       id-token: write
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ inputs.git_commit }}
+          allow-unsafe-pr-checkout: ${{ inputs.allow_unsafe_pr_checkout }}
       - uses: google-github-actions/auth@7c6bc770dae815cd3e89ee6cdf493a5fab2cc093 # v3
         with:
           project_id: ${{ vars.GCLOUD_PROJECT_ID }}
@@ -1476,12 +1580,15 @@ jobs:
     environment: test
     timeout-minutes: 30
     if: |
-      github.ref == 'refs/heads/main'
+      inputs.release
       && contains(inputs.necessary_jobs, ';Test against production repo [debian-11/3.3.12/normal];')
     permissions:
       id-token: write
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ inputs.git_commit }}
+          allow-unsafe-pr-checkout: ${{ inputs.allow_unsafe_pr_checkout }}
       - uses: google-github-actions/auth@7c6bc770dae815cd3e89ee6cdf493a5fab2cc093 # v3
         with:
           project_id: ${{ vars.GCLOUD_PROJECT_ID }}
@@ -1519,12 +1626,15 @@ jobs:
     environment: test
     timeout-minutes: 30
     if: |
-      github.ref == 'refs/heads/main'
+      inputs.release
       && contains(inputs.necessary_jobs, ';Test against production repo [debian-11/3.3.12/jemalloc];')
     permissions:
       id-token: write
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ inputs.git_commit }}
+          allow-unsafe-pr-checkout: ${{ inputs.allow_unsafe_pr_checkout }}
       - uses: google-github-actions/auth@7c6bc770dae815cd3e89ee6cdf493a5fab2cc093 # v3
         with:
           project_id: ${{ vars.GCLOUD_PROJECT_ID }}
@@ -1562,12 +1672,15 @@ jobs:
     environment: test
     timeout-minutes: 30
     if: |
-      github.ref == 'refs/heads/main'
+      inputs.release
       && contains(inputs.necessary_jobs, ';Test against production repo [debian-11/3.2.11/normal];')
     permissions:
       id-token: write
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ inputs.git_commit }}
+          allow-unsafe-pr-checkout: ${{ inputs.allow_unsafe_pr_checkout }}
       - uses: google-github-actions/auth@7c6bc770dae815cd3e89ee6cdf493a5fab2cc093 # v3
         with:
           project_id: ${{ vars.GCLOUD_PROJECT_ID }}
@@ -1605,12 +1718,15 @@ jobs:
     environment: test
     timeout-minutes: 30
     if: |
-      github.ref == 'refs/heads/main'
+      inputs.release
       && contains(inputs.necessary_jobs, ';Test against production repo [debian-11/3.2.11/jemalloc];')
     permissions:
       id-token: write
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ inputs.git_commit }}
+          allow-unsafe-pr-checkout: ${{ inputs.allow_unsafe_pr_checkout }}
       - uses: google-github-actions/auth@7c6bc770dae815cd3e89ee6cdf493a5fab2cc093 # v3
         with:
           project_id: ${{ vars.GCLOUD_PROJECT_ID }}
@@ -1648,12 +1764,15 @@ jobs:
     environment: test
     timeout-minutes: 30
     if: |
-      github.ref == 'refs/heads/main'
+      inputs.release
       && contains(inputs.necessary_jobs, ';Test against production repo [debian-11/3.2.11/malloctrim];')
     permissions:
       id-token: write
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ inputs.git_commit }}
+          allow-unsafe-pr-checkout: ${{ inputs.allow_unsafe_pr_checkout }}
       - uses: google-github-actions/auth@7c6bc770dae815cd3e89ee6cdf493a5fab2cc093 # v3
         with:
           project_id: ${{ vars.GCLOUD_PROJECT_ID }}
@@ -1692,12 +1811,15 @@ jobs:
     environment: test
     timeout-minutes: 30
     if: |
-      github.ref == 'refs/heads/main'
+      inputs.release
       && contains(inputs.necessary_jobs, ';Test against production repo [debian-12/4.0/normal];')
     permissions:
       id-token: write
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ inputs.git_commit }}
+          allow-unsafe-pr-checkout: ${{ inputs.allow_unsafe_pr_checkout }}
       - uses: google-github-actions/auth@7c6bc770dae815cd3e89ee6cdf493a5fab2cc093 # v3
         with:
           project_id: ${{ vars.GCLOUD_PROJECT_ID }}
@@ -1735,12 +1857,15 @@ jobs:
     environment: test
     timeout-minutes: 30
     if: |
-      github.ref == 'refs/heads/main'
+      inputs.release
       && contains(inputs.necessary_jobs, ';Test against production repo [debian-12/4.0/jemalloc];')
     permissions:
       id-token: write
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ inputs.git_commit }}
+          allow-unsafe-pr-checkout: ${{ inputs.allow_unsafe_pr_checkout }}
       - uses: google-github-actions/auth@7c6bc770dae815cd3e89ee6cdf493a5fab2cc093 # v3
         with:
           project_id: ${{ vars.GCLOUD_PROJECT_ID }}
@@ -1778,12 +1903,15 @@ jobs:
     environment: test
     timeout-minutes: 30
     if: |
-      github.ref == 'refs/heads/main'
+      inputs.release
       && contains(inputs.necessary_jobs, ';Test against production repo [debian-12/3.4/normal];')
     permissions:
       id-token: write
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ inputs.git_commit }}
+          allow-unsafe-pr-checkout: ${{ inputs.allow_unsafe_pr_checkout }}
       - uses: google-github-actions/auth@7c6bc770dae815cd3e89ee6cdf493a5fab2cc093 # v3
         with:
           project_id: ${{ vars.GCLOUD_PROJECT_ID }}
@@ -1821,12 +1949,15 @@ jobs:
     environment: test
     timeout-minutes: 30
     if: |
-      github.ref == 'refs/heads/main'
+      inputs.release
       && contains(inputs.necessary_jobs, ';Test against production repo [debian-12/3.4/jemalloc];')
     permissions:
       id-token: write
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ inputs.git_commit }}
+          allow-unsafe-pr-checkout: ${{ inputs.allow_unsafe_pr_checkout }}
       - uses: google-github-actions/auth@7c6bc770dae815cd3e89ee6cdf493a5fab2cc093 # v3
         with:
           project_id: ${{ vars.GCLOUD_PROJECT_ID }}
@@ -1864,12 +1995,15 @@ jobs:
     environment: test
     timeout-minutes: 30
     if: |
-      github.ref == 'refs/heads/main'
+      inputs.release
       && contains(inputs.necessary_jobs, ';Test against production repo [debian-12/3.3/normal];')
     permissions:
       id-token: write
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ inputs.git_commit }}
+          allow-unsafe-pr-checkout: ${{ inputs.allow_unsafe_pr_checkout }}
       - uses: google-github-actions/auth@7c6bc770dae815cd3e89ee6cdf493a5fab2cc093 # v3
         with:
           project_id: ${{ vars.GCLOUD_PROJECT_ID }}
@@ -1907,12 +2041,15 @@ jobs:
     environment: test
     timeout-minutes: 30
     if: |
-      github.ref == 'refs/heads/main'
+      inputs.release
       && contains(inputs.necessary_jobs, ';Test against production repo [debian-12/3.3/jemalloc];')
     permissions:
       id-token: write
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ inputs.git_commit }}
+          allow-unsafe-pr-checkout: ${{ inputs.allow_unsafe_pr_checkout }}
       - uses: google-github-actions/auth@7c6bc770dae815cd3e89ee6cdf493a5fab2cc093 # v3
         with:
           project_id: ${{ vars.GCLOUD_PROJECT_ID }}
@@ -1950,12 +2087,15 @@ jobs:
     environment: test
     timeout-minutes: 30
     if: |
-      github.ref == 'refs/heads/main'
+      inputs.release
       && contains(inputs.necessary_jobs, ';Test against production repo [debian-12/3.2/normal];')
     permissions:
       id-token: write
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ inputs.git_commit }}
+          allow-unsafe-pr-checkout: ${{ inputs.allow_unsafe_pr_checkout }}
       - uses: google-github-actions/auth@7c6bc770dae815cd3e89ee6cdf493a5fab2cc093 # v3
         with:
           project_id: ${{ vars.GCLOUD_PROJECT_ID }}
@@ -1993,12 +2133,15 @@ jobs:
     environment: test
     timeout-minutes: 30
     if: |
-      github.ref == 'refs/heads/main'
+      inputs.release
       && contains(inputs.necessary_jobs, ';Test against production repo [debian-12/3.2/jemalloc];')
     permissions:
       id-token: write
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ inputs.git_commit }}
+          allow-unsafe-pr-checkout: ${{ inputs.allow_unsafe_pr_checkout }}
       - uses: google-github-actions/auth@7c6bc770dae815cd3e89ee6cdf493a5fab2cc093 # v3
         with:
           project_id: ${{ vars.GCLOUD_PROJECT_ID }}
@@ -2036,12 +2179,15 @@ jobs:
     environment: test
     timeout-minutes: 30
     if: |
-      github.ref == 'refs/heads/main'
+      inputs.release
       && contains(inputs.necessary_jobs, ';Test against production repo [debian-12/3.2/malloctrim];')
     permissions:
       id-token: write
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ inputs.git_commit }}
+          allow-unsafe-pr-checkout: ${{ inputs.allow_unsafe_pr_checkout }}
       - uses: google-github-actions/auth@7c6bc770dae815cd3e89ee6cdf493a5fab2cc093 # v3
         with:
           project_id: ${{ vars.GCLOUD_PROJECT_ID }}
@@ -2079,12 +2225,15 @@ jobs:
     environment: test
     timeout-minutes: 30
     if: |
-      github.ref == 'refs/heads/main'
+      inputs.release
       && contains(inputs.necessary_jobs, ';Test against production repo [debian-12/4.0.6/normal];')
     permissions:
       id-token: write
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ inputs.git_commit }}
+          allow-unsafe-pr-checkout: ${{ inputs.allow_unsafe_pr_checkout }}
       - uses: google-github-actions/auth@7c6bc770dae815cd3e89ee6cdf493a5fab2cc093 # v3
         with:
           project_id: ${{ vars.GCLOUD_PROJECT_ID }}
@@ -2122,12 +2271,15 @@ jobs:
     environment: test
     timeout-minutes: 30
     if: |
-      github.ref == 'refs/heads/main'
+      inputs.release
       && contains(inputs.necessary_jobs, ';Test against production repo [debian-12/4.0.6/jemalloc];')
     permissions:
       id-token: write
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ inputs.git_commit }}
+          allow-unsafe-pr-checkout: ${{ inputs.allow_unsafe_pr_checkout }}
       - uses: google-github-actions/auth@7c6bc770dae815cd3e89ee6cdf493a5fab2cc093 # v3
         with:
           project_id: ${{ vars.GCLOUD_PROJECT_ID }}
@@ -2165,12 +2317,15 @@ jobs:
     environment: test
     timeout-minutes: 30
     if: |
-      github.ref == 'refs/heads/main'
+      inputs.release
       && contains(inputs.necessary_jobs, ';Test against production repo [debian-12/3.4.10/normal];')
     permissions:
       id-token: write
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ inputs.git_commit }}
+          allow-unsafe-pr-checkout: ${{ inputs.allow_unsafe_pr_checkout }}
       - uses: google-github-actions/auth@7c6bc770dae815cd3e89ee6cdf493a5fab2cc093 # v3
         with:
           project_id: ${{ vars.GCLOUD_PROJECT_ID }}
@@ -2208,12 +2363,15 @@ jobs:
     environment: test
     timeout-minutes: 30
     if: |
-      github.ref == 'refs/heads/main'
+      inputs.release
       && contains(inputs.necessary_jobs, ';Test against production repo [debian-12/3.4.10/jemalloc];')
     permissions:
       id-token: write
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ inputs.git_commit }}
+          allow-unsafe-pr-checkout: ${{ inputs.allow_unsafe_pr_checkout }}
       - uses: google-github-actions/auth@7c6bc770dae815cd3e89ee6cdf493a5fab2cc093 # v3
         with:
           project_id: ${{ vars.GCLOUD_PROJECT_ID }}
@@ -2251,12 +2409,15 @@ jobs:
     environment: test
     timeout-minutes: 30
     if: |
-      github.ref == 'refs/heads/main'
+      inputs.release
       && contains(inputs.necessary_jobs, ';Test against production repo [debian-12/3.3.12/normal];')
     permissions:
       id-token: write
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ inputs.git_commit }}
+          allow-unsafe-pr-checkout: ${{ inputs.allow_unsafe_pr_checkout }}
       - uses: google-github-actions/auth@7c6bc770dae815cd3e89ee6cdf493a5fab2cc093 # v3
         with:
           project_id: ${{ vars.GCLOUD_PROJECT_ID }}
@@ -2294,12 +2455,15 @@ jobs:
     environment: test
     timeout-minutes: 30
     if: |
-      github.ref == 'refs/heads/main'
+      inputs.release
       && contains(inputs.necessary_jobs, ';Test against production repo [debian-12/3.3.12/jemalloc];')
     permissions:
       id-token: write
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ inputs.git_commit }}
+          allow-unsafe-pr-checkout: ${{ inputs.allow_unsafe_pr_checkout }}
       - uses: google-github-actions/auth@7c6bc770dae815cd3e89ee6cdf493a5fab2cc093 # v3
         with:
           project_id: ${{ vars.GCLOUD_PROJECT_ID }}
@@ -2337,12 +2501,15 @@ jobs:
     environment: test
     timeout-minutes: 30
     if: |
-      github.ref == 'refs/heads/main'
+      inputs.release
       && contains(inputs.necessary_jobs, ';Test against production repo [debian-12/3.2.11/normal];')
     permissions:
       id-token: write
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ inputs.git_commit }}
+          allow-unsafe-pr-checkout: ${{ inputs.allow_unsafe_pr_checkout }}
       - uses: google-github-actions/auth@7c6bc770dae815cd3e89ee6cdf493a5fab2cc093 # v3
         with:
           project_id: ${{ vars.GCLOUD_PROJECT_ID }}
@@ -2380,12 +2547,15 @@ jobs:
     environment: test
     timeout-minutes: 30
     if: |
-      github.ref == 'refs/heads/main'
+      inputs.release
       && contains(inputs.necessary_jobs, ';Test against production repo [debian-12/3.2.11/jemalloc];')
     permissions:
       id-token: write
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ inputs.git_commit }}
+          allow-unsafe-pr-checkout: ${{ inputs.allow_unsafe_pr_checkout }}
       - uses: google-github-actions/auth@7c6bc770dae815cd3e89ee6cdf493a5fab2cc093 # v3
         with:
           project_id: ${{ vars.GCLOUD_PROJECT_ID }}
@@ -2423,12 +2593,15 @@ jobs:
     environment: test
     timeout-minutes: 30
     if: |
-      github.ref == 'refs/heads/main'
+      inputs.release
       && contains(inputs.necessary_jobs, ';Test against production repo [debian-12/3.2.11/malloctrim];')
     permissions:
       id-token: write
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ inputs.git_commit }}
+          allow-unsafe-pr-checkout: ${{ inputs.allow_unsafe_pr_checkout }}
       - uses: google-github-actions/auth@7c6bc770dae815cd3e89ee6cdf493a5fab2cc093 # v3
         with:
           project_id: ${{ vars.GCLOUD_PROJECT_ID }}
@@ -2467,12 +2640,15 @@ jobs:
     environment: test
     timeout-minutes: 30
     if: |
-      github.ref == 'refs/heads/main'
+      inputs.release
       && contains(inputs.necessary_jobs, ';Test against production repo [debian-13/4.0/normal];')
     permissions:
       id-token: write
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ inputs.git_commit }}
+          allow-unsafe-pr-checkout: ${{ inputs.allow_unsafe_pr_checkout }}
       - uses: google-github-actions/auth@7c6bc770dae815cd3e89ee6cdf493a5fab2cc093 # v3
         with:
           project_id: ${{ vars.GCLOUD_PROJECT_ID }}
@@ -2510,12 +2686,15 @@ jobs:
     environment: test
     timeout-minutes: 30
     if: |
-      github.ref == 'refs/heads/main'
+      inputs.release
       && contains(inputs.necessary_jobs, ';Test against production repo [debian-13/4.0/jemalloc];')
     permissions:
       id-token: write
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ inputs.git_commit }}
+          allow-unsafe-pr-checkout: ${{ inputs.allow_unsafe_pr_checkout }}
       - uses: google-github-actions/auth@7c6bc770dae815cd3e89ee6cdf493a5fab2cc093 # v3
         with:
           project_id: ${{ vars.GCLOUD_PROJECT_ID }}
@@ -2553,12 +2732,15 @@ jobs:
     environment: test
     timeout-minutes: 30
     if: |
-      github.ref == 'refs/heads/main'
+      inputs.release
       && contains(inputs.necessary_jobs, ';Test against production repo [debian-13/3.4/normal];')
     permissions:
       id-token: write
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ inputs.git_commit }}
+          allow-unsafe-pr-checkout: ${{ inputs.allow_unsafe_pr_checkout }}
       - uses: google-github-actions/auth@7c6bc770dae815cd3e89ee6cdf493a5fab2cc093 # v3
         with:
           project_id: ${{ vars.GCLOUD_PROJECT_ID }}
@@ -2596,12 +2778,15 @@ jobs:
     environment: test
     timeout-minutes: 30
     if: |
-      github.ref == 'refs/heads/main'
+      inputs.release
       && contains(inputs.necessary_jobs, ';Test against production repo [debian-13/3.4/jemalloc];')
     permissions:
       id-token: write
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ inputs.git_commit }}
+          allow-unsafe-pr-checkout: ${{ inputs.allow_unsafe_pr_checkout }}
       - uses: google-github-actions/auth@7c6bc770dae815cd3e89ee6cdf493a5fab2cc093 # v3
         with:
           project_id: ${{ vars.GCLOUD_PROJECT_ID }}
@@ -2639,12 +2824,15 @@ jobs:
     environment: test
     timeout-minutes: 30
     if: |
-      github.ref == 'refs/heads/main'
+      inputs.release
       && contains(inputs.necessary_jobs, ';Test against production repo [debian-13/3.3/normal];')
     permissions:
       id-token: write
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ inputs.git_commit }}
+          allow-unsafe-pr-checkout: ${{ inputs.allow_unsafe_pr_checkout }}
       - uses: google-github-actions/auth@7c6bc770dae815cd3e89ee6cdf493a5fab2cc093 # v3
         with:
           project_id: ${{ vars.GCLOUD_PROJECT_ID }}
@@ -2682,12 +2870,15 @@ jobs:
     environment: test
     timeout-minutes: 30
     if: |
-      github.ref == 'refs/heads/main'
+      inputs.release
       && contains(inputs.necessary_jobs, ';Test against production repo [debian-13/3.3/jemalloc];')
     permissions:
       id-token: write
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ inputs.git_commit }}
+          allow-unsafe-pr-checkout: ${{ inputs.allow_unsafe_pr_checkout }}
       - uses: google-github-actions/auth@7c6bc770dae815cd3e89ee6cdf493a5fab2cc093 # v3
         with:
           project_id: ${{ vars.GCLOUD_PROJECT_ID }}
@@ -2725,12 +2916,15 @@ jobs:
     environment: test
     timeout-minutes: 30
     if: |
-      github.ref == 'refs/heads/main'
+      inputs.release
       && contains(inputs.necessary_jobs, ';Test against production repo [debian-13/4.0.6/normal];')
     permissions:
       id-token: write
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ inputs.git_commit }}
+          allow-unsafe-pr-checkout: ${{ inputs.allow_unsafe_pr_checkout }}
       - uses: google-github-actions/auth@7c6bc770dae815cd3e89ee6cdf493a5fab2cc093 # v3
         with:
           project_id: ${{ vars.GCLOUD_PROJECT_ID }}
@@ -2768,12 +2962,15 @@ jobs:
     environment: test
     timeout-minutes: 30
     if: |
-      github.ref == 'refs/heads/main'
+      inputs.release
       && contains(inputs.necessary_jobs, ';Test against production repo [debian-13/4.0.6/jemalloc];')
     permissions:
       id-token: write
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ inputs.git_commit }}
+          allow-unsafe-pr-checkout: ${{ inputs.allow_unsafe_pr_checkout }}
       - uses: google-github-actions/auth@7c6bc770dae815cd3e89ee6cdf493a5fab2cc093 # v3
         with:
           project_id: ${{ vars.GCLOUD_PROJECT_ID }}
@@ -2811,12 +3008,15 @@ jobs:
     environment: test
     timeout-minutes: 30
     if: |
-      github.ref == 'refs/heads/main'
+      inputs.release
       && contains(inputs.necessary_jobs, ';Test against production repo [debian-13/3.4.10/normal];')
     permissions:
       id-token: write
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ inputs.git_commit }}
+          allow-unsafe-pr-checkout: ${{ inputs.allow_unsafe_pr_checkout }}
       - uses: google-github-actions/auth@7c6bc770dae815cd3e89ee6cdf493a5fab2cc093 # v3
         with:
           project_id: ${{ vars.GCLOUD_PROJECT_ID }}
@@ -2854,12 +3054,15 @@ jobs:
     environment: test
     timeout-minutes: 30
     if: |
-      github.ref == 'refs/heads/main'
+      inputs.release
       && contains(inputs.necessary_jobs, ';Test against production repo [debian-13/3.4.10/jemalloc];')
     permissions:
       id-token: write
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ inputs.git_commit }}
+          allow-unsafe-pr-checkout: ${{ inputs.allow_unsafe_pr_checkout }}
       - uses: google-github-actions/auth@7c6bc770dae815cd3e89ee6cdf493a5fab2cc093 # v3
         with:
           project_id: ${{ vars.GCLOUD_PROJECT_ID }}
@@ -2897,12 +3100,15 @@ jobs:
     environment: test
     timeout-minutes: 30
     if: |
-      github.ref == 'refs/heads/main'
+      inputs.release
       && contains(inputs.necessary_jobs, ';Test against production repo [debian-13/3.3.12/normal];')
     permissions:
       id-token: write
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ inputs.git_commit }}
+          allow-unsafe-pr-checkout: ${{ inputs.allow_unsafe_pr_checkout }}
       - uses: google-github-actions/auth@7c6bc770dae815cd3e89ee6cdf493a5fab2cc093 # v3
         with:
           project_id: ${{ vars.GCLOUD_PROJECT_ID }}
@@ -2940,12 +3146,15 @@ jobs:
     environment: test
     timeout-minutes: 30
     if: |
-      github.ref == 'refs/heads/main'
+      inputs.release
       && contains(inputs.necessary_jobs, ';Test against production repo [debian-13/3.3.12/jemalloc];')
     permissions:
       id-token: write
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ inputs.git_commit }}
+          allow-unsafe-pr-checkout: ${{ inputs.allow_unsafe_pr_checkout }}
       - uses: google-github-actions/auth@7c6bc770dae815cd3e89ee6cdf493a5fab2cc093 # v3
         with:
           project_id: ${{ vars.GCLOUD_PROJECT_ID }}
@@ -2984,12 +3193,15 @@ jobs:
     environment: test
     timeout-minutes: 30
     if: |
-      github.ref == 'refs/heads/main'
+      inputs.release
       && contains(inputs.necessary_jobs, ';Test against production repo [el-9/4.0/normal];')
     permissions:
       id-token: write
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ inputs.git_commit }}
+          allow-unsafe-pr-checkout: ${{ inputs.allow_unsafe_pr_checkout }}
       - uses: google-github-actions/auth@7c6bc770dae815cd3e89ee6cdf493a5fab2cc093 # v3
         with:
           project_id: ${{ vars.GCLOUD_PROJECT_ID }}
@@ -3027,12 +3239,15 @@ jobs:
     environment: test
     timeout-minutes: 30
     if: |
-      github.ref == 'refs/heads/main'
+      inputs.release
       && contains(inputs.necessary_jobs, ';Test against production repo [el-9/4.0/jemalloc];')
     permissions:
       id-token: write
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ inputs.git_commit }}
+          allow-unsafe-pr-checkout: ${{ inputs.allow_unsafe_pr_checkout }}
       - uses: google-github-actions/auth@7c6bc770dae815cd3e89ee6cdf493a5fab2cc093 # v3
         with:
           project_id: ${{ vars.GCLOUD_PROJECT_ID }}
@@ -3070,12 +3285,15 @@ jobs:
     environment: test
     timeout-minutes: 30
     if: |
-      github.ref == 'refs/heads/main'
+      inputs.release
       && contains(inputs.necessary_jobs, ';Test against production repo [el-9/3.4/normal];')
     permissions:
       id-token: write
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ inputs.git_commit }}
+          allow-unsafe-pr-checkout: ${{ inputs.allow_unsafe_pr_checkout }}
       - uses: google-github-actions/auth@7c6bc770dae815cd3e89ee6cdf493a5fab2cc093 # v3
         with:
           project_id: ${{ vars.GCLOUD_PROJECT_ID }}
@@ -3113,12 +3331,15 @@ jobs:
     environment: test
     timeout-minutes: 30
     if: |
-      github.ref == 'refs/heads/main'
+      inputs.release
       && contains(inputs.necessary_jobs, ';Test against production repo [el-9/3.4/jemalloc];')
     permissions:
       id-token: write
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ inputs.git_commit }}
+          allow-unsafe-pr-checkout: ${{ inputs.allow_unsafe_pr_checkout }}
       - uses: google-github-actions/auth@7c6bc770dae815cd3e89ee6cdf493a5fab2cc093 # v3
         with:
           project_id: ${{ vars.GCLOUD_PROJECT_ID }}
@@ -3156,12 +3377,15 @@ jobs:
     environment: test
     timeout-minutes: 30
     if: |
-      github.ref == 'refs/heads/main'
+      inputs.release
       && contains(inputs.necessary_jobs, ';Test against production repo [el-9/3.3/normal];')
     permissions:
       id-token: write
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ inputs.git_commit }}
+          allow-unsafe-pr-checkout: ${{ inputs.allow_unsafe_pr_checkout }}
       - uses: google-github-actions/auth@7c6bc770dae815cd3e89ee6cdf493a5fab2cc093 # v3
         with:
           project_id: ${{ vars.GCLOUD_PROJECT_ID }}
@@ -3199,12 +3423,15 @@ jobs:
     environment: test
     timeout-minutes: 30
     if: |
-      github.ref == 'refs/heads/main'
+      inputs.release
       && contains(inputs.necessary_jobs, ';Test against production repo [el-9/3.3/jemalloc];')
     permissions:
       id-token: write
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ inputs.git_commit }}
+          allow-unsafe-pr-checkout: ${{ inputs.allow_unsafe_pr_checkout }}
       - uses: google-github-actions/auth@7c6bc770dae815cd3e89ee6cdf493a5fab2cc093 # v3
         with:
           project_id: ${{ vars.GCLOUD_PROJECT_ID }}
@@ -3242,12 +3469,15 @@ jobs:
     environment: test
     timeout-minutes: 30
     if: |
-      github.ref == 'refs/heads/main'
+      inputs.release
       && contains(inputs.necessary_jobs, ';Test against production repo [el-9/3.2/normal];')
     permissions:
       id-token: write
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ inputs.git_commit }}
+          allow-unsafe-pr-checkout: ${{ inputs.allow_unsafe_pr_checkout }}
       - uses: google-github-actions/auth@7c6bc770dae815cd3e89ee6cdf493a5fab2cc093 # v3
         with:
           project_id: ${{ vars.GCLOUD_PROJECT_ID }}
@@ -3285,12 +3515,15 @@ jobs:
     environment: test
     timeout-minutes: 30
     if: |
-      github.ref == 'refs/heads/main'
+      inputs.release
       && contains(inputs.necessary_jobs, ';Test against production repo [el-9/3.2/jemalloc];')
     permissions:
       id-token: write
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ inputs.git_commit }}
+          allow-unsafe-pr-checkout: ${{ inputs.allow_unsafe_pr_checkout }}
       - uses: google-github-actions/auth@7c6bc770dae815cd3e89ee6cdf493a5fab2cc093 # v3
         with:
           project_id: ${{ vars.GCLOUD_PROJECT_ID }}
@@ -3328,12 +3561,15 @@ jobs:
     environment: test
     timeout-minutes: 30
     if: |
-      github.ref == 'refs/heads/main'
+      inputs.release
       && contains(inputs.necessary_jobs, ';Test against production repo [el-9/3.2/malloctrim];')
     permissions:
       id-token: write
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ inputs.git_commit }}
+          allow-unsafe-pr-checkout: ${{ inputs.allow_unsafe_pr_checkout }}
       - uses: google-github-actions/auth@7c6bc770dae815cd3e89ee6cdf493a5fab2cc093 # v3
         with:
           project_id: ${{ vars.GCLOUD_PROJECT_ID }}
@@ -3371,12 +3607,15 @@ jobs:
     environment: test
     timeout-minutes: 30
     if: |
-      github.ref == 'refs/heads/main'
+      inputs.release
       && contains(inputs.necessary_jobs, ';Test against production repo [el-9/4.0.6/normal];')
     permissions:
       id-token: write
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ inputs.git_commit }}
+          allow-unsafe-pr-checkout: ${{ inputs.allow_unsafe_pr_checkout }}
       - uses: google-github-actions/auth@7c6bc770dae815cd3e89ee6cdf493a5fab2cc093 # v3
         with:
           project_id: ${{ vars.GCLOUD_PROJECT_ID }}
@@ -3414,12 +3653,15 @@ jobs:
     environment: test
     timeout-minutes: 30
     if: |
-      github.ref == 'refs/heads/main'
+      inputs.release
       && contains(inputs.necessary_jobs, ';Test against production repo [el-9/4.0.6/jemalloc];')
     permissions:
       id-token: write
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ inputs.git_commit }}
+          allow-unsafe-pr-checkout: ${{ inputs.allow_unsafe_pr_checkout }}
       - uses: google-github-actions/auth@7c6bc770dae815cd3e89ee6cdf493a5fab2cc093 # v3
         with:
           project_id: ${{ vars.GCLOUD_PROJECT_ID }}
@@ -3457,12 +3699,15 @@ jobs:
     environment: test
     timeout-minutes: 30
     if: |
-      github.ref == 'refs/heads/main'
+      inputs.release
       && contains(inputs.necessary_jobs, ';Test against production repo [el-9/3.4.10/normal];')
     permissions:
       id-token: write
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ inputs.git_commit }}
+          allow-unsafe-pr-checkout: ${{ inputs.allow_unsafe_pr_checkout }}
       - uses: google-github-actions/auth@7c6bc770dae815cd3e89ee6cdf493a5fab2cc093 # v3
         with:
           project_id: ${{ vars.GCLOUD_PROJECT_ID }}
@@ -3500,12 +3745,15 @@ jobs:
     environment: test
     timeout-minutes: 30
     if: |
-      github.ref == 'refs/heads/main'
+      inputs.release
       && contains(inputs.necessary_jobs, ';Test against production repo [el-9/3.4.10/jemalloc];')
     permissions:
       id-token: write
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ inputs.git_commit }}
+          allow-unsafe-pr-checkout: ${{ inputs.allow_unsafe_pr_checkout }}
       - uses: google-github-actions/auth@7c6bc770dae815cd3e89ee6cdf493a5fab2cc093 # v3
         with:
           project_id: ${{ vars.GCLOUD_PROJECT_ID }}
@@ -3543,12 +3791,15 @@ jobs:
     environment: test
     timeout-minutes: 30
     if: |
-      github.ref == 'refs/heads/main'
+      inputs.release
       && contains(inputs.necessary_jobs, ';Test against production repo [el-9/3.3.12/normal];')
     permissions:
       id-token: write
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ inputs.git_commit }}
+          allow-unsafe-pr-checkout: ${{ inputs.allow_unsafe_pr_checkout }}
       - uses: google-github-actions/auth@7c6bc770dae815cd3e89ee6cdf493a5fab2cc093 # v3
         with:
           project_id: ${{ vars.GCLOUD_PROJECT_ID }}
@@ -3586,12 +3837,15 @@ jobs:
     environment: test
     timeout-minutes: 30
     if: |
-      github.ref == 'refs/heads/main'
+      inputs.release
       && contains(inputs.necessary_jobs, ';Test against production repo [el-9/3.3.12/jemalloc];')
     permissions:
       id-token: write
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ inputs.git_commit }}
+          allow-unsafe-pr-checkout: ${{ inputs.allow_unsafe_pr_checkout }}
       - uses: google-github-actions/auth@7c6bc770dae815cd3e89ee6cdf493a5fab2cc093 # v3
         with:
           project_id: ${{ vars.GCLOUD_PROJECT_ID }}
@@ -3629,12 +3883,15 @@ jobs:
     environment: test
     timeout-minutes: 30
     if: |
-      github.ref == 'refs/heads/main'
+      inputs.release
       && contains(inputs.necessary_jobs, ';Test against production repo [el-9/3.2.11/normal];')
     permissions:
       id-token: write
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ inputs.git_commit }}
+          allow-unsafe-pr-checkout: ${{ inputs.allow_unsafe_pr_checkout }}
       - uses: google-github-actions/auth@7c6bc770dae815cd3e89ee6cdf493a5fab2cc093 # v3
         with:
           project_id: ${{ vars.GCLOUD_PROJECT_ID }}
@@ -3672,12 +3929,15 @@ jobs:
     environment: test
     timeout-minutes: 30
     if: |
-      github.ref == 'refs/heads/main'
+      inputs.release
       && contains(inputs.necessary_jobs, ';Test against production repo [el-9/3.2.11/jemalloc];')
     permissions:
       id-token: write
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ inputs.git_commit }}
+          allow-unsafe-pr-checkout: ${{ inputs.allow_unsafe_pr_checkout }}
       - uses: google-github-actions/auth@7c6bc770dae815cd3e89ee6cdf493a5fab2cc093 # v3
         with:
           project_id: ${{ vars.GCLOUD_PROJECT_ID }}
@@ -3715,12 +3975,15 @@ jobs:
     environment: test
     timeout-minutes: 30
     if: |
-      github.ref == 'refs/heads/main'
+      inputs.release
       && contains(inputs.necessary_jobs, ';Test against production repo [el-9/3.2.11/malloctrim];')
     permissions:
       id-token: write
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ inputs.git_commit }}
+          allow-unsafe-pr-checkout: ${{ inputs.allow_unsafe_pr_checkout }}
       - uses: google-github-actions/auth@7c6bc770dae815cd3e89ee6cdf493a5fab2cc093 # v3
         with:
           project_id: ${{ vars.GCLOUD_PROJECT_ID }}
@@ -3759,12 +4022,15 @@ jobs:
     environment: test
     timeout-minutes: 30
     if: |
-      github.ref == 'refs/heads/main'
+      inputs.release
       && contains(inputs.necessary_jobs, ';Test against production repo [ubuntu-22.04/4.0/normal];')
     permissions:
       id-token: write
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ inputs.git_commit }}
+          allow-unsafe-pr-checkout: ${{ inputs.allow_unsafe_pr_checkout }}
       - uses: google-github-actions/auth@7c6bc770dae815cd3e89ee6cdf493a5fab2cc093 # v3
         with:
           project_id: ${{ vars.GCLOUD_PROJECT_ID }}
@@ -3802,12 +4068,15 @@ jobs:
     environment: test
     timeout-minutes: 30
     if: |
-      github.ref == 'refs/heads/main'
+      inputs.release
       && contains(inputs.necessary_jobs, ';Test against production repo [ubuntu-22.04/4.0/jemalloc];')
     permissions:
       id-token: write
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ inputs.git_commit }}
+          allow-unsafe-pr-checkout: ${{ inputs.allow_unsafe_pr_checkout }}
       - uses: google-github-actions/auth@7c6bc770dae815cd3e89ee6cdf493a5fab2cc093 # v3
         with:
           project_id: ${{ vars.GCLOUD_PROJECT_ID }}
@@ -3845,12 +4114,15 @@ jobs:
     environment: test
     timeout-minutes: 30
     if: |
-      github.ref == 'refs/heads/main'
+      inputs.release
       && contains(inputs.necessary_jobs, ';Test against production repo [ubuntu-22.04/3.4/normal];')
     permissions:
       id-token: write
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ inputs.git_commit }}
+          allow-unsafe-pr-checkout: ${{ inputs.allow_unsafe_pr_checkout }}
       - uses: google-github-actions/auth@7c6bc770dae815cd3e89ee6cdf493a5fab2cc093 # v3
         with:
           project_id: ${{ vars.GCLOUD_PROJECT_ID }}
@@ -3888,12 +4160,15 @@ jobs:
     environment: test
     timeout-minutes: 30
     if: |
-      github.ref == 'refs/heads/main'
+      inputs.release
       && contains(inputs.necessary_jobs, ';Test against production repo [ubuntu-22.04/3.4/jemalloc];')
     permissions:
       id-token: write
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ inputs.git_commit }}
+          allow-unsafe-pr-checkout: ${{ inputs.allow_unsafe_pr_checkout }}
       - uses: google-github-actions/auth@7c6bc770dae815cd3e89ee6cdf493a5fab2cc093 # v3
         with:
           project_id: ${{ vars.GCLOUD_PROJECT_ID }}
@@ -3931,12 +4206,15 @@ jobs:
     environment: test
     timeout-minutes: 30
     if: |
-      github.ref == 'refs/heads/main'
+      inputs.release
       && contains(inputs.necessary_jobs, ';Test against production repo [ubuntu-22.04/3.3/normal];')
     permissions:
       id-token: write
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ inputs.git_commit }}
+          allow-unsafe-pr-checkout: ${{ inputs.allow_unsafe_pr_checkout }}
       - uses: google-github-actions/auth@7c6bc770dae815cd3e89ee6cdf493a5fab2cc093 # v3
         with:
           project_id: ${{ vars.GCLOUD_PROJECT_ID }}
@@ -3974,12 +4252,15 @@ jobs:
     environment: test
     timeout-minutes: 30
     if: |
-      github.ref == 'refs/heads/main'
+      inputs.release
       && contains(inputs.necessary_jobs, ';Test against production repo [ubuntu-22.04/3.3/jemalloc];')
     permissions:
       id-token: write
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ inputs.git_commit }}
+          allow-unsafe-pr-checkout: ${{ inputs.allow_unsafe_pr_checkout }}
       - uses: google-github-actions/auth@7c6bc770dae815cd3e89ee6cdf493a5fab2cc093 # v3
         with:
           project_id: ${{ vars.GCLOUD_PROJECT_ID }}
@@ -4017,12 +4298,15 @@ jobs:
     environment: test
     timeout-minutes: 30
     if: |
-      github.ref == 'refs/heads/main'
+      inputs.release
       && contains(inputs.necessary_jobs, ';Test against production repo [ubuntu-22.04/3.2/normal];')
     permissions:
       id-token: write
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ inputs.git_commit }}
+          allow-unsafe-pr-checkout: ${{ inputs.allow_unsafe_pr_checkout }}
       - uses: google-github-actions/auth@7c6bc770dae815cd3e89ee6cdf493a5fab2cc093 # v3
         with:
           project_id: ${{ vars.GCLOUD_PROJECT_ID }}
@@ -4060,12 +4344,15 @@ jobs:
     environment: test
     timeout-minutes: 30
     if: |
-      github.ref == 'refs/heads/main'
+      inputs.release
       && contains(inputs.necessary_jobs, ';Test against production repo [ubuntu-22.04/3.2/jemalloc];')
     permissions:
       id-token: write
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ inputs.git_commit }}
+          allow-unsafe-pr-checkout: ${{ inputs.allow_unsafe_pr_checkout }}
       - uses: google-github-actions/auth@7c6bc770dae815cd3e89ee6cdf493a5fab2cc093 # v3
         with:
           project_id: ${{ vars.GCLOUD_PROJECT_ID }}
@@ -4103,12 +4390,15 @@ jobs:
     environment: test
     timeout-minutes: 30
     if: |
-      github.ref == 'refs/heads/main'
+      inputs.release
       && contains(inputs.necessary_jobs, ';Test against production repo [ubuntu-22.04/3.2/malloctrim];')
     permissions:
       id-token: write
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ inputs.git_commit }}
+          allow-unsafe-pr-checkout: ${{ inputs.allow_unsafe_pr_checkout }}
       - uses: google-github-actions/auth@7c6bc770dae815cd3e89ee6cdf493a5fab2cc093 # v3
         with:
           project_id: ${{ vars.GCLOUD_PROJECT_ID }}
@@ -4146,12 +4436,15 @@ jobs:
     environment: test
     timeout-minutes: 30
     if: |
-      github.ref == 'refs/heads/main'
+      inputs.release
       && contains(inputs.necessary_jobs, ';Test against production repo [ubuntu-22.04/4.0.6/normal];')
     permissions:
       id-token: write
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ inputs.git_commit }}
+          allow-unsafe-pr-checkout: ${{ inputs.allow_unsafe_pr_checkout }}
       - uses: google-github-actions/auth@7c6bc770dae815cd3e89ee6cdf493a5fab2cc093 # v3
         with:
           project_id: ${{ vars.GCLOUD_PROJECT_ID }}
@@ -4189,12 +4482,15 @@ jobs:
     environment: test
     timeout-minutes: 30
     if: |
-      github.ref == 'refs/heads/main'
+      inputs.release
       && contains(inputs.necessary_jobs, ';Test against production repo [ubuntu-22.04/4.0.6/jemalloc];')
     permissions:
       id-token: write
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ inputs.git_commit }}
+          allow-unsafe-pr-checkout: ${{ inputs.allow_unsafe_pr_checkout }}
       - uses: google-github-actions/auth@7c6bc770dae815cd3e89ee6cdf493a5fab2cc093 # v3
         with:
           project_id: ${{ vars.GCLOUD_PROJECT_ID }}
@@ -4232,12 +4528,15 @@ jobs:
     environment: test
     timeout-minutes: 30
     if: |
-      github.ref == 'refs/heads/main'
+      inputs.release
       && contains(inputs.necessary_jobs, ';Test against production repo [ubuntu-22.04/3.4.10/normal];')
     permissions:
       id-token: write
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ inputs.git_commit }}
+          allow-unsafe-pr-checkout: ${{ inputs.allow_unsafe_pr_checkout }}
       - uses: google-github-actions/auth@7c6bc770dae815cd3e89ee6cdf493a5fab2cc093 # v3
         with:
           project_id: ${{ vars.GCLOUD_PROJECT_ID }}
@@ -4275,12 +4574,15 @@ jobs:
     environment: test
     timeout-minutes: 30
     if: |
-      github.ref == 'refs/heads/main'
+      inputs.release
       && contains(inputs.necessary_jobs, ';Test against production repo [ubuntu-22.04/3.4.10/jemalloc];')
     permissions:
       id-token: write
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ inputs.git_commit }}
+          allow-unsafe-pr-checkout: ${{ inputs.allow_unsafe_pr_checkout }}
       - uses: google-github-actions/auth@7c6bc770dae815cd3e89ee6cdf493a5fab2cc093 # v3
         with:
           project_id: ${{ vars.GCLOUD_PROJECT_ID }}
@@ -4318,12 +4620,15 @@ jobs:
     environment: test
     timeout-minutes: 30
     if: |
-      github.ref == 'refs/heads/main'
+      inputs.release
       && contains(inputs.necessary_jobs, ';Test against production repo [ubuntu-22.04/3.3.12/normal];')
     permissions:
       id-token: write
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ inputs.git_commit }}
+          allow-unsafe-pr-checkout: ${{ inputs.allow_unsafe_pr_checkout }}
       - uses: google-github-actions/auth@7c6bc770dae815cd3e89ee6cdf493a5fab2cc093 # v3
         with:
           project_id: ${{ vars.GCLOUD_PROJECT_ID }}
@@ -4361,12 +4666,15 @@ jobs:
     environment: test
     timeout-minutes: 30
     if: |
-      github.ref == 'refs/heads/main'
+      inputs.release
       && contains(inputs.necessary_jobs, ';Test against production repo [ubuntu-22.04/3.3.12/jemalloc];')
     permissions:
       id-token: write
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ inputs.git_commit }}
+          allow-unsafe-pr-checkout: ${{ inputs.allow_unsafe_pr_checkout }}
       - uses: google-github-actions/auth@7c6bc770dae815cd3e89ee6cdf493a5fab2cc093 # v3
         with:
           project_id: ${{ vars.GCLOUD_PROJECT_ID }}
@@ -4404,12 +4712,15 @@ jobs:
     environment: test
     timeout-minutes: 30
     if: |
-      github.ref == 'refs/heads/main'
+      inputs.release
       && contains(inputs.necessary_jobs, ';Test against production repo [ubuntu-22.04/3.2.11/normal];')
     permissions:
       id-token: write
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ inputs.git_commit }}
+          allow-unsafe-pr-checkout: ${{ inputs.allow_unsafe_pr_checkout }}
       - uses: google-github-actions/auth@7c6bc770dae815cd3e89ee6cdf493a5fab2cc093 # v3
         with:
           project_id: ${{ vars.GCLOUD_PROJECT_ID }}
@@ -4447,12 +4758,15 @@ jobs:
     environment: test
     timeout-minutes: 30
     if: |
-      github.ref == 'refs/heads/main'
+      inputs.release
       && contains(inputs.necessary_jobs, ';Test against production repo [ubuntu-22.04/3.2.11/jemalloc];')
     permissions:
       id-token: write
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ inputs.git_commit }}
+          allow-unsafe-pr-checkout: ${{ inputs.allow_unsafe_pr_checkout }}
       - uses: google-github-actions/auth@7c6bc770dae815cd3e89ee6cdf493a5fab2cc093 # v3
         with:
           project_id: ${{ vars.GCLOUD_PROJECT_ID }}
@@ -4490,12 +4804,15 @@ jobs:
     environment: test
     timeout-minutes: 30
     if: |
-      github.ref == 'refs/heads/main'
+      inputs.release
       && contains(inputs.necessary_jobs, ';Test against production repo [ubuntu-22.04/3.2.11/malloctrim];')
     permissions:
       id-token: write
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ inputs.git_commit }}
+          allow-unsafe-pr-checkout: ${{ inputs.allow_unsafe_pr_checkout }}
       - uses: google-github-actions/auth@7c6bc770dae815cd3e89ee6cdf493a5fab2cc093 # v3
         with:
           project_id: ${{ vars.GCLOUD_PROJECT_ID }}
@@ -4534,12 +4851,15 @@ jobs:
     environment: test
     timeout-minutes: 30
     if: |
-      github.ref == 'refs/heads/main'
+      inputs.release
       && contains(inputs.necessary_jobs, ';Test against production repo [ubuntu-24.04/4.0/normal];')
     permissions:
       id-token: write
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ inputs.git_commit }}
+          allow-unsafe-pr-checkout: ${{ inputs.allow_unsafe_pr_checkout }}
       - uses: google-github-actions/auth@7c6bc770dae815cd3e89ee6cdf493a5fab2cc093 # v3
         with:
           project_id: ${{ vars.GCLOUD_PROJECT_ID }}
@@ -4577,12 +4897,15 @@ jobs:
     environment: test
     timeout-minutes: 30
     if: |
-      github.ref == 'refs/heads/main'
+      inputs.release
       && contains(inputs.necessary_jobs, ';Test against production repo [ubuntu-24.04/4.0/jemalloc];')
     permissions:
       id-token: write
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ inputs.git_commit }}
+          allow-unsafe-pr-checkout: ${{ inputs.allow_unsafe_pr_checkout }}
       - uses: google-github-actions/auth@7c6bc770dae815cd3e89ee6cdf493a5fab2cc093 # v3
         with:
           project_id: ${{ vars.GCLOUD_PROJECT_ID }}
@@ -4620,12 +4943,15 @@ jobs:
     environment: test
     timeout-minutes: 30
     if: |
-      github.ref == 'refs/heads/main'
+      inputs.release
       && contains(inputs.necessary_jobs, ';Test against production repo [ubuntu-24.04/3.4/normal];')
     permissions:
       id-token: write
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ inputs.git_commit }}
+          allow-unsafe-pr-checkout: ${{ inputs.allow_unsafe_pr_checkout }}
       - uses: google-github-actions/auth@7c6bc770dae815cd3e89ee6cdf493a5fab2cc093 # v3
         with:
           project_id: ${{ vars.GCLOUD_PROJECT_ID }}
@@ -4663,12 +4989,15 @@ jobs:
     environment: test
     timeout-minutes: 30
     if: |
-      github.ref == 'refs/heads/main'
+      inputs.release
       && contains(inputs.necessary_jobs, ';Test against production repo [ubuntu-24.04/3.4/jemalloc];')
     permissions:
       id-token: write
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ inputs.git_commit }}
+          allow-unsafe-pr-checkout: ${{ inputs.allow_unsafe_pr_checkout }}
       - uses: google-github-actions/auth@7c6bc770dae815cd3e89ee6cdf493a5fab2cc093 # v3
         with:
           project_id: ${{ vars.GCLOUD_PROJECT_ID }}
@@ -4706,12 +5035,15 @@ jobs:
     environment: test
     timeout-minutes: 30
     if: |
-      github.ref == 'refs/heads/main'
+      inputs.release
       && contains(inputs.necessary_jobs, ';Test against production repo [ubuntu-24.04/3.3/normal];')
     permissions:
       id-token: write
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ inputs.git_commit }}
+          allow-unsafe-pr-checkout: ${{ inputs.allow_unsafe_pr_checkout }}
       - uses: google-github-actions/auth@7c6bc770dae815cd3e89ee6cdf493a5fab2cc093 # v3
         with:
           project_id: ${{ vars.GCLOUD_PROJECT_ID }}
@@ -4749,12 +5081,15 @@ jobs:
     environment: test
     timeout-minutes: 30
     if: |
-      github.ref == 'refs/heads/main'
+      inputs.release
       && contains(inputs.necessary_jobs, ';Test against production repo [ubuntu-24.04/3.3/jemalloc];')
     permissions:
       id-token: write
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ inputs.git_commit }}
+          allow-unsafe-pr-checkout: ${{ inputs.allow_unsafe_pr_checkout }}
       - uses: google-github-actions/auth@7c6bc770dae815cd3e89ee6cdf493a5fab2cc093 # v3
         with:
           project_id: ${{ vars.GCLOUD_PROJECT_ID }}
@@ -4792,12 +5127,15 @@ jobs:
     environment: test
     timeout-minutes: 30
     if: |
-      github.ref == 'refs/heads/main'
+      inputs.release
       && contains(inputs.necessary_jobs, ';Test against production repo [ubuntu-24.04/3.2/normal];')
     permissions:
       id-token: write
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ inputs.git_commit }}
+          allow-unsafe-pr-checkout: ${{ inputs.allow_unsafe_pr_checkout }}
       - uses: google-github-actions/auth@7c6bc770dae815cd3e89ee6cdf493a5fab2cc093 # v3
         with:
           project_id: ${{ vars.GCLOUD_PROJECT_ID }}
@@ -4835,12 +5173,15 @@ jobs:
     environment: test
     timeout-minutes: 30
     if: |
-      github.ref == 'refs/heads/main'
+      inputs.release
       && contains(inputs.necessary_jobs, ';Test against production repo [ubuntu-24.04/3.2/jemalloc];')
     permissions:
       id-token: write
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ inputs.git_commit }}
+          allow-unsafe-pr-checkout: ${{ inputs.allow_unsafe_pr_checkout }}
       - uses: google-github-actions/auth@7c6bc770dae815cd3e89ee6cdf493a5fab2cc093 # v3
         with:
           project_id: ${{ vars.GCLOUD_PROJECT_ID }}
@@ -4878,12 +5219,15 @@ jobs:
     environment: test
     timeout-minutes: 30
     if: |
-      github.ref == 'refs/heads/main'
+      inputs.release
       && contains(inputs.necessary_jobs, ';Test against production repo [ubuntu-24.04/3.2/malloctrim];')
     permissions:
       id-token: write
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ inputs.git_commit }}
+          allow-unsafe-pr-checkout: ${{ inputs.allow_unsafe_pr_checkout }}
       - uses: google-github-actions/auth@7c6bc770dae815cd3e89ee6cdf493a5fab2cc093 # v3
         with:
           project_id: ${{ vars.GCLOUD_PROJECT_ID }}
@@ -4921,12 +5265,15 @@ jobs:
     environment: test
     timeout-minutes: 30
     if: |
-      github.ref == 'refs/heads/main'
+      inputs.release
       && contains(inputs.necessary_jobs, ';Test against production repo [ubuntu-24.04/4.0.6/normal];')
     permissions:
       id-token: write
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ inputs.git_commit }}
+          allow-unsafe-pr-checkout: ${{ inputs.allow_unsafe_pr_checkout }}
       - uses: google-github-actions/auth@7c6bc770dae815cd3e89ee6cdf493a5fab2cc093 # v3
         with:
           project_id: ${{ vars.GCLOUD_PROJECT_ID }}
@@ -4964,12 +5311,15 @@ jobs:
     environment: test
     timeout-minutes: 30
     if: |
-      github.ref == 'refs/heads/main'
+      inputs.release
       && contains(inputs.necessary_jobs, ';Test against production repo [ubuntu-24.04/4.0.6/jemalloc];')
     permissions:
       id-token: write
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ inputs.git_commit }}
+          allow-unsafe-pr-checkout: ${{ inputs.allow_unsafe_pr_checkout }}
       - uses: google-github-actions/auth@7c6bc770dae815cd3e89ee6cdf493a5fab2cc093 # v3
         with:
           project_id: ${{ vars.GCLOUD_PROJECT_ID }}
@@ -5007,12 +5357,15 @@ jobs:
     environment: test
     timeout-minutes: 30
     if: |
-      github.ref == 'refs/heads/main'
+      inputs.release
       && contains(inputs.necessary_jobs, ';Test against production repo [ubuntu-24.04/3.4.10/normal];')
     permissions:
       id-token: write
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ inputs.git_commit }}
+          allow-unsafe-pr-checkout: ${{ inputs.allow_unsafe_pr_checkout }}
       - uses: google-github-actions/auth@7c6bc770dae815cd3e89ee6cdf493a5fab2cc093 # v3
         with:
           project_id: ${{ vars.GCLOUD_PROJECT_ID }}
@@ -5050,12 +5403,15 @@ jobs:
     environment: test
     timeout-minutes: 30
     if: |
-      github.ref == 'refs/heads/main'
+      inputs.release
       && contains(inputs.necessary_jobs, ';Test against production repo [ubuntu-24.04/3.4.10/jemalloc];')
     permissions:
       id-token: write
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ inputs.git_commit }}
+          allow-unsafe-pr-checkout: ${{ inputs.allow_unsafe_pr_checkout }}
       - uses: google-github-actions/auth@7c6bc770dae815cd3e89ee6cdf493a5fab2cc093 # v3
         with:
           project_id: ${{ vars.GCLOUD_PROJECT_ID }}
@@ -5093,12 +5449,15 @@ jobs:
     environment: test
     timeout-minutes: 30
     if: |
-      github.ref == 'refs/heads/main'
+      inputs.release
       && contains(inputs.necessary_jobs, ';Test against production repo [ubuntu-24.04/3.3.12/normal];')
     permissions:
       id-token: write
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ inputs.git_commit }}
+          allow-unsafe-pr-checkout: ${{ inputs.allow_unsafe_pr_checkout }}
       - uses: google-github-actions/auth@7c6bc770dae815cd3e89ee6cdf493a5fab2cc093 # v3
         with:
           project_id: ${{ vars.GCLOUD_PROJECT_ID }}
@@ -5136,12 +5495,15 @@ jobs:
     environment: test
     timeout-minutes: 30
     if: |
-      github.ref == 'refs/heads/main'
+      inputs.release
       && contains(inputs.necessary_jobs, ';Test against production repo [ubuntu-24.04/3.3.12/jemalloc];')
     permissions:
       id-token: write
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ inputs.git_commit }}
+          allow-unsafe-pr-checkout: ${{ inputs.allow_unsafe_pr_checkout }}
       - uses: google-github-actions/auth@7c6bc770dae815cd3e89ee6cdf493a5fab2cc093 # v3
         with:
           project_id: ${{ vars.GCLOUD_PROJECT_ID }}
@@ -5179,12 +5541,15 @@ jobs:
     environment: test
     timeout-minutes: 30
     if: |
-      github.ref == 'refs/heads/main'
+      inputs.release
       && contains(inputs.necessary_jobs, ';Test against production repo [ubuntu-24.04/3.2.11/normal];')
     permissions:
       id-token: write
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ inputs.git_commit }}
+          allow-unsafe-pr-checkout: ${{ inputs.allow_unsafe_pr_checkout }}
       - uses: google-github-actions/auth@7c6bc770dae815cd3e89ee6cdf493a5fab2cc093 # v3
         with:
           project_id: ${{ vars.GCLOUD_PROJECT_ID }}
@@ -5222,12 +5587,15 @@ jobs:
     environment: test
     timeout-minutes: 30
     if: |
-      github.ref == 'refs/heads/main'
+      inputs.release
       && contains(inputs.necessary_jobs, ';Test against production repo [ubuntu-24.04/3.2.11/jemalloc];')
     permissions:
       id-token: write
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ inputs.git_commit }}
+          allow-unsafe-pr-checkout: ${{ inputs.allow_unsafe_pr_checkout }}
       - uses: google-github-actions/auth@7c6bc770dae815cd3e89ee6cdf493a5fab2cc093 # v3
         with:
           project_id: ${{ vars.GCLOUD_PROJECT_ID }}
@@ -5265,12 +5633,15 @@ jobs:
     environment: test
     timeout-minutes: 30
     if: |
-      github.ref == 'refs/heads/main'
+      inputs.release
       && contains(inputs.necessary_jobs, ';Test against production repo [ubuntu-24.04/3.2.11/malloctrim];')
     permissions:
       id-token: write
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ inputs.git_commit }}
+          allow-unsafe-pr-checkout: ${{ inputs.allow_unsafe_pr_checkout }}
       - uses: google-github-actions/auth@7c6bc770dae815cd3e89ee6cdf493a5fab2cc093 # v3
         with:
           project_id: ${{ vars.GCLOUD_PROJECT_ID }}
@@ -5438,6 +5809,8 @@ jobs:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           fetch-depth: 0
+          ref: ${{ inputs.git_commit }}
+          allow-unsafe-pr-checkout: ${{ inputs.allow_unsafe_pr_checkout }}
 
 
       ### Check whether dependent jobs failed ###
@@ -5449,840 +5822,840 @@ jobs:
       - name: Check whether 'Test [centos-8/4.0/normal]' did not fail
         run: 'false'
         if: |
-          github.ref == 'refs/heads/main'
+          inputs.release
           && needs.test_centos_8-4_0-normal.result != 'success'
           && (needs.test_centos_8-4_0-normal.result != 'skipped'
             || contains(inputs.necessary_jobs, ';Test against production repo [centos-8/4.0/normal];'))
       - name: Check whether 'Test [centos-8/4.0/jemalloc]' did not fail
         run: 'false'
         if: |
-          github.ref == 'refs/heads/main'
+          inputs.release
           && needs.test_centos_8-4_0-jemalloc.result != 'success'
           && (needs.test_centos_8-4_0-jemalloc.result != 'skipped'
             || contains(inputs.necessary_jobs, ';Test against production repo [centos-8/4.0/jemalloc];'))
       - name: Check whether 'Test [centos-8/3.4/normal]' did not fail
         run: 'false'
         if: |
-          github.ref == 'refs/heads/main'
+          inputs.release
           && needs.test_centos_8-3_4-normal.result != 'success'
           && (needs.test_centos_8-3_4-normal.result != 'skipped'
             || contains(inputs.necessary_jobs, ';Test against production repo [centos-8/3.4/normal];'))
       - name: Check whether 'Test [centos-8/3.4/jemalloc]' did not fail
         run: 'false'
         if: |
-          github.ref == 'refs/heads/main'
+          inputs.release
           && needs.test_centos_8-3_4-jemalloc.result != 'success'
           && (needs.test_centos_8-3_4-jemalloc.result != 'skipped'
             || contains(inputs.necessary_jobs, ';Test against production repo [centos-8/3.4/jemalloc];'))
       - name: Check whether 'Test [centos-8/3.3/normal]' did not fail
         run: 'false'
         if: |
-          github.ref == 'refs/heads/main'
+          inputs.release
           && needs.test_centos_8-3_3-normal.result != 'success'
           && (needs.test_centos_8-3_3-normal.result != 'skipped'
             || contains(inputs.necessary_jobs, ';Test against production repo [centos-8/3.3/normal];'))
       - name: Check whether 'Test [centos-8/3.3/jemalloc]' did not fail
         run: 'false'
         if: |
-          github.ref == 'refs/heads/main'
+          inputs.release
           && needs.test_centos_8-3_3-jemalloc.result != 'success'
           && (needs.test_centos_8-3_3-jemalloc.result != 'skipped'
             || contains(inputs.necessary_jobs, ';Test against production repo [centos-8/3.3/jemalloc];'))
       - name: Check whether 'Test [centos-8/3.2/normal]' did not fail
         run: 'false'
         if: |
-          github.ref == 'refs/heads/main'
+          inputs.release
           && needs.test_centos_8-3_2-normal.result != 'success'
           && (needs.test_centos_8-3_2-normal.result != 'skipped'
             || contains(inputs.necessary_jobs, ';Test against production repo [centos-8/3.2/normal];'))
       - name: Check whether 'Test [centos-8/3.2/jemalloc]' did not fail
         run: 'false'
         if: |
-          github.ref == 'refs/heads/main'
+          inputs.release
           && needs.test_centos_8-3_2-jemalloc.result != 'success'
           && (needs.test_centos_8-3_2-jemalloc.result != 'skipped'
             || contains(inputs.necessary_jobs, ';Test against production repo [centos-8/3.2/jemalloc];'))
       - name: Check whether 'Test [centos-8/3.2/malloctrim]' did not fail
         run: 'false'
         if: |
-          github.ref == 'refs/heads/main'
+          inputs.release
           && needs.test_centos_8-3_2-malloctrim.result != 'success'
           && (needs.test_centos_8-3_2-malloctrim.result != 'skipped'
             || contains(inputs.necessary_jobs, ';Test against production repo [centos-8/3.2/malloctrim];'))
       - name: Check whether 'Test [centos-8/4.0.6/normal]' did not fail
         run: 'false'
         if: |
-          github.ref == 'refs/heads/main'
+          inputs.release
           && needs.test_centos_8-4_0_6-normal.result != 'success'
           && (needs.test_centos_8-4_0_6-normal.result != 'skipped'
             || contains(inputs.necessary_jobs, ';Test against production repo [centos-8/4.0.6/normal];'))
       - name: Check whether 'Test [centos-8/4.0.6/jemalloc]' did not fail
         run: 'false'
         if: |
-          github.ref == 'refs/heads/main'
+          inputs.release
           && needs.test_centos_8-4_0_6-jemalloc.result != 'success'
           && (needs.test_centos_8-4_0_6-jemalloc.result != 'skipped'
             || contains(inputs.necessary_jobs, ';Test against production repo [centos-8/4.0.6/jemalloc];'))
       - name: Check whether 'Test [centos-8/3.4.10/normal]' did not fail
         run: 'false'
         if: |
-          github.ref == 'refs/heads/main'
+          inputs.release
           && needs.test_centos_8-3_4_10-normal.result != 'success'
           && (needs.test_centos_8-3_4_10-normal.result != 'skipped'
             || contains(inputs.necessary_jobs, ';Test against production repo [centos-8/3.4.10/normal];'))
       - name: Check whether 'Test [centos-8/3.4.10/jemalloc]' did not fail
         run: 'false'
         if: |
-          github.ref == 'refs/heads/main'
+          inputs.release
           && needs.test_centos_8-3_4_10-jemalloc.result != 'success'
           && (needs.test_centos_8-3_4_10-jemalloc.result != 'skipped'
             || contains(inputs.necessary_jobs, ';Test against production repo [centos-8/3.4.10/jemalloc];'))
       - name: Check whether 'Test [centos-8/3.3.12/normal]' did not fail
         run: 'false'
         if: |
-          github.ref == 'refs/heads/main'
+          inputs.release
           && needs.test_centos_8-3_3_12-normal.result != 'success'
           && (needs.test_centos_8-3_3_12-normal.result != 'skipped'
             || contains(inputs.necessary_jobs, ';Test against production repo [centos-8/3.3.12/normal];'))
       - name: Check whether 'Test [centos-8/3.3.12/jemalloc]' did not fail
         run: 'false'
         if: |
-          github.ref == 'refs/heads/main'
+          inputs.release
           && needs.test_centos_8-3_3_12-jemalloc.result != 'success'
           && (needs.test_centos_8-3_3_12-jemalloc.result != 'skipped'
             || contains(inputs.necessary_jobs, ';Test against production repo [centos-8/3.3.12/jemalloc];'))
       - name: Check whether 'Test [centos-8/3.2.11/normal]' did not fail
         run: 'false'
         if: |
-          github.ref == 'refs/heads/main'
+          inputs.release
           && needs.test_centos_8-3_2_11-normal.result != 'success'
           && (needs.test_centos_8-3_2_11-normal.result != 'skipped'
             || contains(inputs.necessary_jobs, ';Test against production repo [centos-8/3.2.11/normal];'))
       - name: Check whether 'Test [centos-8/3.2.11/jemalloc]' did not fail
         run: 'false'
         if: |
-          github.ref == 'refs/heads/main'
+          inputs.release
           && needs.test_centos_8-3_2_11-jemalloc.result != 'success'
           && (needs.test_centos_8-3_2_11-jemalloc.result != 'skipped'
             || contains(inputs.necessary_jobs, ';Test against production repo [centos-8/3.2.11/jemalloc];'))
       - name: Check whether 'Test [centos-8/3.2.11/malloctrim]' did not fail
         run: 'false'
         if: |
-          github.ref == 'refs/heads/main'
+          inputs.release
           && needs.test_centos_8-3_2_11-malloctrim.result != 'success'
           && (needs.test_centos_8-3_2_11-malloctrim.result != 'skipped'
             || contains(inputs.necessary_jobs, ';Test against production repo [centos-8/3.2.11/malloctrim];'))
       - name: Check whether 'Test [debian-11/4.0/normal]' did not fail
         run: 'false'
         if: |
-          github.ref == 'refs/heads/main'
+          inputs.release
           && needs.test_debian_11-4_0-normal.result != 'success'
           && (needs.test_debian_11-4_0-normal.result != 'skipped'
             || contains(inputs.necessary_jobs, ';Test against production repo [debian-11/4.0/normal];'))
       - name: Check whether 'Test [debian-11/4.0/jemalloc]' did not fail
         run: 'false'
         if: |
-          github.ref == 'refs/heads/main'
+          inputs.release
           && needs.test_debian_11-4_0-jemalloc.result != 'success'
           && (needs.test_debian_11-4_0-jemalloc.result != 'skipped'
             || contains(inputs.necessary_jobs, ';Test against production repo [debian-11/4.0/jemalloc];'))
       - name: Check whether 'Test [debian-11/3.4/normal]' did not fail
         run: 'false'
         if: |
-          github.ref == 'refs/heads/main'
+          inputs.release
           && needs.test_debian_11-3_4-normal.result != 'success'
           && (needs.test_debian_11-3_4-normal.result != 'skipped'
             || contains(inputs.necessary_jobs, ';Test against production repo [debian-11/3.4/normal];'))
       - name: Check whether 'Test [debian-11/3.4/jemalloc]' did not fail
         run: 'false'
         if: |
-          github.ref == 'refs/heads/main'
+          inputs.release
           && needs.test_debian_11-3_4-jemalloc.result != 'success'
           && (needs.test_debian_11-3_4-jemalloc.result != 'skipped'
             || contains(inputs.necessary_jobs, ';Test against production repo [debian-11/3.4/jemalloc];'))
       - name: Check whether 'Test [debian-11/3.3/normal]' did not fail
         run: 'false'
         if: |
-          github.ref == 'refs/heads/main'
+          inputs.release
           && needs.test_debian_11-3_3-normal.result != 'success'
           && (needs.test_debian_11-3_3-normal.result != 'skipped'
             || contains(inputs.necessary_jobs, ';Test against production repo [debian-11/3.3/normal];'))
       - name: Check whether 'Test [debian-11/3.3/jemalloc]' did not fail
         run: 'false'
         if: |
-          github.ref == 'refs/heads/main'
+          inputs.release
           && needs.test_debian_11-3_3-jemalloc.result != 'success'
           && (needs.test_debian_11-3_3-jemalloc.result != 'skipped'
             || contains(inputs.necessary_jobs, ';Test against production repo [debian-11/3.3/jemalloc];'))
       - name: Check whether 'Test [debian-11/3.2/normal]' did not fail
         run: 'false'
         if: |
-          github.ref == 'refs/heads/main'
+          inputs.release
           && needs.test_debian_11-3_2-normal.result != 'success'
           && (needs.test_debian_11-3_2-normal.result != 'skipped'
             || contains(inputs.necessary_jobs, ';Test against production repo [debian-11/3.2/normal];'))
       - name: Check whether 'Test [debian-11/3.2/jemalloc]' did not fail
         run: 'false'
         if: |
-          github.ref == 'refs/heads/main'
+          inputs.release
           && needs.test_debian_11-3_2-jemalloc.result != 'success'
           && (needs.test_debian_11-3_2-jemalloc.result != 'skipped'
             || contains(inputs.necessary_jobs, ';Test against production repo [debian-11/3.2/jemalloc];'))
       - name: Check whether 'Test [debian-11/3.2/malloctrim]' did not fail
         run: 'false'
         if: |
-          github.ref == 'refs/heads/main'
+          inputs.release
           && needs.test_debian_11-3_2-malloctrim.result != 'success'
           && (needs.test_debian_11-3_2-malloctrim.result != 'skipped'
             || contains(inputs.necessary_jobs, ';Test against production repo [debian-11/3.2/malloctrim];'))
       - name: Check whether 'Test [debian-11/4.0.6/normal]' did not fail
         run: 'false'
         if: |
-          github.ref == 'refs/heads/main'
+          inputs.release
           && needs.test_debian_11-4_0_6-normal.result != 'success'
           && (needs.test_debian_11-4_0_6-normal.result != 'skipped'
             || contains(inputs.necessary_jobs, ';Test against production repo [debian-11/4.0.6/normal];'))
       - name: Check whether 'Test [debian-11/4.0.6/jemalloc]' did not fail
         run: 'false'
         if: |
-          github.ref == 'refs/heads/main'
+          inputs.release
           && needs.test_debian_11-4_0_6-jemalloc.result != 'success'
           && (needs.test_debian_11-4_0_6-jemalloc.result != 'skipped'
             || contains(inputs.necessary_jobs, ';Test against production repo [debian-11/4.0.6/jemalloc];'))
       - name: Check whether 'Test [debian-11/3.4.10/normal]' did not fail
         run: 'false'
         if: |
-          github.ref == 'refs/heads/main'
+          inputs.release
           && needs.test_debian_11-3_4_10-normal.result != 'success'
           && (needs.test_debian_11-3_4_10-normal.result != 'skipped'
             || contains(inputs.necessary_jobs, ';Test against production repo [debian-11/3.4.10/normal];'))
       - name: Check whether 'Test [debian-11/3.4.10/jemalloc]' did not fail
         run: 'false'
         if: |
-          github.ref == 'refs/heads/main'
+          inputs.release
           && needs.test_debian_11-3_4_10-jemalloc.result != 'success'
           && (needs.test_debian_11-3_4_10-jemalloc.result != 'skipped'
             || contains(inputs.necessary_jobs, ';Test against production repo [debian-11/3.4.10/jemalloc];'))
       - name: Check whether 'Test [debian-11/3.3.12/normal]' did not fail
         run: 'false'
         if: |
-          github.ref == 'refs/heads/main'
+          inputs.release
           && needs.test_debian_11-3_3_12-normal.result != 'success'
           && (needs.test_debian_11-3_3_12-normal.result != 'skipped'
             || contains(inputs.necessary_jobs, ';Test against production repo [debian-11/3.3.12/normal];'))
       - name: Check whether 'Test [debian-11/3.3.12/jemalloc]' did not fail
         run: 'false'
         if: |
-          github.ref == 'refs/heads/main'
+          inputs.release
           && needs.test_debian_11-3_3_12-jemalloc.result != 'success'
           && (needs.test_debian_11-3_3_12-jemalloc.result != 'skipped'
             || contains(inputs.necessary_jobs, ';Test against production repo [debian-11/3.3.12/jemalloc];'))
       - name: Check whether 'Test [debian-11/3.2.11/normal]' did not fail
         run: 'false'
         if: |
-          github.ref == 'refs/heads/main'
+          inputs.release
           && needs.test_debian_11-3_2_11-normal.result != 'success'
           && (needs.test_debian_11-3_2_11-normal.result != 'skipped'
             || contains(inputs.necessary_jobs, ';Test against production repo [debian-11/3.2.11/normal];'))
       - name: Check whether 'Test [debian-11/3.2.11/jemalloc]' did not fail
         run: 'false'
         if: |
-          github.ref == 'refs/heads/main'
+          inputs.release
           && needs.test_debian_11-3_2_11-jemalloc.result != 'success'
           && (needs.test_debian_11-3_2_11-jemalloc.result != 'skipped'
             || contains(inputs.necessary_jobs, ';Test against production repo [debian-11/3.2.11/jemalloc];'))
       - name: Check whether 'Test [debian-11/3.2.11/malloctrim]' did not fail
         run: 'false'
         if: |
-          github.ref == 'refs/heads/main'
+          inputs.release
           && needs.test_debian_11-3_2_11-malloctrim.result != 'success'
           && (needs.test_debian_11-3_2_11-malloctrim.result != 'skipped'
             || contains(inputs.necessary_jobs, ';Test against production repo [debian-11/3.2.11/malloctrim];'))
       - name: Check whether 'Test [debian-12/4.0/normal]' did not fail
         run: 'false'
         if: |
-          github.ref == 'refs/heads/main'
+          inputs.release
           && needs.test_debian_12-4_0-normal.result != 'success'
           && (needs.test_debian_12-4_0-normal.result != 'skipped'
             || contains(inputs.necessary_jobs, ';Test against production repo [debian-12/4.0/normal];'))
       - name: Check whether 'Test [debian-12/4.0/jemalloc]' did not fail
         run: 'false'
         if: |
-          github.ref == 'refs/heads/main'
+          inputs.release
           && needs.test_debian_12-4_0-jemalloc.result != 'success'
           && (needs.test_debian_12-4_0-jemalloc.result != 'skipped'
             || contains(inputs.necessary_jobs, ';Test against production repo [debian-12/4.0/jemalloc];'))
       - name: Check whether 'Test [debian-12/3.4/normal]' did not fail
         run: 'false'
         if: |
-          github.ref == 'refs/heads/main'
+          inputs.release
           && needs.test_debian_12-3_4-normal.result != 'success'
           && (needs.test_debian_12-3_4-normal.result != 'skipped'
             || contains(inputs.necessary_jobs, ';Test against production repo [debian-12/3.4/normal];'))
       - name: Check whether 'Test [debian-12/3.4/jemalloc]' did not fail
         run: 'false'
         if: |
-          github.ref == 'refs/heads/main'
+          inputs.release
           && needs.test_debian_12-3_4-jemalloc.result != 'success'
           && (needs.test_debian_12-3_4-jemalloc.result != 'skipped'
             || contains(inputs.necessary_jobs, ';Test against production repo [debian-12/3.4/jemalloc];'))
       - name: Check whether 'Test [debian-12/3.3/normal]' did not fail
         run: 'false'
         if: |
-          github.ref == 'refs/heads/main'
+          inputs.release
           && needs.test_debian_12-3_3-normal.result != 'success'
           && (needs.test_debian_12-3_3-normal.result != 'skipped'
             || contains(inputs.necessary_jobs, ';Test against production repo [debian-12/3.3/normal];'))
       - name: Check whether 'Test [debian-12/3.3/jemalloc]' did not fail
         run: 'false'
         if: |
-          github.ref == 'refs/heads/main'
+          inputs.release
           && needs.test_debian_12-3_3-jemalloc.result != 'success'
           && (needs.test_debian_12-3_3-jemalloc.result != 'skipped'
             || contains(inputs.necessary_jobs, ';Test against production repo [debian-12/3.3/jemalloc];'))
       - name: Check whether 'Test [debian-12/3.2/normal]' did not fail
         run: 'false'
         if: |
-          github.ref == 'refs/heads/main'
+          inputs.release
           && needs.test_debian_12-3_2-normal.result != 'success'
           && (needs.test_debian_12-3_2-normal.result != 'skipped'
             || contains(inputs.necessary_jobs, ';Test against production repo [debian-12/3.2/normal];'))
       - name: Check whether 'Test [debian-12/3.2/jemalloc]' did not fail
         run: 'false'
         if: |
-          github.ref == 'refs/heads/main'
+          inputs.release
           && needs.test_debian_12-3_2-jemalloc.result != 'success'
           && (needs.test_debian_12-3_2-jemalloc.result != 'skipped'
             || contains(inputs.necessary_jobs, ';Test against production repo [debian-12/3.2/jemalloc];'))
       - name: Check whether 'Test [debian-12/3.2/malloctrim]' did not fail
         run: 'false'
         if: |
-          github.ref == 'refs/heads/main'
+          inputs.release
           && needs.test_debian_12-3_2-malloctrim.result != 'success'
           && (needs.test_debian_12-3_2-malloctrim.result != 'skipped'
             || contains(inputs.necessary_jobs, ';Test against production repo [debian-12/3.2/malloctrim];'))
       - name: Check whether 'Test [debian-12/4.0.6/normal]' did not fail
         run: 'false'
         if: |
-          github.ref == 'refs/heads/main'
+          inputs.release
           && needs.test_debian_12-4_0_6-normal.result != 'success'
           && (needs.test_debian_12-4_0_6-normal.result != 'skipped'
             || contains(inputs.necessary_jobs, ';Test against production repo [debian-12/4.0.6/normal];'))
       - name: Check whether 'Test [debian-12/4.0.6/jemalloc]' did not fail
         run: 'false'
         if: |
-          github.ref == 'refs/heads/main'
+          inputs.release
           && needs.test_debian_12-4_0_6-jemalloc.result != 'success'
           && (needs.test_debian_12-4_0_6-jemalloc.result != 'skipped'
             || contains(inputs.necessary_jobs, ';Test against production repo [debian-12/4.0.6/jemalloc];'))
       - name: Check whether 'Test [debian-12/3.4.10/normal]' did not fail
         run: 'false'
         if: |
-          github.ref == 'refs/heads/main'
+          inputs.release
           && needs.test_debian_12-3_4_10-normal.result != 'success'
           && (needs.test_debian_12-3_4_10-normal.result != 'skipped'
             || contains(inputs.necessary_jobs, ';Test against production repo [debian-12/3.4.10/normal];'))
       - name: Check whether 'Test [debian-12/3.4.10/jemalloc]' did not fail
         run: 'false'
         if: |
-          github.ref == 'refs/heads/main'
+          inputs.release
           && needs.test_debian_12-3_4_10-jemalloc.result != 'success'
           && (needs.test_debian_12-3_4_10-jemalloc.result != 'skipped'
             || contains(inputs.necessary_jobs, ';Test against production repo [debian-12/3.4.10/jemalloc];'))
       - name: Check whether 'Test [debian-12/3.3.12/normal]' did not fail
         run: 'false'
         if: |
-          github.ref == 'refs/heads/main'
+          inputs.release
           && needs.test_debian_12-3_3_12-normal.result != 'success'
           && (needs.test_debian_12-3_3_12-normal.result != 'skipped'
             || contains(inputs.necessary_jobs, ';Test against production repo [debian-12/3.3.12/normal];'))
       - name: Check whether 'Test [debian-12/3.3.12/jemalloc]' did not fail
         run: 'false'
         if: |
-          github.ref == 'refs/heads/main'
+          inputs.release
           && needs.test_debian_12-3_3_12-jemalloc.result != 'success'
           && (needs.test_debian_12-3_3_12-jemalloc.result != 'skipped'
             || contains(inputs.necessary_jobs, ';Test against production repo [debian-12/3.3.12/jemalloc];'))
       - name: Check whether 'Test [debian-12/3.2.11/normal]' did not fail
         run: 'false'
         if: |
-          github.ref == 'refs/heads/main'
+          inputs.release
           && needs.test_debian_12-3_2_11-normal.result != 'success'
           && (needs.test_debian_12-3_2_11-normal.result != 'skipped'
             || contains(inputs.necessary_jobs, ';Test against production repo [debian-12/3.2.11/normal];'))
       - name: Check whether 'Test [debian-12/3.2.11/jemalloc]' did not fail
         run: 'false'
         if: |
-          github.ref == 'refs/heads/main'
+          inputs.release
           && needs.test_debian_12-3_2_11-jemalloc.result != 'success'
           && (needs.test_debian_12-3_2_11-jemalloc.result != 'skipped'
             || contains(inputs.necessary_jobs, ';Test against production repo [debian-12/3.2.11/jemalloc];'))
       - name: Check whether 'Test [debian-12/3.2.11/malloctrim]' did not fail
         run: 'false'
         if: |
-          github.ref == 'refs/heads/main'
+          inputs.release
           && needs.test_debian_12-3_2_11-malloctrim.result != 'success'
           && (needs.test_debian_12-3_2_11-malloctrim.result != 'skipped'
             || contains(inputs.necessary_jobs, ';Test against production repo [debian-12/3.2.11/malloctrim];'))
       - name: Check whether 'Test [debian-13/4.0/normal]' did not fail
         run: 'false'
         if: |
-          github.ref == 'refs/heads/main'
+          inputs.release
           && needs.test_debian_13-4_0-normal.result != 'success'
           && (needs.test_debian_13-4_0-normal.result != 'skipped'
             || contains(inputs.necessary_jobs, ';Test against production repo [debian-13/4.0/normal];'))
       - name: Check whether 'Test [debian-13/4.0/jemalloc]' did not fail
         run: 'false'
         if: |
-          github.ref == 'refs/heads/main'
+          inputs.release
           && needs.test_debian_13-4_0-jemalloc.result != 'success'
           && (needs.test_debian_13-4_0-jemalloc.result != 'skipped'
             || contains(inputs.necessary_jobs, ';Test against production repo [debian-13/4.0/jemalloc];'))
       - name: Check whether 'Test [debian-13/3.4/normal]' did not fail
         run: 'false'
         if: |
-          github.ref == 'refs/heads/main'
+          inputs.release
           && needs.test_debian_13-3_4-normal.result != 'success'
           && (needs.test_debian_13-3_4-normal.result != 'skipped'
             || contains(inputs.necessary_jobs, ';Test against production repo [debian-13/3.4/normal];'))
       - name: Check whether 'Test [debian-13/3.4/jemalloc]' did not fail
         run: 'false'
         if: |
-          github.ref == 'refs/heads/main'
+          inputs.release
           && needs.test_debian_13-3_4-jemalloc.result != 'success'
           && (needs.test_debian_13-3_4-jemalloc.result != 'skipped'
             || contains(inputs.necessary_jobs, ';Test against production repo [debian-13/3.4/jemalloc];'))
       - name: Check whether 'Test [debian-13/3.3/normal]' did not fail
         run: 'false'
         if: |
-          github.ref == 'refs/heads/main'
+          inputs.release
           && needs.test_debian_13-3_3-normal.result != 'success'
           && (needs.test_debian_13-3_3-normal.result != 'skipped'
             || contains(inputs.necessary_jobs, ';Test against production repo [debian-13/3.3/normal];'))
       - name: Check whether 'Test [debian-13/3.3/jemalloc]' did not fail
         run: 'false'
         if: |
-          github.ref == 'refs/heads/main'
+          inputs.release
           && needs.test_debian_13-3_3-jemalloc.result != 'success'
           && (needs.test_debian_13-3_3-jemalloc.result != 'skipped'
             || contains(inputs.necessary_jobs, ';Test against production repo [debian-13/3.3/jemalloc];'))
       - name: Check whether 'Test [debian-13/4.0.6/normal]' did not fail
         run: 'false'
         if: |
-          github.ref == 'refs/heads/main'
+          inputs.release
           && needs.test_debian_13-4_0_6-normal.result != 'success'
           && (needs.test_debian_13-4_0_6-normal.result != 'skipped'
             || contains(inputs.necessary_jobs, ';Test against production repo [debian-13/4.0.6/normal];'))
       - name: Check whether 'Test [debian-13/4.0.6/jemalloc]' did not fail
         run: 'false'
         if: |
-          github.ref == 'refs/heads/main'
+          inputs.release
           && needs.test_debian_13-4_0_6-jemalloc.result != 'success'
           && (needs.test_debian_13-4_0_6-jemalloc.result != 'skipped'
             || contains(inputs.necessary_jobs, ';Test against production repo [debian-13/4.0.6/jemalloc];'))
       - name: Check whether 'Test [debian-13/3.4.10/normal]' did not fail
         run: 'false'
         if: |
-          github.ref == 'refs/heads/main'
+          inputs.release
           && needs.test_debian_13-3_4_10-normal.result != 'success'
           && (needs.test_debian_13-3_4_10-normal.result != 'skipped'
             || contains(inputs.necessary_jobs, ';Test against production repo [debian-13/3.4.10/normal];'))
       - name: Check whether 'Test [debian-13/3.4.10/jemalloc]' did not fail
         run: 'false'
         if: |
-          github.ref == 'refs/heads/main'
+          inputs.release
           && needs.test_debian_13-3_4_10-jemalloc.result != 'success'
           && (needs.test_debian_13-3_4_10-jemalloc.result != 'skipped'
             || contains(inputs.necessary_jobs, ';Test against production repo [debian-13/3.4.10/jemalloc];'))
       - name: Check whether 'Test [debian-13/3.3.12/normal]' did not fail
         run: 'false'
         if: |
-          github.ref == 'refs/heads/main'
+          inputs.release
           && needs.test_debian_13-3_3_12-normal.result != 'success'
           && (needs.test_debian_13-3_3_12-normal.result != 'skipped'
             || contains(inputs.necessary_jobs, ';Test against production repo [debian-13/3.3.12/normal];'))
       - name: Check whether 'Test [debian-13/3.3.12/jemalloc]' did not fail
         run: 'false'
         if: |
-          github.ref == 'refs/heads/main'
+          inputs.release
           && needs.test_debian_13-3_3_12-jemalloc.result != 'success'
           && (needs.test_debian_13-3_3_12-jemalloc.result != 'skipped'
             || contains(inputs.necessary_jobs, ';Test against production repo [debian-13/3.3.12/jemalloc];'))
       - name: Check whether 'Test [el-9/4.0/normal]' did not fail
         run: 'false'
         if: |
-          github.ref == 'refs/heads/main'
+          inputs.release
           && needs.test_el_9-4_0-normal.result != 'success'
           && (needs.test_el_9-4_0-normal.result != 'skipped'
             || contains(inputs.necessary_jobs, ';Test against production repo [el-9/4.0/normal];'))
       - name: Check whether 'Test [el-9/4.0/jemalloc]' did not fail
         run: 'false'
         if: |
-          github.ref == 'refs/heads/main'
+          inputs.release
           && needs.test_el_9-4_0-jemalloc.result != 'success'
           && (needs.test_el_9-4_0-jemalloc.result != 'skipped'
             || contains(inputs.necessary_jobs, ';Test against production repo [el-9/4.0/jemalloc];'))
       - name: Check whether 'Test [el-9/3.4/normal]' did not fail
         run: 'false'
         if: |
-          github.ref == 'refs/heads/main'
+          inputs.release
           && needs.test_el_9-3_4-normal.result != 'success'
           && (needs.test_el_9-3_4-normal.result != 'skipped'
             || contains(inputs.necessary_jobs, ';Test against production repo [el-9/3.4/normal];'))
       - name: Check whether 'Test [el-9/3.4/jemalloc]' did not fail
         run: 'false'
         if: |
-          github.ref == 'refs/heads/main'
+          inputs.release
           && needs.test_el_9-3_4-jemalloc.result != 'success'
           && (needs.test_el_9-3_4-jemalloc.result != 'skipped'
             || contains(inputs.necessary_jobs, ';Test against production repo [el-9/3.4/jemalloc];'))
       - name: Check whether 'Test [el-9/3.3/normal]' did not fail
         run: 'false'
         if: |
-          github.ref == 'refs/heads/main'
+          inputs.release
           && needs.test_el_9-3_3-normal.result != 'success'
           && (needs.test_el_9-3_3-normal.result != 'skipped'
             || contains(inputs.necessary_jobs, ';Test against production repo [el-9/3.3/normal];'))
       - name: Check whether 'Test [el-9/3.3/jemalloc]' did not fail
         run: 'false'
         if: |
-          github.ref == 'refs/heads/main'
+          inputs.release
           && needs.test_el_9-3_3-jemalloc.result != 'success'
           && (needs.test_el_9-3_3-jemalloc.result != 'skipped'
             || contains(inputs.necessary_jobs, ';Test against production repo [el-9/3.3/jemalloc];'))
       - name: Check whether 'Test [el-9/3.2/normal]' did not fail
         run: 'false'
         if: |
-          github.ref == 'refs/heads/main'
+          inputs.release
           && needs.test_el_9-3_2-normal.result != 'success'
           && (needs.test_el_9-3_2-normal.result != 'skipped'
             || contains(inputs.necessary_jobs, ';Test against production repo [el-9/3.2/normal];'))
       - name: Check whether 'Test [el-9/3.2/jemalloc]' did not fail
         run: 'false'
         if: |
-          github.ref == 'refs/heads/main'
+          inputs.release
           && needs.test_el_9-3_2-jemalloc.result != 'success'
           && (needs.test_el_9-3_2-jemalloc.result != 'skipped'
             || contains(inputs.necessary_jobs, ';Test against production repo [el-9/3.2/jemalloc];'))
       - name: Check whether 'Test [el-9/3.2/malloctrim]' did not fail
         run: 'false'
         if: |
-          github.ref == 'refs/heads/main'
+          inputs.release
           && needs.test_el_9-3_2-malloctrim.result != 'success'
           && (needs.test_el_9-3_2-malloctrim.result != 'skipped'
             || contains(inputs.necessary_jobs, ';Test against production repo [el-9/3.2/malloctrim];'))
       - name: Check whether 'Test [el-9/4.0.6/normal]' did not fail
         run: 'false'
         if: |
-          github.ref == 'refs/heads/main'
+          inputs.release
           && needs.test_el_9-4_0_6-normal.result != 'success'
           && (needs.test_el_9-4_0_6-normal.result != 'skipped'
             || contains(inputs.necessary_jobs, ';Test against production repo [el-9/4.0.6/normal];'))
       - name: Check whether 'Test [el-9/4.0.6/jemalloc]' did not fail
         run: 'false'
         if: |
-          github.ref == 'refs/heads/main'
+          inputs.release
           && needs.test_el_9-4_0_6-jemalloc.result != 'success'
           && (needs.test_el_9-4_0_6-jemalloc.result != 'skipped'
             || contains(inputs.necessary_jobs, ';Test against production repo [el-9/4.0.6/jemalloc];'))
       - name: Check whether 'Test [el-9/3.4.10/normal]' did not fail
         run: 'false'
         if: |
-          github.ref == 'refs/heads/main'
+          inputs.release
           && needs.test_el_9-3_4_10-normal.result != 'success'
           && (needs.test_el_9-3_4_10-normal.result != 'skipped'
             || contains(inputs.necessary_jobs, ';Test against production repo [el-9/3.4.10/normal];'))
       - name: Check whether 'Test [el-9/3.4.10/jemalloc]' did not fail
         run: 'false'
         if: |
-          github.ref == 'refs/heads/main'
+          inputs.release
           && needs.test_el_9-3_4_10-jemalloc.result != 'success'
           && (needs.test_el_9-3_4_10-jemalloc.result != 'skipped'
             || contains(inputs.necessary_jobs, ';Test against production repo [el-9/3.4.10/jemalloc];'))
       - name: Check whether 'Test [el-9/3.3.12/normal]' did not fail
         run: 'false'
         if: |
-          github.ref == 'refs/heads/main'
+          inputs.release
           && needs.test_el_9-3_3_12-normal.result != 'success'
           && (needs.test_el_9-3_3_12-normal.result != 'skipped'
             || contains(inputs.necessary_jobs, ';Test against production repo [el-9/3.3.12/normal];'))
       - name: Check whether 'Test [el-9/3.3.12/jemalloc]' did not fail
         run: 'false'
         if: |
-          github.ref == 'refs/heads/main'
+          inputs.release
           && needs.test_el_9-3_3_12-jemalloc.result != 'success'
           && (needs.test_el_9-3_3_12-jemalloc.result != 'skipped'
             || contains(inputs.necessary_jobs, ';Test against production repo [el-9/3.3.12/jemalloc];'))
       - name: Check whether 'Test [el-9/3.2.11/normal]' did not fail
         run: 'false'
         if: |
-          github.ref == 'refs/heads/main'
+          inputs.release
           && needs.test_el_9-3_2_11-normal.result != 'success'
           && (needs.test_el_9-3_2_11-normal.result != 'skipped'
             || contains(inputs.necessary_jobs, ';Test against production repo [el-9/3.2.11/normal];'))
       - name: Check whether 'Test [el-9/3.2.11/jemalloc]' did not fail
         run: 'false'
         if: |
-          github.ref == 'refs/heads/main'
+          inputs.release
           && needs.test_el_9-3_2_11-jemalloc.result != 'success'
           && (needs.test_el_9-3_2_11-jemalloc.result != 'skipped'
             || contains(inputs.necessary_jobs, ';Test against production repo [el-9/3.2.11/jemalloc];'))
       - name: Check whether 'Test [el-9/3.2.11/malloctrim]' did not fail
         run: 'false'
         if: |
-          github.ref == 'refs/heads/main'
+          inputs.release
           && needs.test_el_9-3_2_11-malloctrim.result != 'success'
           && (needs.test_el_9-3_2_11-malloctrim.result != 'skipped'
             || contains(inputs.necessary_jobs, ';Test against production repo [el-9/3.2.11/malloctrim];'))
       - name: Check whether 'Test [ubuntu-22.04/4.0/normal]' did not fail
         run: 'false'
         if: |
-          github.ref == 'refs/heads/main'
+          inputs.release
           && needs.test_ubuntu_22_04-4_0-normal.result != 'success'
           && (needs.test_ubuntu_22_04-4_0-normal.result != 'skipped'
             || contains(inputs.necessary_jobs, ';Test against production repo [ubuntu-22.04/4.0/normal];'))
       - name: Check whether 'Test [ubuntu-22.04/4.0/jemalloc]' did not fail
         run: 'false'
         if: |
-          github.ref == 'refs/heads/main'
+          inputs.release
           && needs.test_ubuntu_22_04-4_0-jemalloc.result != 'success'
           && (needs.test_ubuntu_22_04-4_0-jemalloc.result != 'skipped'
             || contains(inputs.necessary_jobs, ';Test against production repo [ubuntu-22.04/4.0/jemalloc];'))
       - name: Check whether 'Test [ubuntu-22.04/3.4/normal]' did not fail
         run: 'false'
         if: |
-          github.ref == 'refs/heads/main'
+          inputs.release
           && needs.test_ubuntu_22_04-3_4-normal.result != 'success'
           && (needs.test_ubuntu_22_04-3_4-normal.result != 'skipped'
             || contains(inputs.necessary_jobs, ';Test against production repo [ubuntu-22.04/3.4/normal];'))
       - name: Check whether 'Test [ubuntu-22.04/3.4/jemalloc]' did not fail
         run: 'false'
         if: |
-          github.ref == 'refs/heads/main'
+          inputs.release
           && needs.test_ubuntu_22_04-3_4-jemalloc.result != 'success'
           && (needs.test_ubuntu_22_04-3_4-jemalloc.result != 'skipped'
             || contains(inputs.necessary_jobs, ';Test against production repo [ubuntu-22.04/3.4/jemalloc];'))
       - name: Check whether 'Test [ubuntu-22.04/3.3/normal]' did not fail
         run: 'false'
         if: |
-          github.ref == 'refs/heads/main'
+          inputs.release
           && needs.test_ubuntu_22_04-3_3-normal.result != 'success'
           && (needs.test_ubuntu_22_04-3_3-normal.result != 'skipped'
             || contains(inputs.necessary_jobs, ';Test against production repo [ubuntu-22.04/3.3/normal];'))
       - name: Check whether 'Test [ubuntu-22.04/3.3/jemalloc]' did not fail
         run: 'false'
         if: |
-          github.ref == 'refs/heads/main'
+          inputs.release
           && needs.test_ubuntu_22_04-3_3-jemalloc.result != 'success'
           && (needs.test_ubuntu_22_04-3_3-jemalloc.result != 'skipped'
             || contains(inputs.necessary_jobs, ';Test against production repo [ubuntu-22.04/3.3/jemalloc];'))
       - name: Check whether 'Test [ubuntu-22.04/3.2/normal]' did not fail
         run: 'false'
         if: |
-          github.ref == 'refs/heads/main'
+          inputs.release
           && needs.test_ubuntu_22_04-3_2-normal.result != 'success'
           && (needs.test_ubuntu_22_04-3_2-normal.result != 'skipped'
             || contains(inputs.necessary_jobs, ';Test against production repo [ubuntu-22.04/3.2/normal];'))
       - name: Check whether 'Test [ubuntu-22.04/3.2/jemalloc]' did not fail
         run: 'false'
         if: |
-          github.ref == 'refs/heads/main'
+          inputs.release
           && needs.test_ubuntu_22_04-3_2-jemalloc.result != 'success'
           && (needs.test_ubuntu_22_04-3_2-jemalloc.result != 'skipped'
             || contains(inputs.necessary_jobs, ';Test against production repo [ubuntu-22.04/3.2/jemalloc];'))
       - name: Check whether 'Test [ubuntu-22.04/3.2/malloctrim]' did not fail
         run: 'false'
         if: |
-          github.ref == 'refs/heads/main'
+          inputs.release
           && needs.test_ubuntu_22_04-3_2-malloctrim.result != 'success'
           && (needs.test_ubuntu_22_04-3_2-malloctrim.result != 'skipped'
             || contains(inputs.necessary_jobs, ';Test against production repo [ubuntu-22.04/3.2/malloctrim];'))
       - name: Check whether 'Test [ubuntu-22.04/4.0.6/normal]' did not fail
         run: 'false'
         if: |
-          github.ref == 'refs/heads/main'
+          inputs.release
           && needs.test_ubuntu_22_04-4_0_6-normal.result != 'success'
           && (needs.test_ubuntu_22_04-4_0_6-normal.result != 'skipped'
             || contains(inputs.necessary_jobs, ';Test against production repo [ubuntu-22.04/4.0.6/normal];'))
       - name: Check whether 'Test [ubuntu-22.04/4.0.6/jemalloc]' did not fail
         run: 'false'
         if: |
-          github.ref == 'refs/heads/main'
+          inputs.release
           && needs.test_ubuntu_22_04-4_0_6-jemalloc.result != 'success'
           && (needs.test_ubuntu_22_04-4_0_6-jemalloc.result != 'skipped'
             || contains(inputs.necessary_jobs, ';Test against production repo [ubuntu-22.04/4.0.6/jemalloc];'))
       - name: Check whether 'Test [ubuntu-22.04/3.4.10/normal]' did not fail
         run: 'false'
         if: |
-          github.ref == 'refs/heads/main'
+          inputs.release
           && needs.test_ubuntu_22_04-3_4_10-normal.result != 'success'
           && (needs.test_ubuntu_22_04-3_4_10-normal.result != 'skipped'
             || contains(inputs.necessary_jobs, ';Test against production repo [ubuntu-22.04/3.4.10/normal];'))
       - name: Check whether 'Test [ubuntu-22.04/3.4.10/jemalloc]' did not fail
         run: 'false'
         if: |
-          github.ref == 'refs/heads/main'
+          inputs.release
           && needs.test_ubuntu_22_04-3_4_10-jemalloc.result != 'success'
           && (needs.test_ubuntu_22_04-3_4_10-jemalloc.result != 'skipped'
             || contains(inputs.necessary_jobs, ';Test against production repo [ubuntu-22.04/3.4.10/jemalloc];'))
       - name: Check whether 'Test [ubuntu-22.04/3.3.12/normal]' did not fail
         run: 'false'
         if: |
-          github.ref == 'refs/heads/main'
+          inputs.release
           && needs.test_ubuntu_22_04-3_3_12-normal.result != 'success'
           && (needs.test_ubuntu_22_04-3_3_12-normal.result != 'skipped'
             || contains(inputs.necessary_jobs, ';Test against production repo [ubuntu-22.04/3.3.12/normal];'))
       - name: Check whether 'Test [ubuntu-22.04/3.3.12/jemalloc]' did not fail
         run: 'false'
         if: |
-          github.ref == 'refs/heads/main'
+          inputs.release
           && needs.test_ubuntu_22_04-3_3_12-jemalloc.result != 'success'
           && (needs.test_ubuntu_22_04-3_3_12-jemalloc.result != 'skipped'
             || contains(inputs.necessary_jobs, ';Test against production repo [ubuntu-22.04/3.3.12/jemalloc];'))
       - name: Check whether 'Test [ubuntu-22.04/3.2.11/normal]' did not fail
         run: 'false'
         if: |
-          github.ref == 'refs/heads/main'
+          inputs.release
           && needs.test_ubuntu_22_04-3_2_11-normal.result != 'success'
           && (needs.test_ubuntu_22_04-3_2_11-normal.result != 'skipped'
             || contains(inputs.necessary_jobs, ';Test against production repo [ubuntu-22.04/3.2.11/normal];'))
       - name: Check whether 'Test [ubuntu-22.04/3.2.11/jemalloc]' did not fail
         run: 'false'
         if: |
-          github.ref == 'refs/heads/main'
+          inputs.release
           && needs.test_ubuntu_22_04-3_2_11-jemalloc.result != 'success'
           && (needs.test_ubuntu_22_04-3_2_11-jemalloc.result != 'skipped'
             || contains(inputs.necessary_jobs, ';Test against production repo [ubuntu-22.04/3.2.11/jemalloc];'))
       - name: Check whether 'Test [ubuntu-22.04/3.2.11/malloctrim]' did not fail
         run: 'false'
         if: |
-          github.ref == 'refs/heads/main'
+          inputs.release
           && needs.test_ubuntu_22_04-3_2_11-malloctrim.result != 'success'
           && (needs.test_ubuntu_22_04-3_2_11-malloctrim.result != 'skipped'
             || contains(inputs.necessary_jobs, ';Test against production repo [ubuntu-22.04/3.2.11/malloctrim];'))
       - name: Check whether 'Test [ubuntu-24.04/4.0/normal]' did not fail
         run: 'false'
         if: |
-          github.ref == 'refs/heads/main'
+          inputs.release
           && needs.test_ubuntu_24_04-4_0-normal.result != 'success'
           && (needs.test_ubuntu_24_04-4_0-normal.result != 'skipped'
             || contains(inputs.necessary_jobs, ';Test against production repo [ubuntu-24.04/4.0/normal];'))
       - name: Check whether 'Test [ubuntu-24.04/4.0/jemalloc]' did not fail
         run: 'false'
         if: |
-          github.ref == 'refs/heads/main'
+          inputs.release
           && needs.test_ubuntu_24_04-4_0-jemalloc.result != 'success'
           && (needs.test_ubuntu_24_04-4_0-jemalloc.result != 'skipped'
             || contains(inputs.necessary_jobs, ';Test against production repo [ubuntu-24.04/4.0/jemalloc];'))
       - name: Check whether 'Test [ubuntu-24.04/3.4/normal]' did not fail
         run: 'false'
         if: |
-          github.ref == 'refs/heads/main'
+          inputs.release
           && needs.test_ubuntu_24_04-3_4-normal.result != 'success'
           && (needs.test_ubuntu_24_04-3_4-normal.result != 'skipped'
             || contains(inputs.necessary_jobs, ';Test against production repo [ubuntu-24.04/3.4/normal];'))
       - name: Check whether 'Test [ubuntu-24.04/3.4/jemalloc]' did not fail
         run: 'false'
         if: |
-          github.ref == 'refs/heads/main'
+          inputs.release
           && needs.test_ubuntu_24_04-3_4-jemalloc.result != 'success'
           && (needs.test_ubuntu_24_04-3_4-jemalloc.result != 'skipped'
             || contains(inputs.necessary_jobs, ';Test against production repo [ubuntu-24.04/3.4/jemalloc];'))
       - name: Check whether 'Test [ubuntu-24.04/3.3/normal]' did not fail
         run: 'false'
         if: |
-          github.ref == 'refs/heads/main'
+          inputs.release
           && needs.test_ubuntu_24_04-3_3-normal.result != 'success'
           && (needs.test_ubuntu_24_04-3_3-normal.result != 'skipped'
             || contains(inputs.necessary_jobs, ';Test against production repo [ubuntu-24.04/3.3/normal];'))
       - name: Check whether 'Test [ubuntu-24.04/3.3/jemalloc]' did not fail
         run: 'false'
         if: |
-          github.ref == 'refs/heads/main'
+          inputs.release
           && needs.test_ubuntu_24_04-3_3-jemalloc.result != 'success'
           && (needs.test_ubuntu_24_04-3_3-jemalloc.result != 'skipped'
             || contains(inputs.necessary_jobs, ';Test against production repo [ubuntu-24.04/3.3/jemalloc];'))
       - name: Check whether 'Test [ubuntu-24.04/3.2/normal]' did not fail
         run: 'false'
         if: |
-          github.ref == 'refs/heads/main'
+          inputs.release
           && needs.test_ubuntu_24_04-3_2-normal.result != 'success'
           && (needs.test_ubuntu_24_04-3_2-normal.result != 'skipped'
             || contains(inputs.necessary_jobs, ';Test against production repo [ubuntu-24.04/3.2/normal];'))
       - name: Check whether 'Test [ubuntu-24.04/3.2/jemalloc]' did not fail
         run: 'false'
         if: |
-          github.ref == 'refs/heads/main'
+          inputs.release
           && needs.test_ubuntu_24_04-3_2-jemalloc.result != 'success'
           && (needs.test_ubuntu_24_04-3_2-jemalloc.result != 'skipped'
             || contains(inputs.necessary_jobs, ';Test against production repo [ubuntu-24.04/3.2/jemalloc];'))
       - name: Check whether 'Test [ubuntu-24.04/3.2/malloctrim]' did not fail
         run: 'false'
         if: |
-          github.ref == 'refs/heads/main'
+          inputs.release
           && needs.test_ubuntu_24_04-3_2-malloctrim.result != 'success'
           && (needs.test_ubuntu_24_04-3_2-malloctrim.result != 'skipped'
             || contains(inputs.necessary_jobs, ';Test against production repo [ubuntu-24.04/3.2/malloctrim];'))
       - name: Check whether 'Test [ubuntu-24.04/4.0.6/normal]' did not fail
         run: 'false'
         if: |
-          github.ref == 'refs/heads/main'
+          inputs.release
           && needs.test_ubuntu_24_04-4_0_6-normal.result != 'success'
           && (needs.test_ubuntu_24_04-4_0_6-normal.result != 'skipped'
             || contains(inputs.necessary_jobs, ';Test against production repo [ubuntu-24.04/4.0.6/normal];'))
       - name: Check whether 'Test [ubuntu-24.04/4.0.6/jemalloc]' did not fail
         run: 'false'
         if: |
-          github.ref == 'refs/heads/main'
+          inputs.release
           && needs.test_ubuntu_24_04-4_0_6-jemalloc.result != 'success'
           && (needs.test_ubuntu_24_04-4_0_6-jemalloc.result != 'skipped'
             || contains(inputs.necessary_jobs, ';Test against production repo [ubuntu-24.04/4.0.6/jemalloc];'))
       - name: Check whether 'Test [ubuntu-24.04/3.4.10/normal]' did not fail
         run: 'false'
         if: |
-          github.ref == 'refs/heads/main'
+          inputs.release
           && needs.test_ubuntu_24_04-3_4_10-normal.result != 'success'
           && (needs.test_ubuntu_24_04-3_4_10-normal.result != 'skipped'
             || contains(inputs.necessary_jobs, ';Test against production repo [ubuntu-24.04/3.4.10/normal];'))
       - name: Check whether 'Test [ubuntu-24.04/3.4.10/jemalloc]' did not fail
         run: 'false'
         if: |
-          github.ref == 'refs/heads/main'
+          inputs.release
           && needs.test_ubuntu_24_04-3_4_10-jemalloc.result != 'success'
           && (needs.test_ubuntu_24_04-3_4_10-jemalloc.result != 'skipped'
             || contains(inputs.necessary_jobs, ';Test against production repo [ubuntu-24.04/3.4.10/jemalloc];'))
       - name: Check whether 'Test [ubuntu-24.04/3.3.12/normal]' did not fail
         run: 'false'
         if: |
-          github.ref == 'refs/heads/main'
+          inputs.release
           && needs.test_ubuntu_24_04-3_3_12-normal.result != 'success'
           && (needs.test_ubuntu_24_04-3_3_12-normal.result != 'skipped'
             || contains(inputs.necessary_jobs, ';Test against production repo [ubuntu-24.04/3.3.12/normal];'))
       - name: Check whether 'Test [ubuntu-24.04/3.3.12/jemalloc]' did not fail
         run: 'false'
         if: |
-          github.ref == 'refs/heads/main'
+          inputs.release
           && needs.test_ubuntu_24_04-3_3_12-jemalloc.result != 'success'
           && (needs.test_ubuntu_24_04-3_3_12-jemalloc.result != 'skipped'
             || contains(inputs.necessary_jobs, ';Test against production repo [ubuntu-24.04/3.3.12/jemalloc];'))
       - name: Check whether 'Test [ubuntu-24.04/3.2.11/normal]' did not fail
         run: 'false'
         if: |
-          github.ref == 'refs/heads/main'
+          inputs.release
           && needs.test_ubuntu_24_04-3_2_11-normal.result != 'success'
           && (needs.test_ubuntu_24_04-3_2_11-normal.result != 'skipped'
             || contains(inputs.necessary_jobs, ';Test against production repo [ubuntu-24.04/3.2.11/normal];'))
       - name: Check whether 'Test [ubuntu-24.04/3.2.11/jemalloc]' did not fail
         run: 'false'
         if: |
-          github.ref == 'refs/heads/main'
+          inputs.release
           && needs.test_ubuntu_24_04-3_2_11-jemalloc.result != 'success'
           && (needs.test_ubuntu_24_04-3_2_11-jemalloc.result != 'skipped'
             || contains(inputs.necessary_jobs, ';Test against production repo [ubuntu-24.04/3.2.11/jemalloc];'))
       - name: Check whether 'Test [ubuntu-24.04/3.2.11/malloctrim]' did not fail
         run: 'false'
         if: |
-          github.ref == 'refs/heads/main'
+          inputs.release
           && needs.test_ubuntu_24_04-3_2_11-malloctrim.result != 'success'
           && (needs.test_ubuntu_24_04-3_2_11-malloctrim.result != 'skipped'
             || contains(inputs.necessary_jobs, ';Test against production repo [ubuntu-24.04/3.2.11/malloctrim];'))
@@ -6302,5 +6675,5 @@ jobs:
         run: git tag epic-${{ env.NEXT_RELEASE_VERSION }}
 
       - name: Push Git tag
-        if: github.ref == 'refs/heads/main'
+        if: inputs.release
         run: git push origin epic-${{ env.NEXT_RELEASE_VERSION }}

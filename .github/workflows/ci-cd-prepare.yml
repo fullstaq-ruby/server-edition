@@ -15,12 +15,18 @@ name: 'CI/CD: prepare'
 on:
   workflow_call:
     inputs:
-      ci_artifacts_run_number:
+      git_commit:
         type: string
         required: false
-      necessary_jobs:
-        required: true
+      allow_unsafe_pr_checkout:
+        type: boolean
+        required: false
+      ci_artifacts_run_number:
         type: string
+        required: true
+      necessary_jobs:
+        type: string
+        required: true
 
 env:
   CI_ARTIFACTS_RUN_NUMBER: ${{ inputs.ci_artifacts_run_number }}
@@ -46,6 +52,8 @@ jobs:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           fetch-depth: 0
+          ref: ${{ inputs.git_commit }}
+          allow-unsafe-pr-checkout: ${{ inputs.allow_unsafe_pr_checkout }}
       - uses: google-github-actions/auth@7c6bc770dae815cd3e89ee6cdf493a5fab2cc093 # v3
         with:
           project_id: ${{ vars.GCLOUD_PROJECT_ID }}
@@ -102,6 +110,9 @@ jobs:
     if: contains(inputs.necessary_jobs, ';Install gem bundle;')
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ inputs.git_commit }}
+          allow-unsafe-pr-checkout: ${{ inputs.allow_unsafe_pr_checkout }}
       - uses: google-github-actions/auth@7c6bc770dae815cd3e89ee6cdf493a5fab2cc093 # v3
         with:
           project_id: ${{ vars.GCLOUD_PROJECT_ID }}
@@ -138,6 +149,9 @@ jobs:
     if: contains(inputs.necessary_jobs, ';Build Docker image centos-8;')
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ inputs.git_commit }}
+          allow-unsafe-pr-checkout: ${{ inputs.allow_unsafe_pr_checkout }}
       - uses: azure/login@f5d393ae46f8fde4be8b75f32e3fc50e654ad0ca # v3.0.1
         with:
           tenant-id: ${{ vars.AZURE_TENANT_ID }}
@@ -180,6 +194,9 @@ jobs:
     if: contains(inputs.necessary_jobs, ';Build Docker image debian-11;')
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ inputs.git_commit }}
+          allow-unsafe-pr-checkout: ${{ inputs.allow_unsafe_pr_checkout }}
       - uses: azure/login@f5d393ae46f8fde4be8b75f32e3fc50e654ad0ca # v3.0.1
         with:
           tenant-id: ${{ vars.AZURE_TENANT_ID }}
@@ -222,6 +239,9 @@ jobs:
     if: contains(inputs.necessary_jobs, ';Build Docker image debian-12;')
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ inputs.git_commit }}
+          allow-unsafe-pr-checkout: ${{ inputs.allow_unsafe_pr_checkout }}
       - uses: azure/login@f5d393ae46f8fde4be8b75f32e3fc50e654ad0ca # v3.0.1
         with:
           tenant-id: ${{ vars.AZURE_TENANT_ID }}
@@ -264,6 +284,9 @@ jobs:
     if: contains(inputs.necessary_jobs, ';Build Docker image debian-13;')
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ inputs.git_commit }}
+          allow-unsafe-pr-checkout: ${{ inputs.allow_unsafe_pr_checkout }}
       - uses: azure/login@f5d393ae46f8fde4be8b75f32e3fc50e654ad0ca # v3.0.1
         with:
           tenant-id: ${{ vars.AZURE_TENANT_ID }}
@@ -306,6 +329,9 @@ jobs:
     if: contains(inputs.necessary_jobs, ';Build Docker image el-9;')
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ inputs.git_commit }}
+          allow-unsafe-pr-checkout: ${{ inputs.allow_unsafe_pr_checkout }}
       - uses: azure/login@f5d393ae46f8fde4be8b75f32e3fc50e654ad0ca # v3.0.1
         with:
           tenant-id: ${{ vars.AZURE_TENANT_ID }}
@@ -348,6 +374,9 @@ jobs:
     if: contains(inputs.necessary_jobs, ';Build Docker image ubuntu-22.04;')
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ inputs.git_commit }}
+          allow-unsafe-pr-checkout: ${{ inputs.allow_unsafe_pr_checkout }}
       - uses: azure/login@f5d393ae46f8fde4be8b75f32e3fc50e654ad0ca # v3.0.1
         with:
           tenant-id: ${{ vars.AZURE_TENANT_ID }}
@@ -390,6 +419,9 @@ jobs:
     if: contains(inputs.necessary_jobs, ';Build Docker image ubuntu-24.04;')
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ inputs.git_commit }}
+          allow-unsafe-pr-checkout: ${{ inputs.allow_unsafe_pr_checkout }}
       - uses: azure/login@f5d393ae46f8fde4be8b75f32e3fc50e654ad0ca # v3.0.1
         with:
           tenant-id: ${{ vars.AZURE_TENANT_ID }}
@@ -432,6 +464,9 @@ jobs:
     if: contains(inputs.necessary_jobs, ';Build Docker image utility;')
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ inputs.git_commit }}
+          allow-unsafe-pr-checkout: ${{ inputs.allow_unsafe_pr_checkout }}
       - uses: azure/login@f5d393ae46f8fde4be8b75f32e3fc50e654ad0ca # v3.0.1
         with:
           tenant-id: ${{ vars.AZURE_TENANT_ID }}
@@ -479,6 +514,9 @@ jobs:
     if: contains(inputs.necessary_jobs, ';Download Ruby source 4.0.6;')
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ inputs.git_commit }}
+          allow-unsafe-pr-checkout: ${{ inputs.allow_unsafe_pr_checkout }}
       - uses: azure/login@f5d393ae46f8fde4be8b75f32e3fc50e654ad0ca # v3.0.1
         with:
           tenant-id: ${{ vars.AZURE_TENANT_ID }}
@@ -513,6 +551,9 @@ jobs:
     if: contains(inputs.necessary_jobs, ';Download Ruby source 3.4.10;')
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ inputs.git_commit }}
+          allow-unsafe-pr-checkout: ${{ inputs.allow_unsafe_pr_checkout }}
       - uses: azure/login@f5d393ae46f8fde4be8b75f32e3fc50e654ad0ca # v3.0.1
         with:
           tenant-id: ${{ vars.AZURE_TENANT_ID }}
@@ -547,6 +588,9 @@ jobs:
     if: contains(inputs.necessary_jobs, ';Download Ruby source 3.3.12;')
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ inputs.git_commit }}
+          allow-unsafe-pr-checkout: ${{ inputs.allow_unsafe_pr_checkout }}
       - uses: azure/login@f5d393ae46f8fde4be8b75f32e3fc50e654ad0ca # v3.0.1
         with:
           tenant-id: ${{ vars.AZURE_TENANT_ID }}
@@ -581,6 +625,9 @@ jobs:
     if: contains(inputs.necessary_jobs, ';Download Ruby source 3.2.11;')
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ inputs.git_commit }}
+          allow-unsafe-pr-checkout: ${{ inputs.allow_unsafe_pr_checkout }}
       - uses: azure/login@f5d393ae46f8fde4be8b75f32e3fc50e654ad0ca # v3.0.1
         with:
           tenant-id: ${{ vars.AZURE_TENANT_ID }}
@@ -617,6 +664,9 @@ jobs:
     if: contains(inputs.necessary_jobs, ';Download Rbenv source;')
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ inputs.git_commit }}
+          allow-unsafe-pr-checkout: ${{ inputs.allow_unsafe_pr_checkout }}
       - uses: azure/login@f5d393ae46f8fde4be8b75f32e3fc50e654ad0ca # v3.0.1
         with:
           tenant-id: ${{ vars.AZURE_TENANT_ID }}
@@ -671,6 +721,9 @@ jobs:
           && contains(inputs.necessary_jobs.outputs.necessary_jobs, ';Build Docker image utility;')
 
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ inputs.git_commit }}
+          allow-unsafe-pr-checkout: ${{ inputs.allow_unsafe_pr_checkout }}
       - uses: azure/login@f5d393ae46f8fde4be8b75f32e3fc50e654ad0ca # v3.0.1
         with:
           tenant-id: ${{ vars.AZURE_TENANT_ID }}
@@ -738,6 +791,9 @@ jobs:
           && contains(inputs.necessary_jobs, ';Build Docker image utility;')
 
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ inputs.git_commit }}
+          allow-unsafe-pr-checkout: ${{ inputs.allow_unsafe_pr_checkout }}
       - uses: azure/login@f5d393ae46f8fde4be8b75f32e3fc50e654ad0ca # v3.0.1
         with:
           tenant-id: ${{ vars.AZURE_TENANT_ID }}
@@ -813,6 +869,9 @@ jobs:
           )
 
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ inputs.git_commit }}
+          allow-unsafe-pr-checkout: ${{ inputs.allow_unsafe_pr_checkout }}
       - uses: azure/login@f5d393ae46f8fde4be8b75f32e3fc50e654ad0ca # v3.0.1
         with:
           tenant-id: ${{ vars.AZURE_TENANT_ID }}
@@ -893,6 +952,9 @@ jobs:
           )
 
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ inputs.git_commit }}
+          allow-unsafe-pr-checkout: ${{ inputs.allow_unsafe_pr_checkout }}
       - uses: azure/login@f5d393ae46f8fde4be8b75f32e3fc50e654ad0ca # v3.0.1
         with:
           tenant-id: ${{ vars.AZURE_TENANT_ID }}
@@ -977,6 +1039,9 @@ jobs:
     if: 'always()'
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ inputs.git_commit }}
+          allow-unsafe-pr-checkout: ${{ inputs.allow_unsafe_pr_checkout }}
       - uses: azure/login@f5d393ae46f8fde4be8b75f32e3fc50e654ad0ca # v3.0.1
         with:
           tenant-id: ${{ vars.AZURE_TENANT_ID }}
