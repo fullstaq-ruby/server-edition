@@ -73,7 +73,8 @@ jobs:
       - id: checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
-          ref: ${{ github.event_name == 'pull_request_target' && github.event.pull_request.head.sha || github.ref }}
+          ref: ${{ github.event_name == 'pull_request_target' && github.event.pull_request.head.sha || github.sha }}
+          allow-unsafe-pr-checkout: ${{ github.event_name == 'pull_request_target' }}
       - uses: google-github-actions/auth@7c6bc770dae815cd3e89ee6cdf493a5fab2cc093 # v3
         with:
           project_id: ${{ vars.GCLOUD_PROJECT_ID }}
@@ -110,7 +111,8 @@ jobs:
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
-          ref: ${{ github.event_name == 'pull_request_target' && github.event.pull_request.head.sha || github.ref }}
+          ref: ${{ github.event_name == 'pull_request_target' && github.event.pull_request.head.sha || github.sha }}
+          allow-unsafe-pr-checkout: ${{ github.event_name == 'pull_request_target' }}
       - name: Check
         run: ./internal-scripts/ci-cd/check-workflow-uptodate/check.sh
 
@@ -127,6 +129,7 @@ jobs:
     uses: ./.github/workflows/ci-cd-prepare.yml
     with:
       git_commit: ${{ needs.determine_necessary_jobs.outputs.git_commit }}
+      allow_unsafe_pr_checkout: ${{ github.event_name == 'pull_request_target' }}
       ci_artifacts_run_number: ${{ needs.determine_necessary_jobs.outputs.ci_artifacts_run_number }}
       necessary_jobs: ${{ needs.determine_necessary_jobs.outputs.necessary_jobs }}
 
@@ -145,6 +148,7 @@ jobs:
       uses: ./.github/workflows/ci-cd-build-packages-<%= i + 1 %>.yml
       with:
         git_commit: ${{ needs.determine_necessary_jobs.outputs.git_commit }}
+        allow_unsafe_pr_checkout: ${{ github.event_name == 'pull_request_target' }}
         ci_artifacts_run_number: ${{ needs.determine_necessary_jobs.outputs.ci_artifacts_run_number }}
         necessary_jobs: ${{ needs.determine_necessary_jobs.outputs.necessary_jobs }}
   <%- end -%>
@@ -166,6 +170,7 @@ jobs:
     uses: ./.github/workflows/ci-cd-publish-test-test.yml
     with:
       git_commit: ${{ needs.determine_necessary_jobs.outputs.git_commit }}
+      allow_unsafe_pr_checkout: ${{ github.event_name == 'pull_request_target' }}
       ci_artifacts_run_number: ${{ needs.determine_necessary_jobs.outputs.ci_artifacts_run_number }}
       necessary_jobs: ${{ needs.determine_necessary_jobs.outputs.necessary_jobs }}
 
@@ -184,6 +189,7 @@ jobs:
     uses: ./.github/workflows/ci-cd-publish-test-production.yml
     with:
       git_commit: ${{ needs.determine_necessary_jobs.outputs.git_commit }}
+      allow_unsafe_pr_checkout: ${{ github.event_name == 'pull_request_target' }}
       ci_artifacts_run_number: ${{ needs.determine_necessary_jobs.outputs.ci_artifacts_run_number }}
       necessary_jobs: ${{ needs.determine_necessary_jobs.outputs.necessary_jobs }}
       # For pull_request_target events, github.ref refers to the base branch, not the contributor branch,

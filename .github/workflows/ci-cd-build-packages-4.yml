@@ -18,6 +18,9 @@ on:
       git_commit:
         type: string
         required: false
+      allow_unsafe_pr_checkout:
+        type: boolean
+        required: false
       ci_artifacts_run_number:
         type: string
         required: true
@@ -45,6 +48,7 @@ jobs:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           ref: ${{ inputs.git_commit }}
+          allow-unsafe-pr-checkout: ${{ inputs.allow_unsafe_pr_checkout }}
       - uses: google-github-actions/auth@7c6bc770dae815cd3e89ee6cdf493a5fab2cc093 # v3
         with:
           project_id: ${{ vars.GCLOUD_PROJECT_ID }}
@@ -119,6 +123,7 @@ jobs:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           ref: ${{ inputs.git_commit }}
+          allow-unsafe-pr-checkout: ${{ inputs.allow_unsafe_pr_checkout }}
       - uses: google-github-actions/auth@7c6bc770dae815cd3e89ee6cdf493a5fab2cc093 # v3
         with:
           project_id: ${{ vars.GCLOUD_PROJECT_ID }}
@@ -220,6 +225,7 @@ jobs:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           ref: ${{ inputs.git_commit }}
+          allow-unsafe-pr-checkout: ${{ inputs.allow_unsafe_pr_checkout }}
       - uses: google-github-actions/auth@7c6bc770dae815cd3e89ee6cdf493a5fab2cc093 # v3
         with:
           project_id: ${{ vars.GCLOUD_PROJECT_ID }}
@@ -321,6 +327,7 @@ jobs:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           ref: ${{ inputs.git_commit }}
+          allow-unsafe-pr-checkout: ${{ inputs.allow_unsafe_pr_checkout }}
       - uses: google-github-actions/auth@7c6bc770dae815cd3e89ee6cdf493a5fab2cc093 # v3
         with:
           project_id: ${{ vars.GCLOUD_PROJECT_ID }}
@@ -422,6 +429,7 @@ jobs:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           ref: ${{ inputs.git_commit }}
+          allow-unsafe-pr-checkout: ${{ inputs.allow_unsafe_pr_checkout }}
       - uses: google-github-actions/auth@7c6bc770dae815cd3e89ee6cdf493a5fab2cc093 # v3
         with:
           project_id: ${{ vars.GCLOUD_PROJECT_ID }}
@@ -523,6 +531,7 @@ jobs:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           ref: ${{ inputs.git_commit }}
+          allow-unsafe-pr-checkout: ${{ inputs.allow_unsafe_pr_checkout }}
       - uses: google-github-actions/auth@7c6bc770dae815cd3e89ee6cdf493a5fab2cc093 # v3
         with:
           project_id: ${{ vars.GCLOUD_PROJECT_ID }}
@@ -624,6 +633,7 @@ jobs:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           ref: ${{ inputs.git_commit }}
+          allow-unsafe-pr-checkout: ${{ inputs.allow_unsafe_pr_checkout }}
       - uses: google-github-actions/auth@7c6bc770dae815cd3e89ee6cdf493a5fab2cc093 # v3
         with:
           project_id: ${{ vars.GCLOUD_PROJECT_ID }}
@@ -725,6 +735,7 @@ jobs:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           ref: ${{ inputs.git_commit }}
+          allow-unsafe-pr-checkout: ${{ inputs.allow_unsafe_pr_checkout }}
       - uses: google-github-actions/auth@7c6bc770dae815cd3e89ee6cdf493a5fab2cc093 # v3
         with:
           project_id: ${{ vars.GCLOUD_PROJECT_ID }}
@@ -826,6 +837,7 @@ jobs:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           ref: ${{ inputs.git_commit }}
+          allow-unsafe-pr-checkout: ${{ inputs.allow_unsafe_pr_checkout }}
       - uses: google-github-actions/auth@7c6bc770dae815cd3e89ee6cdf493a5fab2cc093 # v3
         with:
           project_id: ${{ vars.GCLOUD_PROJECT_ID }}
@@ -927,6 +939,7 @@ jobs:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           ref: ${{ inputs.git_commit }}
+          allow-unsafe-pr-checkout: ${{ inputs.allow_unsafe_pr_checkout }}
       - uses: google-github-actions/auth@7c6bc770dae815cd3e89ee6cdf493a5fab2cc093 # v3
         with:
           project_id: ${{ vars.GCLOUD_PROJECT_ID }}
@@ -1028,6 +1041,7 @@ jobs:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           ref: ${{ inputs.git_commit }}
+          allow-unsafe-pr-checkout: ${{ inputs.allow_unsafe_pr_checkout }}
       - uses: google-github-actions/auth@7c6bc770dae815cd3e89ee6cdf493a5fab2cc093 # v3
         with:
           project_id: ${{ vars.GCLOUD_PROJECT_ID }}
@@ -1129,6 +1143,7 @@ jobs:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           ref: ${{ inputs.git_commit }}
+          allow-unsafe-pr-checkout: ${{ inputs.allow_unsafe_pr_checkout }}
       - uses: google-github-actions/auth@7c6bc770dae815cd3e89ee6cdf493a5fab2cc093 # v3
         with:
           project_id: ${{ vars.GCLOUD_PROJECT_ID }}
@@ -1230,6 +1245,7 @@ jobs:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           ref: ${{ inputs.git_commit }}
+          allow-unsafe-pr-checkout: ${{ inputs.allow_unsafe_pr_checkout }}
       - uses: google-github-actions/auth@7c6bc770dae815cd3e89ee6cdf493a5fab2cc093 # v3
         with:
           project_id: ${{ vars.GCLOUD_PROJECT_ID }}
@@ -1349,6 +1365,7 @@ jobs:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           ref: ${{ inputs.git_commit }}
+          allow-unsafe-pr-checkout: ${{ inputs.allow_unsafe_pr_checkout }}
       - uses: google-github-actions/auth@7c6bc770dae815cd3e89ee6cdf493a5fab2cc093 # v3
         with:
           project_id: ${{ vars.GCLOUD_PROJECT_ID }}
