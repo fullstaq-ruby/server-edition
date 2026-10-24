@@ -13,13 +13,13 @@ ruby:
   minor_version_packages:
     - minor_version: '4.0'
       full_version: '4.0.9'
-      package_revision: '0'
+      package_revision: '5'
     - minor_version: '3.4'
       full_version: '3.4.12'
-      package_revision: '0'
+      package_revision: '10'
     - minor_version: '3.3'
       full_version: '3.3.13'
-      package_revision: '0'
+      package_revision: '13'
 
   ## (Optional)
   ## Which tiny Ruby version packages to build.
