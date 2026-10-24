@@ -179,7 +179,7 @@ jobs:
           VARIANT_PACKAGE_SUFFIX: ""
           PACKAGE_FORMAT: "RPM"
           RUBY_PACKAGE_VERSION_ID: "4.0"
-          RUBY_PACKAGE_REVISION: "0"
+          RUBY_PACKAGE_REVISION: "5"
 
       - name: Archive package artifact to Google Cloud
         run: ./internal-scripts/ci-cd/upload-artifact.sh
@@ -284,7 +284,7 @@ jobs:
           VARIANT_PACKAGE_SUFFIX: "-jemalloc"
           PACKAGE_FORMAT: "RPM"
           RUBY_PACKAGE_VERSION_ID: "4.0"
-          RUBY_PACKAGE_REVISION: "0"
+          RUBY_PACKAGE_REVISION: "5"
 
       - name: Archive package artifact to Google Cloud
         run: ./internal-scripts/ci-cd/upload-artifact.sh
@@ -377,7 +377,7 @@ jobs:
           VARIANT_PACKAGE_SUFFIX: ""
           PACKAGE_FORMAT: "RPM"
           RUBY_PACKAGE_VERSION_ID: "3.4"
-          RUBY_PACKAGE_REVISION: "0"
+          RUBY_PACKAGE_REVISION: "10"
 
       - name: Archive package artifact to Google Cloud
         run: ./internal-scripts/ci-cd/upload-artifact.sh
@@ -482,7 +482,7 @@ jobs:
           VARIANT_PACKAGE_SUFFIX: "-jemalloc"
           PACKAGE_FORMAT: "RPM"
           RUBY_PACKAGE_VERSION_ID: "3.4"
-          RUBY_PACKAGE_REVISION: "0"
+          RUBY_PACKAGE_REVISION: "10"
 
       - name: Archive package artifact to Google Cloud
         run: ./internal-scripts/ci-cd/upload-artifact.sh
@@ -575,7 +575,7 @@ jobs:
           VARIANT_PACKAGE_SUFFIX: ""
           PACKAGE_FORMAT: "RPM"
           RUBY_PACKAGE_VERSION_ID: "3.3"
-          RUBY_PACKAGE_REVISION: "0"
+          RUBY_PACKAGE_REVISION: "13"
 
       - name: Archive package artifact to Google Cloud
         run: ./internal-scripts/ci-cd/upload-artifact.sh
@@ -680,7 +680,7 @@ jobs:
           VARIANT_PACKAGE_SUFFIX: "-jemalloc"
           PACKAGE_FORMAT: "RPM"
           RUBY_PACKAGE_VERSION_ID: "3.3"
-          RUBY_PACKAGE_REVISION: "0"
+          RUBY_PACKAGE_REVISION: "13"
 
       - name: Archive package artifact to Google Cloud
         run: ./internal-scripts/ci-cd/upload-artifact.sh
