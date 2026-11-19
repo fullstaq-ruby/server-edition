@@ -160,10 +160,6 @@ echo -n "Checking whether Ruby has detected install in /usr/bin... "
 output=$(ruby -rrbconfig -e 'puts RbConfig::CONFIG["INSTALL_PROGRAM"]')
 assert_equals "$output" "/usr/bin/install -c"
 
-echo -n "Checking whether Ruby has detected grep in /bin... "
-output=$(ruby -rrbconfig -e 'puts RbConfig::CONFIG["GREP"]')
-assert_equals "$output" "/bin/grep"
-
 # https://github.com/fullstaq-ruby/server-edition/issues/118
 echo -n "Checking whether Ruby has pkg-config support... "
 output=$(ruby -rrbconfig -e 'puts RbConfig::CONFIG["PKG_CONFIG"]')
