@@ -34,7 +34,7 @@
                                     <font style="line-height: 135%">
                                         <font>
                                             <span style="font-size: 13px">
-                                                fullstaq-ruby-server-edition-apt-repo
+                                                fsruby-server-edition-apt-repo
                                             </span>
                                         </font>
                                         <br/>
@@ -81,7 +81,7 @@
                                     <br/>
                                     <font style="line-height: 135%">
                                         <span style="font-size: 13px">
-                                            fullstaq-ruby-server-edition-yum-repo
+                                            fsruby-server-edition-yum-repo
                                         </span>
                                         <br/>
                                     </font>
